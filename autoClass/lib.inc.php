@@ -338,6 +338,7 @@ function rewriteIfNeeded($str){
 // $oTemp = cacheObject($sTempClasse, $eKeyValue);
 
 function cacheObject($sObject, $eId){
+	//echo 'cacheObject('.$sObject.', '.$eId.')';
 	$bFound=NULL;
 
 	if (!isset($_SESSION['BO']['CACHE'])){
@@ -351,9 +352,13 @@ function cacheObject($sObject, $eId){
 	elseif (!isset($_SESSION['BO']['CACHE'][$sObject][$eId])){
 		$bFound=false;
 	}
-	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])){ // FOUND !!
-		$bFound=true;
-		
+	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])	&&	($_SESSION['BO']['CACHE'][$sObject][$eId]!=NULL)	){ // FOUND !!		
+		if (method_exists($_SESSION['BO']['CACHE'][$sObject][$eId], 'get_id')	&&	$_SESSION['BO']['CACHE'][$sObject][$eId]->get_id()==$eId){
+			$bFound=true;
+		}
+		else{
+			$bFound=false;
+		}
 	}
 	else{ // ne devrait jamais se produire
 		$bFound=false;
@@ -362,10 +367,12 @@ function cacheObject($sObject, $eId){
 	// retour
 	if ($bFound==false){
 		eval('$'.'oCache = new '.$sObject.'('.$eId.');');
+		//echo('$'.'oCache = new '.$sObject.'('.$eId.');');
 		$_SESSION['BO']['CACHE'][$sObject][$eId] = $oCache;
 	}
 	else{
 		eval('$'.'oCache = new '.$sObject.'();');
+		//echo('$'.'oCache = new '.$sObject.'();');
 		$oTemp = $_SESSION['BO']['CACHE'][$sObject][$eId];
 		foreach ($oTemp as $tempKey => $tempValue){
 			$oCache->$tempKey = $tempValue;

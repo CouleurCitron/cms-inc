@@ -13,7 +13,6 @@ if ($eKeyValue > -1) {
 	$stack = array();
 	xmlClassParse($sXML);
 
-
 	$foreignName = $stack[0]["attrs"]["NAME"];
 	$foreignPrefixe = $stack[0]["attrs"]["PREFIX"];
 	$foreignNodeToSort = $stack[0]["children"];
@@ -222,7 +221,7 @@ if ($eKeyValue > -1) {
 		if (strlen($itemValue) > 50 ) 
 			$itemValueShort .= " ... ";
 		echo $itemValueShort;
-		
+	
 		$itemValue = "";
 		//eval("$"."eKeyValueTemp = $"."oTemp->get_".strval($oTemp->getAbstract())."();");
 			if ($oTemp->getDisplay() != $oTemp->getAbstract() && $oTemp->getAbstract() != 'statut') {
@@ -252,6 +251,7 @@ if ($eKeyValue > -1) {
 				}
 			}
 		}
+		
 		// translation data
 		// Added by Luc - 13 oct. 2009
 		if (DEF_APP_USE_TRANSLATIONS && $translateAbstract) { 
