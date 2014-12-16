@@ -189,61 +189,74 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 	
 	// cookie banner
 	// wiki.adequation.cc/index.php?title=Cookie_opt%27in
-	if (!$_SESSION['mobile']){
 	
-		if ( defined("DEF_JS_COOKIESBAN_USE") && DEF_JS_COOKIESBAN_USE ) {
+	
+	if ( defined("DEF_JS_COOKIESBAN_USE") && DEF_JS_COOKIESBAN_USE ) {
+	
+		if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js') || is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js.php')){
 		
-			if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js')){
+			if (defined("DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']."")) {
+				eval ( "$"."options_minisite = "."DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']." ; ");
+			}
+			else {
+				$options_minisite = "";
+			}
+			 
+			  
+			if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE  && $options_minisite == '' ) {
 			
-				if (defined("DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']."")) {
-					eval ( "$"."options_minisite = "."DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']." ; ");
-				}
-				else {
-					$options_minisite = "";
-				}
-				  
-				if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE  && $options_minisite == '' ) {
+				// les options ne sont pas personnalisées - pour un mini site donné => pas cookie
+				// echo $options_minisite. "ici"; 
+			
+			}
+			else {  
 				
-					// les options ne sont pas personnalisées - pour un mini site donné => pas cookie
-					// echo $options_minisite. "ici";
 				
-				}
-				else { 
+				if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js.php') ) {
+				
+					$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/cookiebanner.min.js.php" id="cookiebanner" '; 
 					
+				}
+				else if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js') ) {
+				
 					$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/cookiebanner.min.js" id="cookiebanner" '; 
 					
-					if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE ) {
-					
-						// les options sont personnalisées - pour un mini site donné 
-						$sHeader .=   $options_minisite;
-					
-					}
-					else {
-					
-						if (!defined("DEF_JS_COOKIESBAN_OPTIONS")) {
-							// les options ne sont pas personnalisées - à appliquer à tous les sites
-							$sHeader .=  ' data-message="'.$translator->getText('Nous utilisons des cookies pour vous garantir la meilleure exp&eacute;rience sur notre site. Si vous continuez &agrave; utiliser ce dernier, nous consid&eacute;rerons que vous acceptez l\'utilisation des cookies.').'" ';
-							
-						}
-						else { 
-							// les options sont personnalisées - à appliquer à tous les sites
-							$sHeader .=  DEF_JS_COOKIESBAN_OPTIONS;
-						
-						}
-					
-					}
-					 
-					$sHeader .= ' data-expires="'.gmdate("M d Y H:i:s", mktime(0,0,0,date("n") ,date("j") ,date("Y")+1 )).'" data-cookie="AWS-cookies-optin"  data-moreinfo="'.$translator->getText('http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/').'" data-linkmsg="'.$translator->getText('En savoir plus').'" ';
-					$sHeader .= ' >';
-					$sHeader .= '</script>'."\n";  
-					
 				}
+				else {
+				}
+				
+				if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE ) {
+				
+					// les options sont personnalisées - pour un mini site donné  
+					$sHeader .=   $options_minisite;
+				
+				}
+				else {
+				
+					if (!defined("DEF_JS_COOKIESBAN_OPTIONS")) {
+						// les options ne sont pas personnalisées - à appliquer à tous les sites
+						$sHeader .=  ' data-message="'.$translator->getText('Nous utilisons des cookies pour vous garantir la meilleure exp&eacute;rience sur notre site. Si vous continuez &agrave; utiliser ce dernier, nous consid&eacute;rerons que vous acceptez l\'utilisation des cookies.').'" ';
+						
+					}
+					else { 
+						// les options sont personnalisées - à appliquer à tous les sites
+						//$sHeader .=  $translator->getText(DEF_JS_COOKIESBAN_OPTIONS);
+						$sHeader .=  DEF_JS_COOKIESBAN_OPTIONS;
+					
+					}
+				
+				}
+				 
+				$sHeader .= ' data-expires="'.gmdate("M d Y H:i:s", mktime(0,0,0,date("n") ,date("j") ,date("Y")+1 )).'" data-cookie="AWS-cookies-optin-'.$_SESSION['idSite'].'"  data-moreinfo="'.$translator->getText('http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/').'" data-linkmsg="'.$translator->getText('En savoir plus').'" ';
+				$sHeader .= ' >';
+				$sHeader .= '</script>'."\n";  
 				
 			}
 			
 		}
 		
 	}
+		
 	
 	if($oPage){ // js + css custom
 		list($aResJSunique, $aResMediaByPath) = getPageDependencies($oPage);		
