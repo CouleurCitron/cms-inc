@@ -175,6 +175,23 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
             }
         }
 	
+	// inclus un fichier custom pour le header s'il existe
+	// utilisé pour les liens canonical
+	if (is_file($_SERVER['DOCUMENT_ROOT']."/include/modules/".$_SESSION['rep_travail']."/meta/meta.inc.php")){
+		 
+		//include ($_SERVER['DOCUMENT_ROOT']."/include/modules/".$_SESSION['rep_travail']."/meta/meta.inc.php");  
+		$sHeader .= '<'.'?php'."\n";
+		$sHeader .= '	include($_SERVER[\'DOCUMENT_ROOT\'].\'/include/modules/'.$_SESSION['rep_travail'].'/meta/meta.inc.php\');'."\n"; 
+		$sHeader .= '?'.">\n";
+		
+	}
+	else { 
+	
+
+	}
+
+
+	
 	$sHeader .= '	<script src="/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/XHRConnector.js"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/ancre.js.php"></script>'."\n";
