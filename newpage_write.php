@@ -373,6 +373,8 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 		$sHeader .= '	<script src="'.$jsGlossaire.'" type="text/javascript"></script>'."\n";
 	}
 	
+	// tracking par minisite
+	$sHeader .= getCodeTrackingByMinisite( $_SESSION['idSite'] ) ; 
 	return $sHeader;
 }
 
@@ -402,6 +404,43 @@ function getPageFooter() {
 	return '</body>
 	</html>	';
 }
+
+function getCodeTrackingByMinisite( $id_minisite ) {
+
+	$oSite = new cms_site($id_minisite); 
+	$codegooana = "";  
+	if (method_exists ($oSite, "get_codegooana")) {
+ 
+		if ($oSite->get_codegooana() != '') {
+			$codegooana = $oSite->get_codegooana(); 
+			// tester si il s'agit que du code UA de google analytics 
+			/*UA-52442960-3*/
+			if (preg_match("/^\bUA-\d{4,9}-\d{1,4}\b/i", $codegooana)) {  
+				$codegooana_final =			"	<script>"."\n";
+				$codegooana_final.=			"	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"."\n";
+				$codegooana_final.=		  	"	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"."\n";
+				$codegooana_final.=		  	"	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"."\n";
+				$codegooana_final.=		  	"	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');"."\n";
+				$codegooana_final.=		  	"	 	"."\n";
+				$codegooana_final.=		  	"	ga('create', '".$codegooana."', 'auto');"."\n";
+				$codegooana_final.=		  	"	ga('send', 'pageview');"."\n";
+				$codegooana_final.=			"		"."\n";
+				$codegooana_final.=			"	</script> "; 
+						
+			}
+			elseif (preg_match("/<script\b[^>]*>([\s\S]*?)<\/script>/i", $codegooana)) {  
+				$codegooana_final =	($codegooana);
+			
+			}
+			 
+		}	 
+	}
+	
+	return $codegooana_final;
+	
+}
+
+
 function getTamponPage($divArray, $oInfos_page, $oPage, $gabGenerated="") 
 {
 	$tampon = getPageHeader($oInfos_page, $oPage);
