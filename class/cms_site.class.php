@@ -8,6 +8,7 @@
 //    unset($_SESSION['patches'][$key]);
 //}
 
+
 // patch de migration
 if (!ispatched('cms_site')){
 	$rs = $db->Execute('SHOW COLUMNS FROM `cms_site`');
@@ -32,22 +33,30 @@ if (!ispatched('cms_site')){
 		if (!in_array('cms_https', $names)) {
 			$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 		}
-                if (!in_array('cms_viewport', $names)) {
+        if (!in_array('cms_viewport', $names)) {
 			$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_viewport` TEXT AFTER `cms_geoposition` ; ');
 		}//cms_jquery_version
-                if (!in_array('cms_jquery_version', $names)) {
+        if (!in_array('cms_jquery_version', $names)) {
 			$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_jquery_version` INT NOT NULL DEFAULT  \'1\' AFTER  `cms_viewport` ; ');
+		}
+		if (!in_array('cms_codegooana', $names)) {
+			$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_codegooana` TEXT AFTER  `cms_jquery_version` ; ');
+		}
+		if (!in_array('cms_offline', $names)) {
+			$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 		}
                 
 	}
 	
 	// patch old style
 	$rs = $db->Execute('DESCRIBE `cms_site`');
-
+	
 	if ($rs->_numOfRows == 22){
+		$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_codegooana` TEXT AFTER  `cms_jquery_version` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
+
 	}
-	elseif ($rs->_numOfRows == 13){
+	if ($rs->_numOfRows == 13){
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_robots` VARCHAR( 255 ) NOT NULL AFTER `cms_langue` , ADD `cms_copyright` VARCHAR( 255 ) NOT NULL AFTER `cms_robots` , ADD `cms_georegion` VARCHAR( 255 ) NOT NULL AFTER `cms_copyright` , ADD `cms_geoplacename` VARCHAR( 255 ) NOT NULL AFTER `cms_georegion` , ADD `cms_geoposition` VARCHAR( 255 ) NOT NULL AFTER `cms_geoplacename` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
@@ -99,6 +108,7 @@ CREATE TABLE cms_site
 	cms_rep			varchar (255),
 	cms_encod			int (2),
 	cms_doctype			int (2),
+	cms_offline			int (2),
 	cms_https			int (2),
 	cms_langue			int (11),
 	cms_robots			varchar (255),
@@ -109,6 +119,7 @@ CREATE TABLE cms_site
 	cms_geoposition			varchar (255),
 	cms_viewport			text,
 	cms_jquery_version			int (11),
+	cms_codegooana			text,
 	cms_statut			int (11) not null
 )
 
@@ -139,6 +150,7 @@ CREATE TABLE cms_site
 	cms_geoposition			varchar2 (255),
 	cms_viewport			text,
 	cms_jquery_version			number (11),
+	cms_codegooana			text,
 	cms_statut			number (11) not null
 )
 
@@ -172,7 +184,6 @@ CREATE TABLE cms_site
 </item>
 
 <item name="offline" libelle="Hors Ligne" type="int" length="2" list="true" order="true" option="bool" default="0" />
-
 <item name="https" libelle="Sécurisé" type="int" length="2" list="true" order="true" option="bool" default="0" />
 
 <item name="langue" libelle="Langue" type="int" length="11" list="true" order="true" nohtml="true" fkey="cms_langue"/>
@@ -193,6 +204,7 @@ CREATE TABLE cms_site
 
 <item name="jquery_version" type="int" length="11" list="true" order="true" fkey="cms_jquery_version" />
 
+<item name="codegooana" libelle="Code tracking" type="text" list="false" order="false" nohtml="true" default="" option="textarea" />
 
 <item name="statut" libelle="Statut" type="int" length="11" notnull="true" default="DEF_ID_STATUT_LIGNE" list="true" order="true" /> 
 <langpack lang="fr">
@@ -229,6 +241,7 @@ var $geoplacename;
 var $geoposition;
 var $viewport;
 var $jquery_version;
+var $codegooana;
 var $statut;
 
 
@@ -261,7 +274,6 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 </item>
 
 <item name=\"offline\" libelle=\"Hors Ligne\" type=\"int\" length=\"2\" list=\"true\" order=\"true\" option=\"bool\" default=\"0\" />
-
 <item name=\"https\" libelle=\"Sécurisé\" type=\"int\" length=\"2\" list=\"true\" order=\"true\" option=\"bool\" default=\"0\" />
 
 <item name=\"langue\" libelle=\"Langue\" type=\"int\" length=\"11\" list=\"true\" order=\"true\" nohtml=\"true\" fkey=\"cms_langue\"/>
@@ -281,6 +293,7 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 <item name=\"viewport\" libelle=\"Viewport\" type=\"text\" list=\"false\" order=\"false\" nohtml=\"true\" default=\"width=device-width,initial-scale=1\" option=\"textarea\" />
 
 <item name=\"jquery_version\" type=\"int\" length=\"11\" list=\"true\" order=\"true\" fkey=\"cms_jquery_version\" />
+<item name=\"codegooana\" libelle=\"Code tracking\" type=\"text\" list=\"false\" order=\"false\" nohtml=\"true\" default=\"\" option=\"textarea\" />
 
 
 <item name=\"statut\" libelle=\"Statut\" type=\"int\" length=\"11\" notnull=\"true\" default=\"DEF_ID_STATUT_LIGNE\" list=\"true\" order=\"true\" /> 
@@ -315,6 +328,7 @@ var $sMySql = "CREATE TABLE cms_site
 	cms_geoposition			varchar (255),
 	cms_viewport			text,
 	cms_jquery_version			int (11),
+	cms_codegooana			text,
 	cms_statut			int (11) not null
 )
 
@@ -362,6 +376,7 @@ function cms_site($id=null)
 		$this->geoposition = "43.5522183477, 1.4900636673";
 		$this->viewport = "width=device-width,initial-scale=1";
 		$this->jquery_version = -1;
+		$this->codegooana = "";
 		$this->statut = DEF_ID_STATUT_LIGNE;
 		if(array_key_exists('0',$this->inherited_list)){
 			foreach($this->inherited_list as $class){
@@ -399,6 +414,7 @@ function getListeChamps()
 	$laListeChamps[]=new dbChamp("Cms_geoposition", "text", "get_geoposition", "set_geoposition");
 	$laListeChamps[]=new dbChamp("Cms_viewport", "text", "get_viewport", "set_viewport");
 	$laListeChamps[]=new dbChamp("Cms_jquery_version", "entier", "get_jquery_version", "set_jquery_version");
+	$laListeChamps[]=new dbChamp("Cms_codegooana", "text", "get_codegooana", "set_codegooana");
 	$laListeChamps[]=new dbChamp("Cms_statut", "entier", "get_statut", "set_statut");
 	return($laListeChamps);
 }
@@ -427,11 +443,11 @@ function get_geoplacename() { return($this->geoplacename); }
 function get_geoposition() { return($this->geoposition); }
 function get_viewport() { return($this->viewport); }
 function get_jquery_version() { return($this->jquery_version); }
+function get_codegooana() { return($this->codegooana); }
 function get_statut() { return($this->statut); }
 
 function getWidthpage_site() { return($this->widthpage); }
 function getHeightpage_site() { return($this->heightpage); }
-
 
 // setters
 function set_id($c_cms_id) { return($this->id=$c_cms_id); }
@@ -456,6 +472,7 @@ function set_geoplacename($c_cms_geoplacename) { return($this->geoplacename=$c_c
 function set_geoposition($c_cms_geoposition) { return($this->geoposition=$c_cms_geoposition); }
 function set_viewport($c_cms_viewport) { return($this->viewport=$c_cms_viewport); }
 function set_jquery_version($c_cms_jquery_version) { return($this->jquery_version=$c_cms_jquery_version); }
+function set_codegooana($c_cms_codegooana) { return($this->codegooana=$c_cms_codegooana); }
 function set_statut($c_cms_statut) { return($this->statut=$c_cms_statut); }
 
 
@@ -714,13 +731,21 @@ function detectSite($sPath=NULL){
 }
 
 function defaultSite(){
-    $sql = 'select * from cms_site order by cms_id';
+	// default : chercher le premier site en ligne
+    $sql = 'select * from cms_site where cms_statut = '.DEF_ID_STATUT_LIGNE.' order by cms_id';
     $aSite = dbGetObjectsFromRequete('cms_site', $sql);
     if ($aSite!=false){
         return $aSite[0];
     }
-    else{
-        false;
+    else{// ni no res : chercher le premier site sans souci du statut
+    	$sql = 'select * from cms_site order by cms_id';
+		$aSite = dbGetObjectsFromRequete('cms_site', $sql);
+		if ($aSite!=false){
+			return $aSite[0];
+		}
+		else{
+			false;
+		}
     }
 }
 
@@ -797,8 +822,8 @@ function sitePropsToSession($oSite){
             $_SESSION['mobile']=true;
         }    
     }
-    
-    $_SESSION['offline'] = $oSite->get_offline();    
+        
+	$_SESSION['offline'] = $oSite->get_offline();    
     $_SESSION['https'] = $oSite->get_https();    
     $_SESSION['robots'] = $oSite->get_robots();
     $_SESSION['author'] = $oSite->get_author();
