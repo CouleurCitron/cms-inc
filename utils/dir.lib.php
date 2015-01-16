@@ -56,6 +56,8 @@ function unlinkRecursive($dir, $deleteRootToo)
 } 
 
 function isDownloadable($file, $aWhiteListCustom = array()){
+	//-----------------------------------------------
+	$aExtensionBlacklist = array('php', 'inc');
 	
 	// à definir dans le fichier de config, s'il y a d'autres téléchargement autres que dans  'content', 'custom', 'documents'
 	if (defined ('DEF_AWHITELIST')) {
@@ -71,9 +73,16 @@ function isDownloadable($file, $aWhiteListCustom = array()){
 		$aWhiteList = array_merge ($aWhiteList, $aWhiteListCustom);
 	}  
 	 
+	//-----------------------------------------------
+	
+	// recherches des extensions interdites
+	foreach($aExtensionBlacklist as $k => $sExt){  
+		if (preg_replace('/^.*\.([^\.]+)$/si', '$1', $file)==$sExt){
+			return false;
+		}	 
+	}
 	
 	if (strpos($file, $_SERVER['DOCUMENT_ROOT'])===false && sizeof($aWhiteListCustom) == 0){
-		 
 		return false;
 	}
 	else{
