@@ -141,6 +141,8 @@ else{
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/AC_RunActiveContent.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/XHRConnector.js" type="text/javascript"></script>
 	<script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-1.6.4.min.js" type="text/javascript"></script>
+	<script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-ui.js" type="text/javascript"></script>
+    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery.mjs.nestedSortable.js" type="text/javascript"></script>
 	<?php
 	// fancybox
 	if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/lib/fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js')){

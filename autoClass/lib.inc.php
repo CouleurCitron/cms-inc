@@ -2787,4 +2787,5 @@ function getValidHref ($link , $text, $target=false ) {
 	return $href;
 	
 }
+
 ?>

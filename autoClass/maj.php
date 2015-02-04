@@ -971,7 +971,6 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		// fin tst de condition - maitre
 		
 		if (($aNodeToSort[$i]["attrs"]["FKEY"] && ($aNodeToSort[$i]["attrs"]["FKEY"]!='null') && ($aNodeToSort[$i]["attrs"]["FKEY"]!='')) || $aNodeToSort[$i]["attrs"]["FKEY_SWITCH"]) { // cas de foreign key
-
 			// AJAX delayed call for fkey select display
 			// first define fields not applying to AJAX display
 			$excluded = Array('cms_site');
@@ -997,7 +996,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					$call = '/backoffice/cms/call_maj_fkey.php?class='.$classeName.'&field='.$aNodeToSort[$i]["attrs"]["NAME"].'&id='.$id.'&forceValue=';
 				}
 				//echo "test : ".$call."<br/>";
-
+				
 				$tmp_load = 'Chargement de la liste...<input type="hidden" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" class="arbo" value="'.$eKeyValue.'">';
 				echo "\n".'<script type="text/javascript">';
 				echo "\n".'function ajax'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'(forceId){';

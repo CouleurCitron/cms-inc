@@ -127,13 +127,7 @@ if (sizeof($aObj_redact) > 0) {
 				//$sql = 'update news_queue set news_statut = '.DEF_ID_STATUT_LIGNE.'  AND news_date_send = \''.date("Y-m-d H:i:s").'\' WHERE news_id = '.$id_queue;   
 				//dbExecuteQueryQuiet($sql);
 				
-			} else {
-                            
-                            $html = "Une erreur lors de l'envoi du mail à cette personne. La statut n'a donc pas été changé.";
-                            $aName_file = array();
-                            
-                            $bSend = (bool)  multiPartMail_file('technique@couleur-citron.com' , $_SERVER['HTTP_HOST'].' : Erreur d\'Envoi de la newsletter à ' . $addy , $html , html2text($html), $from, $attachPath, $aName_file, $typeAttach='text/plain', DEF_MAIL_HOST, $replyto);
-                        }
+			}
 		
 		}
 		

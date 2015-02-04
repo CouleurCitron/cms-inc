@@ -282,13 +282,12 @@ function mailAdmin($sujet , $text, $from=DEF_USERMAIL){
 function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
 	$sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
 	
-	
 	if (DEF_MAIL_ENGINE=='sendmail'){
 		$from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
 	}
 		
 	$from = mb_encode_mimeheader($from);	
-		
+
 	if ((ini_get('safe_mode')==1)	||	(DEF_USEPHPMAILFUNCTION=='1')) {		 
 		return (htmlmail($from,$to,$sujet,$html));
 	}
@@ -299,7 +298,6 @@ function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAtt
 		$parammulti['content_type'] = 'multipart/alternative';	
 	
 		$email = new Mail_mimePart('',$parammulti);
-	
 	
 		$parammulti['content_type'] = 'text/plain';
 		$parammulti['encoding'] = '8bit';
@@ -313,7 +311,7 @@ function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAtt
 	
 			$html = & $email->addSubPart($html, $parammulti);
 		}
-		
+
 		if(strlen($attach)) {
 			$paramattach=array(
 				'content_type' => $typeAttach,
@@ -325,7 +323,7 @@ function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAtt
 		}
 		
 		$message = $email->encode(); 
-	
+
 		$destinataire = $to;
 		error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
 		
@@ -342,7 +340,7 @@ function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAtt
 		  "host" => $host,
 		  "port" => DEF_MAIL_PORT 
 		);
-		
+
 		if (DEF_MAIL_LOGIN != ''){
 			$params['auth'] = 'LOGIN';
 			$params['username'] = DEF_MAIL_LOGIN;
@@ -363,15 +361,17 @@ function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAtt
 			$params['auth'] = false;
 		}
 
+
 		$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
 		$result = $mailObj->send($destinataire,$entetes,$message['body']);
 		if($result===true) {
-			return true;			
+			return true;	
 		}
 		else {
 			error_log($result->getMessage());
 			//echo $result->message;
 			return false;
+
 		}	 
 	}
 }

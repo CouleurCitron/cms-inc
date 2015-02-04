@@ -93,7 +93,7 @@ class AccountController extends BaseModuleController {
 	 * @param	$wrapped		in case a specific render class is given, wrap it or not with HTML
 	 * @return	void
 	 */
-	function build ($view=null, $wrapped=false) {
+	function build ($view=null, $wrapped=false, $datas = false) {
 
 		$translator =& TslManager::getInstance();
 
@@ -104,6 +104,7 @@ class AccountController extends BaseModuleController {
 		if (isset($_POST['action']) && in_array($_POST['action'], $this->actions)) {
 			if ($this->debug)
 				echo "AccountController.build() with action : ".$_POST['action']."<br/>";
+
 			// process action that belongs to preset list
 			switch ($_POST['action']) {
 				// process specific actions and checkings
@@ -568,9 +569,11 @@ class AccountController extends BaseModuleController {
 			$this->wrapped = false;
 		}
 
-		if (!is_null($this->view))
+		if (!is_null($this->view)) {
 			$this->view->render($params);
-		else	echo "No View could be found to display <br/>";
+		} else {	
+			echo "No View could be found to display <br/>"; 
+		}
 		
 	}
 
