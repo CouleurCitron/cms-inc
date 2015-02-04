@@ -175,6 +175,23 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
             }
         }
 	
+	// inclus un fichier custom pour le header s'il existe
+	// utilisé pour les liens canonical
+	if (is_file($_SERVER['DOCUMENT_ROOT']."/include/modules/".$_SESSION['rep_travail']."/meta/meta.inc.php")){
+		 
+		//include ($_SERVER['DOCUMENT_ROOT']."/include/modules/".$_SESSION['rep_travail']."/meta/meta.inc.php");  
+		$sHeader .= '<'.'?php'."\n";
+		$sHeader .= '	include($_SERVER[\'DOCUMENT_ROOT\'].\'/include/modules/'.$_SESSION['rep_travail'].'/meta/meta.inc.php\');'."\n"; 
+		$sHeader .= '?'.">\n";
+		
+	}
+	else { 
+	
+
+	}
+
+
+	
 	$sHeader .= '	<script src="/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/XHRConnector.js"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/ancre.js.php"></script>'."\n";
@@ -189,61 +206,74 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 	
 	// cookie banner
 	// wiki.adequation.cc/index.php?title=Cookie_opt%27in
-	if (!$_SESSION['mobile']){
 	
-		if ( defined("DEF_JS_COOKIESBAN_USE") && DEF_JS_COOKIESBAN_USE ) {
+	
+	if ( defined("DEF_JS_COOKIESBAN_USE") && DEF_JS_COOKIESBAN_USE ) {
+	
+		if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js') || is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js.php')){
 		
-			if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js')){
+			if (defined("DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']."")) {
+				eval ( "$"."options_minisite = "."DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']." ; ");
+			}
+			else {
+				$options_minisite = "";
+			}
+			 
+			  
+			if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE  && $options_minisite == '' ) {
 			
-				if (defined("DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']."")) {
-					eval ( "$"."options_minisite = "."DEF_JS_COOKIESBAN_OPTIONS_".$_SESSION['idSite']." ; ");
-				}
-				else {
-					$options_minisite = "";
-				}
-				  
-				if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE  && $options_minisite == '' ) {
+				// les options ne sont pas personnalisées - pour un mini site donné => pas cookie
+				// echo $options_minisite. "ici"; 
+			
+			}
+			else {  
 				
-					// les options ne sont pas personnalisées - pour un mini site donné => pas cookie
-					// echo $options_minisite. "ici";
 				
-				}
-				else { 
+				if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js.php') ) {
+				
+					$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/cookiebanner.min.js.php" id="cookiebanner" '; 
 					
+				}
+				else if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/cookiebanner.min.js') ) {
+				
 					$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/cookiebanner.min.js" id="cookiebanner" '; 
 					
-					if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE ) {
-					
-						// les options sont personnalisées - pour un mini site donné 
-						$sHeader .=   $options_minisite;
-					
-					}
-					else {
-					
-						if (!defined("DEF_JS_COOKIESBAN_OPTIONS")) {
-							// les options ne sont pas personnalisées - à appliquer à tous les sites
-							$sHeader .=  ' data-message="'.$translator->getText('Nous utilisons des cookies pour vous garantir la meilleure exp&eacute;rience sur notre site. Si vous continuez &agrave; utiliser ce dernier, nous consid&eacute;rerons que vous acceptez l\'utilisation des cookies.').'" ';
-							
-						}
-						else { 
-							// les options sont personnalisées - à appliquer à tous les sites
-							$sHeader .=  DEF_JS_COOKIESBAN_OPTIONS;
-						
-						}
-					
-					}
-					 
-					$sHeader .= ' data-expires="'.gmdate("M d Y H:i:s", mktime(0,0,0,date("n") ,date("j") ,date("Y")+1 )).'" data-cookie="AWS-cookies-optin"  data-moreinfo="'.$translator->getText('http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/').'" data-linkmsg="'.$translator->getText('En savoir plus').'" ';
-					$sHeader .= ' >';
-					$sHeader .= '</script>'."\n";  
-					
 				}
+				else {
+				}
+				
+				if ( defined("DEF_JS_COOKIESBAN_MINISITE_USE") && DEF_JS_COOKIESBAN_MINISITE_USE ) {
+				
+					// les options sont personnalisées - pour un mini site donné  
+					$sHeader .=   $options_minisite;
+				
+				}
+				else {
+				
+					if (!defined("DEF_JS_COOKIESBAN_OPTIONS")) {
+						// les options ne sont pas personnalisées - à appliquer à tous les sites
+						$sHeader .=  ' data-message="'.$translator->getText('Nous utilisons des cookies pour vous garantir la meilleure exp&eacute;rience sur notre site. Si vous continuez &agrave; utiliser ce dernier, nous consid&eacute;rerons que vous acceptez l\'utilisation des cookies.').'" ';
+						
+					}
+					else { 
+						// les options sont personnalisées - à appliquer à tous les sites
+						//$sHeader .=  $translator->getText(DEF_JS_COOKIESBAN_OPTIONS);
+						$sHeader .=  DEF_JS_COOKIESBAN_OPTIONS;
+					
+					}
+				
+				}
+				 
+				$sHeader .= ' data-expires="'.gmdate("M d Y H:i:s", mktime(0,0,0,date("n") ,date("j") ,date("Y")+1 )).'" data-cookie="AWS-cookies-optin-'.$_SESSION['idSite'].'"  data-moreinfo="'.$translator->getText('http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/').'" data-linkmsg="'.$translator->getText('En savoir plus').'" ';
+				$sHeader .= ' >';
+				$sHeader .= '</script>'."\n";  
 				
 			}
 			
 		}
 		
 	}
+		
 	
 	if($oPage){ // js + css custom
 		list($aResJSunique, $aResMediaByPath) = getPageDependencies($oPage);		
@@ -343,6 +373,8 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 		$sHeader .= '	<script src="'.$jsGlossaire.'" type="text/javascript"></script>'."\n";
 	}
 	
+	// tracking par minisite
+	$sHeader .= getCodeTrackingByMinisite( $_SESSION['idSite'] ) ; 
 	return $sHeader;
 }
 
@@ -372,6 +404,43 @@ function getPageFooter() {
 	return '</body>
 	</html>	';
 }
+
+function getCodeTrackingByMinisite( $id_minisite ) {
+
+	$oSite = new cms_site($id_minisite); 
+	$codegooana = "";  
+	if (method_exists ($oSite, "get_codegooana")) {
+ 
+		if ($oSite->get_codegooana() != '') {
+			$codegooana = $oSite->get_codegooana(); 
+			// tester si il s'agit que du code UA de google analytics 
+			/*UA-52442960-3*/
+			if (preg_match("/^\bUA-\d{4,9}-\d{1,4}\b/i", $codegooana)) {  
+				$codegooana_final =			"	<script>"."\n";
+				$codegooana_final.=			"	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"."\n";
+				$codegooana_final.=		  	"	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"."\n";
+				$codegooana_final.=		  	"	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"."\n";
+				$codegooana_final.=		  	"	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');"."\n";
+				$codegooana_final.=		  	"	 	"."\n";
+				$codegooana_final.=		  	"	ga('create', '".$codegooana."', 'auto');"."\n";
+				$codegooana_final.=		  	"	ga('send', 'pageview');"."\n";
+				$codegooana_final.=			"		"."\n";
+				$codegooana_final.=			"	</script> "; 
+						
+			}
+			elseif (preg_match("/<script\b[^>]*>([\s\S]*?)<\/script>/i", $codegooana)) {  
+				$codegooana_final =	($codegooana);
+			
+			}
+			 
+		}	 
+	}
+	
+	return $codegooana_final;
+	
+}
+
+
 function getTamponPage($divArray, $oInfos_page, $oPage, $gabGenerated="") 
 {
 	$tampon = getPageHeader($oInfos_page, $oPage);
