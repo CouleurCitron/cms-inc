@@ -11,6 +11,7 @@ global $default_cms_site_name;
 global $isRecursive;
 global $aOps;
 global $sql;
+global $oUser;
 
 if (empty($aNodeToSort)) {
 	 
@@ -773,6 +774,7 @@ function displayOptionSelect($sql, $res, $stack, $oTemp, $aCurrentNode, $eKeyVal
 	global $isRecursive;
 	global $aOps;
 	global $db;
+	global $oUser;
 
 	$aListeChamps = $oTemp->getListeChamps();
 	$foreignPrefixe = $stack[0]["attrs"]["PREFIX"];
@@ -869,8 +871,6 @@ function displayOptionSelect($sql, $res, $stack, $oTemp, $aCurrentNode, $eKeyVal
 			}
 
 		} else {
-
-			
 			if ((($aCurrentNode["attrs"]["NAME"] != 'rank')&&($aCurrentNode["attrs"]["NAME"] != 'bo_groupes'))||
 				(($aCurrentNode["attrs"]["NAME"] == 'rank')&&($oUser->get_rank()<=$tempId)&&($oUser->get_rank()!=-1)) ||
 				(($aCurrentNode["attrs"]["NAME"] == 'bo_groupes')&&($oUser->get_bo_groupes()==$tempId)) ||
