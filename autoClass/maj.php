@@ -29,7 +29,6 @@ else {
 	$_SESSION['listParam']=$_SERVER['QUERY_STRING'];
 	$listParam=$_SESSION['listParam'];
 }
-
 $listParam = str_replace('id=&', '', $listParam); // parce que ce serait inepte
 // second controle, si id=X dans l'url on vira l'occurence eventuelle en session
 if (preg_match('/id=([0-9]+)/msi', $listParam, $idMatches)==1){
@@ -739,9 +738,9 @@ if(isset($newid)	&&	($newid == -1)){
 		if (validate_form(0) && validerPattern() && validerChampsOblig()){ 
 			document.add_<?php echo $classePrefixe; ?>_form.operation.value = "<?php echo $operation; ?>";
 			<?php if(is_get('noMenu')){?>
-				document.add_<?php echo $classePrefixe; ?>_form.action = "maj_<?php echo $classeName; ?>.php?noMenu=true<?php if($listParam!="") echo "&".$listParam; ?>"; 
+				document.add_<?php echo $classePrefixe; ?>_form.action = "/"+window.location.pathname.substring(1)+"?noMenu=true<?php if($listParam!="") echo "&".$listParam; ?>"; 
 			<?php }else{ ?>
-				document.add_<?php echo $classePrefixe; ?>_form.action = "maj_<?php echo $classeName; ?>.php<?php if($listParam!="") echo "?".$listParam;?>"; 
+				document.add_<?php echo $classePrefixe; ?>_form.action = "/"+window.location.pathname.substring(1)+"<?php if($listParam!="") echo "?".$listParam;?>"; 
 			<?php } ?>
 			document.add_<?php echo $classePrefixe; ?>_form.target = "_self";
 			document.add_<?php echo $classePrefixe; ?>_form.submit(); 
