@@ -1,3 +1,10 @@
+<?php 
+
+if(isset($prepend_file_result) && file_exists($prepend_file_result)){
+    require $prepend_file_result;
+}
+
+?>
 <div class="arbo"><u><b><?php if($status!="") echo $status; ?></b></u></div><br>
 	<table border="0" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo"><?php
 	if($bRetour) {		
