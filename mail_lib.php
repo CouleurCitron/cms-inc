@@ -279,316 +279,484 @@ function mailAdmin($sujet , $text, $from=DEF_USERMAIL){
 }
 
 
-function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
-	$sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
-	
-	
-	if (DEF_MAIL_ENGINE=='sendmail'){
-		$from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
-	}
-		
-	$from = mb_encode_mimeheader($from);	
-		
-	if ((ini_get('safe_mode')==1)	||	(DEF_USEPHPMAILFUNCTION=='1')) {		 
-		return (htmlmail($from,$to,$sujet,$html));
-	}
-	else {
-		if(is_array($to)) $to = implode(', ', $to);
-	
-	//	$parammulti['content_type'] = 'multipart/mixed';
-		$parammulti['content_type'] = 'multipart/alternative';	
-	
-		$email = new Mail_mimePart('',$parammulti);
-	
-	
-		$parammulti['content_type'] = 'text/plain';
-		$parammulti['encoding'] = '8bit';
-		$parammulti['disposition'] = 'inline';
-		$text = $email->addSubpart($text, $parammulti);
-	
-		if(strlen($html)) {
-			$parammulti['content_type'] = 'text/html';
-			$parammulti['encoding'] = '8bit';
-			$parammulti['disposition'] = 'inline';
-	
-			$html = & $email->addSubPart($html, $parammulti);
-		}
-		
-		if(strlen($attach)) {
-			$paramattach=array(
-				'content_type' => $typeAttach,
-					'encoding' => '8bit',
-				 'disposition' => 'attachment',
-				   'dfilename' => $attach
-			);
-			$piecejointe = & $email->addSubPart($attach, $paramattach);
-		}
-		
-		$message = $email->encode(); 
-	
-		$destinataire = $to;
-		error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
-		
-		$entetes = $message['headers'];
-		
-		$entetes["From"]= $from; 
-		$entetes["Return-Path"] = $from;
-		$entetes["To"] = $to;
-		$entetes["Subject"] = $sujet;
-		$entetes["MIME-Version"] = "1.0";
-		if ($replyto !='') $entetes["Reply-To"] = $replyto;
-		
-		$params = array(
-		  "host" => $host,
-		  "port" => DEF_MAIL_PORT 
-		);
-		
-		if (DEF_MAIL_LOGIN != ''){
-			$params['auth'] = 'LOGIN';
-			$params['username'] = DEF_MAIL_LOGIN;
-			if (DEF_MAIL_PASS != ''){
-				$params['password'] = DEF_MAIL_PASS;
-			}	
-			
-			//$params["debug"]=true;
-			if (preg_match('/localhost/msi', $host)){
-				$params["localhost"] = 'localhost';
-			}
-			else{
-				$params["localhost"] = $_SERVER['HTTP_HOST'];
-			}
-			$params["timeout"] = 30;
-		}
-		else {
-			$params['auth'] = false;
-		}
-
-		$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
-		$result = $mailObj->send($destinataire,$entetes,$message['body']);
-		if($result===true) {
-			return true;			
-		}
-		else {
-			error_log($result->getMessage());
-			//echo $result->message;
-			return false;
-		}	 
-	}
-}
+if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
+    /* gestion des mails par defaut */
+    
+    
+    function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+            $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
 
 
+            if (DEF_MAIL_ENGINE=='sendmail'){
+                    $from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
+            }
 
-function multiPartMail_AR($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
-	$sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
-	//$from = mb_convert_encoding($from, "UTF-8");
-	$from = mb_encode_mimeheader($from);
-	
-	if (DEF_MAIL_ENGINE=='sendmail'){
-		$from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
-	}
-	
-	if (ini_get('safe_mode')==1) {
-		 
-		return (htmlmail($from,$to,$sujet,$html));
-	}
-	else {
-		
-		if(is_array($to)) $to = join(', ', $to);
-		
-		if(is_array($to)) $to = join(', ', $to);
-	
-	//	$parammulti['content_type'] = 'multipart/mixed';
-		$parammulti['content_type'] = 'multipart/alternative';
-	
-	
-		$email = new Mail_mimePart('',$parammulti);
-	
-	
-		$parammulti['content_type'] = 'text/plain';
-		$parammulti['encoding'] = '8bit';
-		$parammulti['disposition'] = 'inline';
-		$text = $email->addSubpart($text, $parammulti);
-	
-		if(strlen($html)) {
-			$parammulti['content_type'] = 'text/html';
-			$parammulti['encoding'] = '8bit';
-			$parammulti['disposition'] = 'inline';
-	
-			$html = & $email->addSubPart($html, $parammulti);
-		}
-		
-		if(strlen($attach)) {
-			$paramattach=array(
-				'content_type' => $typeAttach,
-					'encoding' => '8bit',
-				 'disposition' => 'attachment',
-				   'dfilename' => $attach
-			);
-			$piecejointe = & $email->addSubPart($attach, $paramattach);
-		}
-		
-		$message = $email->encode(); 
-	
-	
-		
-		$destinataire = $to;
-		error_log("to = $destinataire");
-		
-		$entetes = $message['headers'];
-		
-		$entetes["From"]= $from;
-		$entetes["Disposition-Notification-To"] = $from;
-		$entetes["Return-Path"] = $from;
-		$entetes["To"] = $to;
-		$entetes["Subject"] = $sujet;
-		$entetes["MIME-Version"] = "1.0";
-		if ($replyto !='') $entetes["Reply-To"] = $replyto;
-		
-		$params = array(
-		  "host" => $host,
-		  "port" => DEF_MAIL_PORT 
-		);
-		
-		if (DEF_MAIL_LOGIN != ''){
-			$params['auth'] = true;
-			$params['username'] = DEF_MAIL_LOGIN;
-			if (DEF_MAIL_PASS != ''){
-				$params['password'] = DEF_MAIL_PASS;
-			}		
-		}
-		else {
-			$params['auth'] = false;
-		}
-	
-		$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
-		$result = $mailObj->send($destinataire,$entetes,$message['body']);
-		if($result!=true) {
-			error_log($result->getMessage());
-			return false;
-		} else {
-			return true;
-		}	 
-	}
-}
+            $from = mb_encode_mimeheader($from);	
 
-function multiPartMail_file($to , $sujet , $html , $text, $from, $attach, $aName_file, $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
-	$sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
-	$//$from = mb_convert_encoding($from, "UTF-8");
-	$from = mb_encode_mimeheader($from);
-	
-	if (DEF_MAIL_ENGINE=='sendmail'){
-		$from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
-	}
+            if ((ini_get('safe_mode')==1)	||	(DEF_USEPHPMAILFUNCTION=='1')) {
+                    return (htmlmail($from,$to,$sujet,$html));
+            }
+            else {
+                    if(is_array($to)) $to = implode(', ', $to);
 
-	$parametres['content_type'] = 'multipart/mixed';
-	$email = new Mail_mimePart('', $parametres);
-	
-	// Ici nous ajoutons une section texte au multipart que nous avons d&eacute;j&agrave;
-	// C'est au programmeur de s'assurer que $corpDuMessage est du texte simple
-	//$parametres['content_type'] = 'text/plain';
-	$parametres['content_type'] = 'text/html';
-	$parametres['encoding']   = '7bit';
-	$text = $email->addSubPart($html, $parametres);
-	
-	for ($i=0; $i<sizeof($aName_file); $i++)
-	{
-		if ($aName_file[$i] != "") {		
-		
-			$extension=get_extension($aName_file[$i]);
-			$typeAttach="text/plain";
-		
-			if($extension == "doc")
-			{
-			   $typeAttach="text/vnd.ms-word";
-			}
-			else if($extension == "xls")
-			{
-			   $typeAttach="text/vnd.ms-excel";
-			}
-			else if($extension == "jpg")
-			{
-			   $typeAttach="image/jpeg";
-			}
-			else if($extension == "gif")
-			{
-			   $typeAttach="image/gif";
-			}
-			else if($extension == "xls")
-			{
-			   $typeAttach="text/vnd.ms-excel";
-			}
-			else if($extension == "pdf")
-			{
-			   $typeAttach="application/pdf";
-			}
-			else if($extension == "png")
-			{
-			   $typeAttach="image/png";
-			}
-			else if($extension == "tiff")
-			{
-			   $typeAttach="image/tiff";
-			}
-			$parametres['content_type'] = $typeAttach;
-			$parametres['encoding']     = 'base64';
-			$parametres['disposition']  = 'attachment';
-			$parametres['dfilename']    = $aName_file[$i];
-			$fichier=file_get_contents($attach.$aName_file[$i]); 
-			$pieceJointe =& $email->addSubPart($fichier, $parametres);
-		}
-	}
+            //	$parammulti['content_type'] = 'multipart/mixed';
+                    $parammulti['content_type'] = 'multipart/alternative';	
 
-	
-	$message = $email->encode(); 
-	
- 	$destinataire = $to;
-	error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
-	
-	$entetes = $message['headers'];
-        
-    //$aFrom = explode("<", $from);
-    //$from = '=?iso8859-1?B?'.base64_encode($aFrom[0]).'?= '."<".$aFrom[1]."";
-	$entetes["From"]= $from;
-	$entetes["Return-Path"] = $from;
-	$entetes["To"] = $to;
-	$entetes["Subject"] = $sujet;
-	$entetes["MIME-Version"] = "1.0";
-	if ($replyto !='') $entetes["Reply-To"] = $replyto;
-	
-	$params = array(
-	  "host" => $host,
-	  "port" => DEF_MAIL_PORT 
-	);
-	
-	if (DEF_MAIL_LOGIN != ''){
-			$params['auth'] = 'LOGIN';
-		$params['username'] = DEF_MAIL_LOGIN;
-		if (DEF_MAIL_PASS != ''){
-			$params['password'] = DEF_MAIL_PASS;
-		}		
-			
-			//$params["debug"]=true;
-			if (preg_match('/localhost/msi', $host)){
-				$params["localhost"] = 'localhost';
-			}
-			else{
-				$params["localhost"] = $_SERVER['HTTP_HOST'];
-			}
-			$params["timeout"] = 30;
-	}
-	else {
-		$params['auth'] = false;
-	}
+                    $email = new Mail_mimePart('',$parammulti);
 
-	$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params);
-	$result = $mailObj->send($destinataire,$entetes,$message['body']);
-	if($result!=true) {
-		error_log($result->getMessage());
-		return false;
-	} else {
-		return true;
-	}	
-	
+
+                    $parammulti['content_type'] = 'text/plain';
+                    $parammulti['encoding'] = '8bit';
+                    $parammulti['disposition'] = 'inline';
+                    $text = $email->addSubpart($text, $parammulti);
+
+                    if(strlen($html)) {
+                            $parammulti['content_type'] = 'text/html';
+                            $parammulti['encoding'] = '8bit';
+                            $parammulti['disposition'] = 'inline';
+
+                            $html = & $email->addSubPart($html, $parammulti);
+                    }
+
+                    if(strlen($attach)) {
+                            $paramattach=array(
+                                    'content_type' => $typeAttach,
+                                            'encoding' => '8bit',
+                                     'disposition' => 'attachment',
+                                       'dfilename' => $attach
+                            );
+                            $piecejointe = & $email->addSubPart($attach, $paramattach);
+                    }
+
+                    $message = $email->encode(); 
+
+                    $destinataire = $to;
+                    error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+
+                    $entetes = $message['headers'];
+
+                    $entetes["From"]= $from; 
+                    $entetes["Return-Path"] = $from;
+                    $entetes["To"] = $to;
+                    $entetes["Subject"] = $sujet;
+                    $entetes["MIME-Version"] = "1.0";
+                    if ($replyto !='') $entetes["Reply-To"] = $replyto;
+
+                    $params = array(
+                      "host" => $host,
+                      "port" => DEF_MAIL_PORT 
+                    );
+
+                    if (DEF_MAIL_LOGIN != ''){
+                            $params['auth'] = 'LOGIN';
+                            $params['username'] = DEF_MAIL_LOGIN;
+                            if (DEF_MAIL_PASS != ''){
+                                    $params['password'] = DEF_MAIL_PASS;
+                            }		
+
+                            //$params["debug"]=true;
+                            if (preg_match('/localhost/msi', $host)){
+                                    $params["localhost"] = 'localhost';
+                            }
+                            else{
+                                    $params["localhost"] = $_SERVER['HTTP_HOST'];
+                            }
+                            $params["timeout"] = 30;
+                    }
+                    else {
+                            $params['auth'] = false;
+                    }
+
+                    $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
+                    $result = $mailObj->send($destinataire,$entetes,$message['body']);
+                    if($result===true) {
+                            return true;			
+                    }
+                    else {
+                            error_log($result->getMessage());
+                            if (preg_match('/email\.php$/msi', $_SERVER['PHP_SELF'])){
+                                    echo $result->message;
+                            }
+                            return false;
+                    }	 
+            }
+    }
+
+
+
+    function multiPartMail_AR($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+            $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
+            //$from = mb_convert_encoding($from, "UTF-8");
+            $from = mb_encode_mimeheader($from);
+
+            if (DEF_MAIL_ENGINE=='sendmail'){
+                    $from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
+            }
+
+            if (ini_get('safe_mode')==1) {
+
+                    return (htmlmail($from,$to,$sujet,$html));
+            }
+            else {
+
+                    if(is_array($to)) $to = join(', ', $to);
+
+                    if(is_array($to)) $to = join(', ', $to);
+
+            //	$parammulti['content_type'] = 'multipart/mixed';
+                    $parammulti['content_type'] = 'multipart/alternative';
+
+
+                    $email = new Mail_mimePart('',$parammulti);
+
+
+                    $parammulti['content_type'] = 'text/plain';
+                    $parammulti['encoding'] = '8bit';
+                    $parammulti['disposition'] = 'inline';
+                    $text = $email->addSubpart($text, $parammulti);
+
+                    if(strlen($html)) {
+                            $parammulti['content_type'] = 'text/html';
+                            $parammulti['encoding'] = '8bit';
+                            $parammulti['disposition'] = 'inline';
+
+                            $html = & $email->addSubPart($html, $parammulti);
+                    }
+
+                    if(strlen($attach)) {
+                            $paramattach=array(
+                                    'content_type' => $typeAttach,
+                                            'encoding' => '8bit',
+                                     'disposition' => 'attachment',
+                                       'dfilename' => $attach
+                            );
+                            $piecejointe = & $email->addSubPart($attach, $paramattach);
+                    }
+
+                    $message = $email->encode(); 
+
+
+
+                    $destinataire = $to;
+                    error_log("to = $destinataire");
+
+                    $entetes = $message['headers'];
+
+                    $entetes["From"]= $from;
+                    $entetes["Disposition-Notification-To"] = $from;
+                    $entetes["Return-Path"] = $from;
+                    $entetes["To"] = $to;
+                    $entetes["Subject"] = $sujet;
+                    $entetes["MIME-Version"] = "1.0";
+                    if ($replyto !='') $entetes["Reply-To"] = $replyto;
+
+                    $params = array(
+                      "host" => $host,
+                      "port" => DEF_MAIL_PORT 
+                    );
+
+                    if (DEF_MAIL_LOGIN != ''){
+                            $params['auth'] = true;
+                            $params['username'] = DEF_MAIL_LOGIN;
+                            if (DEF_MAIL_PASS != ''){
+                                    $params['password'] = DEF_MAIL_PASS;
+                            }		
+                    }
+                    else {
+                            $params['auth'] = false;
+                    }
+
+                    $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
+                    $result = $mailObj->send($destinataire,$entetes,$message['body']);
+                    if($result!=true) {
+                            error_log($result->getMessage());
+                            return false;
+                    } else {
+                            return true;
+                    }	 
+            }
+    }
+
+    function multiPartMail_file($to , $sujet , $html , $text, $from, $attach, $aName_file, $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+            $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
+            $//$from = mb_convert_encoding($from, "UTF-8");
+            $from = mb_encode_mimeheader($from);
+
+            if (DEF_MAIL_ENGINE=='sendmail'){
+                    $from = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
+            }
+
+            $parametres['content_type'] = 'multipart/mixed';
+            $email = new Mail_mimePart('', $parametres);
+
+            // Ici nous ajoutons une section texte au multipart que nous avons d&eacute;j&agrave;
+            // C'est au programmeur de s'assurer que $corpDuMessage est du texte simple
+            //$parametres['content_type'] = 'text/plain';
+            $parametres['content_type'] = 'text/html';
+            $parametres['encoding']   = '7bit';
+            $text = $email->addSubPart($html, $parametres);
+
+            for ($i=0; $i<sizeof($aName_file); $i++)
+            {
+                    if ($aName_file[$i] != "") {		
+
+                            $extension=get_extension($aName_file[$i]);
+                            $typeAttach="text/plain";
+
+                            if($extension == "doc")
+                            {
+                               $typeAttach="text/vnd.ms-word";
+                            }
+                            else if($extension == "xls")
+                            {
+                               $typeAttach="text/vnd.ms-excel";
+                            }
+                            else if($extension == "jpg")
+                            {
+                               $typeAttach="image/jpeg";
+                            }
+                            else if($extension == "gif")
+                            {
+                               $typeAttach="image/gif";
+                            }
+                            else if($extension == "xls")
+                            {
+                               $typeAttach="text/vnd.ms-excel";
+                            }
+                            else if($extension == "pdf")
+                            {
+                               $typeAttach="application/pdf";
+                            }
+                            else if($extension == "png")
+                            {
+                               $typeAttach="image/png";
+                            }
+                            else if($extension == "tiff")
+                            {
+                               $typeAttach="image/tiff";
+                            }
+                            $parametres['content_type'] = $typeAttach;
+                            $parametres['encoding']     = 'base64';
+                            $parametres['disposition']  = 'attachment';
+                            $parametres['dfilename']    = $aName_file[$i];
+                            $fichier=file_get_contents($attach.$aName_file[$i]); 
+                            $pieceJointe =& $email->addSubPart($fichier, $parametres);
+                    }
+            }
+
+
+            $message = $email->encode(); 
+
+            $destinataire = $to;
+            error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+
+            $entetes = $message['headers'];
+
+        //$aFrom = explode("<", $from);
+        //$from = '=?iso8859-1?B?'.base64_encode($aFrom[0]).'?= '."<".$aFrom[1]."";
+            $entetes["From"]= $from;
+            $entetes["Return-Path"] = $from;
+            $entetes["To"] = $to;
+            $entetes["Subject"] = $sujet;
+            $entetes["MIME-Version"] = "1.0";
+            if ($replyto !='') $entetes["Reply-To"] = $replyto;
+
+            $params = array(
+              "host" => $host,
+              "port" => DEF_MAIL_PORT 
+            );
+
+            if (DEF_MAIL_LOGIN != ''){
+                            $params['auth'] = 'LOGIN';
+                    $params['username'] = DEF_MAIL_LOGIN;
+                    if (DEF_MAIL_PASS != ''){
+                            $params['password'] = DEF_MAIL_PASS;
+                    }		
+
+                            //$params["debug"]=true;
+                            if (preg_match('/localhost/msi', $host)){
+                                    $params["localhost"] = 'localhost';
+                            }
+                            else{
+                                    $params["localhost"] = $_SERVER['HTTP_HOST'];
+                            }
+                            $params["timeout"] = 30;
+            }
+            else {
+                    $params['auth'] = false;
+            }
+
+            $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params);
+            $result = $mailObj->send($destinataire, $entetes, $message['body']);
+            if($result!=true) {
+                    error_log($result->getMessage());
+                    return false;
+            } else {
+                    return true;
+            }	
+
+    }
+} else if(MAIL_LIB_PHP == 'swift') {
+    /* gestion grace a swiftmailer */
+    require __DIR__ . '/lib/vendor/autoload.php';
+    require __DIR__ . '/lib/MailAdapter/Mail.php';
+    
+    /**
+    * Envoie de mail complexe avec fichiers joint et HTML
+    * 
+    * @param string $to
+    * @param string $sujet
+    * @param string $html
+    * @param string $text
+    * @param string $from
+    * @param string $attach
+    * @param string $typeAttach
+    * @param string $host
+    * @param string $replyto
+    * @return interger nombre d'email envoyés
+    * @throws \Exception si un erreur se produit lors de l'envoie
+    */
+   function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+
+       if(defined('DEF_MAIL_LOGIN')){
+           $login = DEF_MAIL_LOGIN;
+       } else {
+           $login = ''; 
+       }
+
+       if(defined('DEF_MAIL_PASS')){
+           $pwd = DEF_MAIL_PASS;
+       } else {
+           $pwd = ''; 
+       }
+
+       $mail = new \lib\MailAdapter\Mail(DEF_MAIL_ENGINE, $host, $login, $pwd);
+
+       $mail->setSubject($sujet);
+       $mail->setFrom($from, '', $replyto);
+
+       if($html){
+           $mail->addMessage($html);
+           $mail->setHeaders('ContentType', 'text/html');
+       }
+       else $mail->addMessage($text);
+
+       $mail->setTo($to);
+       if($attach) $mail->addAttachment($attach);
+
+       error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+
+       return $mail->send();
+       exit;
+   }
+
+
+   /**
+    * Envoie de mail complexe avec fichiers joint et HTML avec accusé de reception
+    * 
+    * @param string $to
+    * @param string $sujet
+    * @param string $html
+    * @param string $text
+    * @param string $from
+    * @param string $attach
+    * @param string $typeAttach
+    * @param string $host
+    * @param string $replyto
+    * @return interger nombre d'email envoyés
+    * @throws \Exception si un erreur se produit lors de l'envoie
+    */
+   function multiPartMail_AR($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+
+       if(defined('DEF_MAIL_LOGIN')){
+           $login = DEF_MAIL_LOGIN;
+       } else {
+           $login = ''; 
+       }
+
+       if(defined('DEF_MAIL_PASS')){
+           $pwd = DEF_MAIL_PASS;
+       } else {
+           $pwd = ''; 
+       }
+
+       $mail = new \lib\MailAdapter\Mail(DEF_MAIL_ENGINE, $host, $login, $pwd);
+
+       $mail->setSubject($sujet);
+       $mail->setFrom($from, '', $replyto);
+
+       if($html){
+           $mail->addMessage($html);
+           $mail->setHeaders('ContentType', 'text/html');
+       }
+       else $mail->addMessage($text);
+
+
+       $mail->setHeaders('ReadReceiptTo', $from);
+
+       $mail->setTo($to);
+       if($attach) $mail->addAttachment($attach);
+
+       error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+
+       return $mail->send();
+       exit;
+   }
+
+   /**
+    * Envoie de mail avec des pièces jointes multiples.
+    * 
+    * @param string $to
+    * @param string $sujet
+    * @param string $html
+    * @param string $text
+    * @param string $from
+    * @param string $attach
+    * @param array $aName_file
+    * @param string $typeAttach
+    * @param string $host
+    * @param string $replyto
+    * @return integer nombre d'email envoyés
+    * @throws \Exception si un erreur se produit lors de l'envoie
+    */
+   function multiPartMail_file($to , $sujet , $html , $text, $from, $attach, $aName_file, $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+
+       if(defined('DEF_MAIL_LOGIN')){
+           $login = DEF_MAIL_LOGIN;
+       } else {
+           $login = ''; 
+       }
+
+       if(defined('DEF_MAIL_PASS')){
+           $pwd = DEF_MAIL_PASS;
+       } else {
+           $pwd = ''; 
+       }
+
+       $mail = new \lib\MailAdapter\Mail(DEF_MAIL_ENGINE, $host, $login, $pwd);
+
+       $mail->setSubject($sujet);
+       $mail->setFrom($from, '', $replyto);
+
+       if($html){
+           $mail->addMessage($html);
+           $mail->setHeaders('ContentType', 'text/html');
+       }
+       else $mail->addMessage($text);
+
+
+       $mail->setTo($to);
+       foreach($aName_file as $k => $pathfile){
+           if($pathfile) $mail->addAttachment($pathfile);
+       }
+
+
+       error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+
+       return $mail->send();
+       exit;
+
+   }
 }
 
 

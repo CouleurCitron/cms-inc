@@ -102,6 +102,81 @@ $aListeChamps=$oRes->getListeChamps();
 $sOrderField = $stack[0]["attrs"]["DEF_ORDER_FIELD"];
 $sOrderDir = $stack[0]["attrs"]["DEF_ORDER_DIRECTION"];
 
+/*
+ * Champs peuplés dynamiquement
+ * Construction de l'objet dans l'attribut dyn de la classe
+ * ex : [luz_product][libelle][2][luz_ordre]
+ * param 0 = classe
+ * param 1 = colonne du titre à récupérer
+ * param 2 = ID du parent. -1 si aucun
+ * param 3 = colonne ordre pour condition ORDER en ASC si applicable
+ */
+if(isset($stack[0]["attrs"]["DYN"])) {
+	$classeDynamique = $stack[0]["attrs"]["DYN"];
+	$dyn_classes = explode(',', $classeDynamique);
+	foreach($dyn_classes as $k => $object) {
+		preg_match_all("/\[([^\]]*)\]/", $object, $result);
+		$result = $result[1];
+		$classe = $result[0];
+		$prefix = explode('_', $classe);
+		$prefix = $prefix[0];
+		$label = $result[1];
+		$parent = '-1';
+		if(isset($result[2])) {
+			$parent = $result[2];
+		}
+		//Condition order
+		$champ_order = '';
+		if(isset($result[3])) {
+			$champ_order = " ORDER BY ".$result[3]." ASC";
+		}
+		$C = new $classe();
+		$champ_statut = $C->getFieldStatut();
+		$sql = "
+		SELECT * 
+		FROM ".$classe." 
+		WHERE ".$champ_statut." = ".DEF_ID_STATUT_LIGNE;
+		$sql .= $champ_order;
+		$objects = dbGetObjectsFromRequete($classe, $sql);
+		foreach($objects as $object) {
+			//Vérif objet déjà existant
+			$sql = "
+			SELECT * 
+			FROM luz_regafffolder 
+			WHERE luz_dyntype = '".$classe."' 
+			AND luz_dossier = '".$parent."' 
+			AND luz_dynid = ".$object->get_id();
+			$oE = dbGetObjectsFromRequete('luz_regafffolder', $sql);
+			//Mise à jour si existant
+			if(count($oE) > 0) {
+				$sql = "
+				UPDATE luz_regafffolder 
+				SET luz_titre = '".$object->$label."'  
+				WHERE luz_dyntype = '".$classe."' 
+				AND luz_dossier = '".$parent."' 
+				AND luz_dynid = ".$object->get_id();
+				dbExecuteQuery($sql);
+			//Nouvel enregistrement
+			} else {
+				$sql = "
+				SELECT * 
+				FROM luz_regafffolder 
+				WHERE luz_id = ".$parent;
+				$oC = dbGetObjectsFromRequete('luz_regafffolder', $sql);
+				if(count($oC) > 0) {
+					$oF = new Luz_regafffolder();
+					$oF->set_titre($object->$label);
+					$oF->set_dossier($parent);
+					$oF->set_dyntype($classe);
+					$oF->set_dynid($object->get_id());
+					$oF->set_statut(4);
+					dbSauve($oF);
+				}
+			}
+		}
+	}
+}
+
 //===============================
 // operations de BDD
 //===============================

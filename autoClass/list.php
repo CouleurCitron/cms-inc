@@ -74,6 +74,23 @@ if ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match
 	if (is_file('xmlimport_'.$classeName.'.php'))
 		$aListTools[] = '<a href="xmlimport_'.$classeName.'.php" class="arbo" title="Import XML">Import&nbsp;XML</a>';
 
+	/* si liste ordonnable! */
+        eval("$"."oRes = new ".$classeName."();");
+	if(!is_null($oRes->XML_inherited))
+		$sXML = $oRes->XML_inherited;
+	else
+		$sXML = $oRes->XML;
+	//$sXML = $oRes->XML;
+	unset($stack);
+	$stack = array();
+	xmlClassParse($sXML);
+	if(isset($stack[0]["attrs"]["ORDONABLE"])){
+        $aListTools[] = "<a href='/backoffice/cms/order.item_class.php?classe=".$classeName."' class=\"arbo\" title=\"".$translator->getText('Ordonner les objets')."\">".$translator->getText('Ordonner les objets')."</a>";
+        if($_SESSION['login'] == 'ccitron') {
+        	$aListTools[] = "<a href='/backoffice/cms/generate.arbo_class.php?classe=".$classeName."' class=\"arbo\" title=\"".$translator->getText('Générer l\'arborescence')."\">".$translator->getText('Générer l\'arborescence')."</a>";
+        }
+    }
+
 	echo '<div class="newelement">
 		'.join('&nbsp;|&nbsp;', $aListTools).'
 	</div>';
@@ -115,9 +132,11 @@ if(sizeof($aListe_res) > 0 && ($_SESSION['login'] == 'ccitron' || empty($customA
 	if (is_file('exportemail_'.$classeName.'.php'))
 		$aListTools[] = '<a href="exportemail_'.$classeName.'.php" class="arbo" target="_blank" title="Export E-mails en .xlsx">e-mails</a>';
 
+
 	echo '<div class="export">
 		'.join(' | ', $aListTools).'
 	</div>';
+
 }
 ?>
 

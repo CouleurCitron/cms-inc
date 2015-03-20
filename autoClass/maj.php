@@ -29,7 +29,6 @@ else {
 	$_SESSION['listParam']=$_SERVER['QUERY_STRING'];
 	$listParam=$_SESSION['listParam'];
 }
-
 $listParam = str_replace('id=&', '', $listParam); // parce que ce serait inepte
 // second controle, si id=X dans l'url on vira l'occurence eventuelle en session
 if (preg_match('/id=([0-9]+)/msi', $listParam, $idMatches)==1){
@@ -739,9 +738,9 @@ if(isset($newid)	&&	($newid == -1)){
 		if (validate_form(0) && validerPattern() && validerChampsOblig()){ 
 			document.add_<?php echo $classePrefixe; ?>_form.operation.value = "<?php echo $operation; ?>";
 			<?php if(is_get('noMenu')){?>
-				document.add_<?php echo $classePrefixe; ?>_form.action = "maj_<?php echo $classeName; ?>.php?noMenu=true<?php if($listParam!="") echo "&".$listParam; ?>"; 
+				document.add_<?php echo $classePrefixe; ?>_form.action = "/"+window.location.pathname.substring(1)+"?noMenu=true<?php if($listParam!="") echo "&".$listParam; ?>"; 
 			<?php }else{ ?>
-				document.add_<?php echo $classePrefixe; ?>_form.action = "maj_<?php echo $classeName; ?>.php<?php if($listParam!="") echo "?".$listParam;?>"; 
+				document.add_<?php echo $classePrefixe; ?>_form.action = "/"+window.location.pathname.substring(1)+"<?php if($listParam!="") echo "?".$listParam;?>"; 
 			<?php } ?>
 			document.add_<?php echo $classePrefixe; ?>_form.target = "_self";
 			document.add_<?php echo $classePrefixe; ?>_form.submit(); 
@@ -971,7 +970,6 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		// fin tst de condition - maitre
 		
 		if (($aNodeToSort[$i]["attrs"]["FKEY"] && ($aNodeToSort[$i]["attrs"]["FKEY"]!='null') && ($aNodeToSort[$i]["attrs"]["FKEY"]!='')) || $aNodeToSort[$i]["attrs"]["FKEY_SWITCH"]) { // cas de foreign key
-
 			// AJAX delayed call for fkey select display
 			// first define fields not applying to AJAX display
 			$excluded = Array('cms_site');
@@ -997,7 +995,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					$call = '/backoffice/cms/call_maj_fkey.php?class='.$classeName.'&field='.$aNodeToSort[$i]["attrs"]["NAME"].'&id='.$id.'&forceValue=';
 				}
 				//echo "test : ".$call."<br/>";
-
+				
 				$tmp_load = 'Chargement de la liste...<input type="hidden" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" class="arbo" value="'.$eKeyValue.'">';
 				echo "\n".'<script type="text/javascript">';
 				echo "\n".'function ajax'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'(forceId){';
