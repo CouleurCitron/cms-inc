@@ -1362,16 +1362,19 @@ function text2url($chaine) {
 }
 
 // Fonction coupant à x caractère
-function truncate($chaine,$debut,$max) {
-	if (strlen($chaine) >= $max) {
+function truncate($chaine,$debut=0,$max=NULL) {	
+	if( $max==NULL){
+		return substr($chaine, $debut);
+	}	
+	elseif (strlen($chaine) >= $max) {
 		$chaine = substr($chaine, $debut, $max);
 		$espace = strrpos($chaine, " ");
 		$chaine = substr($chaine, $debut, $espace);
 		return $chaine."...";
-	} else {
+	}
+	else {
 		return $chaine;
 	}	
-	
 }
 
 function formatFileSize ($_size) {
