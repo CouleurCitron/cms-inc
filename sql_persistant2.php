@@ -254,9 +254,11 @@ function dbGetObjectsFromRequeteID($sObjet, $sql)
 function dbGetObjectsFromRequeteCache($sObjet, $sql, $ttl=100){
 	//error_reporting(E_ALL);
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/phpfastcache/php_fast_cache.php'); 
-	phpFastCache::$storage = "auto";
+	phpFastCache::setup("storage","auto");
+	//phpFastCache::$storage = "auto";
+	$cache = phpFastCache();
 	
-	$aObjet = phpFastCache::get(md5($sql));
+	$aObjet = $cache->get(md5($sql));
 
 	if ($aObjet!=NULL){
 		//error_log('found in cache '.$sql);
@@ -264,7 +266,7 @@ function dbGetObjectsFromRequeteCache($sObjet, $sql, $ttl=100){
 	}
 	else{
 		$aObjet = dbGetObjectsFromRequete($sObjet, $sql);	
-		phpFastCache::set(md5($sql),$aObjet,$ttl);
+		$cache->set(md5($sql),$aObjet,$ttl);
 		return $aObjet;
 	}		
 	
