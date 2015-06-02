@@ -583,7 +583,7 @@ class AccountController extends BaseModuleController {
 		return $this->models['account']->isValidAccount($mail, $pass); 
 	}
 	
-	function isValidForm ($_POST) {
+	function isValidForm () {
 	 
 		
 		global $stack;
