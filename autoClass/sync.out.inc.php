@@ -1,7 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
-function syncOutObject($aObjectNodes,  $aFieldData, $oO, $sExcludeField){
+function syncOutObject($aObjectNodes,  $aFieldData, $oO, $sExcludeField=NULL){
 	global $db;
 			
 	$prefixe = (string)array_intersect(	explode('_', $oO->getFieldPK()),
@@ -13,8 +13,17 @@ function syncOutObject($aObjectNodes,  $aFieldData, $oO, $sExcludeField){
 	for ($i=0;$i<count($aObjectNodes);$i++){		
 		$fieldName=$prefixe.'_'.$aObjectNodes[$i]['attrs']['NAME'];
 		
-		if ($aObjectNodes[$i]['name'] == 'ITEM'	&&	$fieldName!=$sExcludeField) {
+	/*	if ($aObjectNodes[$i]['name'] == 'ITEM'	&&	$fieldName!=$sExcludeField) {
 			syncOutField($aObjectNodes[$i], $aFieldData[$fieldName]);			 
+		}
+		elseif($aObjectNodes[$i]['name'] == 'ITEM'	&&	$fieldName==$sExcludeField) {
+			echo '<'.$aObjectNodes[$i]['attrs']['NAME'].' type="excluded"><![CDATA['.$aFieldData[$oO->getFieldPK()].']]></'.$aObjectNodes[$i]['attrs']['NAME'].'>'."\n";
+		}*/
+		
+		
+		
+		if ($aObjectNodes[$i]['name'] == 'ITEM'){
+			syncOutField($aObjectNodes[$i], $aFieldData[$fieldName], $sExcludeField);
 		}
 	}
 	
@@ -55,12 +64,20 @@ function syncOutObject($aObjectNodes,  $aFieldData, $oO, $sExcludeField){
 	echo '</'.$oO->getTable().'>'."\n";
 }
 
-function syncOutField($aFieldNode, $sData){
+function syncOutField($aFieldNode, $sData, $sExcludeField){
 	global $db;
 	
-	echo '<'.$aFieldNode['attrs']['NAME'].'>'."\n";
+	echo '<'.$aFieldNode['attrs']['NAME'];
+	
+	if (isset($aFieldNode['attrs']['FKEY'])	&&	$aFieldNode['attrs']['FKEY']==$sExcludeField){		
+		unset($aFieldNode['attrs']['FKEY']);
+	}
+	
 	
 	if (isset($aFieldNode['attrs']['FKEY'])){		
+	
+		echo ' type="fkey">'."\n";
+		
 		$oO = new $aFieldNode['attrs']['FKEY']();
 		
 		if(!is_null($oO->XML_inherited))
@@ -82,6 +99,8 @@ function syncOutField($aFieldNode, $sData){
 	}
 	elseif (isset($aFieldNode['attrs']['TRANSLATE'])	&&	$aFieldNode['attrs']['TRANSLATE']=='reference'){
 		
+		echo ' type="translate">'."\n";
+		
 		$sql = 'SELECT cms_crf_chaine FROM cms_chaine_reference WHERE cms_crf_id = '.$sData;
 		$rs = $db->Execute($sql);
 		if($rs) {	
@@ -92,6 +111,8 @@ function syncOutField($aFieldNode, $sData){
 		}
 	}
 	else{
+		echo ' type="basic">'."\n";
+		
 		echo '<![CDATA['.mb_convert_encoding ($sData, 'UTF-8').']]>';	
 	}
 	
