@@ -1,5 +1,5 @@
 <?php
-function check_field ($_POST) {	 
+function check_field ($aPOST=NULL) {	 
 	$aError = array (); 
 	$is_form_ok = true; 
 
