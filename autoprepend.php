@@ -426,6 +426,7 @@ $exclude_patterns = array(
 	'/xml_',
 	'/xmlxls_',
 	'/xlsx_',
+	'/syncout_',
 	'/rss_',
 	'/export[^_]*_',
 	'.js.php',
