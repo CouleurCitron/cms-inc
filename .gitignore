@@ -1,3 +1,4 @@
 CVS
 *.cvsignore
 *.bak
+/lib/phpfastcache/cache.storage/files
