@@ -204,7 +204,6 @@ function dbGetObjectsFromFieldValue($sObjet, $aGetterWhere, $aValeurChamp, $sGet
 function dbGetObjectsFromFieldValue2($sObjet, $aGetterWhere, $aValeurChamp, $aGetterOrderBy, $aGetterSensOrderBy) {
 
 	$sRequete = dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, null, $aValeurChamp, $aGetterOrderBy, $aGetterSensOrderBy);
-	
 	//print("<br/>".$sRequete);
 
 	return dbGetObjectsFromRequete($sObjet, $sRequete);
