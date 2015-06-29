@@ -11,11 +11,11 @@ function syncInObject($aObjectNodes, $oO){
 										explode('_', $oO->getTable())	)[0];
 				
 				
-	echo '		<strong>syncInObject</strong>('.$oO->getTable().' ID '.$aObjectNodes['attrs']['ID'].')<br />';		
+	//echo '		<strong>-- syncInObject</strong>('.$oO->getTable().' ID '.$aObjectNodes['attrs']['ID'].')<br />';		
 	
 	//deja fait ?
 	if (isset($aImportLog[$oO->getTable()][$aObjectNodes['attrs']['ID']])){
-		echo 'deja imported<br />';	
+		//echo '-- deja imported<br />';	
 		return false;
 	}
 	else{
@@ -31,9 +31,21 @@ function syncInObject($aObjectNodes, $oO){
 		}
 		//var_dump($aFields);
 		
+		// REPLACE comptes_lots SET GNUGA="999999994", GNULI=003, GNBPI=06, GCOSR="DIV", GTEXT="TEST Cap ligne 3", maj="0000-00-00 00:00:00";
+
 		
-		$sql ='REPLACE INTO '.$oO->getTable().' ('.implode(',',array_keys($aFields)).') VALUES ('.implode(',',array_values($aFields)).');';
-		var_dump($sql);
+		//$sql ='REPLACE INTO '.$oO->getTable().' ('.implode(',',array_keys($aFields)).') VALUES ('.implode(',',array_values($aFields)).');';
+		
+		$sql ='REPLACE '.$oO->getTable().' SET ';
+		
+		$aReplaces=array();
+		
+		foreach($aFields as $fieldName => $fieldValue){
+			$aReplaces[]=$fieldName.'='. $fieldValue;
+			
+		}
+		$sql .= implode(', ', $aReplaces).';';
+		echo '<br />'.$sql.'<br />';
 		
 		// on loggue
 		$aImportLog[$oO->getTable()][$aObjectNodes['attrs']['ID']]=true;
@@ -45,7 +57,7 @@ function syncInField($aFieldNode, $oO){
 	global $db;
 	global $translator;
 	
-	echo '		syncInField('.$aFieldNode['name'].')<br />';
+	//echo '		-- syncInField('.$aFieldNode['name'].')<br />';
 	
 	//var_dump($aFieldNode);
 	

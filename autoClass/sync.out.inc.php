@@ -3,9 +3,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 function syncOutObject($aObjectNodes,  $aFieldData, $oO, $sExcludeField=NULL){
 	global $db;
-			
-	$prefixe = (string)array_intersect(	explode('_', $oO->getFieldPK()),
-										explode('_', $oO->getTable())	)[0];
+	
+	$aPrefixeExplode = 	array_intersect(	explode('_', $oO->getFieldPK()),	explode('_', $oO->getTable())	);
+	$prefixe = (string)$aPrefixeExplode[0];
 	
 	echo '<'.$oO->getTable().' id="'.$aFieldData[$oO->getFieldPK()].'">'."\n";
 			
