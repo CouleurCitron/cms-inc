@@ -5,11 +5,8 @@ function syncInObject($aObjectNodes, $oO){
 	global $db;
 	global $aImportLog;
 	
-	
-			
-	$prefixe = (string)array_intersect(	explode('_', $oO->getFieldPK()),
-										explode('_', $oO->getTable())	)[0];
-				
+	$aPrefixeExplode = 	array_intersect(	explode('_', $oO->getFieldPK()),	explode('_', $oO->getTable())	);
+	$prefixe = (string)$aPrefixeExplode[0];			
 				
 	//echo '		<strong>-- syncInObject</strong>('.$oO->getTable().' ID '.$aObjectNodes['attrs']['ID'].')<br />';		
 	
@@ -47,6 +44,8 @@ function syncInObject($aObjectNodes, $oO){
 		$sql .= implode(', ', $aReplaces).';';
 		echo '<br />'.$sql.'<br />';
 		
+		$rs = $db->Execute($sql);
+		
 		// on loggue
 		$aImportLog[$oO->getTable()][$aObjectNodes['attrs']['ID']]=true;
 		return true;
@@ -77,7 +76,12 @@ function syncInField($aFieldNode, $oO){
 		return $aFieldNode['cdata'];
 	}
 	elseif ($aFieldNode['attrs']['TYPE']=='fkey'){
-		return $aFieldNode['children'][0]['attrs']['ID'];
+		if (isset($aFieldNode['children'][0]['attrs']['ID'])){
+			return 	$aFieldNode['children'][0]['attrs']['ID'];
+		}
+		else{
+			return -1;
+		}
 	}
 	elseif ($aFieldNode['attrs']['TYPE']=='translate'){
 		// inserer la trad		

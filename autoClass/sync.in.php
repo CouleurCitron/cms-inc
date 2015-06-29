@@ -53,7 +53,7 @@ $aNodeToSort = $stack[0]['children'];
 $statusGetter = $oRes->getGetterStatut();
 
 // ----------------------------------------
-$stack = xmlFileParse($_SERVER['DOCUMENT_ROOT'].'/tmp/syncout_tnt_spectacle_php.xml');
+$stack = xmlFileParse($_SERVER['DOCUMENT_ROOT'].'/tmp/syncout_'.$classeName.'_php.xml');
 
 $aO =$stack[0]['children'];
 

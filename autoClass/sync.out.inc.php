@@ -48,7 +48,7 @@ function syncOutObject($aObjectNodes,  $aFieldData, $oO, $sExcludeField=NULL){
 					$aNodeToSort = $stack[0]['children'];
 					
 					$sql = 'SELECT * FROM '.$sAsso.' WHERE '.$oO->getTable().' = '.$aFieldData[$oO->getFieldPK()].';';
-					$rs = $db->Execute($sql);			
+					$rs = $db->Execute($sql);
 					if($rs) {				
 						while(!$rs->EOF) {						
 							syncOutObject($aNodeToSort, $rs->fields, $oX, $oO->getTable());
