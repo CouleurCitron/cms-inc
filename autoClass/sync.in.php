@@ -53,6 +53,7 @@ $aNodeToSort = $stack[0]['children'];
 $statusGetter = $oRes->getGetterStatut();
 
 // ----------------------------------------
+echo 'will sync in '.'/tmp/syncout_'.$classeName.'_php.xml'.'<br />';
 $stack = xmlFileParse($_SERVER['DOCUMENT_ROOT'].'/tmp/syncout_'.$classeName.'_php.xml');
 
 $aO =$stack[0]['children'];
@@ -62,6 +63,7 @@ $aImportLog=array();
 foreach($aO as $k => $aNodes){
 	
 	if (class_exists($aNodes['name'])){
+		echo 'will sync in top level objet '.$aNodes['name'].'<br />';
 		$oO = new $aNodes['name']();
 		
 		syncInObject($aNodes, $oO);

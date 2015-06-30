@@ -8,11 +8,11 @@ function syncInObject($aObjectNodes, $oO){
 	$aPrefixeExplode = 	array_intersect(	explode('_', $oO->getFieldPK()),	explode('_', $oO->getTable())	);
 	$prefixe = (string)$aPrefixeExplode[0];			
 				
-	//echo '		<strong>-- syncInObject</strong>('.$oO->getTable().' ID '.$aObjectNodes['attrs']['ID'].')<br />';		
+	echo '		<strong>-- syncInObject</strong>('.$oO->getTable().' ID '.$aObjectNodes['attrs']['ID'].')<br />';		
 	
 	//deja fait ?
 	if (isset($aImportLog[$oO->getTable()][$aObjectNodes['attrs']['ID']])){
-		//echo '-- deja imported<br />';	
+		echo '-- deja imported<br />';	
 		return false;
 	}
 	else{
@@ -26,12 +26,7 @@ function syncInObject($aObjectNodes, $oO){
 				$aFields[$fieldName] = to_dbstring($fieldValue);
 			}		
 		}
-		//var_dump($aFields);
-		
-		// REPLACE comptes_lots SET GNUGA="999999994", GNULI=003, GNBPI=06, GCOSR="DIV", GTEXT="TEST Cap ligne 3", maj="0000-00-00 00:00:00";
 
-		
-		//$sql ='REPLACE INTO '.$oO->getTable().' ('.implode(',',array_keys($aFields)).') VALUES ('.implode(',',array_values($aFields)).');';
 		
 		$sql ='REPLACE '.$oO->getTable().' SET ';
 		
@@ -42,7 +37,7 @@ function syncInObject($aObjectNodes, $oO){
 			
 		}
 		$sql .= implode(', ', $aReplaces).';';
-		echo '<br />'.$sql.'<br />';
+		//echo '<br />'.$sql.'<br />';
 		
 		$rs = $db->Execute($sql);
 		
@@ -56,7 +51,7 @@ function syncInField($aFieldNode, $oO){
 	global $db;
 	global $translator;
 	
-	//echo '		-- syncInField('.$aFieldNode['name'].')<br />';
+	echo '		-- syncInField('.$aFieldNode['name'].')<br />';
 	
 	//var_dump($aFieldNode);
 	
@@ -87,9 +82,7 @@ function syncInField($aFieldNode, $oO){
 		// inserer la trad		
 		return $translator->addReference($aFieldNode['cdata']);
 	}
-	
-		
-		
+
 	
 	
 }
