@@ -45,7 +45,7 @@ User-agent: *
 //Allow: /
 if ($oSiteToMap != NULL){
 ?>
-Disallow: /custom/
+Disallow: /custom/upload/
 Disallow: /backoffice/
 Disallow: /frontoffice/
 Disallow: /modules/
