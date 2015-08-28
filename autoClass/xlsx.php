@@ -33,6 +33,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php')
 
 ini_set ('max_execution_time', 0); // Aucune limite d'execution
 ini_set("memory_limit","1024M");
+ini_set('display_errors', false);
 
 unset($_SESSION['BO']['CACHE']);
 
@@ -167,11 +168,17 @@ while (isset($_GET['champ'.$k])&& $_GET['champ'.$k]!=""){
 }
 
 if (!is_null($oRes->XML_inherited)){
-	$aListe_res = dbGetObjects($classeName);
+	//$aListe_res = dbGetObjects($classeName);
+	$rs = $db->Execute('SELECT * FROM '.$classeName);
 }
 else{
-	$aListe_res = dbGetObjectsFromRequeteCache($classeName, $sql,100);
+	//$aListe_res = dbGetObjectsFromRequeteCache($classeName, $sql,100);
+	$rs = $db->Execute($sql);
 }
+
+
+
+
 //echo $sql;
 
 //die($sql);
@@ -273,33 +280,41 @@ if (sizeof($aTempClasse) > 0) {
 }
 
 if ($_GET["Type"]  == '') { 
-	if(sizeof($aListe_res)>0) {
+
+	if($rs) {
+		
+		$k=0;
+		
+		while(!$rs->EOF) {
+			
+			
+	//if(sizeof($aListe_res)>0) {
 		// liste
-		for($k=0; $k<sizeof($aListe_res); $k++) {
-		//for($k=0; $k<5; $k++) {
-			$oRes = $aListe_res[$k];
+		//for($k=0; $k<sizeof($aListe_res); $k++) {
+	
+			//$oRes = $aListe_res[$k];
+			$aRes=$rs->fields;
 			$l = 0;
 			for ($i=0;$i<count($aNodeToSort);$i++){		
 				if ($aNodeToSort[$i]['name'] == 'ITEM' && (!isset($aNodeToSort[$i]['attrs']['NOEXPORT']) || $aNodeToSort[$i]['attrs']['NOEXPORT'] != 'true')){
 					if (!isset($aNodeToSort[$i]["attrs"]["SKIP"]) || $aNodeToSort[$i]["attrs"]["SKIP"] != "true" ) {
-						$eKeyValue = trim(call_user_func(array($oRes, 'get_'.$aNodeToSort[$i]['attrs']['NAME'])));
+						//$eKeyValue = trim(call_user_func(array($oRes, 'get_'.$aNodeToSort[$i]['attrs']['NAME'])));
+						
+						$eKeyValue = trim($aRes[$classePrefixe.'_'.$aNodeToSort[$i]['attrs']['NAME']]);
 						
 						if (isset($aNodeToSort[$i]['attrs']['FKEY'])){ // cas de foregin key
 							if ($eKeyValue == '')  $eKeyValue = -1 ; 
 							$sTempClasse = $aNodeToSort[$i]['attrs']['FKEY'];
 							if ($eKeyValue > -1){ 
 								$oTemp = cacheObject($sTempClasse, $eKeyValue); 
-								//if (isObjectById($sTempClasse, $eKeyValue)) {
 								if ($oTemp!=false){
-									$eKeyValue = trim(call_user_func(array($oTemp, 'get_'.$oTemp->getDisplay())));
-									//if (  $oTemp->getDisplay() <>  $oTemp->getAbstract() ) $eKeyValue.= " - ".trim(call_user_func(array($oTemp, 'get_'.$oTemp->getAbstract())));
+									$eKeyValue = trim(call_user_func(array($oTemp, 'get_'.$oTemp->getDisplay())));									
 									
 									// traduction ????
 									if(!is_null($oTemp->XML_inherited))
 										$sXML = $oTemp->XML_inherited;
 									else
 										$sXML = $oTemp->XML;
-									//$sXML = $oTemp->XML;
 									 
 									unset($stack);
 									$stack = array();
@@ -390,6 +405,9 @@ if ($_GET["Type"]  == '') {
 			}// fin for cols	
 			 
 			include("xlsx.association.php");  
+			
+			$rs->MoveNext();
+			$k++;
 			 
 		} // fin for rows
 	} // fin if

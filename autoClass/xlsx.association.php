@@ -1,7 +1,8 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  
-$id = getItemValue($oRes, "id"); 
+//$id = getItemValue($oRes, "id"); 
+$id = trim($aRes[$classePrefixe.'_id']);
 
 
 $aAssoInfos = array();
@@ -10,7 +11,8 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 	if ($aNodeToSort[$j]["name"] == "ITEM") {
 		 
 		if ($aNodeToSort[$j]["attrs"]["ASSO"] || $aNodeToSort[$j]["attrs"]["ASSO_VIEW"] || $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]) { // cas d'asso 
-			$eKeyValue = getItemValue($oRes, $aNodeToSort[$j]["attrs"]["NAME"]);			
+			//$eKeyValue = getItemValue($oRes, $aNodeToSort[$j]["attrs"]["NAME"]);	
+			$eKeyValue = trim($aRes[$classePrefixe.'_'.$aNodeToSort[$j]["attrs"]["NAME"]]);		
 			
 			$aTempClasse = array();
 			if ($aNodeToSort[$j]["attrs"]["ASSO"])
@@ -140,7 +142,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					if ($_GET["Type"]  == '') {  
 						$sql = "select ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." "; 
 						
-						if ((ereg("rau_", $tempAssoIn) || ereg("shp_", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme"  &&  ereg("shp_", $myAssoClasse) ) { 
+						if ((preg_match("/^rau_/si", $tempAssoIn) || preg_match("/^shp_/si", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme"  &&  preg_match("/^shp_/si", $myAssoClasse) ) { 
 							 $sql.= " where ".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoIn))." = ".$id." ";
 							 $sql.= " and ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id ";  
 						}
@@ -151,7 +153,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					}
 					else {
 						$sql = "select DISTINCT ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." "; 
-						if ((ereg("rau_", $tempAssoIn) || ereg("shp_", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme" &&  ereg("shp_", $myAssoClasse) ) { 
+						if ((preg_match("/^rau_/si", $tempAssoIn) || preg_match("/^shp_/si", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme" &&  preg_match("/^shp_/si", $myAssoClasse) ) { 
 							$sql.= " where   ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id ";  
 						}
 						else {
