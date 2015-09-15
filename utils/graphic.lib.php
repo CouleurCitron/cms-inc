@@ -105,7 +105,9 @@ function imagecreatefrombmp($p_sFile){
 function imgData($visuel, $niveau=0){	
 	$visuel = str_replace(array('{', '}'), '', $visuel);		
 	$aVisuel = explode(';', $visuel);
-	if($niveau){
+	if(count($aVisuel)==1){
+		$fichier = explode('[', str_replace(']', '', $aVisuel[0]));
+	} else if($niveau){
 		$fichier = explode('[', str_replace(']', '', $aVisuel[$niveau]));
 	} else {
 		$fichier = explode('[', str_replace(']', '', $aVisuel[1]));
