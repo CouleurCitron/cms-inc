@@ -20,21 +20,18 @@ if (is_file($_SERVER['DOCUMENT_ROOT'].'/include/modules/'.$rep.'/mod_rewrite.inc
 
 // Chargement de la classe Upload
 require_once('cms-inc/lib/fileUpload/upload.class.php');
- 
-//cas de parametres dans l'url
-if($_SESSION['listParam']!='') {
-	$listParam = $_SESSION['listParam'];
-}
-else {
-	$_SESSION['listParam']=$_SERVER['QUERY_STRING'];
-	$listParam=$_SESSION['listParam'];
-}
+
+$_SESSION['listParam']= http_build_query($_GET);
+
+$listParam = $_SERVER['QUERY_STRING'];
+
+
 $listParam = str_replace('id=&', '', $listParam); // parce que ce serait inepte
 // second controle, si id=X dans l'url on vira l'occurence eventuelle en session
 if (preg_match('/id=([0-9]+)/msi', $listParam, $idMatches)==1){
 	if ((is_get('id') && ($idMatches[1]!=$_GET['id']))	||	(is_post('id') && ($idMatches[1]!=$_POST['id']))){
 		$listParam = str_replace($idMatches[0], '', $listParam);
-		$listParam = str_replace('&&', '&', $listParam);
+		$listParam = str_replace(array('&&&', '&&'), '&', $listParam);
 	}
 }
 
