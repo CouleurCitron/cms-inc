@@ -341,7 +341,11 @@ function cacheObject($sObject, $eId){
 	//echo 'cacheObject('.$sObject.', '.$eId.')';
 	$bFound=NULL;
 
-	if (!isset($_SESSION['BO']['CACHE'])){
+	if (preg_match('/\/backoffice\/cms\//msi', $_SERVER['REQUEST_URI'])){
+		// pas de cache dans /backoffice/cms/
+		$bFound=false;
+	}
+	elseif (!isset($_SESSION['BO']['CACHE'])){
 		$_SESSION['BO']['CACHE'] = array();
 		$bFound=false;
 	}

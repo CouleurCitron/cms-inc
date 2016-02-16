@@ -8,10 +8,13 @@ $bPear = @include('Mail.php');
 if ($bPear===false){
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mime.php');
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mail.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/mail.php');
+	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/smtp.php');
 }
 else{
 	include_once('Mail/mime.php');
 	include_once('Mail/mail.php');
+	include_once('Mail/smtp.php');
 }
 
 /*
@@ -284,7 +287,8 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
     
     
     function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
-            $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
+			$sujetRaw = $sujet;
+            $sujet = '=?iso8859-1?B?'.base64_encode($sujetRaw).'?=';
 
 
             if (DEF_MAIL_ENGINE=='sendmail'){
@@ -331,12 +335,12 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                     $message = $email->encode(); 
 
                     $destinataire = $to;
-                    error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+                    error_log('to = '.$destinataire.' | sujet = '.$sujetRaw.' | from = '.$from.' | '.DEF_MAIL_ENGINE.': '.$host.':'.DEF_MAIL_PORT);
 
                     $entetes = $message['headers'];
 
                     $entetes["From"]= $from; 
-                    $entetes["Return-Path"] = $from;
+                    $entetes["Return-Path"] = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
                     $entetes["To"] = $to;
                     $entetes["Subject"] = $sujet;
                     $entetes["MIME-Version"] = "1.0";
@@ -367,16 +371,24 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                             $params['auth'] = false;
                     }
 
+					if (DEF_MAIL_ENGINE=='smtp'){
+						$mailObj = new Mail_smtp($params);					
+					}
+					else{
                     $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
+						//$mailObj = new Mail_mail(DEF_MAIL_ENGINE.' '.implode(' ', $params));
+					}
                     $result = $mailObj->send($destinataire,$entetes,$message['body']);
                     if($result===true) {
                             return true;			
                     }
                     else {
+						if(method_exists($result, 'getMessage')){
                             error_log($result->getMessage());
                             if (preg_match('/email\.php$/msi', $_SERVER['PHP_SELF'])){
                                     echo $result->message;
                             }
+						}
                             return false;
                     }	 
             }
