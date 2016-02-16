@@ -408,12 +408,12 @@ if (isAllowed ("CMS", $sFonct) ) {
 	if (isAllowed ("JOB", $sFonct)) {	 
 		$aMenu[] = new Menu("main", "cms_job", "Job", "");		
 		$aMenu[] = new Menu("cms_job", "list_job_offre", $translator->getTransByCode('Offres'), "/backoffice/cms/job_offre/list_job_offre.php"); 
-		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=1&comparateur=".urlencode("=")."&titre=".$translator->getTransByCode('Candidatures_aux_stages');
+		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=".urlencode('(1,5)')."&comparateur=".urlencode("in")."&titre=".$translator->getTransByCode('Candidatures_aux_stages');
 		$aMenu[] = new Menu("cms_job", "list_job_candidature_1", $translator->getTransByCode('Candidatures_aux_stages'), $urlCandidate);
-                
+                /*
                 $urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=5&comparateur=".urlencode("=")."&titre=".$translator->getTransByCode('Candidatures_apprentissage');
 		$aMenu[] = new Menu("cms_job", "list_job_candidature_1_b", $translator->getTransByCode('Candidatures_apprentissage'), $urlCandidate);
-                
+                */
                 
 		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=1&comparateur=".urlencode(">")."&paramtype2=job_candidature&param2=contrat&contrat=5&comparateur2=".urlencode("<>")."&titre=".$translator->getTransByCode('Candidatures_aux_emplois');
 		$aMenu[] = new Menu("cms_job", "list_job_candidature_2", $translator->getTransByCode('Candidatures_aux_emplois'), $urlCandidate);
