@@ -113,7 +113,7 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 				
 				
 				elseif ( ($bPopupWysiwyg == true) && (($aNodeToSort[$i]["attrs"]["NOHTML"] != "true")||(!isset($aNodeToSort[$i]["attrs"]["NOHTML"])))	&& $aNodeToSort[$i]["attrs"]["OPTION"] != "node" ){ // cas wysiwyg
-					echo " <a class='".$lang_props['libellecourt']."' href=\"javascript:openWYSYWYGWindow('http://".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"HTML editor\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+					echo " <a class='".$lang_props['libellecourt']."' href=\"javascript:openWYSYWYGWindow('//".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"HTML editor\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
 				} // wysiwyg
 				
 				else {
