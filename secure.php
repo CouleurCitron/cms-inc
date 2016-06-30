@@ -295,6 +295,13 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 	newslettrer
 */
 
+if (!isset($translator)){
+	$translator =& TslManager::getInstance(); 
+}
+if (!isset($_SESSION['BO']['cms_texte'])){
+	$translator->loadAllTransToSession();
+}
+
 // déconnexion :: vidage session
 if (is_post('operation')){
 	if ($_POST['operation'] == "logoff") {
