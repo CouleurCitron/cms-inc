@@ -295,7 +295,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 	newslettrer
 */
 
-if (strpos($_SERVER['REQUEST_URI'], basename($_SERVER['PHP_SELF']))!==false){
+if (strpos($_SERVER['REQUEST_URI'], 'secure.php')!==false){
 	// hack attempt
 	error_log('hack attempt on '.$_SERVER['PHP_SELF'].' from '.$_SERVER['REMOTE_ADDR']);
 	die();	
