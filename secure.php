@@ -295,6 +295,12 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 	newslettrer
 */
 
+if (strpos($_SERVER['REQUEST_URI'], basename($_SERVER['PHP_SELF']))!==false){
+	// hack attempt
+	error_log('hack attempt on '.$_SERVER['PHP_SELF'].' from '.$_SERVER['REMOTE_ADDR']);
+	die();	
+}
+
 if (!isset($translator)){
 	$translator =& TslManager::getInstance(); 
 }
@@ -398,7 +404,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 				
 				if ((!$contents) || ($contents=='incorrect usage') || ($contents=='forbidden')){ // pas de réponse, on teste localement
 					$aNames = array('suhali.dyndns.org'); 
-					$aIPs = array('37.1.253.222', '37.1.253.217', '82.124.17.60', '82.228.89.184', '82.228.167.148', '81.249.110.2', '82.234.79.170', '88.124.114.41', '82.238.143.116');
+					$aIPs = array('37.1.253.222', '37.1.253.217', '82.124.17.60', '82.228.89.184', '82.228.167.148', '81.249.110.2', '82.234.79.170', '88.124.114.41', '82.238.143.116', '92.245.150.148', '37.1.253.217');
 					
 
 					if (in_array($_SERVER['REMOTE_ADDR'], $aIPs)){ // test IP
