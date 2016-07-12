@@ -11,7 +11,9 @@ $bDebug = false;
 //$bDebug = true;
 //-----------------------------------------------------------------
 
-$oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
+if(!isset($oSiteToMap)	||	$oSiteToMap==false	|| $oSiteToMap==NULL){
+	$oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
+}
 
 if ($oSiteToMap==false){
 	$aSites = listSite("ALL");
