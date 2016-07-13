@@ -66,7 +66,6 @@ ini_set('session.bug_compat_warn', false);
 ini_set('allow_call_time_pass_reference', true);
 ini_set('allow_url_include', false);
 
-
 $prevMask=umask(0022);
 //error_log($prevMask);
 //error_log(umask());
@@ -233,6 +232,7 @@ if ($resCon==false){
 		echo '<!-- <p>'.$db->_errorMsg.'</p> -->';
 	}
 }
+
 
 // redir auto de homepage
 include_once('homepage.inc.php');
