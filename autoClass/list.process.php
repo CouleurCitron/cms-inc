@@ -672,7 +672,7 @@ if($eStatut==""){
 	$eStatut=$_SESSION['eStatut'];
 }
 
-if (!ereg("backoffice", $_SERVER['PHP_SELF'])){ // hors BO only "en ligne"
+if (!preg_match("/backoffice/si", $_SERVER['PHP_SELF'])){ // hors BO only "en ligne"
 	$eStatut = DEF_ID_STATUT_LIGNE;
 }
 
