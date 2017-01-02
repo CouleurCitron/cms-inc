@@ -18,7 +18,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // |          Tomas V.V.Cox <cox@idecnet.com>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id: Common.php,v 1.2 2013-03-01 10:34:24 pierre Exp $
+// $Id: Common.php,v 1.1 2013-09-30 09:46:12 raphael Exp $
 
 require_once 'cms-inc/lib/pear/PEAR.php';
 require_once 'cms-inc/lib/pear/Archive/Tar.php';

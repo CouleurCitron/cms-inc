@@ -1,6 +1,6 @@
 <?php
 
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/cron/functions.php');
+include_once('cms-inc/cron/functions.php');
 /*$scripts[0]['minutes'] = '30';
 $scripts[0]['heures'] = '8';
 $scripts[0]['jour'] = '*';

@@ -83,7 +83,7 @@ class TslManager {
 	 */
 	function getLanguages ($active=false, $localized=false) {
 		$res=false;
-		
+	
 		//1 test langue asso au site
 		if (class_exists('cms_assolanguesite')&&isTable('cms_assolanguesite')&&isset($_SESSION['idSite'])){			
 			$sql = "	SELECT	l.*
@@ -98,13 +98,13 @@ class TslManager {
 		
 		//2 test all langues
 		if ($res==false){
-			$sql = "	SELECT	*
-				FROM	`cms_langue`
-				".($active ? " WHERE lan_statut=4" : '')."
-				ORDER BY lan_id;";
+		$sql = "	SELECT	*
+			FROM	`cms_langue`
+			".($active ? " WHERE lan_statut=4" : '')."
+			ORDER BY lan_id;";
 			$res = dbGetObjectsFromRequete('cms_langue', $sql);
 		}
-		
+
 		$pile = Array();
 		foreach ($res as $language) {
 			if ($localized)
@@ -204,7 +204,7 @@ class TslManager {
 			}
 			// fin cas champ vide 
 			
-		} else	$ref_id = $this->addReference($text, true, true);
+		} else	$ref_id = $this->addReference($text, true);
 			//$ref_id = $this->getTextID($text, true);
 			//$this->checkTextID($text, true);
 		if ($lang == DEF_APP_LANGUE && $_SESSION['tsl_langue'] == DEF_APP_LANGUE) {
@@ -212,7 +212,6 @@ class TslManager {
 			$text = $this->checkNoInput($text);
 			return (String) $text;
 		} else {
-                    //pre_dump($ref_id);
 			// dealing with translation if it exists otherwise return reference	
 			
 			/* 
@@ -278,14 +277,6 @@ class TslManager {
 			$bDetectLang = false;
 		}
 		
-                if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' ){
-                    /* on rcupre la vrai ID */
-                    if( strlen($ref_id) == 32 ){
-                        $ref_id = $this->getReferenceID($ref_id);
-                    }
-                }
-                
-                
 		//error_log( 'getByID('.$lang.')');
 		if ($ref_id > 0) {
 			$text = $this->getText('', $lang, $ref_id);	
@@ -376,10 +367,8 @@ class TslManager {
 	 * @return	Int		Text string ID
 	 */
 	function getTextID ($text, $new=false) {
-            //pre_dump($text);
 		if ($text <> '') {
 			$id = $this->getReferenceID(md5($text));
-                        //pre_dump($id); die();
 			//echo "test : ".$id."<br/>";
 			if ($id > 0)
 				return (Int) $id;
@@ -402,22 +391,13 @@ class TslManager {
 	function getReferenceID ($MD5=null) {
 		if (!is_null($MD5)) {
 			$res = dbGetObjectsFromFieldValue('cms_chaine_reference', Array('get_md5'), Array($MD5), null);
-			if (count($res) == 1){
-				//echo $res[0]->get_id();
+			if (count($res) == 1)
 				return (Int) $res[0]->get_id();
-			}
-		    elseif (count($res) > 1) {
-		    		//echo 'Error - MD5 hash for translation is not unique in DB records ('.$MD5.')';
+		    	elseif (count($res) > 1) {
+		    		echo 'Error - MD5 hash for translation is not unique in DB records ('.$MD5.')';
 		    		return -1;
-			}
-			else{
-				//echo 'no result for '.$MD5;
-				return (Int) 0;
-			}
-		} else{
-			//echo 'no MD5 provided';
-			return (Int) 0;
-		}
+			} else	return (Int) 0;
+		} else	return (Int) 0;
 	}
 
 
@@ -430,38 +410,19 @@ class TslManager {
 	 * @return	Int		Text string ID
 	 * @todo		Why not try to use getTextID with the forced 'create' parameter ?
 	 */
-	function addReference ($text, $check=true, $return_id = false) {
-            
-            
-            $md5 = md5($text);
-            
+	function addReference ($text, $check=true) {
 		if ($check) {
-                    if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
-                        $ref_id = $this->getReferenceID ($md5);
-                    else
-                        $ref_id = $this->getTextID($text);
-                    
-                    
+			$ref_id = $this->getTextID($text);
 			if ($ref_id > 0){
 				//echo 'check '.$ref_id;
-                            if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' && !$return_id )
-                                return $md5;
-                            else
 				return (Int) $ref_id;
 			}
 		}
-                
-                
-                
 		$this->reference->set_chaine($text);
-		$this->reference->set_MD5($md5);
+		$this->reference->set_MD5(md5($text));
 		$ref_id = (Int) dbInsertWithAutoKey($this->reference);
 		//echo 'inset '.$ref_id;
-                
-//                if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
-//                    return $md5;
-//                else
-                    return $ref_id;
+		return $ref_id;
 	}
 
 
@@ -474,20 +435,12 @@ class TslManager {
 	 * @return	Int		Reference text id
 	 */
 	function addTranslation ($ref_text, $units=null) {
-            //pre_dump($ref_text); //die();
-            $md5 = md5($ref_text);
-            
-            if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
-		$ref_id = $this->getReferenceID($md5);
-            else
-                $ref_id = $this->getTextID($ref_text);
+		$ref_id = $this->getTextID($ref_text);
 		//echo "<br />addTranslation<br />".$ref_id." ".$ref_text."<br />";		
-		//pre_dump($ref_id);
+		
 		if ($ref_id == 0)
 			$ref_id = $this->getTextID($ref_text, true);
-                 
-                 //pre_dump($units);
-                 //die();
+
 		if (!empty($units)) { 
 			foreach ($units as $lang => $trad_text) {
 	    		if ($lang != DEF_APP_LANGUE)
@@ -516,10 +469,8 @@ class TslManager {
 				}
 			}
 		}
-                if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
-                    return $md5;
-                else
-                    return (Int) $ref_id;
+		
+		return (Int) $ref_id;
 	}
 
 
@@ -679,9 +630,9 @@ class TslManager {
 	function downloadLangPacks($verbose=true){
 		
 		if ($verbose)
-			echo 'downloadLangPacks';	
-			
-		if ($_SERVER['HTTP_HOST']=='www.couleur-citron.com'){
+			echo 'downloadLangPacks';		
+	
+		if ($_SERVER['HTTP_HOST']=='aws.couleur-citron.com'){
 			//dont sybc the repo on itself
 			return true;	
 		}
@@ -701,7 +652,7 @@ class TslManager {
 		
 		$stack = array();
 		
-		xmlUrlParse('http://www.couleur-citron.com/backoffice/cms/cms_texte/xml_cms_texte.php');
+		xmlUrlParse('http://aws.couleur-citron.com/backoffice/cms/cms_texte/xml_cms_texte.php');
 		
 		$aTexts = $stack[0]["children"];
 		
@@ -718,17 +669,20 @@ class TslManager {
 				if ($verbose)
 				echo '<br />';
 				
-				$text = utf8_decode($aTexts[$i]["children"][0]["cdata"]);
+				foreach($aTexts[$i]["children"] as $k => $childNode){
+					if(strtolower($childNode['name'])==($this->getLangCodeById(DEF_APP_LANGUE))){						
+						$text = utf8_decode($childNode["cdata"]);						
+					}
+					else{				
+						$trad = utf8_decode($childNode["cdata"]);		
+					}
+				}
 				
 				if ($verbose)
-				echo $text;
+					echo '<br />text='.$text;
 				
 				if ($verbose)
-				echo '<br />';
-				$trad = utf8_decode($aTexts[$i]["children"][1]["cdata"]);
-				
-				if ($verbose)
-				echo $trad;			
+					echo '<br />trad='.$trad;					
 				
 				$id = $this->addReference ($text);
 				$this->addTranslation ($text, array(2 => $trad));
@@ -737,8 +691,9 @@ class TslManager {
 		
 				$oText->set_code($code);
 				$oText->set_chaine($id);
+
 				$oText->set_statut(DEF_ID_STATUT_LIGNE);
-				dbSauve($oText);
+				dbSauve($oText);				
 				
 				if ($verbose)
 				echo '<hr />';	
@@ -747,9 +702,7 @@ class TslManager {
 				//echo 'dejà<hr />';
 				//pre_dump($aCache[$code]);
 			}	
-		}
-	
+		}	
 	}
 }
-
 ?>

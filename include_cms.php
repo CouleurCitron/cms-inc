@@ -238,16 +238,23 @@ if(isset($_SESSION['fonct'])){
 		include_once('backoffice/adss/slideshow3/includes/aws-slideshow.functions.php');
 	}
 	
-	// SS3
+	// SS4
 	if (preg_match('/SS4/',$_SESSION['fonct'])){
 		if (preg_match('/\/adss\//', $_SERVER['PHP_SELF'])	||	preg_match('/\/content\//', $_SERVER['PHP_SELF'])		||	preg_match('/^\/index\.php/', $_SERVER['PHP_SELF'])	){
-			
-	//if (preg_match('/SS4/',$_SESSION['fonct'])	&&	!preg_match('/ancre\.js\.php/', $_SERVER['PHP_SELF'])	&&	!preg_match('/telecharger\.php/', $_SERVER['PHP_SELF'])){
-		//error_log('SS4');
 			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow4/includes/aws-slideshow.functions.php');
 		}
 		else{
 			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow4/includes/aws-slideshow.classes.php');
+		}
+	}
+	
+	// SS5
+	if (preg_match('/SS5/',$_SESSION['fonct'])){
+		if (preg_match('/\/adss\//', $_SERVER['PHP_SELF'])	||	preg_match('/\/content\//', $_SERVER['PHP_SELF'])		||	preg_match('/^\/index\.php/', $_SERVER['PHP_SELF'])	){
+			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow5/includes/aws-slideshow.functions.php');
+		}
+		else{
+			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow5/includes/aws-slideshow.classes.php');
 		}
 	}
 
@@ -265,7 +272,6 @@ if(isset($_SESSION['fonct'])){
 		if (in_array("news_assonewspdf", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assonewspdf.class.php');
 		if (in_array("news_assonewscron", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assonewscron.class.php');
 		if (in_array("news_queue", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_queue.class.php');
-		if (in_array("news_assoinscritnewsletter", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assoinscritnewsletter.class.php');
  	}
 	else {
 		if (in_array("newsletter", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/newsletter.class.php');

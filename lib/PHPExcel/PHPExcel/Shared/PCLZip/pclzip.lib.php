@@ -1,5 +1,4 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // --------------------------------------------------------------------------------
 // PhpConcept Library - Zip Module 2.8.2
 // --------------------------------------------------------------------------------
@@ -23,7 +22,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 //   The use of this software is at the risk of the user.
 //
 // --------------------------------------------------------------------------------
-// $Id: pclzip.lib.php,v 1.2 2013-03-01 10:34:08 pierre Exp $
+// $Id: pclzip.lib.php,v 1.2 2014-09-24 15:57:37 pierre Exp $
 // --------------------------------------------------------------------------------
 
   // ----- Constants

@@ -21,7 +21,7 @@ $aTabNews = array();
 
 $sql = 'select * from news_queue where news_statut = '.DEF_ID_STATUT_ATTEN.' order by news_inscrit ASC LIMIT 0,'.$nb_envoi_max_lots;    
 
-echo $sql;
+//echo $sql;
 
 $aObj = dbGetObjectsFromRequete("news_queue", $sql); 
 
@@ -33,10 +33,11 @@ if (sizeof($aObj_redact) > 0) {
 	$bSend = (bool)  multiPartMail_file('technique@couleur-citron.com' , $_SERVER['HTTP_HOST'].' : Envoi de la newsletter, '.sizeof($aObj_redact).' messages en attente' , $html , html2text($html), $from, $attachPath, $aName_file, $typeAttach='text/plain', DEF_MAIL_HOST, $replyto);
 
 }
-//else {
+else {
+	
 	if (sizeof($aObj) > 0 && $aObj != false) {
 	
-		echo "<p>En attente : ".sizeof($aObj)." newsletter(s)</p>";
+		//echo "<p>En attente : ".sizeof($aObj)." newsletter(s)</p>";
 		
 		
 		$aCache = array();
@@ -75,8 +76,6 @@ if (sizeof($aObj_redact) > 0) {
 			$cache["message_text"] = $message_text;
 			
 			$aCache[] =  $cache;
-
-			echo "queued id : ".$id_queue."<br />";
 			
 			if (!in_array ($idnews, $aTabNews)) {
 				$aTabNews[] = $idnews;
@@ -114,7 +113,7 @@ if (sizeof($aObj_redact) > 0) {
 					
 			}
 			
-			error_log("to = ".$addy." | sujet = ".$sSubject."", 0); 
+			//error_log("to = ".$addy." | sujet = ".$sSubject."", 0); 
 			
 			if ($bSend) { 
 				//$aQSent[] = $id_queue;
@@ -146,10 +145,10 @@ if (sizeof($aObj_redact) > 0) {
 	}
 	
 	else {
-		// rien a envoyer
-                
+	
+	
 	}
-//}
+}
 
  
 
@@ -164,7 +163,7 @@ foreach ($aTabNews as $news) {
 	$sql = 'select count(*) from news_queue where news_statut = '.DEF_ID_STATUT_LIGNE.' and news_newsletter = '.$news; 
 	$nb_sent = dbGetUniqueValueFromRequete($sql);
 	
-	echo "nb_queue".$nb_queue  ;
+	//echo "nb_queue".$nb_queue  ;
 	$oNews = new Newsletter($news);
 	if ($nb_queue == 0 && $oNews->get_statut() == DEF_ID_STATUT_LIGNE)  {
 	

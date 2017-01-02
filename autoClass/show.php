@@ -81,7 +81,7 @@ window.location="show_<?php echo $classeName; ?>.php?adodb_next_page=<?php echo 
 <script language="javascript" type="text/javascript">
 	// retour à la liste
 	function retour(){
-		document.location.href="list_<?php echo  $classeName ; ?>.php<?php if($listParamSsId!="") echo "?".$listParamSsId;?>";
+		document.location.href="list_<?php echo  $classeName ; ?>.php?<?php echo str_replace("id=-1", "", $listParamSsId);?>";
 	}
 	
 	// ajout d'un enregistrement
@@ -89,7 +89,7 @@ window.location="show_<?php echo $classeName; ?>.php?adodb_next_page=<?php echo 
 		document.<?php echo $classeName; ?>_form.actiontodo.value = "MODIF";
 		document.<?php echo $classeName; ?>_form.display.value = null;
 		document.<?php echo $classeName; ?>_form.id.value = -1;
-		document.<?php echo $classeName; ?>_form.action = "maj_<?php echo $classeName; ?>.php?id=-1&adodb_next_page=-1<?php if($listParamSsId!="") echo "&".ereg_replace("(id=)([0-9]+)", "previd=\\2", $listParamSsId);?>";
+		document.<?php echo $classeName; ?>_form.action = "maj_<?php echo $classeName; ?>.php?id=-1&adodb_next_page=-1<?php if($listParamSsId!="") echo "&".preg_replace("/(id=)([0-9]+)/msi", "previd=$2", $listParamSsId);?>";
 		document.<?php echo $classeName; ?>_form.submit();		
 	}
 	
@@ -97,7 +97,7 @@ window.location="show_<?php echo $classeName; ?>.php?adodb_next_page=<?php echo 
 	function modifEmp(){
 		document.<?php echo $classeName; ?>_form.display.value = null;
 		document.<?php echo $classeName; ?>_form.actiontodo.value = "MODIF";
-		document.<?php echo $classeName; ?>_form.action = "maj_<?php echo $classeName; ?>.php?id=<?php echo $id; ?><?php if($listParamSsId!="") echo "&".$listParamSsId;?>";
+		document.<?php echo $classeName; ?>_form.action = "maj_<?php echo $classeName; ?>.php?id=<?php echo $id; ?><?php if($listParamSsId!="") echo "&".preg_replace("/([\?&]{0,1})id=\-1/msi", "$1", $listParamSsId);?>";
 		document.<?php echo $classeName; ?>_form.submit();
 	}
 	
@@ -335,11 +335,32 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 		elseif (DEF_APP_USE_TRANSLATIONS && $aNodeToSort[$i]["attrs"]["TRANSLATE"]){ // cas traduction
 			if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 				if ($aNodeToSort[$i]["attrs"]["TRANSLATE"] == 'reference') {
-					foreach ($langpile as $lang_id => $lang_props) {
-						$tsl_chain = $translator->getByID($eKeyValue, $lang_id);
+					foreach ($langpile as $lang_id => $lang_props) { 
+					
+						$tsl_chain = $translator->getByID($eKeyValue, $lang_id);  
+						
+						if ($aNodeToSort[$i]["attrs"]["OPTION"] == "node"){ // cas password	
+							if ($tsl_chain != '') {
+								if (getCount_where("cms_arbo_pages", array("node_id"), array($tsl_chain), array("NUMBER")) ==  1){
+									if (getNodeInfos($db, $tsl_chain)){
+										$infosNode = getNodeInfos($db, $tsl_chain); 
+										$tsl_chain = $infosNode["path"];
+										
+									} else $tsl_chain = "n/a";
+							
+								} else	$tsl_chain = "n/a"; 
+							}
+							else	$tsl_chain = "n/a"; 
+						
+						}
+						
 						if ($tsl_chain != '')
 							echo (sizeof($langpile) > 1 ? "[".$lang_props['libellecourt']."] > " : "").$tsl_chain."<br/>";
 					}
+					
+					
+					
+					
 				}
 			} elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "enum") {
 				if ($aNodeToSort[$i]["attrs"]["TRANSLATE"] == "value")
@@ -383,29 +404,9 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 			} else {
 				if ($eKeyValue > -1){ // cas typique typique 
 					if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
-						if ($eKeyValue != "") {
-							$inherited = getCorrectInheritedClass($oRes->inherited_list, $aNodeToSort[$i]["attrs"]["NAME"]);
-							if (!is_null($inherited))
-								$correctName = $inherited->getClasse();
-							else	$correctName = $classeName; 
-							  
-							if (is_file($_SERVER['DOCUMENT_ROOT'].'custom/upload/'.$correctName.'/'.$eKeyValue))
-								$aFiles=array($eKeyValue);
-							elseif (count(explode(';',$eKeyValue))>0)
-								$aFiles=explode(';',$eKeyValue);							
-							
-							echo '&nbsp;(actuellement ';							
-							
-							foreach($aFiles as $kFile => $sFile){
-								echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$correctName."/".$sFile."\" title=\"Visualiser le fichier : '".$sFile."'\">".$sFile."</a>";
-								echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$correctName."/".$sFile."\" title=\"Télécharger le fichier : '".$sFile."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$sFile."\" /></a>";
-							}
-							echo ")\n";
-						} else	echo "&nbsp;(pas de fichier)<br />";
-					
-						/*
-						echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$eKeyValue."\" title=\"Visualiser le fichier : '".$eKeyValue."'\">".$eKeyValue."</a>\n";
-						echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$eKeyValue."\" title=\"Télécharger le fichier : '".$eKeyValue."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$eKeyValue."\" /></a>\n";*/
+						
+						include ("show.file.php");
+						
 					}
 					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "bool"){ // boolean
 						if (intval($eKeyValue) == 1)

@@ -20,7 +20,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | dependencies: exif support in PHP (optional)                         |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.graphic.jpeg.php,v 1.2 2013-03-01 10:34:18 pierre Exp $
+// $Id: module.graphic.jpeg.php,v 1.1 2013-09-30 09:31:10 raphael Exp $
 
         
         

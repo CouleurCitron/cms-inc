@@ -1,14 +1,14 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT']."/include/autopreprend.php");
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");  
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); 
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_cms.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');  
 
 $translator =& TslManager::getInstance(); 	
 	
  
 	
 	
-	if (is_post('password_email')) { 
+	if (isset ( $_POST["password_email"]) &&  $_POST["password_email"] != "") { 
 		// enregistrer le compte en session  
 		$emaillogin = $_POST["password_email"];
 		if (isEmail($emaillogin)){
@@ -300,7 +300,7 @@ $translator =& TslManager::getInstance();
 	<form id="password_form" name="password_form" method="POST">
 		<h2><?php $translator->echoTransByCode('Mot_de_passe_oublie'); ?></h2>
 		<input type="hidden" name="do" id="do" value="send_password"/>
-		<p><label><?php $translator->echoTransByCode('Identifiant'); ?></label><input type="text" name="password_email" id="password_email" /> <span id="blocerreur_email" class="erreur_form"></span> </p>		
+		<p><label for="password_email"><?php $translator->echoTransByCode('Identifiant'); ?></label><input type="text" name="password_email" id="password_email" /> <span id="blocerreur_email" class="erreur_form"></span> </p>		
 		<p class="valider"><a class="valider" href="#" onclick="validPasswordForm();"><?php $translator->echoTransByCode('Valider'); ?></a></p>
 	</form>  
 	</div>

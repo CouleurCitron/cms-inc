@@ -20,14 +20,14 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 
 if (($aStatutNode != NULL)	&&	(isAllowed ($rankUser, "ADMIN;GEST") || ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/e/', $customActionControl[$_SESSION['rank']])))){	
 ?>
-	<div class="arbo" style="float:left">	
+	<div class="arbo">	
 	<?php		
 	if (isset($aStatutNode["children"]) && (count($aStatutNode["children"]) > 0) ){			
 		foreach ($aStatutNode["children"] as $childKey => $childNode){
 			if($childNode["name"] == "OPTION"){ // on a un node d'option			
 				if ($childNode["attrs"]["TYPE"] == "value"){
 					?>
-					<input type="button" name="btATTEN" id="btATTEN" value="<?php echo $translator->getText($childNode["attrs"]["LIBELLE"]); ?>" class="arbo" style="width:auto; padding: 0px 2px;" onclick="changeStatut(<?php echo $childNode["attrs"]["VALUE"]; ?>)" />&nbsp;
+					<input type="button" name="btATTEN" id="btATTEN" value="<?php echo $translator->getText($childNode["attrs"]["LIBELLE"]); ?>" class="arbo" onclick="changeStatut(<?php echo $childNode["attrs"]["VALUE"]; ?>)" />&nbsp;
 					<?php
 				} //fin type  == value				
 			}

@@ -66,7 +66,7 @@ function htmlFCKcompliant($str){
 	$str = preg_replace('/(<script[^>]+AC_RunActiveContent[^>]+><\/script>)/msi', '', $str);
 	
 	$str = stripslashes($str);
-	 
+	
 	//$str = mb_convert_encoding($str, "UTF-8", "auto");
 	 
 	return $str;
@@ -515,8 +515,7 @@ function compactJS($pContent) {
 	return $pContent;
 }
 
-function fullDoctype($doctype, $offline, $lang){
-
+function fullDoctype($doctype, $lang){
 	//$lang = strtoupper( $lang);
 	$lang = 'EN'; // il semblerait que suel EN soit valide
 	
@@ -541,14 +540,8 @@ function fullDoctype($doctype, $offline, $lang){
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$lang.'">';
 	}
 	elseif ($doctype == 'HTML 5'){
-            if(intval($offline) == 1 ){
-                $doctypeT = '<!DOCTYPE html>
-                    <html manifest="/custom/manifest/cache-'. $_SESSION['idSite_travail'] .'.manifest">';
-            } else {
-                $doctypeT = '<!DOCTYPE html>
-                    <html>';
-            }
-                return $doctypeT;
+		return '<!DOCTYPE html>
+<html manifest="/cache-' . $_SESSION['idSite'] . '.manifest">';
 	}
 	elseif ($doctype == 'XHTML 2.0'){
 		'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 2.0//'.$lang.'" "http://www.w3.org/MarkUp/DTD/xhtml2.dtd">
@@ -1231,8 +1224,8 @@ $replaces = array(
 
 function noAccent($texte){
 
-	$accent='ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËéèêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ °';
-	$noaccent='AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn--';
+	$accent='ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËéèêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ °%';
+	$noaccent='AAAAAAaaaaaaOOOOOOooooooEEEEeeeeCcIIIIiiiiUUUUuuuuyNn---';
 	$texte = strtr($texte,$accent,$noaccent);
 	return $texte;
 
@@ -1362,19 +1355,16 @@ function text2url($chaine) {
 }
 
 // Fonction coupant à x caractère
-function truncate($chaine,$debut=0,$max=NULL) {	
-	if( $max==NULL){
-		return substr($chaine, $debut);
-	}	
-	elseif (strlen($chaine) >= $max) {
+function truncate($chaine,$debut,$max) {
+	if (strlen($chaine) >= $max) {
 		$chaine = substr($chaine, $debut, $max);
 		$espace = strrpos($chaine, " ");
 		$chaine = substr($chaine, $debut, $espace);
 		return $chaine."...";
-	}
-	else {
+	} else {
 		return $chaine;
 	}	
+	
 }
 
 function formatFileSize ($_size) {

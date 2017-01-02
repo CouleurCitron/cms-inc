@@ -72,7 +72,7 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 	$sHeader .= '	header(\'Content-Type: text/html; charset='.$_SESSION['encod'].'\');'."\n";
 	$sHeader .= '?'.">\n";
 
-	$sHeader .= fullDoctype($_SESSION['doctype'], $_SESSION['offline'], $_SESSION['site_langue'])."\n";
+	$sHeader .= fullDoctype($_SESSION['doctype'], $_SESSION['site_langue'])."\n";
 
 	$sHeader .= '	<head>'."\n";
 	$sHeader .= '	<meta name="Copyright" content="'.$_SESSION['copyright'].'" />'."\n";
@@ -91,10 +91,9 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
         
         if(file_exists( $_SERVER[ 'DOCUMENT_ROOT' ] . '/favicon.ico' ) ) $sHeader .= '	<link rel="icon" href="/favicon.ico" />'."\n";
         else if( file_exists( $_SERVER[ 'DOCUMENT_ROOT' ] . '/favicon.png' ) ) $sHeader .= '	<link rel="icon" type="image/png" href="/favicon.png" />'."\n";
-
-    if(intval($_SESSION['offline']) == 1) {
-		 $sHeader .= '<meta name="apple-mobile-web-app-capable" content="yes">';
-	}
+	
+        
+        
 	
 	if (intval($_SESSION['https'])==1){
 		$protocol = 'https';
@@ -174,23 +173,6 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
                     }
             }
         }
-	
-	// inclus un fichier custom pour le header s'il existe
-	// utilisé pour les liens canonical
-	if (is_file($_SERVER['DOCUMENT_ROOT']."/include/modules/".$_SESSION['rep_travail']."/meta/meta.inc.php")){
-		 
-		//include ($_SERVER['DOCUMENT_ROOT']."/include/modules/".$_SESSION['rep_travail']."/meta/meta.inc.php");  
-		$sHeader .= '<'.'?php'."\n";
-		$sHeader .= '	include($_SERVER[\'DOCUMENT_ROOT\'].\'/include/modules/'.$_SESSION['rep_travail'].'/meta/meta.inc.php\');'."\n"; 
-		$sHeader .= '?'.">\n";
-		
-	}
-	else { 
-	
-
-	}
-
-
 	
 	$sHeader .= '	<script src="/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/XHRConnector.js"></script>'."\n";
@@ -273,7 +255,6 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 		}
 		
 	}
-		
 	
 	if($oPage){ // js + css custom
 		list($aResJSunique, $aResMediaByPath) = getPageDependencies($oPage);		
@@ -373,8 +354,6 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 		$sHeader .= '	<script src="'.$jsGlossaire.'" type="text/javascript"></script>'."\n";
 	}
 	
-	// tracking par minisite
-	$sHeader .= getCodeTrackingByMinisite( $_SESSION['idSite'] ) ; 
 	return $sHeader;
 }
 
@@ -404,43 +383,6 @@ function getPageFooter() {
 	return '</body>
 	</html>	';
 }
-
-function getCodeTrackingByMinisite( $id_minisite ) {
-
-	$oSite = new cms_site($id_minisite); 
-	$codegooana = "";  
-	if (method_exists ($oSite, "get_codegooana")) {
- 
-		if ($oSite->get_codegooana() != '') {
-			$codegooana = $oSite->get_codegooana(); 
-			// tester si il s'agit que du code UA de google analytics 
-			/*UA-52442960-3*/
-			if (preg_match("/^\bUA-\d{4,9}-\d{1,4}\b/i", $codegooana)) {  
-				$codegooana_final =			"	<script>"."\n";
-				$codegooana_final.=			"	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){"."\n";
-				$codegooana_final.=		  	"	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),"."\n";
-				$codegooana_final.=		  	"	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)"."\n";
-				$codegooana_final.=		  	"	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');"."\n";
-				$codegooana_final.=		  	"	 	"."\n";
-				$codegooana_final.=		  	"	ga('create', '".$codegooana."', 'auto');"."\n";
-				$codegooana_final.=		  	"	ga('send', 'pageview');"."\n";
-				$codegooana_final.=			"		"."\n";
-				$codegooana_final.=			"	</script> "; 
-						
-			}
-			elseif (preg_match("/<script\b[^>]*>([\s\S]*?)<\/script>/i", $codegooana)) {  
-				$codegooana_final =	($codegooana);
-			
-			}
-			 
-		}	 
-	}
-	
-	return $codegooana_final;
-	
-}
-
-
 function getTamponPage($divArray, $oInfos_page, $oPage, $gabGenerated="") 
 {
 	$tampon = getPageHeader($oInfos_page, $oPage);

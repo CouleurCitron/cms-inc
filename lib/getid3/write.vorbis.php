@@ -20,7 +20,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | dependencies: vorbiscomment binary.                                  |
 // +----------------------------------------------------------------------+
 //
-// $Id: write.vorbis.php,v 1.2 2013-03-01 10:34:19 pierre Exp $
+// $Id: write.vorbis.php,v 1.1 2013-09-30 09:31:25 raphael Exp $
 
 
 class getid3_write_vorbis extends getid3_handler_write

@@ -5,20 +5,13 @@ $direct_call = false;
 $exit_display = false;
 $switchValue = '';
 
-global $bCms_site;
-global $classeName;
-global $default_cms_site_name;
-global $isRecursive;
-global $aOps;
-global $sql;
-
 if (empty($aNodeToSort)) {
 	 
 	// AJAX or direct call
 	// Added by Luc
 	$direct_call = true;
-	include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-	include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");
+	include_once("cms-inc/include_cms.php");
+	include_once("cms-inc/include_class.php");
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 	// translation engine
@@ -44,7 +37,6 @@ if (empty($aNodeToSort)) {
 		if (!is_null($oRes->XML_inherited))
 			$sXML = $oRes->XML_inherited;
 		else	$sXML = $oRes->XML;
-
 		//$sXML = $oRes->XML;
 		xmlClassParse($sXML);
 
@@ -56,48 +48,7 @@ if (empty($aNodeToSort)) {
 		$classePrefixe = $stack[0]["attrs"]["PREFIX"];
 		$aNodeToSort = $stack[0]["children"];
 
-		/**
-		 * Classe récursive sur elle même
-		 * Check sur la la classe associée aussi
-		 * Guillaume / 2014
-		 */
-		$isRecursive = false;
-		if(isset($stack[0]["attrs"]["ORDONABLE"]) && isset($stack[0]["attrs"]["DEPTH"]) && isset($stack[0]["attrs"]["PARENT"])) {
-			$isRecursive = true;
-		}
-
-		for ($i=0; $i<count($aNodeToSort); $i++) {
-			if ($aNodeToSort[$i]["name"] == "ITEM" && $aNodeToSort[$i]["attrs"]["NAME"] == $_GET['field']) {
-				$classe = $aNodeToSort[$i]["attrs"]["FKEY"];
-				eval("$"."oRes = new ".$classe."();");
-				if (!is_null($oRes->XML_inherited))
-					$sXML = $oRes->XML_inherited;
-				else	$sXML = $oRes->XML;
-				xmlClassParse($sXML);
-
-				if(isset($stack[0]["attrs"]["ORDONABLE"]) && isset($stack[0]["attrs"]["DEPTH"]) && isset($stack[0]["attrs"]["PARENT"])) {
-					$isRecursive = true;
-				}
-			}
-		}
-
-		if ($_GET['id'] == -1){
-			eval("$"."oRes = new ".$_GET['class']."();");
-		}
-		else{
-			eval("$"."oRes = new ".$_GET['class']."(".$_GET['id'].");");
-		}
-		if (!is_null($oRes->XML_inherited))
-			$sXML = $oRes->XML_inherited;
-		else	$sXML = $oRes->XML;
-
-		//$sXML = $oRes->XML;
-		xmlClassParse($sXML);
-
-		$currentStackClassParent = $stack[0]["attrs"]["PARENT"];
-
 		// get the linkage field node
-
 		for ($i=0; $i<count($aNodeToSort); $i++) {
 			if ($aNodeToSort[$i]["name"] == "ITEM" && $aNodeToSort[$i]["attrs"]["NAME"] == $_GET['field'])
 				break;
@@ -426,7 +377,7 @@ $aSelect = array();
 $aWhere = array();
 $aOrder = array();
 $aListeChamps = $oTemp->getListeChamps();
-
+	
 //ID
 array_push($aSelect, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $oTemp->getFieldPK())." as ID  ");
 //array_push($aSelect, "fn.".$foreignPrefixe."_id as ID  ");
@@ -441,7 +392,6 @@ if ($valueDisplay!="")
 // STATUT 
 if ($foreignName != 'cms_page' && $oTemp->getGetterStatut() != "none")
 	array_push($aSelect, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, 'statut')." as STATUT  ");
-
 	//array_push($aSelect, "fn.".$foreignPrefixe."_statut as STATUT  ");
 //if ($oTemp->getGetterStatut() != "none") array_push($aSelect, "fn.".$foreignPrefixe."_statut as STATUT  "); 	
 
@@ -452,9 +402,6 @@ if ($tempIsDisplayForeign )
 	array_push($aSelect, "fd.".getCorrectField ($oTempForeignDisplay->getListeChamps(), $foreignDisplayPrefixe, $oTempForeignDisplay->getDisplay())." as DISPLAY_LIB  ");
 	//array_push($aSelect, " fd.".$foreignDisplayPrefixe."_".$oTempForeignDisplay->getDisplay()." as DISPLAY_LIB ");
 
-if($isRecursive) {
-	array_push($aSelect, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $stack[0]["attrs"]["PARENT"])." as PARENT  ");	
-}
 	 
 // CMS_SITE 
 if ($bCms_site == true){
@@ -484,11 +431,6 @@ if ($tempIsAbstractForeign && $valueAbstract != "cms_site")
 if ($tempIsDisplayForeign && $valueDisplay != "cms_site")
 	array_push($aWhere, " fd.".getCorrectField ($oTempForeignDisplay->getListeChamps(), $foreignDisplayPrefixe, 'id')." = fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $valueDisplay)." ");
 	//array_push($aWhere, " fd.".$foreignDisplayPrefixe."_id = fn.".$foreignPrefixe."_".$valueDisplay);
-
-if($isRecursive) {
-	//Uniquement premier niveau pour le moment
-	array_push($aWhere, " fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $stack[0]["attrs"]["PARENT"])." = -1 ");
-}
  
 //aFkeyFilter_name
 if ($isFkeyFilter) { 
@@ -516,7 +458,7 @@ if ($isFkeyFilter) {
 if ($bCms_site && $foreignName != "classe") 
 	array_push($aWhere, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $cms_site_name)." = ".$_SESSION['idSite_travail']." ");
 	//array_push($aWhere, "fn.".$foreignPrefixe."_".$cms_site_name." = ".$_SESSION['idSite_travail']." ");
-
+	 
 if ($valueAbstract!="" || $valueDisplay!="") {
 	if ($typeDisplay == "date" || $typeAbstract == "date") {
 		if ($typeDisplay == "date" && $valueDisplay != ""  )
@@ -526,17 +468,12 @@ if ($valueAbstract!="" || $valueDisplay!="") {
 			array_push($aOrder, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $valueAbstract)." DESC ");
 			//array_push($aOrder, "fn.".$foreignPrefixe."_".$valueAbstract." DESC "); 
 	} else {
-		if($isRecursive) {
-			array_push($aOrder, $foreignPrefixe."_".$stack[0]["attrs"]["ORDONABLE"]." ASC ");
-			array_push($aOrder, $foreignPrefixe."_".$stack[0]["attrs"]["DISPLAY"]." ASC ");
-		} else {
-			if ($typeDisplay != "date" && $valueDisplay != "" )
-				array_push($aOrder, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $valueDisplay)." ASC ");
-				//array_push($aOrder, "fn.".$foreignPrefixe."_".$valueDisplay." ASC ");  
-			if ($typeAbstract != "date" && $valueAbstract != "" )
-				array_push($aOrder, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $valueAbstract)." ASC ");
-				//array_push($aOrder, "fn.".$foreignPrefixe."_".$valueAbstract." ASC ");  
-		}
+		if ($typeDisplay != "date" && $valueDisplay != "" )
+			array_push($aOrder, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $valueDisplay)." ASC ");
+			//array_push($aOrder, "fn.".$foreignPrefixe."_".$valueDisplay." ASC ");  
+		if ($typeAbstract != "date" && $valueAbstract != "" )
+			array_push($aOrder, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, $valueAbstract)." ASC ");
+			//array_push($aOrder, "fn.".$foreignPrefixe."_".$valueAbstract." ASC ");  
 	} 
 
 	// controle groupe wise pour les non admin
@@ -626,19 +563,22 @@ if ($valueAbstract!="" || $valueDisplay!="") {
 			}
 		}
 	}  
+	 
 	
 	if (sizeof($aWhere) > 0)
 		$sql.=" WHERE ".join(" AND ", $aWhere);
 	if (sizeof($aOrder) > 0)
 		$sql.=" ORDER BY ".join(" , ", $aOrder);
+	
+
 	if (strrpos($sql, ",") == (strlen($sql)-1))
 		$sql = substr($sql, 0, strrpos($sql, ","));
-
+		
 	//print ( $sql);
 
-	//$res = dbGetObjectsFromRequete($foreignName, $sql);
+	//$aForeign = dbGetObjectsFromRequete($foreignName, $sql);
 	$res = $db->Execute($sql);
-	
+	 
 } 
 
 //print ( $sql);
@@ -656,7 +596,7 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 		$res->MoveFirst();	  
 		while(!$res->EOF) {
 			$row = $res->fields;
-
+	
 			(isset($row["STATUT"])) ?  $tempStatus = $row["STATUT"]  :  $tempStatus = DEF_ID_STATUT_LIGNE;
 			if ($aNodeToSort[$i]["attrs"]["NAME"] == "candidature") $tempStatus = DEF_ID_STATUT_LIGNE;
 			$tempId = $row["ID"] ;
@@ -680,7 +620,7 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 
 } else {
 	 
-	//viewArray($aNodeToSort[$i]);	
+	//viewArray($aNodeToSort[$i]);
 
 	// edition is available
 	if (($aNodeToSort[$i]["attrs"]["NAME"] == $displayField) && isset($display) && ($display!="")){
@@ -691,7 +631,7 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 		if ($res) {
 			$res->MoveFirst();  
 			while(!$res->EOF) {
-				$row = $res->fields;				
+				$row = $res->fields;
 				 
 				(isset($row["STATUT"])) ?  $tempStatus = $row["STATUT"]  :  $tempStatus = DEF_ID_STATUT_LIGNE;
 				if ($aNodeToSort[$i]["attrs"]["NAME"] == "candidature"){
@@ -719,7 +659,8 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 	} else {
 		if ($aNodeToSort[$i]["attrs"]["FKEY"] == "cms_site" && $classeName != "classe" && $classeName != "cms_site") {
 			
-		} else {			
+		} else {
+			
 			// translation data
 			// Added by Luc - 13 oct. 2009
 			if(!is_null($aForeign[0]->XML_inherited))
@@ -729,7 +670,6 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 			//$tmpXML = $aForeign[0]->XML;
 			$tmp_stack = array();// init stack
 			$aForeignXMLChildren = $stack[0]["children"];
-			$FkeyStack = $stack;
 			
 			$aExpectedStatuses = array();
 			// tst de condition - type WHERE
@@ -750,296 +690,260 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 			$oUser = new bo_users($_SESSION['userid']);
 			if ($res) {
 				// use buffer table to avoid record ubiquity 
+				 
 				$eCountClasseToFind = getCount_where("classe", array("cms_nom"), array($oTemp->getAbstract()), array("TEXT"));
+				
 				$res->MoveFirst();
 				while(!$res->EOF) {
-					displayOptionSelect($sql, $res, $FkeyStack, $oTemp, $aNodeToSort[$i], $eKeyValue, '-1');
+					$row = $res->fields;				  
+					 
+					 // statut
+					(isset($row["STATUT"])) ?  $tempStatus = $row["STATUT"]  :  $tempStatus = DEF_ID_STATUT_LIGNE;
+					$tempId = $row["ID"] ;
+				 
+					if ($tempStatus == DEF_ID_STATUT_LIGNE || $aNodeToSort[$i]["attrs"]["FKEY"] == "newsletter" || in_array($tempStatus ,$aExpectedStatuses) || in_array('*' ,$aExpectedStatuses)){					 	
+					 
+						if ($bCms_site == true && $classeName != "classe" && $classeName != "cms_site" && $default_cms_site_name=="") { 
+							//$temp_cms_site = $row["ABSTRACT"] ;
+							$temp_cms_site = $row["CMS_SITE"] ;
+
+							if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail'] != '' &&  preg_match("/backoffice/si", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || $temp_cms_site == $idSite) {						
+								 
+								if ((($aNodeToSort[$i]["attrs"]["NAME"] != 'rank')&&($aNodeToSort[$i]["attrs"]["NAME"] != 'bo_groupes'))||
+									(($aNodeToSort[$i]["attrs"]["NAME"] == 'rank')&&($oUser->get_rank()<=$tempId)&&($oUser->get_rank()!=-1)) ||
+									(($aNodeToSort[$i]["attrs"]["NAME"] == 'bo_groupes')&&($oUser->get_bo_groupes()==$tempId)) ||
+									($_SESSION['rank'] == 'ADMIN')){// fin if si rank habilité	
+									$sTempSel = "<option value=\"".$tempId."\"";
+									if ($eKeyValue == $tempId)
+										$sTempSel.= ' selected="true"';						
+									$sTempSel.= ">";
+									
+									$selItem = '';	
+									//eval ("$sel.= substr($"."oForeign->get_".strval($oTemp->getDisplay())."(), 0, 100);");
+									// translation data
+									// Added by Luc - 13 oct. 2009
+									$aForeignAttributes = Array();
+									if ($tempIsDisplayForeign){
+										$itemValue = $row["DISPLAY_LIB"];
+										$temp_to_compare = $oForeignDisplay->getDisplay();
+									} else {
+										$itemValue = $row["DISPLAY"];
+										$temp_to_compare = $oTemp->getDisplay(); 
+									}
+									foreach ($aForeignXMLChildren as $children) {
+										if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
+											$aForeignAttributes = $children['attrs'];
+											break;
+										}
+									}
+									if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
+										if ($aForeignAttributes["TYPE"] == "int") {
+											if ($aForeignAttributes["TRANSLATE"] == 'reference')
+												$itemValue = $translator->getByID($itemValue);
+										} elseif ($aForeignAttributes["TYPE"] == "enum") {
+											if ($aForeignAttributes["TRANSLATE"] == "value")
+												$itemValue = $translator->getText($itemValue);
+										} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
+									}
+									// end translation data
+									$selItem.= $itemValue;
+	
+									// translation data
+									// Added by Luc - 13 oct. 2009
+									if ($oTemp->getDisplay() != $oTemp->getAbstract()) {
+										$selItem.= " - ";
+										if ($tempIsAbstractForeign){
+											$itemValue = $row["ABSTRACT_LIB"];
+											$temp_to_compare = $oTemp->getDisplay();  
+										} else {
+											$itemValue = $row["ABSTRACT"];
+											$temp_to_compare = $oTemp->getAbstract(); 
+										}
+										foreach ($aForeignXMLChildren as $children) {
+											if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
+												$aForeignAttributes = $children['attrs'];
+												break;
+											}
+										}	
+										if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
+											if ($aForeignAttributes["TYPE"] == "int") {
+												if ($aForeignAttributes["TRANSLATE"] == 'reference')
+													$itemValue = $translator->getByID($itemValue);
+											} elseif ($aForeignAttributes["TYPE"] == "enum") {
+												if ($aForeignAttributes["TRANSLATE"] == "value")
+													$itemValue = $translator->getText($itemValue);
+											} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
+										}
+										// end translation data
+										$selItem.= $itemValue;
+									}
+									$sTempLib = (strlen($selItem) > 100 ? substr($selItem, 0, 100)." ... " : $selItem);
+									$sTempSel.= $sTempLib;
+									$sTempSel.= "</option>\n";
+									$aOps[strtoupper($sTempLib)]=$sTempSel;
+									
+								} // fin if si rank habilité
+							}
+
+						} else {						
+							
+							if ((($aNodeToSort[$i]["attrs"]["NAME"] != 'rank')&&($aNodeToSort[$i]["attrs"]["NAME"] != 'bo_groupes'))||
+								(($aNodeToSort[$i]["attrs"]["NAME"] == 'rank')&&($oUser->get_rank()<=$tempId)&&($oUser->get_rank()!=-1)) ||
+								(($aNodeToSort[$i]["attrs"]["NAME"] == 'bo_groupes')&&($oUser->get_bo_groupes()==$tempId)) ||
+								($_SESSION['rank'] == 'ADMIN')){// fin if si rank habilité	 
+								
+								$sTempSel= "<option value=\"".$tempId."\"";
+								if ($eKeyValue == $tempId)
+									$sTempSel.= ' selected="true"';						
+								$sTempSel.= ">";
+								$selItem ="";
+								
+								// translation data
+								// Added by Luc - 13 oct. 2009
+								$aForeignAttributes = Array();
+								if ($tempIsDisplayForeign){
+									$itemValue = $row["DISPLAY_LIB"]; 
+									//$temp_to_compare = $oForeignDisplay->getDisplay(); 
+								} else if ($tempIsDisplayEnum) {   
+									eval("$"."itemValue = $"."enum".ucfirst($tempForeignDisplay)."[".$row["DISPLAY"]."];"); 
+									$temp_to_compare = $oTemp->getDisplay(); 
+								} else {
+									$itemValue = $row["DISPLAY"];
+									$temp_to_compare = $oTemp->getDisplay();  
+								}
+								foreach ($aForeignXMLChildren as $children) {
+									if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
+										$aForeignAttributes = $children['attrs'];
+										break;
+									}
+								}
+								//echo "TEST : ".$aForeignAttributes["TYPE"];
+								if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
+									if ($aForeignAttributes["TYPE"] == "int") {
+										if ($aForeignAttributes["TRANSLATE"] == 'reference')
+											$itemValue = $translator->getByID($itemValue);
+									} elseif ($aForeignAttributes["TYPE"] == "enum") {
+									 	if ($aForeignAttributes["TRANSLATE"] == "value")
+									 		$itemValue = $translator->getText($itemValue);
+									} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
+								}
+								// end translation data
+								
+								// TLS display 
+								if (DEF_APP_USE_TRANSLATIONS && $translateDisplay) { 
+									if ($typeForeignDisplay == "int") {
+										if ($translateDisplay == 'reference')
+											$itemValue = $translator->getByID($itemValue);
+									} elseif ($typeForeignDisplay == "enum") {
+										if ($translateDisplay == "value")
+											$itemValue =  $translator->getText($itemValue);
+									} else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";
+								}
+								
+								$selItem .= $itemValue;
+
+								$itemValue = "";
+								if ($oTemp->getDisplay() != $oTemp->getAbstract() && $oTemp->getAbstract() != "statut"){
+									
+									$selItem.= " - ";
+									$itemValue = $row["ABSTRACT"]; 
+									 
+									$sForeignDisplay_="";
+									if ($eCountClasseToFind > 0 && $sNameClasseToFind != '') {  // modif 02/11/11 => on vérifie que  $sNameClasseToFind != ''				 											 
+										while (getCount_where("classe", array("cms_nom"), array($sNameClasseToFind), array("TEXT")) ==  1){ 
+											//echo "sNameClasseToFind :".$sNameClasseToFind."<br />";
+											//echo "itemValue :".$itemValue."<br />";
+											eval("$"."oForeignDisplay = new ".$sNameClasseToFind."($"."itemValue);");
+											eval("$"."sForeignDisplay = $"."oForeignDisplay->get_".$oForeignDisplay->getDisplay()."();"); 
+											$sForeignDisplay_ = $sForeignDisplay." > ".$sForeignDisplay_;
+											eval (" $"."itemValue = $"."oForeignDisplay->get_".strval($oForeignDisplay->getAbstract())."();"); 
+										 
+											$sNameClasseToFind = $oForeignDisplay->getAbstract();
+										 } 
+										$sel.= substr($sForeignDisplay_, 0, strlen($sForeignDisplay_)-3);										
+									} 
+									else {										
+										$aForeignAttributes = Array();
+										if ($bCms_site && $default_cms_site_name == -1) { 
+										 	$itemValue = $row["ABSTRACT_LIB"];
+											
+											foreach ($aForeignXMLChildren as $children) {
+												if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($oTemp->getAbstract())) {
+													$aForeignAttributes = $children['attrs'];
+													break;
+												}
+											}
+										}
+										else {  
+											if ($tempIsAbstractForeign) {  
+												$itemValue = $row["ABSTRACT_LIB"];  
+												$temp_to_compare = $oTemp->getDisplay();  
+												
+											} elseif ($tempIsAbstractEnum) {     
+												eval("$"."itemValue = $"."enum".ucfirst($tempForeignAbstract)."[".$row["ABSTRACT"]."];"); 
+												$temp_to_compare = $oTemp->getAbstract(); 
+											} else {
+												$itemValue = $row["ABSTRACT"];
+												$temp_to_compare = $oTemp->getAbstract();  
+											}
+											foreach ($aForeignXMLChildren as $children) {
+												if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
+													$aForeignAttributes = $children['attrs'];
+													break;
+												}
+											}
+										}
+										// translation data
+										// Added by Luc - 13 oct. 2009
+										if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
+											if ($aForeignAttributes["TYPE"] == "int") {
+												if ($aForeignAttributes["TRANSLATE"] == 'reference')
+													$itemValue = $translator->getByID($itemValue);
+											} elseif ($aForeignAttributes["TYPE"] == "enum") {
+											 	if ($aForeignAttributes["TRANSLATE"] == "value")
+											 		$itemValue = $translator->getText($itemValue);
+											} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
+										}
+										// end translation data										
+										
+										if (DEF_APP_USE_TRANSLATIONS && $translateDisplay) { 
+											if ($typeForeignDisplay == "int") {
+												if ($translateDisplay == 'reference')
+													$itemValue = $translator->getByID($row["ABSTRACT_LIB"]);
+											} elseif ($typeForeignDisplay == "enum") {
+												if ($translateDisplay == "value")
+													$itemValue =  $translator->getText($row["ABSTRACT_LIB"]);
+											} else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";											 
+										}										
+										$selItem.= $itemValue;
+									}									
+								} 
+								$sTempLib = (strlen($selItem) > 100 ? substr($selItem, 0, 100)." ... " : $selItem);
+								$sTempSel.= $sTempLib;
+								$sTempSel.= "</option>\n"; 
+								$aOps[strtoupper($sTempLib).$row["ID"]]=$sTempSel;
+							} // fin if si rank habilité		
+							
+									
+						}					
+					} 
 					$res->MoveNext();
-				}
+				} 
 			}  
 		}
 	}
 } 
-
-function displayOptionSelect($sql, $res, $stack, $oTemp, $aCurrentNode, $eKeyValue, $previousParent, $current_level = 0) {
-	// error_reporting(E_ALL);
-	global $translator;
-	global $bCms_site;
-	global $classeName;
-	global $default_cms_site_name;
-	global $tempIsDisplayForeign;
-	global $tempIsDisplayEnum;
-	global $aForeignXMLChildren;
-	global $translateDisplay;
-	global $isRecursive;
-	global $aOps;
-	global $db;
-        global $oUser;
-
-	$aListeChamps = $oTemp->getListeChamps();
-	$foreignPrefixe = $stack[0]["attrs"]["PREFIX"];
-	$currentStackClassParent = $stack[0]["attrs"]["PARENT"];
-	 // statut
-	(isset($row["STATUT"])) ?  $tempStatus = $row["STATUT"]  :  $tempStatus = DEF_ID_STATUT_LIGNE;
-	$row = $res->fields;
-	$tempId = $row["ID"];
-
-	if ($tempStatus == DEF_ID_STATUT_LIGNE || $aCurrentNode["attrs"]["FKEY"] == "newsletter" || in_array($tempStatus ,$aExpectedStatuses) || in_array('*' ,$aExpectedStatuses)){					 	
-
-		if ($bCms_site == true && $classeName != "classe" && $classeName != "cms_site" && $default_cms_site_name=="") { 
-
-			//$temp_cms_site = $row["ABSTRACT"] ;
-			$temp_cms_site = $row["CMS_SITE"] ;
-
-			if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail'] != '' &&  preg_match("/backoffice/si", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || $temp_cms_site == $idSite) {						
-				 
-				if ((($aCurrentNode["attrs"]["NAME"] != 'rank')&&($aCurrentNode["attrs"]["NAME"] != 'bo_groupes'))||
-					(($aCurrentNode["attrs"]["NAME"] == 'rank')&&($oUser->get_rank()<=$tempId)&&($oUser->get_rank()!=-1)) ||
-					(($aCurrentNode["attrs"]["NAME"] == 'bo_groupes')&&($oUser->get_bo_groupes()==$tempId)) ||
-					($_SESSION['rank'] == 'ADMIN')){// fin if si rank habilité	
-					$sTempSel = "<option value=\"".$tempId."\"";
-					if ($eKeyValue == $tempId)
-						$sTempSel.= ' selected="true"';						
-					$sTempSel.= ">";
-
-					
-					$selItem = '';	
-					//eval ("$sel.= substr($"."oForeign->get_".strval($oTemp->getDisplay())."(), 0, 100);");
-					// translation data
-					// Added by Luc - 13 oct. 2009
-					$aForeignAttributes = Array();
-					if ($tempIsDisplayForeign){
-						$itemValue = $row["DISPLAY_LIB"];
-						$temp_to_compare = $oForeignDisplay->getDisplay();
-					} else {
-						$itemValue = $row["DISPLAY"];
-						$temp_to_compare = $oTemp->getDisplay(); 
-					}
-					foreach ($aForeignXMLChildren as $children) {
-						if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
-							$aForeignAttributes = $children['attrs'];
-							break;
-						}
-					}
-					if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
-						if ($aForeignAttributes["TYPE"] == "int") {
-							if ($aForeignAttributes["TRANSLATE"] == 'reference')
-								$itemValue = $translator->getByID($itemValue);
-						} elseif ($aForeignAttributes["TYPE"] == "enum") {
-							if ($aForeignAttributes["TRANSLATE"] == "value")
-								$itemValue = $translator->getText($itemValue);
-						} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
-					}
-					// end translation data
-					$selItem.= $itemValue;
-
-					// translation data
-					// Added by Luc - 13 oct. 2009
-					if ($oTemp->getDisplay() != $oTemp->getAbstract()) {
-						$selItem.= " - ";
-						if ($tempIsAbstractForeign){
-							$itemValue = $row["ABSTRACT_LIB"];
-							$temp_to_compare = $oTemp->getDisplay();  
-						} else {
-							$itemValue = $row["ABSTRACT"];
-							$temp_to_compare = $oTemp->getAbstract(); 
-						}
-						foreach ($aForeignXMLChildren as $children) {
-							if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
-								$aForeignAttributes = $children['attrs'];
-								break;
-							}
-						}	
-						if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
-							if ($aForeignAttributes["TYPE"] == "int") {
-								if ($aForeignAttributes["TRANSLATE"] == 'reference')
-									$itemValue = $translator->getByID($itemValue);
-							} elseif ($aForeignAttributes["TYPE"] == "enum") {
-								if ($aForeignAttributes["TRANSLATE"] == "value")
-									$itemValue = $translator->getText($itemValue);
-							} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
-						}
-						// end translation data
-						$selItem.= $itemValue;
-					}
-					$sTempLib = (strlen($selItem) > 100 ? substr($selItem, 0, 100)." ... " : $selItem);
-					$sTempSel.= $sTempLib;
-					$sTempSel.= "</option>\n";
-					$aOps[strtoupper($sTempLib)]=$sTempSel;
-					
-				} // fin if si rank habilité
-			}
-
-		} else {
-
-			
-			if ((($aCurrentNode["attrs"]["NAME"] != 'rank')&&($aCurrentNode["attrs"]["NAME"] != 'bo_groupes'))||
-				(($aCurrentNode["attrs"]["NAME"] == 'rank')&&($oUser->get_rank()<=$tempId)&&($oUser->get_rank()!=-1)) ||
-				(($aCurrentNode["attrs"]["NAME"] == 'bo_groupes')&&($oUser->get_bo_groupes()==$tempId)) ||
-				($_SESSION['rank'] == 'ADMIN')){// fin if si rank habilité	 
-				
-				$sTempSel= "<option value=\"".$tempId."\"";
-				if ($eKeyValue == $tempId)
-					$sTempSel.= ' selected="true"';			
-				$sTempSel.= ">";
-				$selItem ="";
-
-				// translation data
-				// Added by Luc - 13 oct. 2009
-				$aForeignAttributes = Array();
-				if ($tempIsDisplayForeign){
-					$itemValue = $row["DISPLAY_LIB"];
-					//$temp_to_compare = $oForeignDisplay->getDisplay(); 
-				} else if ($tempIsDisplayEnum) {   
-					eval("$"."itemValue = $"."enum".ucfirst($tempForeignDisplay)."[".$row["DISPLAY"]."];"); 
-					$temp_to_compare = $oTemp->getDisplay(); 
-				} else {
-					$itemValue = $row["DISPLAY"];
-					$temp_to_compare = $oTemp->getDisplay();  
-				}
-				foreach ($aForeignXMLChildren as $children) {
-					if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
-						$aForeignAttributes = $children['attrs'];
-						break;
-					}
-				}
-				//echo "TEST : ".$aForeignAttributes["TYPE"];
-				if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
-					if ($aForeignAttributes["TYPE"] == "int") {
-						if ($aForeignAttributes["TRANSLATE"] == 'reference')
-							$itemValue = $translator->getByID($itemValue);
-					} elseif ($aForeignAttributes["TYPE"] == "enum") {
-					 	if ($aForeignAttributes["TRANSLATE"] == "value")
-					 		$itemValue = $translator->getText($itemValue);
-					} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
-				}
-				// end translation data
-				
-				// TLS display 
-				if (DEF_APP_USE_TRANSLATIONS && $translateDisplay) { 
-					if ($typeForeignDisplay == "int") {
-						if ($translateDisplay == 'reference')
-							$itemValue = $translator->getByID($itemValue);
-					} elseif ($typeForeignDisplay == "enum") {
-						if ($translateDisplay == "value")
-							$itemValue =  $translator->getText($itemValue);
-					} else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";
-				}
-
-				$selItem .= $itemValue;
-				$itemValue = "";
-
-				if ($oTemp->getDisplay() != $oTemp->getAbstract() && $oTemp->getAbstract() != "statut"){
-					$selItem.= " - ";
-					$itemValue = $row["ABSTRACT"]; 
-					 
-					$sForeignDisplay_="";
-					if ($eCountClasseToFind > 0 && $sNameClasseToFind != '') {  // modif 02/11/11 => on vérifie que  $sNameClasseToFind != ''				 											 
-						while (getCount_where("classe", array("cms_nom"), array($sNameClasseToFind), array("TEXT")) ==  1){ 
-							//echo "sNameClasseToFind :".$sNameClasseToFind."<br />";
-							//echo "itemValue :".$itemValue."<br />";
-							eval("$"."oForeignDisplay = new ".$sNameClasseToFind."($"."itemValue);");
-							eval("$"."sForeignDisplay = $"."oForeignDisplay->get_".$oForeignDisplay->getDisplay()."();"); 
-							$sForeignDisplay_ = $sForeignDisplay." > ".$sForeignDisplay_;
-							eval (" $"."itemValue = $"."oForeignDisplay->get_".strval($oForeignDisplay->getAbstract())."();"); 
-						 
-							$sNameClasseToFind = $oForeignDisplay->getAbstract();
-						 } 
-						$sel.= substr($sForeignDisplay_, 0, strlen($sForeignDisplay_)-3);										
-					} 
-					else {										
-						$aForeignAttributes = Array();
-						if ($bCms_site && $default_cms_site_name == -1) { 
-						 	$itemValue = $row["ABSTRACT_LIB"];
-							
-							foreach ($aForeignXMLChildren as $children) {
-								if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($oTemp->getAbstract())) {
-									$aForeignAttributes = $children['attrs'];
-									break;
-								}
-							}
-						}
-						else {  
-							if ($tempIsAbstractForeign) {  
-								$itemValue = $row["ABSTRACT_LIB"];  
-								$temp_to_compare = $oTemp->getDisplay();  
-								
-							} elseif ($tempIsAbstractEnum) {     
-								eval("$"."itemValue = $"."enum".ucfirst($tempForeignAbstract)."[".$row["ABSTRACT"]."];"); 
-								$temp_to_compare = $oTemp->getAbstract(); 
-							} else {
-								$itemValue = $row["ABSTRACT"];
-								$temp_to_compare = $oTemp->getAbstract();  
-							}
-							foreach ($aForeignXMLChildren as $children) {
-								if ($children['name'] == 'ITEM' && $children['attrs']['NAME'] == strval($temp_to_compare)) {
-									$aForeignAttributes = $children['attrs'];
-									break;
-								}
-							}
-						}
-						// translation data
-						// Added by Luc - 13 oct. 2009
-						if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
-							if ($aForeignAttributes["TYPE"] == "int") {
-								if ($aForeignAttributes["TRANSLATE"] == 'reference')
-									$itemValue = $translator->getByID($itemValue);
-							} elseif ($aForeignAttributes["TYPE"] == "enum") {
-							 	if ($aForeignAttributes["TRANSLATE"] == "value")
-							 		$itemValue = $translator->getText($itemValue);
-							} else	$itemValue = "Error - Translation engine can not be applied to <b><i>".$aForeignAttributes["TYPE"]."</i></b> type fields !!";
-						}
-						// end translation data										
-						
-						if (DEF_APP_USE_TRANSLATIONS && $translateDisplay) { 
-							if ($typeForeignDisplay == "int") {
-								if ($translateDisplay == 'reference')
-									$itemValue = $translator->getByID($row["ABSTRACT_LIB"]);
-							} elseif ($typeForeignDisplay == "enum") {
-								if ($translateDisplay == "value")
-									$itemValue =  $translator->getText($row["ABSTRACT_LIB"]);
-							} else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";											 
-						}										
-						$selItem.= $itemValue;
-					}									
-				} 
-				$sTempLib = (strlen($selItem) > 100 ? substr($selItem, 0, 100)." ... " : $selItem);
-				for($a = 0; $a < $current_level; $a++) {
-					$sTempSel .= '&nbsp;&nbsp;&nbsp;&nbsp;';
-				}
-				$sTempSel.= $sTempLib;
-				$sTempSel.= "</option>\n"; 
-
-				$aOps[strtoupper($sTempLib).$row["ID"]]=$sTempSel;
-				if($isRecursive) {
-					$pattern = '/'.$current_field.' = '.$previousParent.'/';
-					$replacement = $current_field.' = '.$row["ID"];
-					$sql = preg_replace($pattern, $replacement, $sql);
-					$resRec = $db->Execute($sql);
-					if ($resRec) {
-						$current_level++;
-						$resRec->MoveFirst();
-						while(!$resRec->EOF) {
-							displayOptionSelect($sql, $resRec, $stack, $oTemp, $aCurrentNode, $eKeyValue, $row["ID"], $current_level);
-							$resRec->MoveNext();
-						}
-					} else {
-						$current_level = 0;
-					}
-				}
-			} // fin if si rank habilité		
-		}					
-	} 
-}
-
 if (($aNodeToSort[$i]["attrs"]["FKEY"] != "cms_site") || ($classeName == "classe") || ($classeName == "cms_site")){
-	if(!$isRecursive) {
-		ksort($aOps);
-	}
+	ksort($aOps);
+	 
 	echo $sel;
 	echo implode('', $aOps);
 	unset($aOps);
 	echo '</select>';
+}
+
+if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
+	// ben on fait rien, banane
 }
 else{
 	$idPlus = ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"];
@@ -1074,7 +978,7 @@ else{
 	
 		$ifPath= $_SERVER['DOCUMENT_ROOT'].preg_replace('/\?.*$/msi', '', $ifUrl);
 		if(is_file($ifPath)){
-			echo '<a href="#'.$idPlus.'_plus" id="a'.$idPlus.'" class="arbo" onclick="loadIframe(\''.$idPlus.'\')">[+] '.$translator->getTransByCode('ajouterunitem').'</a>'."\n";
+			echo '<a href="#'.$idPlus.'_plus" class="picto picto_add" id="a'.$idPlus.'" class="arbo" onclick="loadIframe(\''.$idPlus.'\')">'.$translator->getTransByCode('ajouterunitem').'</a>'."\n";
 		}
 	}
 	
@@ -1088,8 +992,5 @@ else{
 	</div>										
 </div>	
 <?php
-
 }
-
-
 ?>

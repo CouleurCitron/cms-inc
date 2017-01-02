@@ -1,8 +1,4 @@
 <?php
-
-ini_set ('max_execution_time', 0); // Aucune limite d'execution
-ini_set("memory_limit","-1");
-
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 if (!isset($classeName)){
 	$classeName = preg_replace('/[^_]*_(.*)\.php/', '$1', basename($_SERVER['PHP_SELF']));
@@ -21,13 +17,13 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php')
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_cms.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php'); 
-/*
+
 $neededRAM = 512; // Mo
 
 $localRAM = (int)intval(str_replace('M', '', ini_get('memory_limit')));
 if ($localRAM < $neededRAM){
 	@ini_set('memory_limit', $neededRAM.'M'); 
-}*/
+}
 
 // objet 
 eval("$"."oRes = new ".$classeName."();");
@@ -193,7 +189,7 @@ if(isset($_FILES['importfile'])){
 			if ($fh){
 				while(!feof($fh)) {
 					$ligne = fgets($fh);
-					//echo $ligne;
+					echo $ligne;
 					if (preg_match ("/FIN/", $ligne)){ 
 						$bIntegre = true; 
 						break;					
@@ -378,7 +374,7 @@ else {
 		fclose($list);
 	}
 	$lien_gabarit = "<a href='/backoffice/".$classeName."/exportcsv_".$classeName.".php?Type=template'>Télécharger un modèle de fichier d'import - format csv </a>";
-	$lien_gabarit_xlsx = "<a href='/backoffice/cms/".$classeName."/xlsx_".$classeName.".php?Type=template'>Télécharger un modèle de fichier d'import - format xls </a>";
+	$lien_gabarit_xlsx = "<a href='/backoffice/".$classeName."/xlsx_".$classeName.".php?Type=template'>Télécharger un modèle de fichier d'import - format xls </a>";
 }
 
 
@@ -416,7 +412,7 @@ type="text/css">
   <br />
 </p>
 <p>
-	<span class="export_template"><img align="top" border="0" alt="Import" src="/backoffice/cms/img/go.gif">&nbsp;<strong><?php echo $lien_gabarit_xlsx; ?></strong></span><br />
+	<span class="export_template"><img align="top" border="0" alt="Import" src="/backoffice/cms/img/2013/icone/telecharger.png">&nbsp;<strong><?php echo $lien_gabarit_xlsx; ?></strong></span><br />
 
   <br />
 </p>

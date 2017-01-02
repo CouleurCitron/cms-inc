@@ -163,10 +163,10 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 							if ($bDoResize==true){
 								if (count($aImageOptions)>1){
 									if (preg_match('/^.+\.bmp$/msi', $aOption['src'])==1){
-										$aOption['resize']=preg_replace('/^(.+)\.bmp$/', '$1-size-'.($kO+1).'.jpg', basename($aOption['src']));
+										$aOption['resize']=preg_replace('/^(.+)\.bmp$/', $aNodeToSort[$i]["attrs"]["NAME"].'_$1-size-'.($kO+1).'.jpg', basename($aOption['src']));
 									}
 									else{							
-										$aOption['resize']=preg_replace('/^(.+)\.([png|jpeg|jpg|gif]+)$/', '$1-size-'.($kO+1).'.$2', basename($aOption['src']));
+										$aOption['resize']=preg_replace('/^(.+)\.([png|jpeg|jpg|gif]+)$/', $aNodeToSort[$i]["attrs"]["NAME"].'_$1-size-'.($kO+1).'.$2', basename($aOption['src']));
 									}
 								}
 								else {

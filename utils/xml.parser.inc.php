@@ -534,8 +534,7 @@ function xmlFileParse($file){
 	}
 	
 	xml_parser_free($xml_parser);
-	
-	return $stack;
+
 }
 
 function xmlStringParse($string){

@@ -199,7 +199,7 @@ function generateClasseFromXMLString($xmlstr){
 	$classeSRC .= "	if (istable(get_class($"."this)) == false){\n";
 	$classeSRC .= "		dbExecuteQuery($"."this->sMySql);\n";
 	$classeSRC .= "	}\n\n";
-	$classeSRC .= "	if($"."id!==null) {\n";
+	$classeSRC .= "	if($"."id!=null) {\n";
 	$classeSRC .= "		$"."tempThis = dbGetObjectFromPK(get_class($"."this), $"."id);\n";
 	$classeSRC .= "		foreach ($"."tempThis as $"."tempKey => $"."tempValue){\n";
 	$classeSRC .= "			$"."this->$"."tempKey = $"."tempValue;\n";

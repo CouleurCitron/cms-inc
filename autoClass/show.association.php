@@ -8,8 +8,8 @@ if (empty($aNodeToSort)) {
 	// AJAX or direct call
 	// Added by Luc
 	$direct_call = true;
-	include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-	include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");
+	include_once("cms-inc/include_cms.php");
+	include_once("cms-inc/include_class.php");
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 	// translation engine

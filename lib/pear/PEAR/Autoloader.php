@@ -18,7 +18,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // |                                                                      |
 // +----------------------------------------------------------------------+
 //
-// $Id: Autoloader.php,v 1.2 2013-03-01 10:34:24 pierre Exp $
+// $Id: Autoloader.php,v 1.1 2013-09-30 09:46:08 raphael Exp $
 
 if (!extension_loaded("overload")) {
     // die hard without ext/overload

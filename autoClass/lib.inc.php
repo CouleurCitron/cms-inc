@@ -112,14 +112,12 @@ function getObjetChildren($aO, $id=0){
 	}
 }
 
-if (!function_exists('NumToLetter')){
-	function NumToLetter($Col){
-		if ($Col <= 26) return chr($Col + 64);
-		
-		//puts us on Zero Bound Index… tis where my math is 1337.
-		$Col–;
-		return NumToLetter($Col / 26) . NumToLetter(($Col % 26) + 1);
-	}
+function NumToLetter($Col){
+	if ($Col <= 26) return chr($Col + 64);
+	
+	//puts us on Zero Bound Index… tis where my math is 1337.
+	$Col–;
+	return NumToLetter($Col / 26) . NumToLetter(($Col % 26) + 1);
 }
 
 function getUILink($classeName, $sAction){
@@ -338,14 +336,13 @@ function rewriteIfNeeded($str){
 // $oTemp = cacheObject($sTempClasse, $eKeyValue);
 
 function cacheObject($sObject, $eId){
-	//echo 'cacheObject('.$sObject.', '.$eId.')';
+	if ($sObject==''){
+		return false;	
+	}
+	
 	$bFound=NULL;
 
-	if (preg_match('/\/backoffice\/cms\//msi', $_SERVER['REQUEST_URI'])){
-		// pas de cache dans /backoffice/cms/
-		$bFound=false;
-	}
-	elseif (!isset($_SESSION['BO']['CACHE'])){
+	if (!isset($_SESSION['BO']['CACHE'])){
 		$_SESSION['BO']['CACHE'] = array();
 		$bFound=false;
 	}
@@ -356,13 +353,9 @@ function cacheObject($sObject, $eId){
 	elseif (!isset($_SESSION['BO']['CACHE'][$sObject][$eId])){
 		$bFound=false;
 	}
-	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])	&&	($_SESSION['BO']['CACHE'][$sObject][$eId]!=NULL)	){ // FOUND !!		
-		if (method_exists($_SESSION['BO']['CACHE'][$sObject][$eId], 'get_id')	&&	$_SESSION['BO']['CACHE'][$sObject][$eId]->get_id()==$eId){
-			$bFound=true;
-		}
-		else{
-			$bFound=false;
-		}
+	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])){ // FOUND !!
+		$bFound=true;
+		
 	}
 	else{ // ne devrait jamais se produire
 		$bFound=false;
@@ -371,12 +364,10 @@ function cacheObject($sObject, $eId){
 	// retour
 	if ($bFound==false){
 		eval('$'.'oCache = new '.$sObject.'('.$eId.');');
-		//echo('$'.'oCache = new '.$sObject.'('.$eId.');');
 		$_SESSION['BO']['CACHE'][$sObject][$eId] = $oCache;
 	}
 	else{
 		eval('$'.'oCache = new '.$sObject.'();');
-		//echo('$'.'oCache = new '.$sObject.'();');
 		$oTemp = $_SESSION['BO']['CACHE'][$sObject][$eId];
 		foreach ($oTemp as $tempKey => $tempValue){
 			$oCache->$tempKey = $tempValue;
@@ -1345,21 +1336,6 @@ function getItemByName($aNodes, $sName){
 	return false;
 }
 
-function getItemsByType($aNodes, $sOption){
-	$aReturn = array();
-	foreach ($aNodes as $key => $node){
-		if ($node["attrs"]["TYPE"] == $sOption){
-			$aReturn[] = $node;
-		}
-	}
-	if (count($aReturn) == 0){
-		return false;
-	}
-	else{
-		return $aReturn;
-	}
-}
-
 function getItemsByOption($aNodes, $sOption){
 	$aReturn = array();
 	foreach ($aNodes as $key => $node){
@@ -1435,7 +1411,7 @@ function getFilterPosts($needle="filter"){
 	$aReturn = array();
 	$aName = array();
 	foreach ($_POST as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true){
+		if (ereg($needle, $key) == true){
 			$aKeyVar = array();
 			$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 			$aReturn[] = $aKeyVar;
@@ -1451,7 +1427,7 @@ function getFilterPosts($needle="filter"){
 		// session qui permet de récupérer la recherche quand on revient à la page
 		// de liste suite à une modification de fiche
 		foreach ($_SESSION as $key => $postedvar){ 
-			if (preg_match('/'.$needle.'/si', $key) == true){
+			if (ereg($needle, $key) == true){
 				$aKeyVar = array();
 				$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 				
@@ -1477,7 +1453,7 @@ function getFilterPostsAsso(){
 	$aReturn = array();
 	$aName = array();
 	foreach ($_POST as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true && $postedvar != -1){
+		if (ereg($needle, $key) == true && $postedvar != -1){
 			$aKeyVar = array();
 			$aKeyVar[strtolower($key)] = $postedvar;
 			$aReturn[] = $aKeyVar;
@@ -1502,14 +1478,14 @@ function initFilterSession($needle="filter"){
 	// session qui permet de récupérer la recherche quand on revient à la page
 	// de liste suite à une modification de fiche
 	foreach ($_POST as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true){
+		if (ereg($needle, $key) == true){
 			unset ($_POST[$key]); 
 			unset ($_POST[strtolower(str_replace("filter", "", $key))]); 
 		}
 	} 
 	
 	foreach ($_SESSION as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true){ 
+		if (ereg($needle, $key) == true){ 
 			unset ($_SESSION[$key]); 
 			unset ($_SESSION[strtolower(str_replace("filter", "", $key))]); 
 		}
@@ -2767,29 +2743,18 @@ function getCorrectTable ($oTemp) {
 }
 
 
-function getValidHref ($link , $text, $target=false ) {
+function getValidHref ($link , $text) {
 	if ($link != '') {
-	 
-	 	if ($link != "#_" && $link != "#") {
-	 
-			if (!ereg("^http|ftp|https]://.*", $link) && !preg_match ( "/content/", $link)) { 
-				$link = "http://".$link ; 
-				
-			}
-			  
-			if (!preg_match ( "/content/", $link) ) {
-					$href = ' href="'.$link.'" target="_blank" ';
-			}
-			else if ( $target ) {
-					$href = ' href="'.$link.'" target="_blank" ';
-			}
-			else {
-				$href = ' href="'.$link.'" ';
-			} 
-			
+		if (!ereg("^http|ftp|https]://.*", $link) ) $link = "http://".$link ; 
+	
+		if (!preg_match ( "/content/", $link) ) {
+				$href = ' href="'.$link.'" target="blank" ';
 		}
+		else {
+			$href = 'href="'.$link.'"';
+		} 
 		 
-		$href =  '<a '.$href.'>'.$text.'</a>';
+		$href =  '<a "'.$href.'">'.$text.'</a>';
 	}
 	else {
 		$href = '';
@@ -2798,5 +2763,4 @@ function getValidHref ($link , $text, $target=false ) {
 	return $href;
 	
 }
-
 ?>

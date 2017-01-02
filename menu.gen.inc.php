@@ -184,10 +184,16 @@ if ($cms_site_allowed || $nameUser=="ccitron") {
 	// gestion du site
 	if (isAllowed ($rankUser, "ADMIN;GEST")  ) {
 		$aMenu[] = new Menu("main", "gestionsite", $translator->getTransByCode('minisites'), "");
-		if ($nameUser=="ccitron") {
+		if ($nameUser=="ccitron" || isAllowed ("MINISITE", $sFonct)) {
 			$aMenu[] = new Menu("gestionsite", "cms_site", $translator->getTransByCode('Liste_des_sites'), $URL_ROOT."/backoffice/cms/cms_site/list_cms_site.php");
 		}
 	} 
+	
+	if (isAllowed ("MINISITE", $sFonct)) {
+		if (isAllowed ($rankUser, "ADMIN;GEST")) {
+			$aMenu[] = new Menu("gestionsite", "cms_minisite", "Ajouter un minisite", $URL_ROOT."/backoffice/cms/cms_site/minisite_cms_site.php");
+		}
+	}
 	
 	if (isAllowed ("CMS", $sFonct)) {
 		if (isAllowed ($rankUser, "ADMIN;GEST")) {
@@ -233,7 +239,7 @@ if ($cms_site_allowed || $nameUser=="ccitron") {
 		}
 	}
 }
-	
+/*	
 if (isAllowed ("MINISITE", $sFonct)) {
 	if (isAllowed ($rankUser, "ADMIN;GEST")) {
 		$aMenu[] = new Menu("main", "gestionminisite", "Minisites", "");
@@ -246,6 +252,7 @@ if (isAllowed ($rankUser, "ADMIN;GEST")) {$aMenu[] = new Menu("gestionminisite",
 if (isAllowed ($rankUser, "ADMIN;GEST")) {$aMenu[] = new Menu("gestionminisite", "arbobrowse_minisite", "Parcourir l'arborescence des minisites", $URL_ROOT."/backoffice/cms/site/arboPage_browse.php?source=minisite");}
 if (isAllowed ($rankUser, "ADMIN;GEST")) $aMenu[] = new Menu("gestionminisite", "createpageWithNewGab_minisite", "Cr&eacute;er une page", $URL_ROOT."/backoffice/cms/site/pageLiteEditor.php");
 if (isActived(DEF_MENUS_CCITRON)) $aMenu[] = new Menu("gestionminisite", "regenerategabarit_minisite", "Reg&eacute;n&eacute;ration des pages", $URL_ROOT."/backoffice/cms/regenerateAll.php");
+*/
 
 if (isAllowed ("FORM", $sFonct)) {
 	if (isAllowed ($rankUser, "ADMIN;GEST")) $aMenu[] = new Menu("gestionbrique_minisite", "formedit", "Brique Formulaire", $URL_ROOT."/backoffice/cms/formulaire/formulaireEditor.php?step=init");
@@ -283,7 +290,6 @@ if (isAllowed ("CMS", $sFonct) ) {
 			if (isAllowed ($rankUser, "ADMIN")) $aMenu[] = new Menu("gestiongabarit", "creategabarit", $translator->getTransByCode('Creer_un_gabarit'), $URL_ROOT."/backoffice/cms/site/gabaritEditor.php");
 		}
 		if (isActived(DEF_MENUS_CCITRON)) $aMenu[] = new Menu("gestiongabarit", "regenerategabarit", $translator->getTransByCode('Regeneration_gabarits'), $URL_ROOT."/backoffice/cms/regenerateAll.php");
-		if (isActived(DEF_MENUS_CCITRON)) $aMenu[] = new Menu("gestiongabarit", "regeneratemanifest", $translator->getTransByCode('Regeneration_manifest'), $URL_ROOT."/backoffice/cms/regenerateManifest.php");
 		
 		// gestion des pages
 		if (isAllowed ($rankUser, "ADMIN;GEST")) $aMenu[] = new Menu("main", "gestionpage", $translator->getTransByCode('pages'), "");
@@ -408,13 +414,8 @@ if (isAllowed ("CMS", $sFonct) ) {
 	if (isAllowed ("JOB", $sFonct)) {	 
 		$aMenu[] = new Menu("main", "cms_job", "Job", "");		
 		$aMenu[] = new Menu("cms_job", "list_job_offre", $translator->getTransByCode('Offres'), "/backoffice/cms/job_offre/list_job_offre.php"); 
-		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=".urlencode('(1,5)')."&comparateur=".urlencode("in")."&titre=".$translator->getTransByCode('Candidatures_aux_stages');
+		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=1&comparateur=".urlencode("=")."&titre=".$translator->getTransByCode('Candidatures_aux_stages');
 		$aMenu[] = new Menu("cms_job", "list_job_candidature_1", $translator->getTransByCode('Candidatures_aux_stages'), $urlCandidate);
-                /*
-                $urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=5&comparateur=".urlencode("=")."&titre=".$translator->getTransByCode('Candidatures_apprentissage');
-		$aMenu[] = new Menu("cms_job", "list_job_candidature_1_b", $translator->getTransByCode('Candidatures_apprentissage'), $urlCandidate);
-                */
-                
 		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=1&comparateur=".urlencode(">")."&paramtype2=job_candidature&param2=contrat&contrat=5&comparateur2=".urlencode("<>")."&titre=".$translator->getTransByCode('Candidatures_aux_emplois');
 		$aMenu[] = new Menu("cms_job", "list_job_candidature_2", $translator->getTransByCode('Candidatures_aux_emplois'), $urlCandidate);
 		$urlCandidate = $URL_ROOT."/backoffice/cms/job_candidature/list_job_candidature.php?param=job_contrat&job_contrat=-1&comparateur=".urlencode("=")."&titre=".$translator->getTransByCode('Candidatures_spontanees');
@@ -756,5 +757,76 @@ if (isAllowed ("SS4", $sFonct)) {
 	// gestion des traductions
 	$aMenu[] = new Menu("ss4", "gestionss4_texte", "Traductions", "");
 	$aMenu[] = new Menu("gestionss4_texte", "ss4_texte", "Liste des textes", $URL_ROOT."/backoffice/adss/ss4_texte/list_ss4_texte.php");
+}
+
+if (isAllowed ("SS5", $sFonct)) {
+	$aMenu[] = new Menu("main", "ss5", "Slideshow 5", "");
+
+	// gestion des slides
+	$aMenu[] = new Menu("ss5", "gestionss5_slide", "Planches", "");
+	$aMenu[] = new Menu("gestionss5_slide", "ss5_slide", "Liste des slides", $URL_ROOT."/backoffice/adss/ss5_slide/list_ss5_slide.php");
+	$aMenu[] = new Menu("gestionss5_slide", "ss5_gabarit", "Gabarits", $URL_ROOT."/backoffice/adss/ss5_gabarit/list_ss5_gabarit.php");
+	$aMenu[] = new Menu("gestionss5_slide", "ss5_typegab", "Types de gabarits", $URL_ROOT."/backoffice/adss/ss5_typegab/list_ss5_typegab.php");	
+	
+	$aMenu[] = new Menu("gestionss5_slide", "ss5_ztype", "Editeurs", $URL_ROOT."/backoffice/adss/ss5_ztype/list_ss5_ztype.php");	
+	$aMenu[] = new Menu("gestionss5_slide", "ss5_theme", "Thèmes", $URL_ROOT."/backoffice/adss/ss5_theme/list_ss5_theme.php");
+	$aMenu[] = new Menu("gestionss5_slide", "optionsss5_slide", "Options", "");
+	$aMenu[] = new Menu("optionsss5_slide", "preview_ss5_slides", "Preview du XML des slides", $URL_ROOT."/backoffice/adss/ss5_slide/preview_ss5_slide.php");
+	
+	// gestion des videos
+	$aMenu[] = new Menu("ss5", "gestionss5_video", "Vid&eacute;os et MP", "");
+	$aMenu[] = new Menu("gestionss5_video", "list_ss5_video", "Vid&eacute;os", $URL_ROOT."/backoffice/adss/ss5_video/list_ss5_video.php");
+	$aMenu[] = new Menu("gestionss5_video", "list_ss5_audio", "MP", $URL_ROOT."/backoffice/adss/ss5_audio/list_ss5_audio.php");
+		
+	// gestion des playlists
+	$aMenu[] = new Menu("ss5", "gestionss5_playlist", "Présentations", "");
+	$aMenu[] = new Menu("gestionss5_playlist", "list_ss5_playlist", "Playlists", $URL_ROOT."/backoffice/adss/ss5_playlist/list_ss5_playlist.php");
+	$aMenu[] = new Menu("gestionss5_playlist", "list_ss5_pltheme", "Thèmes", $URL_ROOT."/backoffice/adss/ss5_pltheme/list_ss5_pltheme.php");
+	
+	$aMenu[] = new Menu("gestionss5_playlist", "optionsss5_playlist", "Options", "");
+	$aMenu[] = new Menu("optionsss5_playlist", "preview_ss5_playlist", "Preview du XML des playlists", $URL_ROOT."/backoffice/adss/ss5_playlist/preview_ss5_playlist.php");
+	$aMenu[] = new Menu("optionsss5_playlist", "purgecache_ss5_playlist", "Purger le cache", $URL_ROOT."/backoffice/adss/ss5_playlist/purgecache_ss5_playlist.php");
+	$aMenu[] = new Menu("optionsss5_playlist", "importfromzip_ss5_playlist", "Importer une présentation (zip)", $URL_ROOT."/backoffice/adss/ss5_playlist/importfromzip_ss5_playlist.php");
+	
+	// gestion des users
+	$aMenu[] = new Menu("ss5", "gestionss5_user", "Utilisateurs", "");
+	if (isAllowed ($rankUser, "ADMIN;GEST")) $aMenu[] = new Menu("gestionss5_user", "bo_users", $translator->getTransByCode('Utilisateurs'), $URL_ROOT."/backoffice/cms/bo_users/list_bo_users.php");
+	
+	$aMenu[] = new Menu("gestionss5_user", "ss5_usergroup", $translator->getTransByCode('Groupes'), $URL_ROOT."/backoffice/adss/ss5_usergroup/list_ss5_usergroup.php");
+
+
+	// gestion des slideshow
+	$aMenu[] = new Menu("ss5", "gestionss5_slideshow", "Slideshows", "");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_slideshow", "Liste des slideshows", $URL_ROOT."/backoffice/adss/ss5_slideshow/list_ss5_slideshow.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_couleur", "Couleurs", $URL_ROOT."/backoffice/adss/ss5_couleur/list_ss5_couleur.php");	
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_graphcolset", "Sets de Couleurs (Graphes)", $URL_ROOT."/backoffice/adss/ss5_graphcolset/list_ss5_graphcolset.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_picto", "Pictos", $URL_ROOT."/backoffice/adss/ss5_picto/list_ss5_picto.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_mapfond", "Fonds de cartes", $URL_ROOT."/backoffice/adss/ss5_mapfond/list_ss5_mapfond.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_mapcategorie", "Catégories de cartes", $URL_ROOT."/backoffice/adss/ss5_mapcategorie/list_ss5_mapcategorie.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_font", "Polices", $URL_ROOT."/backoffice/adss/ss5_font/list_ss5_font.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_style", "Styles", $URL_ROOT."/backoffice/adss/ss5_style/list_ss5_style.php");
+	$aMenu[] = new Menu("gestionss5_slideshow", "ss5_piecejointe", "Pièces jointes", $URL_ROOT."/backoffice/adss/ss5_piecejointe/list_ss5_piecejointe.php");	
+	
+	if (isAllowed ($rankUser, "ADMIN")){
+		$aMenu[] = new Menu("gestionss5_slideshow", "start_ss5_slideshow", "Démarrer un nouv. Slideshow", $URL_ROOT."/backoffice/adss/ss5_slideshow/start_ss5_slideshow.php");
+		$aMenu[] = new Menu("gestionss5_slideshow", "addusers_ss5_slideshow", "Créer des utilisateurs", $URL_ROOT."/backoffice/adss/ss5_slideshow/addusers_ss5_slideshow.php");
+	}
+	
+	// gestion des images
+	$aMenu[] = new Menu("ss5", "gestionss5_banque", "Banque d'Images", "");
+	$aMenu[] = new Menu("gestionss5_banque", "gestionss5_image", "Images", $URL_ROOT."/backoffice/adss/ss5_image/list_ss5_image.php");
+	$aMenu[] = new Menu("gestionss5_banque", "gestionss5_imagefolder", "Dossiers d'images", $URL_ROOT."/backoffice/adss/ss5_imagefolder/list_ss5_imagefolder.php");
+
+	// gestion des cartes
+	if (isAllowed ("GEO", $sFonct)) {
+		$aMenu[] = new Menu("ss5", "gestionss5_maps", "GoogleMaps", "");
+		$aMenu[] = new Menu("gestionss5_maps", "ss5_cartes", "Liste des cartes", $URL_ROOT."/backoffice/cms/cms_geo_carte/list_cms_geo_carte.php");
+		$aMenu[] = new Menu("gestionss5_maps", "ss5_points", "Liste des points g&eacute;olocalis&eacute;s", $URL_ROOT."/backoffice/cms/cms_geo_point/list_cms_geo_point.php");
+		$aMenu[] = new Menu("gestionss5_maps", "ss5_pictos", "Liste des pictogrammes", $URL_ROOT."/backoffice/cms/cms_geo_pictogramme/list_cms_geo_pictogramme.php");
+	}
+	
+	// gestion des traductions
+	$aMenu[] = new Menu("ss5", "gestionss5_texte", "Traductions", "");
+	$aMenu[] = new Menu("gestionss5_texte", "ss5_texte", "Liste des textes", $URL_ROOT."/backoffice/adss/ss5_texte/list_ss5_texte.php");
 }
 ?>

@@ -1,9 +1,8 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2011 PHPExcel
+ * Copyright (c) 2006 - 2014 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,9 +20,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.6, 2011-02-27
+ * @version    1.8.0, 2014-03-02
  */
 
 
@@ -32,7 +31,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Shared_PasswordHasher
 {
@@ -47,17 +46,16 @@ class PHPExcel_Shared_PasswordHasher
 	 * @return 	string				Hashed password
 	 */
 	public static function hashPassword($pPassword = '') {
-        $password = 0x0000;
-        $i        = 1;       // char position
+        $password	= 0x0000;
+        $charPos	= 1;       // char position
 
         // split the plain text password in its component characters
         $chars = preg_split('//', $pPassword, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($chars as $char) {
-            $value        = ord($char) << $i;   // shifted ASCII value
-            $rotated_bits = $value >> 15;       // rotated bits beyond bit 15
-            $value       &= 0x7fff;             // first 15 bits
-            $password    ^= ($value | $rotated_bits);
-            ++$i;
+            $value			= ord($char) << $charPos++;	// shifted ASCII value
+            $rotated_bits	= $value >> 15;				// rotated bits beyond bit 15
+            $value			&= 0x7fff;					// first 15 bits
+            $password		^= ($value | $rotated_bits);
         }
 
         $password ^= strlen($pPassword);

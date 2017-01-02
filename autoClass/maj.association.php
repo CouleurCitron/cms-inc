@@ -47,7 +47,8 @@ if (empty($aNodeToSort)) {
 	} else	$exit_display = true;	
 }
 // end AJAX or direct call
- 
+
+
 
 for ($i=0; $i<count($aNodeToSort); $i++) {
 
@@ -61,10 +62,10 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 				$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
 			elseif ($aNodeToSort[$i]["attrs"]["ASSO_EDIT"])
 				$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]);	
-                        
+
 			if (!empty($aTempClasse)) {
 				foreach ($aTempClasse as $assoc) {	
-                                        
+
 					$asso_block = '';
 					$asso_block_checked = '';
 					$asso_list = dbGetAssocies($oRes, $assoc, true);
@@ -94,11 +95,10 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					// display results
 					echo "<table class='association'>\n";			
 					echo "<tr>\n";
-					echo "<td width=\"141\" align=\"right\" style=\"padding: 4px 8px; border:solid #999999 1px;\">";
-					echo "&nbsp;<b>".$translator->getText($libelleAsso)."</b>&nbsp;*";
-                                        //echo $libelleAsso;
+					echo "<td class='left_cell'>";
+					echo $translator->getText($libelleAsso);
 					echo "</td>\n";
-					echo "<td width=\"494\" style=\"padding: 4px 8px; border:solid #999999 1px;\">\n";
+					echo "<td class='right_cell'>\n";
 
 					//viewArray($asso_list['list']);
 					$bCms_site = false;
@@ -136,15 +136,15 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 									if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail']!= "" &&  preg_match("/backoffice/si", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || ($temp_cms_site == $idSite)) {
 										if ($operation != "INSERT" && $row['ref_fkey'] != -1)  {
 											// only process while editing
-											if (!$tempAssoFull && $row['ref_fkey'] == $id && $id != -1 ) {
+											if (!$tempAssoFull && $row['ref_fkey'] == $id && $id != -1) {
 												$asso_pile[$asso_fld]['checked'] = true;
 												//echo ' 1 +++ ';
 												$cnt_associated++;
-											} elseif ($row['fkey_1'] == $id && $row['fkey_2'] == $row['ref_id'] && $id != -1 ) {
+											} elseif ($row['fkey_1'] == $id && $row['fkey_2'] == $row['ref_id'] && $id != -1) {
 												$asso_pile[$asso_fld]['checked'] = true;
 												//echo ' 2 +++ ';
 												$cnt_associated++;
-											} elseif (!$tempAsymetric && $row['fkey_1'] == $row['ref_id'] && $row['fkey_2'] == $id && $id != -1 ) {
+											} elseif (!$tempAsymetric && $row['fkey_1'] == $row['ref_id'] && $row['fkey_2'] == $id && $id != -1) {
 												$asso_pile[$asso_fld]['checked'] = true;
 												//echo ' 3 +++ ';
 												$cnt_associated++;
@@ -170,18 +170,18 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 
 								} else {	// class ne comportant PAS un champs CMS SITE		
 												
-									if ($operation != "INSERT" && $row['ref_fkey'] != -1)  {	 
+									if ($operation != "INSERT" && $row['ref_fkey'] != -1)  {																			
 										//echo 'only process while editing<br>';		
-										if (!$tempAssoFull && $row['ref_fkey'] == $id && $id != -1 ) {
+										if (!$tempAssoFull && $row['ref_fkey'] == $id  && $id != -1) {
 											$asso_pile[$asso_fld]['checked'] = true;
 											//echo ' 1 +++ ';
 											$cnt_associated++;
-										} elseif ($row['fkey_1'] == $id && $row['fkey_2'] == $row['ref_id'] && $id != -1 ) {
+										} elseif ($row['fkey_1'] == $id && $row['fkey_2'] == $row['ref_id']  && $id != -1) {
 											$asso_pile[$asso_fld]['checked'] = true;
 											//echo ' 2 +++ ';
 											$cnt_associated++;
-										} elseif (!$tempAsymetric && $row['fkey_1'] == $row['ref_id'] && $row['fkey_2'] == $id && $id != -1 ) {
-											$asso_pile[$asso_fld]['checked'] = true; 
+										} elseif (!$tempAsymetric && $row['fkey_1'] == $row['ref_id'] && $row['fkey_2'] == $id  && $id != -1) {
+											$asso_pile[$asso_fld]['checked'] = true;
 											//echo ' 3 +++ ';
 											$cnt_associated++;
 										}	
@@ -191,7 +191,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 											$asso_pile[$asso_fld]['checked'] = true;
 											//echo ' 4 +++ ';
 											$cnt_associated++;
-										}						
+										}
 										
 										
 									}
@@ -210,7 +210,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 										$asso_pile[$asso_fld]['display'] .= " - ".lib($row['asso_statut']);
 										
 									$cnt_asso_total++;
-								}
+								}			
 								
 								
 								
@@ -221,34 +221,13 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 											$asso_pile[$asso_fld]['ordre'] = $row['ordre']; 
 										}
 									} 									 
-								}
+								}								
 							}							
 						}
 					}
 					
-					foreach($asso_list['list'] as $row) {
-						if ($row['fkey_1'] == $id || $row['fkey_2'] == $id) { 
-							$displayValueShort = "";  
-							if ($oTemp->getGetterStatut() != "none"){
-								$tempStatus = $row['ref_statut'];
-							} else	$tempStatus = DEF_ID_STATUT_LIGNE;
-
-							if ($tempStatus == DEF_ID_STATUT_LIGNE) {
-								$tempId = $row['ref_id'];
-								if ($tempAssoFull && $tempAssoOut != ''){ // par table d'asso
-									$asso_fld = "fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut)."_".$tempId;
-								}
-								else{ // ssans table d'asso, par fkey en reverse
-									$asso_fld = "fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAsso)."_".$tempId;
-								}
-								
-								if (isset($row['asso_statut']))	
-									$asso_pile[$asso_fld]['display'] .= " - ".lib($row['asso_statut']);
-							}
-						}
-					}
 					$cnt_asso_total = sizeof($asso_pile);
-					 
+					
 					if ($tempAssoFull && $tempAssoOut != ''){ // par table d'asso
 						$idPlus = "Asso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut);
 					}
@@ -310,7 +289,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					} 
 					
 					if (is_file($_SERVER['DOCUMENT_ROOT'].$ifUrl_) && $tempAddItem){					
-						echo '<a href="#'.$idPlus.'_plus" id="a'.$idPlus.'" class="arbo '.$idPlus.'" onclick="loadIframe(\''.$idPlus.'\')">[+] '.$translator->getTransByCode('ajouterunitem').'</a>'."\n";
+						echo '<a href="#'.$idPlus.'_plus" id="a'.$idPlus.'" class="arbo '.$idPlus.' picto_add" onclick="loadIframe(\''.$idPlus.'\')">'.$translator->getTransByCode('ajouterunitem').'</a>'."\n";
 					}
 					
 					echo '<div style="display: none;">'."\n";
@@ -324,7 +303,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					<?php
 					
 					$idTous = preg_replace('/^(.+)_[0-9]+$/', '$1', array_shift(array_keys($asso_pile)));
-					$asso_block .= "<input type=\"checkbox\" name=\"".$idTous."\" id=\"".$idTous."\" value=\"\" onchange=\"toggleTous(this);\" /> ".$translator->getTransByCode('tous')." <br />"; 
+					$asso_block .= "<div class='check_all'><input type=\"checkbox\" name=\"".$idTous."\" id=\"".$idTous."\" value=\"\" onchange=\"toggleTous(this);\" /> <label for='".$idTous."'>".$translator->getTransByCode('tous')."</label></div>"; 
 					
 					
 					// gestion des nouvelles associations passées en GET					
@@ -345,34 +324,35 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 						}
 						array_push ( $aNewGet , $idObject);
 						$_SESSION['AWS_'.$assoc.'_idObject'] = $aNewGet;						 
-					}					 
+					}									 
 					
-					foreach ($asso_pile as $fld => $association) {					
-						$asso_block .= "<div id='".str_replace('fAsso', '', $fld)."'><input type=\"checkbox\" name=\"".$fld."\" id=\"".$fld."\" value=\"".$association['id']."\" ";
+					foreach ($asso_pile as $fld => $association) {	
+									
+						$asso_block .= "<div class='field_association class_clear' id='".str_replace('fAsso', '', $fld)."'><input type=\"checkbox\" name=\"".$fld."\" id=\"".$fld."\" value=\"".$association['id']."\" ";
 						if ($association['checked']) {
-							$asso_block .= ' checked="true"'; 
-						}
+							$asso_block .= ' checked="true"';
+					}
 						$asso_block .= "  onclick='check_".$assoc."_ONOFF(1);' > ".strip_tags($association['display']); 
 						
-						if ($association['checked'] || in_array ($association['id'], $aNewGet)  ) { 
-							$asso_block_checked .= "<div id='".str_replace('fAsso', '', $fld)."'><input type=\"checkbox\" name=\"".$fld."\" id=\"".$fld."\" value=\"".$association['id']."\" "; 
+						if ($association['checked'] || in_array ($association['id'], $aNewGet)  ) {
+							$asso_block_checked .= "<div id='".str_replace('fAsso', '', $fld)."' class=\"class_clear\"><input type=\"checkbox\" name=\"".$fld."\" id=\"".$fld."\" value=\"".$association['id']."\" "; 
 							$asso_block_checked .= ' checked="true"';
-							$asso_block_checked .= " onclick='check_".$assoc."_ONOFF(0);' > ".strip_tags($association['display']); 
-							if ($tempAddItem) $asso_block_checked .= '&nbsp;<a id="'.preg_replace('/^(f)/si', 'a', $fld).'" class="arbo '.$idPlus.'" href="#'.$idPlus.'_plus" onclick="editAssoItem(\''.$fld.'\')">[edit]</a>';
+							$asso_block_checked .= " onclick='check_".$assoc."_ONOFF(0);' > <label for='".$fld."'>".strip_tags($association['display']); 
+							if ($tempAddItem) $asso_block_checked .= '</label> <a id="'.preg_replace('/^(f)/si', 'a', $fld).'" class="arbo '.$idPlus.'" href="#'.$idPlus.'_plus" onclick="editAssoItem(\''.$fld.'\')" class="picto_edit"><img src="/backoffice/cms/img/2013/icone/modifier.png" /></a>';
 						}						
 						
 						if ($isOrderer )  {
 							//print_r($isOrderer); 
 							//pre_dump($association);
 							if ($association['ordre'] == '') $association['ordre'] = 0;
-							$asso_block .= "&nbsp;&nbsp;<input type=\"text\" name=\"".$fld."_ordre\" id=\"".$fld."_ordre\" value=\"".$association['ordre']."\" size='1'/>";
-							if ($association['checked'] || in_array ($association['id'], $aNewGet) ) $asso_block_checked .= "&nbsp;&nbsp;<input type=\"text\" name=\"".$fld."_ordre\" id=\"".$fld."_ordre\" value=\"".$association['ordre']."\" size='1'/>";
+							$asso_block .= "<img src=\"/backoffice/cms/img/2013/icone/sort.png\" alt=\"Sort\" title=\"Ordre\" style=\"float: right;\" /> <input type=\"text\" name=\"".$fld."_ordre\" id=\"".$fld."_ordre\" class=\"ordre_field\" value=\"".$association['ordre']."\" size='1' style=\"float: right;\" />";
+							if ($association['checked'] || in_array ($association['id'], $aNewGet) ) $asso_block_checked .= "<img src=\"/backoffice/cms/img/2013/icone/sort.png\" alt=\"Sort\" title=\"Ordre\" style=\"float: right;\" /> <input type=\"text\" name=\"".$fld."_ordre\" id=\"".$fld."_ordre\" class=\"ordre_field\" value=\"".$association['ordre']."\" size='1' style=\"float: right;\"/>";
 						}	
 						
-						if ($tempAddItem) $asso_block .= '&nbsp;<a id="'.preg_replace('/^(f)/si', 'a', $fld).'" class="arbo '.$idPlus.'" href="#'.$idPlus.'_plus" onclick="editAssoItem(\''.$fld.'\')">[edit]</a>';
+						if ($tempAddItem) $asso_block .= ' <a id="'.preg_replace('/^(f)/si', 'a', $fld).'" class="arbo '.$idPlus.'" href="#'.$idPlus.'_plus" onclick="editAssoItem(\''.$fld.'\')" class="picto_edit"><img src="/backoffice/cms/img/2013/icone/modifier.png" /></a>';
 												
 						//$asso_block .= "<br />\n"; 
-						if ($association['checked'] || in_array ($association['id'], $aNewGet) ) $asso_block_checked .= "<br /></div>\n"; 
+						if ($association['checked'] || in_array ($association['id'], $aNewGet) ) $asso_block_checked .= "</div>\n"; 
 						$asso_block .= '</div>';
 					}
 					
@@ -406,11 +386,11 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					}	
 	
 					</script>\n";
-					$piled .= "<div id=\"toggleAsso_".$assoc."_OFF\" style=\"display: block; float: right;\"><a href=\"#_\" onclick=\"toggle_".$assoc."_Associations(true);\">".$translator->getTransByCode('Voir_les_associations')."</a></div>\n";
-					$piled .= "<div id=\"toggleAsso_".$assoc."_ON\" style=\"display: none; float: right;\"><a href=\"#_\" onclick=\"toggle_".$assoc."_Associations(false);\">".$translator->getTransByCode('masquerlesassos')."</a></div>\n";
-					$piled .= "<div id=\"blockAsso_".$assoc."_ON\" style=\"display: none;\"><br/>\n".$asso_block."\n</div>\n";
+					$piled .= "<div id=\"toggleAsso_".$assoc."_OFF\" style=\"display: block; float: right;\"><a href=\"#_\" onclick=\"toggle_".$assoc."_Associations(true);\" class='picto_view'>".$translator->getTransByCode('Voir_les_associations')."</a></div>\n";
+					$piled .= "<div id=\"toggleAsso_".$assoc."_ON\" style=\"display: none; float: right;\"><a href=\"#_\" onclick=\"toggle_".$assoc."_Associations(false);\" class='hide picto_hide'>".$translator->getTransByCode('masquerlesassos')."</a></div>\n";
+					$piled .= "<div id=\"blockAsso_".$assoc."_ON\" style=\"display: none;\" class=\"class_clear\">\n".$asso_block."\n</div>\n";
 					//$piled .= "<div id=\"blockAsso_".$assoc."_OFF\" style=\"display: block;\"><br/>\n".$cnt_associated." ".$translator->getTransByCode('associations_sur_un_total_de')." ".$cnt_asso_total."</div>\n";
-					$piled .= "<div id=\"blockAsso_".$assoc."_OFF\" style=\"display: block;\"><br/>".$asso_block_checked."</div>\n";
+					$piled .= "<div id=\"blockAsso_".$assoc."_OFF\" style=\"display: block;\" class=\"class_clear\">".$asso_block_checked."</div>\n";
 					echo $piled;					
 					
 

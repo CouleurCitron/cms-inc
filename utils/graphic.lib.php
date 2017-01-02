@@ -105,14 +105,14 @@ function imagecreatefrombmp($p_sFile){
 function imgData($visuel, $niveau=0){	
 	$visuel = str_replace(array('{', '}'), '', $visuel);		
 	$aVisuel = explode(';', $visuel);
-	if(count($aVisuel)==1){
-		$fichier = explode('[', str_replace(']', '', $aVisuel[0]));
-	} else if($niveau){
+	if($niveau){
 		$fichier = explode('[', str_replace(']', '', $aVisuel[$niveau]));
 	} else {
-		$fichier = explode('[', str_replace(']', '', $aVisuel[1]));
+		if(isset($aVisuel[1])) $fichier = explode('[', str_replace(']', '', $aVisuel[1]));
+                else  $fichier = explode('[', str_replace(']', '', $aVisuel[0]));
 	}
 	$aTab = explode('[', str_replace(']', '', $visuel));
+        //pre_dump($aTab);
 	// Savoir si l'image possède des datas
 	if(count($aTab)<=1){
 		//Cas juste fichier img pas de data
@@ -144,7 +144,7 @@ function imageoutputtoAnyFile($oIm, $newImgPath){
 	}
 	elseif (preg_match ('/.*\.[jpeg|jpeg|bmp]/i',  basename($newImgPath))==1){ // jpg et les BMP !!
 		//error_log('jpg : '.basename($newImgPath));	
-		return imagejpeg($oIm, $newImgPath);				
+		return imagejpeg($oIm, $newImgPath, 80);				
 	}
 	else{
 		return false;	
@@ -256,9 +256,9 @@ function resizeImageObjectWidthHeightStrict($oIm, $eWidth, $eHeight){
 	// Resample
 	$oNewIm = imagecreatetruecolor($eWidth, $eHeight);
         
-    imagecolortransparent($oNewIm, imagecolorallocatealpha($new, 0, 0, 0, 127));
-    imagealphablending($oNewIm, false);
-    imagesavealpha($oNewIm, true);
+        imagecolortransparent($oNewIm, imagecolorallocatealpha($new, 0, 0, 0, 127));
+        imagealphablending($oNewIm, false);
+        imagesavealpha($oNewIm, true);
         
 	imagecopyresampled($oNewIm, $oIm, 0, 0, 0, 0, $eWidth, $eHeight, $imW, $imH);
 

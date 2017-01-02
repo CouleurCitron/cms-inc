@@ -7,7 +7,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  * @author hatem <hatem at php dot net> 
  * @website http://phpmagazine.net 
  * @copyright Copyright (c) 2005-2007 
- * @version $Id: buggy.class.php,v 1.4 2013-03-01 10:34:16 pierre Exp $ 
+ * @version $Id: buggy.class.php,v 1.1 2013-09-30 09:30:37 raphael Exp $ 
  * @access public 
  *
  * http://ajax.phpmagazine.net/2007/02/how_to_use_firebug_to_debug_ph.html

@@ -16,18 +16,19 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 				echo $eTslValue.(sizeof($langpile) > 1 ? "&nbsp;".$lang_props['libellecourt'] : "").'<br />';
 			}
 		}
-		else{
+		else{ 
+		
+		 
 			echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
 			foreach ($langpile as $lang_id => $lang_props) {
 				
-				$eTslValue = '';
-			
+				$eTslValue = ''; 
+				
 				if ($operation == 'UPDATE')
 					$eTslValue = str_replace('"', '&quot;', $translator->getByID($eKeyValue, $lang_id));
 				elseif ($operation == 'INSERT')
 					$eTslValue = '';
-				 
-				
+				  
 				if ($aNodeToSort[$i]["attrs"]["OPTION"] == "node") { // cas node  
 				 
 					if ($eTslValue != '') {
@@ -82,28 +83,28 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 					 
 					
 					(isset($aNodeToSort[$i]["attrs"]["NODEVALUE"]) && $aNodeToSort[$i]["attrs"]["NODEVALUE"] != "") ? $nodevalue = "&v_comp_path=".$aNodeToSort[$i]["attrs"]["NODEVALUE"] : $nodevalue = ""; 
-					echo "<input   type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle_".$lang_props['libellecourt']."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle_".$lang_props['libellecourt']."\" class=\"arbo ".$lang_props['libellecourt']."\" size=\"80\" value=\"".$eKeyValue_libelle."\" disabled />\n";
-					echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"arbo\" size=\"80\" value=\"".$eTslValue."\" ".$disabled." />\n";
+					echo "<input   type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle_".$lang_props['libellecourt']."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle_".$lang_props['libellecourt']."\" class=\"arbo inputEdit ".$lang_props['libellecourt']."\" value=\"".$eKeyValue_libelle."\" disabled />\n";
+					echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"arbo inputEdit\" value=\"".$eTslValue."\" ".$disabled." />\n";
 					
 					//echo "<input type=\"button\"  class=\"arbo\" value=\"parcourir l'arborescence\" onclick=\"javascript:openBrWindow('/backoffice/cms/popup_arbo_browse_node.php?idSite=".$idSiteToBrowse."&idField=f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."&idForm=add_".$classePrefixe."_form".$nodevalue."&source=".$lang_props['libellecourt']."', '', 600, 400, 'scrollbars=yes', 'true')\" class=\"arbo\">";
 					
 					echo "<input type=\"button\"  class=\"arbo ".$lang_props['libellecourt']."\" value=\"parcourir l'arborescence\" onclick=\"javascript:openBrWindow('/backoffice/cms/popup_arbo_browse_node.php?idSite=".$idSiteToBrowse."&idField=f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."&idForm=add_".$classePrefixe."_form".$nodevalue."&source=".$lang_props['libellecourt']."', '', 600, 400, 'scrollbars=yes', 'true')\" class=\"arbo\">";
 					
 					
-					echo "&nbsp;<input type=\"button\" class=\"arbo ".$lang_props['libellecourt']."\" value=\"effacer\" onclick=\"javascript:resetField('f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle_".$lang_props['libellecourt']."', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."')\" class=\"arbo\">";
+					echo "&nbsp;<input type=\"button\" class=\"arbo ".$lang_props['libellecourt']."\" value=\"effacer\" onclick=\"javascript:resetField('f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle_".$lang_props['libellecourt']."', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."')\" class=\"arbo\">";
 		
 				} 
 					
 				elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "textarea")
-					echo "<textarea id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"".$lang_props['libellecourt']."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" cols=\"60\" rows=\"4\" style=\"font-size:11px\">".$eTslValue."</textarea>";
-				else	echo "<input type=\"text\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"".$lang_props['libellecourt']."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" value=\"".$eTslValue."\" size=\"69\"/>";
+					echo "<textarea id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"textareaEdit ".$lang_props['libellecourt']."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" >".$eTslValue."</textarea>";
+				else	echo "<input type=\"text\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"inputEdit ".$lang_props['libellecourt']."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" value=\"".$eTslValue."\" />";
 				
 				if (sizeof($langpile) > 1)
 					echo "<span class='".$lang_props['libellecourt']."'>&nbsp;".$lang_props['libellecourt']."</span>";
 				// gestion popup wysiwyg
 				if ((($aNodeToSort[$i]["attrs"]["OPTION"] == "link")	||	($aNodeToSort[$i]["attrs"]["OPTION"] == "url"))  && ($bPopupLinks == true) ){ // cas link						
 					// non editable field 
-					echo "&nbsp;<a class='".$lang_props['libellecourt']."' href=\"javascript:openLinkWindow('/backoffice/cms/utils/popup/dir.php', 'links', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."', 'add_".$classePrefixe."_form');\" title=\"Link picker\"><img src=\"/backoffice/cms/img/bt_popup_url.png\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Link picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n"; 
+					echo "&nbsp;<a class='".$lang_props['libellecourt']."' href=\"javascript:openLinkWindow('/backoffice/cms/utils/popup/dir.php', 'links', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."', 'add_".$classePrefixe."_form');\" title=\"".$translator->getTransByCode('Selectionner_un_lien')."\"><img src=\"/backoffice/cms/img/bt_popup_url.png\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"Link picker\" /></a><br />\n"; 
 					
 				}
 				
@@ -113,7 +114,7 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 				
 				
 				elseif ( ($bPopupWysiwyg == true) && (($aNodeToSort[$i]["attrs"]["NOHTML"] != "true")||(!isset($aNodeToSort[$i]["attrs"]["NOHTML"])))	&& $aNodeToSort[$i]["attrs"]["OPTION"] != "node" ){ // cas wysiwyg
-					echo " <a class='".$lang_props['libellecourt']."' href=\"javascript:openWYSYWYGWindow('//".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"HTML editor\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+					echo " <a class='".$lang_props['libellecourt']."' href=\"javascript:openWYSYWYGWindow('http://".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."', 'add_".$classePrefixe."_form');\" title=\"".$translator->getTransByCode('Editeur_html')."\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"HTML editor\" /></a><br />\n";
 				} // wysiwyg
 				
 				else {

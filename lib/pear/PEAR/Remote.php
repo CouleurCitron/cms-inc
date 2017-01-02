@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | Author: Stig Bakken <ssb@php.net>                                    |
 // +----------------------------------------------------------------------+
 //
-// $Id: Remote.php,v 1.2 2013-03-01 10:34:25 pierre Exp $
+// $Id: Remote.php,v 1.1 2013-09-30 09:46:16 raphael Exp $
 
 require_once 'cms-inc/lib/pear/PEAR.php';
 require_once 'cms-inc/lib/pear/PEAR/Config.php';

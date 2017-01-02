@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | Author: Stig Sæther Bakken <ssb@php.net>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id: Common.php,v 1.2 2013-03-01 10:34:25 pierre Exp $
+// $Id: Common.php,v 1.1 2013-09-30 09:46:23 raphael Exp $
 
 require_once "PEAR.php";
 

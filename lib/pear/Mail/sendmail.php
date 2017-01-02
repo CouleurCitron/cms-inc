@@ -26,7 +26,7 @@ require_once 'cms-inc/lib/pear/Mail/mail.php';
  * Sendmail implementation of the PEAR Mail:: interface.
  * @access public
  * @package Mail
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  */
 class Mail_sendmail extends Mail {
     

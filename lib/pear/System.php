@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | Authors: Tomas V.V.Cox <cox@idecnet.com>                             |
 // +----------------------------------------------------------------------+
 //
-// $Id: System.php,v 1.2 2013-03-01 10:34:24 pierre Exp $
+// $Id: System.php,v 1.1 2013-09-30 09:31:37 raphael Exp $
 //
 
 require_once 'cms-inc/lib/pear/PEAR.php';
@@ -44,7 +44,7 @@ $GLOBALS['_System_temp_files'] = array();
 *
 * @package  System
 * @author   Tomas V.V.Cox <cox@idecnet.com>
-* @version  $Revision: 1.2 $
+* @version  $Revision: 1.1 $
 * @access   public
 * @see      http://pear.php.net/manual/
 */

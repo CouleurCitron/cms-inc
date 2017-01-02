@@ -3,7 +3,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 
 class JobsModel {
-    
+
 	// constructor
 	function JobsModel () {}
 
@@ -17,7 +17,6 @@ class JobsModel {
 	 */
 	function getDomains ($_domaine=null) {
 
-            if( !defined("DEF_APP_REF_TSL") ){
 		if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
 			$sql = "	SELECT	dom.*
 				FROM	job_domaine dom,
@@ -32,24 +31,6 @@ class JobsModel {
 				WHERE	tsl.cms_crf_id = dom.job_libelle
 				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
 				ORDER BY	tsl.cms_crf_chaine ASC;";
-                } else if(defined( "DEF_APP_REF_TSL" ) && DEF_APP_REF_TSL == "MD5" ){
-                    if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-			$sql = "	SELECT	dom.*
-				FROM	job_domaine dom,
-					cms_chaine_traduite tsltd,
-                                        cms_chaine_reference tsl
-				WHERE	tsl.cms_crf_md5 = dom.job_libelle
-                                AND     tsltd.cms_ctd_id_reference = tsl.cms_crf_id
-				AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-				ORDER BY	tsltd.cms_ctd_chaine ASC;";
-		else	$sql = "	SELECT	dom.*
-				FROM	job_domaine dom,
-					cms_chaine_reference tsl
-				WHERE	tsl.cms_crf_md5 = dom.job_libelle
-				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-				ORDER BY	tsl.cms_crf_chaine ASC;";
-                }
 
 //		$sql = "	SELECT	*
 //			FROM	job_domaine
@@ -108,7 +89,6 @@ class JobsModel {
 	 */
 	function getTypes ($_type=null) {
 
-            if( !defined("DEF_APP_REF_TSL") ){
 		if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
 			$sql = "	SELECT	ctr.*
 				FROM	job_contrat ctr,
@@ -123,27 +103,6 @@ class JobsModel {
 				WHERE	tsl.cms_crf_id = ctr.job_libelle
 				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
 				ORDER BY	tsl.cms_crf_chaine ASC;";
-                
-            } else if(defined( "DEF_APP_REF_TSL" ) && DEF_APP_REF_TSL == "MD5" ){
-                
-                if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-			$sql = "	SELECT	ctr.*
-				FROM	job_contrat ctr,
-					cms_chaine_traduite tsltd,
-                                        cms_chaine_reference tsl
-				WHERE	tsl.cms_crf_md5 = ctr.job_libelle
-                                AND     tsltd.cms_ctd_id_reference = tsl.cms_crf_id
-				AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-				ORDER BY	tsltd.cms_ctd_chaine ASC;";
-		else	$sql = "	SELECT	ctr.*
-				FROM	job_contrat ctr,
-					cms_chaine_reference tsl
-				WHERE	tsl.cms_crf_md5 = ctr.job_libelle
-				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-				ORDER BY	tsl.cms_crf_chaine ASC;";
-                    
-            }
 
 		if ($this->debug)
 			echo "JobsModel::getTypes > {$sql}<br/>";
@@ -197,42 +156,22 @@ class JobsModel {
 	 * @return	Array	Functions list
 	 */
 	function getFunctions ($_function) {
-                if( !defined("DEF_APP_REF_TSL") ){
-                    
-                    if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-                            $sql = "	SELECT	met.*
-                                    FROM	job_metier met,
-                                            cms_chaine_traduite tsltd
-                                    WHERE	tsltd.cms_ctd_id_reference = met.job_libelle
-                                    AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsltd.cms_ctd_chaine ASC;";
-                    else	$sql = "	SELECT	met.*
-                                    FROM	job_metier met,
-                                            cms_chaine_reference tsl
-                                    WHERE	tsl.cms_crf_id = met.job_libelle
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsl.cms_crf_chaine ASC;";
-                } else if(defined( "DEF_APP_REF_TSL" ) && DEF_APP_REF_TSL == "MD5" ){
-                    
-                    if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-                            $sql = "	SELECT	met.*
-                                    FROM	job_metier met,
-                                            cms_chaine_traduite tsltd,
-                                            cms_chaine_reference tsl
-                                    WHERE   tsl.cms_crf_md5 = met.job_libelle
-                                    AND     tsltd.cms_ctd_id_reference = tsl.cms_crf_id
-                                    AND     tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-                                    AND     job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsltd.cms_ctd_chaine ASC;";
-                    else	$sql = "	SELECT	met.*
-                                    FROM	job_metier met,
-                                            cms_chaine_reference tsl
-                                    WHERE	tsl.cms_crf_md5 = met.job_libelle
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsl.cms_crf_chaine ASC;";
-                    
-                }
+
+		if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
+			$sql = "	SELECT	met.*
+				FROM	job_metier met,
+					cms_chaine_traduite tsltd
+				WHERE	tsltd.cms_ctd_id_reference = met.job_libelle
+				AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
+				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
+				ORDER BY	tsltd.cms_ctd_chaine ASC;";
+		else	$sql = "	SELECT	met.*
+				FROM	job_metier met,
+					cms_chaine_reference tsl
+				WHERE	tsl.cms_crf_id = met.job_libelle
+				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
+				ORDER BY	tsl.cms_crf_chaine ASC;";
+
 		if ($this->debug)
 			echo "JobsModel::getFunctions > {$sql}<br/>";
 		$aFunctions = dbGetObjectsFromRequete("job_metier", $sql);
@@ -257,8 +196,6 @@ class JobsModel {
 	 */
 	function getPlaces ($_place) {
 
-            if( !defined("DEF_APP_REF_TSL") ){
-            
 		if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
 			$sql = "	SELECT	lie.*
 				FROM	job_lieu lie,
@@ -277,29 +214,7 @@ class JobsModel {
 				AND	pay.cms_pay_id = lie.job_pays
 				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
 				ORDER BY	tsl.cms_crf_chaine ASC;";
-                
-            } else if(defined( "DEF_APP_REF_TSL" ) && DEF_APP_REF_TSL == "MD5" ){
-                if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-			$sql = "	SELECT	lie.*
-				FROM	job_lieu lie,
-					cms_pays pay,
-					cms_chaine_traduite tsltd,
-                                        cms_chaine_reference tsl
-				WHERE	tsl.cms_crf_md5 = lie.job_libelle
-                                AND     tsltd.cms_ctd_id_reference = tsl.cms_crf_id
-				AND	pay.cms_pay_id = lie.job_pays
-				AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-				ORDER BY	tsltd.cms_ctd_chaine ASC;";
-		else	$sql = "	SELECT	lie.*
-				FROM	job_lieu lie,
-					cms_pays pay,
-					cms_chaine_reference tsl
-				WHERE	tsl.cms_crf_md5 = lie.job_libelle
-				AND	pay.cms_pay_id = lie.job_pays
-				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-				ORDER BY	tsl.cms_crf_chaine ASC;";
-            }
+
 		if ($this->debug)
 			echo "JobsModel::getPlaces > {$sql}<br/>";
 		$aPlaces = dbGetObjectsFromRequete("job_lieu", $sql);
@@ -313,7 +228,6 @@ class JobsModel {
 		}
 		return (Array) $list;
 	}
-        
 
 
 	// getLanguages
@@ -323,41 +237,22 @@ class JobsModel {
 	 * @return	Array	Languages list
 	 */
 	function getLanguages () {
-                if( !defined("DEF_APP_REF_TSL") ){
-                    if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-                            $sql = "	SELECT	lg.*
-                                    FROM	job_langue lg,
-                                            cms_chaine_traduite tsltd
-                                    WHERE	tsltd.cms_ctd_id_reference = lg.job_libelle
-                                    AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsltd.cms_ctd_chaine ASC;";
-                    else	$sql = "	SELECT	*
-                                    FROM	job_langue lg,
-                                            cms_chaine_reference tsl
-                                    WHERE	tsl.cms_crf_id = lg.job_libelle
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsl.cms_crf_chaine ASC;";
-                } else if(defined( "DEF_APP_REF_TSL" ) && DEF_APP_REF_TSL == "MD5" ){
-                    
-                    if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
-                            $sql = "	SELECT	lg.*
-                                    FROM    job_langue lg,
-                                            cms_chaine_traduite tsltd,
-                                            cms_chaine_reference tsl
-                                    WHERE   tsl.cms_crf_md5 = lg.job_libelle
-                                    AnD     tsltd.cms_ctd_id_reference = tsl.cms_crf_id
-                                    AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsltd.cms_ctd_chaine ASC;";
-                    else	$sql = "	SELECT	*
-                                    FROM	job_langue lg,
-                                            cms_chaine_reference tsl
-                                    WHERE	tsl.cms_crf_md5 = lg.job_libelle
-                                    AND	job_statut = ".DEF_ID_STATUT_LIGNE."
-                                    ORDER BY	tsl.cms_crf_chaine ASC;";
-                    
-                }
+
+		if (DEF_APP_USE_TRANSLATIONS && DEF_APP_LANGUE != $_SESSION['id_langue'])
+			$sql = "	SELECT	lg.*
+				FROM	job_langue lg,
+					cms_chaine_traduite tsltd
+				WHERE	tsltd.cms_ctd_id_reference = lg.job_libelle
+				AND	tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}
+				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
+				ORDER BY	tsltd.cms_ctd_chaine ASC;";
+		else	$sql = "	SELECT	*
+				FROM	job_langue lg,
+					cms_chaine_reference tsl
+				WHERE	tsl.cms_crf_id = lg.job_libelle
+				AND	job_statut = ".DEF_ID_STATUT_LIGNE."
+				ORDER BY	tsl.cms_crf_chaine ASC;";
+
 		if ($this->debug)
 			echo "JobsModel::getLanguages > {$sql}<br/>";
 		$aLanguages = dbGetObjectsFromRequete("job_langue", $sql);
@@ -440,7 +335,7 @@ class JobsModel {
 				$sql.= "AND	job_experience={$_experience}
 				";
 			if ($_ref != "")
-				$sql.= "AND	job_reference LIKE '%{$_ref}%'
+				$sql.= "AND	job_reference ='{$_ref}'
 				";
 			if (!empty($_published))
 				//$sql .= "AND	TIMESTAMPDIFF(DAY, job_date_pub_debut, NOW()) < {$_published}
@@ -464,28 +359,9 @@ class JobsModel {
 				$aCacheIdTLS_ref =  array();
 				$aObjects = dbGetObjectsFromRequete('cms_chaine_reference', $sqlTLS);	
 				if (!empty($aObjects) > 0) {
-                                    
-                                    if(!defined( "DEF_APP_REF_TSL" )){
-                                        foreach ($aObjects as $oObject){
+					foreach ($aObjects as $oObject)
 						$aCacheIdTLS_ref[] = $oObject->get_id();
-                                        }
 					$in_select_ref = implode(",", $aCacheIdTLS_ref);
-                                    } else if(defined( "DEF_APP_REF_TSL" ) && DEF_APP_REF_TSL == "MD5" ){
-                                        foreach ($aObjects as $oObject){
-						$aCacheIdTLS_ref[] = $oObject->get_md5();
-                                        }
-					$in_select_ref = "'".implode("','", $aCacheIdTLS_ref)."'";
-                                    }
-                                    
-                                    
-					
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
 				}
 				$sql .= " AND job_libelle IN ({$in_select_ref}) ";
 			}
@@ -509,8 +385,6 @@ class JobsModel {
 		$list = Array();
 		for ($i=0; $i<sizeof($aOffres); $i++){
 			$oOffre = $aOffres[$i];
-                        
-                        
 			$tmp = Array(	'id'	=> $oOffre->get_id(),
 					'detail'	=> $oOffre->get_detail() );
 			if ($oOffre->get_reference() != "")
@@ -534,20 +408,11 @@ class JobsModel {
 			if ($oOffre->get_remuneration() != "")
 				$tmp['remuneration'] = $oOffre->get_remuneration();
 			if ($oOffre->get_qualification() != -1) {
-				//$oQ = new Qualification($oOffre->get_qualification()); 
-                                $oQ = new job_qualification($oOffre->get_qualification()); 
-                                
-                                if (!isset($translator)){
-                                        $translator =& TslManager::getInstance(); 
-                                }
-                                
+				$oQ = new Qualification($oOffre->get_qualification()); 
 				$tmp['qualification'] = $translator->getByID($oQ->get_libelle(), $idSite);
 			}
-                        
-                        
 			$list[] = $tmp;
 		}
-                
 		return (Array) $list;
 	}
 

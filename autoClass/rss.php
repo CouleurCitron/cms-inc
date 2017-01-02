@@ -259,9 +259,23 @@ if ($classeLibelle == ""){
 	$classeLibelle = $classeName;
 }
 
-if (!defined("DEF_CONTACT_FROM_NAME")){
-	define("DEF_CONTACT_FROM_NAME", $classeLibelle);
+if(!defined("DEF_TITLE_RSS")){
+    if (!defined("DEF_CONTACT_FROM_NAME")){
+            define("DEF_CONTACT_FROM_NAME", $classeLibelle);
+            //$title = DEF_CONTACT_FROM_NAME;
+            $title = DEF_CONTACT_FROM_NAME;
+    }
+} else {
+    $title = DEF_TITLE_RSS;
 }
+
+
+if(!defined("DEF_CONTACT_RSS")){
+    $contact = DEF_CONTACT_FROM_NAME;
+} else {
+    $contact = DEF_CONTACT_RSS;
+}
+
 
 if (!defined("DEF_RSS_GUID")){
 	define("DEF_RSS_GUID", 'http://'.$_SERVER['HTTP_HOST'].'/frontoffice/'.$classeName.'/foshow_'.$classeName.'.php?id=');
@@ -275,14 +289,14 @@ echo "	<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
  
 echo "	<channel>\n";
 echo "	<atom:link href=\"http://".$_SERVER['HTTP_HOST']."/backoffice/".$classeName."/rss_".$classeName.".php\" rel=\"self\" type=\"application/rss+xml\" />";
-echo "		<title>".utf8_encode(DEF_CONTACT_FROM_NAME)."</title>\n"; 
+echo "		<title>".utf8_encode($title)."</title>\n"; 
 echo "		<description>".apos(html_to_rss($classeLibelle." - en provenance de ".$_SERVER['HTTP_HOST']))."</description>\n";
 echo "		<link>".DEF_RSS_GUID."</link>\n";
 echo "		<language>fr-FR</language>\n";
-echo "		<managingEditor>".makeEmailAddyXMLfriendly(DEF_CONTACT_FROM)." (".utf8_encode(DEF_CONTACT_FROM_NAME).") </managingEditor>\n";
-echo "		<webMaster>".makeEmailAddyXMLfriendly(DEF_CONTACT_FROM)." (".utf8_encode(DEF_CONTACT_FROM_NAME).") </webMaster>\n";
+echo "		<managingEditor>".makeEmailAddyXMLfriendly($contact)." (".utf8_encode($contact).") </managingEditor>\n";
+echo "		<webMaster>".makeEmailAddyXMLfriendly($contact)." (".utf8_encode($contact).") </webMaster>\n";
 echo "		<image>\n"; 
-echo "		<title><![CDATA[".apos(utf8_encode(DEF_CONTACT_FROM_NAME))."]]></title>\n"; 
+echo "		<title><![CDATA[".apos(utf8_encode($title))."]]></title>\n"; 
 echo "		<url>".DEF_RSS_GUID."</url>\n"; 
 echo "		<link>".DEF_RSS_GUID."</link>\n"; 
 echo "		</image>\n"; 
@@ -313,7 +327,7 @@ if(sizeof($aListe_res)>0) {
                 if(isset($link_base)) $links_items = $link_base;
 		
 	   for ($i=0;$i<count($aNodeToSort);$i++){
-		if ($aNodeToSort[$i]["name"] == "ITEM"){			
+		if ($aNodeToSort[$i]["name"] == "ITEM"){
                     
                     //pre_dump($aNodeToSort[$i]['attrs']['NAME']);
                     /* gestion des champs à mettre dans l'url des feeds */
@@ -354,7 +368,7 @@ if(sizeof($aListe_res)>0) {
 						foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
 							if($childNode["name"] == "OPTION"){ // on a un node d'option				
 								if ($childNode["attrs"]["TYPE"] == "value"){
-									if (intval($eKeyValue) == intval($childNode["attrs"]["VALUE"])){							
+									if (intval($eKeyValue) == intval($childNode["attrs"]["VALUE"])){
 										$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = $childNode["attrs"]["LIBELLE"];
 										break;
 									}
@@ -408,7 +422,7 @@ if(sizeof($aListe_res)>0) {
 	if(isset($links_items)){
             $RSS['link'] = $links_items;
         }
-	
+        
         
         
 	// s'il existe une date de fin de publication, on n'affiche pas l'info

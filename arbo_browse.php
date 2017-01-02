@@ -1,10 +1,13 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /* 
-$Author: pierre $
-$Revision: 1.15 $
+$Author: raphael $
+$Revision: 1.1 $
 
 $Log: arbo_browse.php,v $
+Revision 1.1  2013-09-30 09:28:18  raphael
+*** empty log message ***
+
 Revision 1.15  2013-03-01 10:33:57  pierre
 *** empty log message ***
 
@@ -164,92 +167,100 @@ body {
 if (DEF_MENUS_MINISITES == "ON") print(putAfficheSite());
 ?>
 
+      <div><img src="../../backoffice/cms/img/tt_gestion_brique.gif" width="127" height="18"></div>
+      <div> &gt; <?php echo getAbsolutePathString($idSite, $db, $virtualPath); ?></div>
 
-  <table cellpadding="0" cellspacing="0" border="0">
- <tr>
-  <td colspan="5" class="arbo"><table  border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td width="130"><img src="../../backoffice/cms/img/tt_gestion_brique.gif" width="127" height="18"></td>
-      <td class="arbo" style="vertical-align:middle"> &gt; <?php echo getAbsolutePathString($idSite, $db, $virtualPath); ?></td>
-    </tr>
-  </table></td>
- </tr>
- <tr>
-  <td colspan="5"><img src="/backoffice/cms/img/vide.gif"></td>
- </tr>
- <tr>
-   <td align="left" valign="top" class="arbo2"><br>
-       <b><u>Arborescence :</u></b> <br>
-       <br>
-       <table cellpadding="8" cellspacing="0" border="1" bordercolor="#FFFFFF">
-         <tr>
-           <td bgcolor="D2D2D2"><?php
-print drawCompTree($idSite, $db, $virtualPath, null);
-?></td>
-         </tr>
-     </table></td>
-  <td colspan="3" class="arbo2"><span class="arbo2"><img src="/backoffice/cms/img/vide.gif" width="15"></span></td>
-  <td align="left" valign="top" class="arbo2">
-  <!-- contenu du dossier -->
-   <u><b><small><br>
-   Composants contenus dans le dossier en cours:</small></b></u>
-   <br>
-   <br>
-  <table border="1" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo">
-  <tr>
-	<td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Nom</strong></td>
-	<td width="5" align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Dimensions</strong></td>
-	<td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Type</strong></td>
-	<td width="5" align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Modifier</strong></td>
-	<td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Déplacer</strong></td>
-	<td align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Dupliquer</strong></td>
-	<td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Supprimer</strong></td>
-	<td align="center" bgcolor="EEEEEE"><strong>Pages concernées</strong></td>
-  </tr>
-  <?php
-	$contenus = getFolderComposants($idSite, $virtualPath);
-	if(!is_array($contenus)) {
-?>
-  <tr>
-    <td align="center" colspan="9"><strong>&nbsp;Aucun élément à afficher</strong>
-  </tr>
-<?php
-	} else {
-		foreach ($contenus as $k => $composant) {
-			$nb_pages = sizeof(getPageUsingComposant($idSite, $composant['id']));
-			
-			// page de modif de la brique
-			if ($composant['type'] == "Graphique") $sPageEdit = "graphic";
-			else if ($composant['type'] == "formulaire") {
-				$sPageEdit = "form";
-				$sParam = "step=init&";
-			}
-			else if ($composant['type'] == "formulaireHTML") {
-				$sPageEdit = "formulaire";
-				$sParam = "step=init&";
-			}
-			else  $sPageEdit = "content";
+      
+      <div class="arbo_col_content">
+	<div class="arbo_col_gauche">
+		<div class="bloc_titre">Arborescence :</div>
+                <div class="arborescence">
+                    <?php
+                    print drawCompTree($idSite, $db, $virtualPath, null);
+                    ?>
+                </div>
+                
+                
+                
+        </div>
+          <div class="arbo_col_droite">
+              <p>Composants contenus dans le dossier en cours:</p>
+               <table border="1" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo">
+               <tr>
+                     <td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Nom</strong></td>
+                     <td width="5" align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Dimensions</strong></td>
+                     <td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Type</strong></td>
+                     <td width="5" align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Modifier</strong></td>
+                     <td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Déplacer</strong></td>
+                     <td align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Dupliquer</strong></td>
+                     <td align="center" bgcolor="E6E6E6"><strong>&nbsp;&nbsp;Supprimer</strong></td>
+                     <td align="center" bgcolor="EEEEEE"><strong>Pages concernées</strong></td>
+               </tr>
+               <?php
+                     $contenus = getFolderComposants($idSite, $virtualPath);
+                     if(!is_array($contenus)) {
+             ?>
+               <tr>
+                 <td align="center" colspan="9"><strong>&nbsp;Aucun élément à afficher</strong>
+               </tr>
+             <?php
+                     } else {
+                             foreach ($contenus as $k => $composant) {
+                                     $nb_pages = sizeof(getPageUsingComposant($idSite, $composant['id']));
 
-			// site de la brique
-			$oCms_site = new Cms_site($composant['id_site']);
-?>
-  <tr>
-   <td align="center" bgcolor="F3F3F3">&nbsp;<a href="#" onClick="javascript:preview_content(<?php echo $composant['id'];?>,<?php echo $composant['width'];?>,<?php echo $composant['height'];?>)"><?php echo $composant['name'];?></a>&nbsp;</td>
-   <td align="center" bgcolor="F7F7F7">&nbsp;<?php echo $composant['width'];?>x<?php echo $composant['height'];?>&nbsp;</td>
-   <td align="center" bgcolor="F3F3F3">&nbsp;<?php echo $composant['type'];?>&nbsp;</td>
-   <!-- CC Mkl : Modif si brique Graphique => edition avec la page graphicEditor.php -->
-   <td align="center" bgcolor="F7F7F7">&nbsp;<a href="<?php echo $sPageEdit; ?>Editor.php?<?php echo $sParam; ?>id=<?php echo $composant['id'];?>&idSite=<?php echo $idSite; ?>&minisite=<?php echo $_GET['minisite']; ?>"><img onMouseOver='popup("Modifier la brique");' onMouseOut='kill();' src="/backoffice/cms/img/modifier.gif" border="0"></a>&nbsp;</td>
-   <td align="center" bgcolor="F3F3F3">&nbsp;<a href="moveComposant.php?id=<?php echo $composant['id'];?>"><img src="/backoffice/cms/img/deplacer.gif" border="0"></a>&nbsp;</td>
-   <td align="center" bgcolor="F7F7F7">&nbsp;<a href="duplicate<?php echo ($composant['type']=="Graphique")?"graphic":""; ?>Composant.php?id=<?php echo $composant['id'];?>"><img src="/backoffice/cms/img/dupliquer.gif" border="0"></a>&nbsp;</td>
-   <td align="center" bgcolor="F3F3F3">&nbsp;<a href="#" onClick="if(window.confirm('Etes vous sur(e) de vouloir supprimer cette brique ?')){ document.location='deleteComposant.php?id=<?php echo $composant['id'];?>';}"><img src="/backoffice/cms/img/supprimer.gif" border="0"></a>&nbsp;</td>
-   <td align="center" bgcolor="F7F7F7">&nbsp;<?php echo $nb_pages; ?>&nbsp;</td>
-  </tr>
-<?php
-		}
-	}
-  ?>
-  </table>
-  </td>
- </tr>
-</table>
+                                     // page de modif de la brique
+                                     if ($composant['type'] == "Graphique") $sPageEdit = "graphic";
+                                     else if ($composant['type'] == "formulaire") {
+                                             $sPageEdit = "form";
+                                             $sParam = "step=init&";
+                                     }
+                                     else if ($composant['type'] == "formulaireHTML") {
+                                             $sPageEdit = "formulaire";
+                                             $sParam = "step=init&";
+                                     }
+                                     else  $sPageEdit = "content";
+
+                                     // site de la brique
+                                     $oCms_site = new Cms_site($composant['id_site']);
+             ?>
+               <tr>
+                <td align="center" bgcolor="F3F3F3">&nbsp;<a href="#" onClick="javascript:preview_content(<?php echo $composant['id'];?>,<?php echo $composant['width'];?>,<?php echo $composant['height'];?>)"><?php echo $composant['name'];?></a>&nbsp;</td>
+                <td align="center" bgcolor="F7F7F7">&nbsp;<?php echo $composant['width'];?>x<?php echo $composant['height'];?>&nbsp;</td>
+                <td align="center" bgcolor="F3F3F3">&nbsp;<?php echo $composant['type'];?>&nbsp;</td>
+                <!-- CC Mkl : Modif si brique Graphique => edition avec la page graphicEditor.php -->
+                <td align="center" bgcolor="F7F7F7">&nbsp;<a href="<?php echo $sPageEdit; ?>Editor.php?<?php echo $sParam; ?>id=<?php echo $composant['id'];?>&idSite=<?php echo $idSite; ?>&minisite=<?php echo $_GET['minisite']; ?>"><img onMouseOver='popup("Modifier la brique");' onMouseOut='kill();' src="/backoffice/cms/img/2013/icone/modifier.png" border="0"></a>&nbsp;</td>
+                <td align="center" bgcolor="F3F3F3">&nbsp;<a href="moveComposant.php?id=<?php echo $composant['id'];?>"><img src="/backoffice/cms/img/2013/icone/deplacer.png" border="0"></a>&nbsp;</td>
+                <td align="center" bgcolor="F7F7F7">&nbsp;<a href="duplicate<?php echo ($composant['type']=="Graphique")?"graphic":""; ?>Composant.php?id=<?php echo $composant['id'];?>"><img src="/backoffice/cms/img/2013/icone/dupliquer.png" border="0"></a>&nbsp;</td>
+                <td align="center" bgcolor="F3F3F3">&nbsp;<a href="#" onClick="if(window.confirm('Etes vous sur(e) de vouloir supprimer cette brique ?')){ document.location='deleteComposant.php?id=<?php echo $composant['id'];?>';}"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0"></a>&nbsp;</td>
+                <td align="center" bgcolor="F7F7F7">&nbsp;<?php echo $nb_pages; ?>&nbsp;</td>
+               </tr>
+             <?php
+                             }
+                     }
+               ?>
+               </table>
+                            <br>
+                     <table cellpadding="8" cellspacing="0" border="1" bordercolor="#FFFFFF">
+                       <tr>
+                         <td bgcolor="D2D2D2"><?php
+              print drawCompTree($idSite, $db, $virtualPath, null);
+              ?></td>
+                       </tr>
+                   </table></td>
+                <td colspan="3" class="arbo2"><span class="arbo2"><img src="/backoffice/cms/img/vide.gif" width="15"></span></td>
+                <td align="left" valign="top" class="arbo2">
+                <!-- contenu du dossier -->
+                 <u><b><small><br>
+
+                </td>
+               </tr>
+              </table>
+          </div>
+          
+          
+      </div>
+    
+    
+    
+       
 </form>

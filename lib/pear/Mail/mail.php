@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | Author: Chuck Hagenbuch <chuck@horde.org>                            |
 // +----------------------------------------------------------------------+
 //
-// $Id: mail.php,v 1.2 2013-03-01 10:34:24 pierre Exp $
+// $Id: mail.php,v 1.1 2013-09-30 09:46:06 raphael Exp $
 
 require_once "cms-inc/lib/pear/mail.php";
 
@@ -25,7 +25,7 @@ require_once "cms-inc/lib/pear/mail.php";
  * internal PHP-mail() implementation of the PEAR Mail:: interface.
  * @access public
  * @package Mail
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
  
 class Mail_mail extends Mail

@@ -148,7 +148,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 						$sql.= " and ".$foreignPrefixe."_statut = ".DEF_ID_STATUT_LIGNE;
 					} 
 					//print $sql;
-					$aForeign = dbGetObjectsFromRequeteCache ($sTempClasse, $sql, 100);
+					$aForeign = dbGetObjectsFromRequete ($sTempClasse, $sql);
 					//$aForeign = dbGetObjects($sTempClasse);
 					  
 					$aValues = array ();
@@ -183,7 +183,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 							if ($classeName == "cms_tag") {
 								$sql = "select * from ".$tempAsso." where ".$tempAssoPrefixe."_".$tempAssoIn." = ".$id." and ".$tempAssoPrefixe."_".$tempAssoOut." = ".$tempId.""; 
 	 
-								$aClasseId = dbGetObjectsFromRequeteCache ($tempAsso, $sql, 100);
+								$aClasseId = dbGetObjectsFromRequete ($tempAsso, $sql);
 								if (sizeof($aClasseId) > 0) {
 									for ($l=0; $l<sizeof($aClasseId); $l++) {
 										$oClasseId = $aClasseId[$l]; 
@@ -198,7 +198,8 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 											//echo " - ";
 											//abstract
 											//eval ("echo $"."oClasse->get_".strval($oClasse->getAbstract())."();");
-											//echo "<br />\n";											
+											//echo "<br />\n";
+											
 										}
 										else {
 											//echo "** pour tous les enregistrements";

@@ -538,7 +538,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 			}
 			echo "</select>\n";		
 		} // fin cas enum
-		else{ // cas typique			
+		else{ // cas typique
 			if ($aNodeToSort[$i]["attrs"]["NAME"] == "statut"){ // cas statut
 				//echo lib($eKeyValue);
 				echo "voir boutons radios";

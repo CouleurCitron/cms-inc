@@ -2,6 +2,12 @@
 //pre_dump("jquery_version");
 /* [Begin patch] */
 
+//if(in_array('cms_site', $_SESSION['patches'])){
+//    $key = array_search('cms_site', $_SESSION['patches']);
+//    
+//    unset($_SESSION['patches'][$key]);
+//}
+
 //pre_dump(ispatched('cms_jquery_version'));
 if (!ispatched('cms_jquery_version')){
     //pre_dump("patch");
@@ -20,8 +26,8 @@ if (!ispatched('cms_jquery_version')){
         //pre_dump("ok table");
         
         $sSQl = "SELECT * FROM cms_jquery_version";
-        $result = mysqli_query($sSQl);
-        $number = mysqli_num_rows($result);
+        $result = mysql_query($sSQl);
+        $number = mysql_num_rows($result);
         //pre_dump($number);
         if($number == "0"){
             //pre_dump("no data");

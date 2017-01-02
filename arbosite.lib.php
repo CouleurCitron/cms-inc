@@ -1,10 +1,19 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /* 
-$Author: pierre $
-$Revision: 1.8 $
+$Author: raphael $
+$Revision: 1.3 $
 
 $Log: arbosite.lib.php,v $
+Revision 1.3  2013-11-06 14:49:09  raphael
+*** empty log message ***
+
+Revision 1.2  2013-11-06 10:26:27  raphael
+*** empty log message ***
+
+Revision 1.1  2013-09-30 09:28:21  raphael
+*** empty log message ***
+
 Revision 1.8  2013-03-01 10:33:58  pierre
 *** empty log message ***
 
@@ -217,7 +226,7 @@ function drawCompTree($db,$virtualPath,$full_path_to_curr_id=null,$destination=n
 	if ($full_path_to_curr_id==null || $full_path_to_curr_id=="0") {
 		// cas particulier de la racine où il faut dessiner le père en plus des fils
 		$full_path_to_curr_id=0;
-		$strHTML .= "<a href=\"".$destination."\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
+		$strHTML .= "<a href=\"".$destination."\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 		
 	} else {
 		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
@@ -234,13 +243,13 @@ function drawCompTree($db,$virtualPath,$full_path_to_curr_id=null,$destination=n
 		//debut de ligne...
 		if (!in_array($id,split(',',$virtualPath))) {
 			//dossier ferme
-			$strHTML .= "$indent<a href=\"".$destination.$OP."v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier.gif\">$libelle</a><br/>\n";
+			$strHTML .= "$indent<a href=\"".$destination.$OP."v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\">".strip_tags($libelle, '<br><sup><ub>')."</a><br/>\n";
 		} else {
 			//dossier ouvert
 			if(array_pop(split(',',$virtualPath))==$id)
-				$strHTML .= "$indent<a class=\"arbo\" href=\"".$destination."?v_comp_path=$full_path_to_curr_id,$id\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><span class=\"arbo\">$libelle</span></a><br/>\n";
+				$strHTML .= "$indent<a class=\"arbo\" href=\"".$destination."?v_comp_path=$full_path_to_curr_id,$id\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><span class=\"arbo\">".strip_tags($libelle, '<br><sup><ub>')."</span></a><br/>\n";
 			else
-				$strHTML .= "$indent<a class=\"arbo\" href=\"".$destination."?v_comp_path=$full_path_to_curr_id,$id\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\">$libelle</a><br/>\n";
+				$strHTML .= "$indent<a class=\"arbo\" href=\"".$destination."?v_comp_path=$full_path_to_curr_id,$id\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\">".strip_tags($libelle, '<br><sup><ub>')."</a><br/>\n";
 			$strHTML.=drawCompTree($db,$virtualPath,$full_path_to_curr_id.','.$id,$destination);
 		}
 	}

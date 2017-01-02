@@ -58,17 +58,18 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 </langpack>
 </class>";
 
-var $oldstyleclass = true;
 
 
 // constructeur
 function Cms_form($id=null) 
 {
+	
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);
 	}
 
-	if($id!=null) {		 
+	if($id!=null) {
+		//$this = dbGetObjectFromPK("Cms_form", $id);
 		$tempThis = dbGetObjectFromPK("Cms_form", $id);
 		$this->id_form = $tempThis->id_form;
 		$this->name_form = $tempThis->name_form;

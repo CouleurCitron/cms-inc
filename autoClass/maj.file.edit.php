@@ -39,7 +39,7 @@ $bPopupWysiwyg = true ;
 $bPopupLinks = true ; 
  
 
-$idrang =  $_GET["id"]; 
+$idrang =  0; 
 $source = $_GET["source"] ;
 
 $source = $source_init = str_replace ("**", ".",  $source);
@@ -50,7 +50,7 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "INSERT") {
 
 
 	//"{imagetest**gif}{imagetest**gif}{chat**jpg;chat-size-1**jpg}{imagetest**gif}{chat**jpg;chat-size-1**jpg}{chat-size-1**jpg}";
-	$idrang = $_POST["idrang"];
+	$idrang = 0;
 
 	//echo "old_source : ".$_POST["source"]."<br />";	
 	if (preg_match ("/{/", $_POST["source"]) ) {
@@ -130,7 +130,9 @@ if (isset($_POST["operation"]) && $_POST["operation"] == "INSERT") {
 	$aFile[$idrang] = $sFile = preg_replace ("/\[.*\]/", "", $aFile[$idrang]).$machaine;
 	
 	
-	$new_source = "{".implode("}{", $aFile) ."}"; 
+	//$new_source = "{".implode("}{", $aFile) ."}";
+        
+        $new_source = implode("}{", $aFile);
 	
 	//echo "new_source : ".$new_source; 
 	
@@ -154,7 +156,7 @@ else {
 		$aFile[] = $source; 
 	}	
 	 
-	preg_match_all ("/.*\[titre::(.*)\]\[metadata::(.*)\]\[url::(.*)\]/", $aFile[$idrang], $matches); 
+	preg_match_all ("#.*\[titre::(.*)\]\[metadata::(.*)\]\[url::(.*)\]#", $aFile[$idrang], $matches); 
 	
 	
 	$aTab = array();

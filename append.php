@@ -1,8 +1,11 @@
+    </div>
+   </section>
+   
+<!-- Bloc Footer -->
+<footer><p class="logo"><img src="/backoffice/cms/img/2013/logo_couleur_citron.png" border="0" alt="Logo Couleur Citron"/></p></footer>
 
-    </td>
-   </tr>
-  </table>
-  </div>
+
+<!-- FIn Bloc Footer -->
   <?php
   if ($_SERVER['PHP_SELF'] != '/backoffice/cms/init.php'){
   ?>

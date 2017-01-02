@@ -124,7 +124,7 @@ function updateToutenligne($idPage)
 function updateExisteligne($idPage)
 function pageTravail($idPage, $sMode, $eIdTravail)
 function afficheIconePreviewPage($idContent, $sNature, $idPage, $sNomPage, $bToutenligne_page, $bExisteligne_page, $sUrlPageLigne)
-function getPagesFromXGabarits($aIdGab, $idSite) {
+function getPagesFromXGabarits($aIdGab) {
 function getIdPageWithUrl($idNode, $idSite, $sPage)
 function analyseUrlToGetIdPage($sUrlComplete)
 function getUrlWithIdPage($idPage)
@@ -1212,13 +1212,7 @@ $sUrlPageLigne = str_replace("%25E9", "%E9", $sUrlPageLigne);
 		print(" ?>");*/
 		
 		print("<a href=\"".$sUrlPageLigne."\" target=\"_blank\" title=\"Voir la page en ligne\"><img ");
-		
-		if (is_file($_SERVER["DOCUMENT_ROOT"]."/backoffice/cms/img/2013/icone/visualiser.png")) {
-			print("src=\"/backoffice/cms/img/2013/icone/visualiser.png\" border=\"0\"></a>&nbsp;");
-		}
-		else {
-			print("src=\"/backoffice/cms/img/page_ligne.gif\" border=\"0\"></a>&nbsp;");
-		}
+		print("src=\"/backoffice/cms/img/2013/icone/visualiser.png\" border=\"0\"></a>&nbsp;");
 	} 
 	
 }
@@ -1229,7 +1223,7 @@ $sUrlPageLigne = str_replace("%25E9", "%E9", $sUrlPageLigne);
 // + les gabarits eux mêmes
 ///////////////////////////////////
 
-function getPagesFromXGabarits($aIdGab, $idSite) {
+function getPagesFromXGabarits($aIdGab) {
 
 	global $db;
 	$result = array();
@@ -1261,18 +1255,14 @@ function getPagesFromXGabarits($aIdGab, $idSite) {
 		else $sql.=" ) "; // fin deuxième parenthèse
 	}
 	
-	
-	
 	// fin grande parenthèse
 	if (sizeof($aIdGab)) $sql.=" ) ";	
-	
-	$sql.= " AND id_site=$idSite ";
 	
 	$sql.=" ORDER BY isgabarit_page DESC, gabarit_page ASC";
 	
 	if (DEF_BDD != "ORACLE") $sql.= ";";
 
-	//print("<br>$sql");
+//print("<br>$sql");
 
 	$rs = $db->Execute($sql);
 	if($rs) {

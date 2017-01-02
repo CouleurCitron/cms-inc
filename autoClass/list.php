@@ -57,6 +57,7 @@ $rows_per_page = 25;
 include_once('list.process.php');
 ?>
 <div class="ariane"><span class="arbo2">MODULE >&nbsp;</span><span class="arbo3"><?php echo $translator->getText($classeLibelle).'&nbsp;>&nbsp;'.$translator->getTransByCode('liste'); ?></span></div>
+<div class="add_export">
 <?php
 $aListTools = array();
 
@@ -73,8 +74,9 @@ if ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match
 		$aListTools[] = '<a href="flvimport_'.$classeName.'.php" class="arbo" title="Import .FLV">Import&nbsp;.FLV</a>';
 	if (is_file('xmlimport_'.$classeName.'.php'))
 		$aListTools[] = '<a href="xmlimport_'.$classeName.'.php" class="arbo" title="Import XML">Import&nbsp;XML</a>';
-
-	/* si liste ordonnable! */
+        
+        
+        /* si liste ordonnable! */
         eval("$"."oRes = new ".$classeName."();");
 	if(!is_null($oRes->XML_inherited))
 		$sXML = $oRes->XML_inherited;
@@ -84,14 +86,14 @@ if ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match
 	unset($stack);
 	$stack = array();
 	xmlClassParse($sXML);
-	if(isset($stack[0]["attrs"]["ORDONABLE"])){
-        $aListTools[] = "<a href='/backoffice/cms/order.item_class.php?classe=".$classeName."' class=\"arbo\" title=\"".$translator->getText('Ordonner les objets')."\">".$translator->getText('Ordonner les objets')."</a>";
-        if($_SESSION['login'] == 'ccitron') {
-        	$aListTools[] = "<a href='/backoffice/cms/generate.arbo_class.php?classe=".$classeName."' class=\"arbo\" title=\"".$translator->getText('Générer l\'arborescence')."\">".$translator->getText('Générer l\'arborescence')."</a>";
+        if(isset($stack[0]["attrs"]["ORDONABLE"])){
+            $aListTools[] = "<a href='/backoffice/cms/order.item_class.php?classe=".$classeName."' class=\"arbo\" title=\"".$translator->getText('Ordonner les objets')."\">".$translator->getText('Ordonner les objets')."</a>";
         }
-    }
+        //pre_dump($stack);
+        
 
-	echo '<div class="newelement">
+	echo '
+                <div class="newelement">
 		'.join('&nbsp;|&nbsp;', $aListTools).'
 	</div>';
 }
@@ -132,14 +134,13 @@ if(sizeof($aListe_res) > 0 && ($_SESSION['login'] == 'ccitron' || empty($customA
 	if (is_file('exportemail_'.$classeName.'.php'))
 		$aListTools[] = '<a href="exportemail_'.$classeName.'.php" class="arbo" target="_blank" title="Export E-mails en .xlsx">e-mails</a>';
 
-
 	echo '<div class="export">
 		'.join(' | ', $aListTools).'
-	</div>';
-
+	</div>
+        ';
 }
 ?>
-
+</div>
 <br>
 <?php
 include('list.filters.php');

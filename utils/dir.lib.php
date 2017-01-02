@@ -123,7 +123,7 @@ function removeForbiddenChars($strChars, $bUseDashInsteadOfUnderScore=DEF_DASH_I
 	$strChars = russianToLatin(entitiesToUtf8($strChars)); // pour le russe &#xxxx; => uft8, puis russe utf8 => latin
 	
 	$forbidden = array(" ", "/", "'", "\"", "?", "!", ",", ";", ":", "(", ")", "@", "®", "™", html_entity_decode("&nbsp;"), "«", "»", "¿", "¡", "?", "?");
-	$replaces = array( "_", "-", "_",  "",  ".", ".", ".", ".", ".", "",  "",  "a",  "",  "", "_",                          "",  "",  "",  "",  "",  "");
+	$replaces = array("_", "-", "_", "", ".", ".", ".", ".", ".", "", "", "a", "", "", "_", "", "", "", "", "", "");
 	$strChars = str_replace($forbidden, $replaces, removeAccents($strChars)); 
 	 
 	if ((string)$bUseDashInsteadOfUnderScore==='true'){
@@ -131,7 +131,7 @@ function removeForbiddenChars($strChars, $bUseDashInsteadOfUnderScore=DEF_DASH_I
 	}
 	else{
 		$strChars = str_replace('-', '_', $strChars);
-	}
+	}	
 	return $strChars;
 }
 

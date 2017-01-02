@@ -102,10 +102,12 @@ else{
 	$_SESSION['id_langue'] = 1;
 }
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="Content-Language" content="fr" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
 	<!--[if gt IE 8]><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /><![endif]-->
 	<!--[if IE 10]><meta http-equiv="X-UA-Compatible" content="requiresActiveX=true" /><![endif]-->
 	<meta http-equiv="Content-Style-Type" content="text/css" />
@@ -118,21 +120,30 @@ else{
 	//if (preg_match('/backoffice\/cms/si', $_SERVER['PHP_SELF'])==1){
 	//}
 	if (preg_match('/backoffice\/cms\/site\/pageLiteEditor3\.php/si', $_SERVER['PHP_SELF'])==1){
-	?><link href="<?php echo $URL_ROOT;?>/custom/css/fo_<?php echo  strtolower($_SESSION['site_travail']) ; ?>.css" rel="stylesheet" type="text/css"/>
+	?><link href="<?php echo $URL_ROOT;?>/custom/css/fo_<?php echo  strtolower($_SESSION['site_travail']) ; ?>.css" rel="stylesheet" type="text/css" />
 	<?php	
 	}
 	//elseif (preg_match('/backoffice\/cms/si', $_SERVER['PHP_SELF'])==1){
 	//} 	
 	if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/css/bo_".strtolower($_SESSION['site_travail']).".css")){ ?>
-		<link rel="stylesheet" href="<?php echo $URL_ROOT;?>/custom/css/bo_<?php echo strtolower($_SESSION['site_travail']); ?>.css" type="text/css"/>
+		<link rel="stylesheet" href="<?php echo $URL_ROOT;?>/custom/css/bo_<?php echo strtolower($_SESSION['site_travail']); ?>.css" type="text/css" />
 	<?php
 	}
 	else { ?>
-		<link rel="stylesheet" href="<?php echo $URL_ROOT;?>/backoffice/cms/css/bo.css" type="text/css"/>
+		<link rel="stylesheet" href="<?php echo $URL_ROOT;?>/backoffice/cms/css/bo.css" type="text/css" />
+                <link rel="stylesheet" href="<?php echo $URL_ROOT;?>/backoffice/cms/css/bo2013.css" type="text/css" />
+                <link rel="stylesheet" href="<?php echo $URL_ROOT;?>/backoffice/cms/img/2013/theme1/style.css" type="text/css" />
 	<?php
 	}
 	?>
+    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-1.6.4.min.js" type="text/javascript"></script>
+    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/modernizr.js" type="text/javascript"></script>
+    <!-- sortable list -->
+    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-ui.js" type="text/javascript"></script>
+    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery.mjs.nestedSortable.js" type="text/javascript"></script>
+    
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>
+    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/fojsutils2013.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/utils.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/AnimTree.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/persistentTree.js" type="text/javascript"></script>
@@ -140,9 +151,6 @@ else{
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/confirmations.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/AC_RunActiveContent.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/XHRConnector.js" type="text/javascript"></script>
-	<script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-1.6.4.min.js" type="text/javascript"></script>
-	<script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-ui.js" type="text/javascript"></script>
-    <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery.mjs.nestedSortable.js" type="text/javascript"></script>
 	<?php
 	// fancybox
 	if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/lib/fancybox-1.3.4/jquery.fancybox-1.3.4.pack.js')){
@@ -162,9 +170,9 @@ else{
 	}
 	
 	//jquery-ui
-	if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/jquery-ui-1.8.17.custom.min.js')){
-		echo '  <script src="/backoffice/cms/js/jquery-ui-1.8.17.custom.min.js" type="text/javascript"></script>';
-	}
+//	if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/jquery-ui-1.8.17.custom.min.js')){
+//		echo '  <script src="/backoffice/cms/js/jquery-ui-1.8.17.custom.min.js" type="text/javascript"></script>';
+//	}
 	//tablesorter
 	if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/jquery.tablesorter.js')){
 		echo '  <script src="/backoffice/cms/js/jquery.tablesorter.js" type="text/javascript"></script>
@@ -185,12 +193,46 @@ if (strlen($_GET['menuOpen']) > 0)
 else // si rien du tout n'est spécifier on ouvre le menu par défaut
 	$menustate='true';
 $_SESSION['menuOpen'] = $menustate;// On enregistre l'état du menu
+
+
+
+
+
+
+
+ 	// --------------------------------------
+	// gestion des themes
+ 	// -------------------------------------- 
+	$theme = $_SESSION['nom_theme'];
+	if ($theme == ""){ 
+		$theme = "theme1";
+	}
+	if (!empty($_POST['nom_theme'])) { 
+		$theme = $_POST['nom_theme']; 
+	}
+	$_SESSION['nom_theme'] = $theme;
+	// --------------------------------------
+	// gestion des themes
+ 	// --------------------------------------
+	
+	
+ 
 ?>
 var sOpenMenu = <?php echo $menustate; ?>;
 if(sOpenMenu == false){
   bOpen = sOpenMenu;
 }
 //-->
+</script>
+<script type="text/javascript">
+        // déconnexion
+	function logoff()
+	{
+                //alert('logoff');
+                $("form#accueilForm").attr('action', '<?php echo $_SERVER['PHP_SELF']; ?>');
+                $("form#accueilForm #operation").val("logoff");
+                $("form#accueilForm").submit();
+	}
 </script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/menu_bo.js" type="text/javascript"></script>
     <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/openBrWindow.js" type="text/javascript"></script>
@@ -206,7 +248,7 @@ if(sOpenMenu == false){
   };
 </script>    
 </head>
-<body onload='EscamotLayer(&quot;nav&quot;); saveTreeOnUnload(&quot;nav&quot;);'>
+<body>
 <div id="dek" class="dek" style="position: absolute; visibility: visible; display: none; left: 0px; top: 0px;">
 	
 </div>
@@ -215,24 +257,40 @@ Xoffset=-140;
 Yoffset= 20; 
 </script>
 <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/infobulle.js" type="text/javascript"></script>
-<div id="help" class="help"><a href="http://documentation.adequation.cc/" target="_blank" title="Aide en ligne" onmouseover="MM_swapImage('bthelp','','/backoffice/cms/img/aide-roll.png',1)" onmouseout="MM_swapImgRestore()"><img src="/backoffice/cms/img/aide.png" width="22" height="22" border="0" alt="help" id="bthelp" name="bthelp" /></a></div>
-<div id="tab_init">
-  <table width="100%" border="0" cellpadding="5" cellspacing="0">
-<tr>
-  <?php
-  if (is_get('noMenu') && $_GET['noMenu']=='true'){	
-	echo '<td width="270" valign="top" align="left" class="menu_td" style="display:none">';
-}
-else{
-	echo '<td width="270" valign="top" align="left" class="menu_td">';
-}
+<!-- Bloc Header -->
+<header>	
+	<h1><a href="/backoffice/index.php">Adéquat'<span>website<sup>&reg;</sup></span></a></h1>
+	<div class="header_right">
+		<p class="user_infos"><a href="http://documentation.adequation.cc/" target="_blank" title="Aide en ligne" onMouseOver="MM_swapImage('bthelp','','/backoffice/cms/img/aide-roll.png',1)" onMouseOut="MM_swapImgRestore()"><img src="/backoffice/cms/img/aide.png" width="22" height="22" border="0" alt="help" id="bthelp" name="bthelp" /></a></p>
+		<p class="user_infos"><a class="deconnexion" href="javascript:logoff();" title="Déconnexion"><?php $translator->echoTransByCode('Header_Deconnexion'); ?></a></p>	
+		<p class="user_infos"><?php $translator->echoTransByCode('Header_bienvenue'); ?> <span class="nom"><?php echo $_SESSION['user']; ?></span></p>
+		<form action="/backoffice/"  name="accueilForm" id="accueilForm" method="post" >
+			<input type="hidden" name="operation" id="operation" value="<?php echo $_POST['operation']; ?>" />
+			Site : 
+			<select name="connectSite" onchange ='javascript:this.form.submit();' >
+				<?php $listSite = listSite('ALL');  ?>
+                            <?php foreach($listSite as $site){ ?>
+                            <option value="<?php echo $site->id; ?>"<?php if($_SESSION['idSite_travail'] == $site->id) echo " SELECTED"; ?>><?php echo $site->name; ?></option>
+                            <?php } ?>
+                            
+			</select>
+                        
+                        <?php //pre_dump($_SESSION); ?>
+		</form>
+	</div>	
+</header>
+<!-- FIN Bloc Header -->
+
+<section id="center">
+  <?php 
   
 	include_once('bo/menu.inc.php');
 
 	function findValidMenuItem($item, $menuStruct){
 		
+		//echo 'findValidMenuItem('.$item.' in '.join(',',$menuStruct).')<br />';
 		if (is_array($menuStruct)){
-			foreach ($menuStruct as $k => $v){							
+			foreach ($menuStruct as $k => $v){			
 				if (isset($v[$item])&&is_array($v[$item])&&is_string($v[$item]['content'])&&preg_match('/backoffice/', $v[$item]['content'])==1){
 					$item = $menuStruct['id'];
 					return 	$item;
@@ -245,7 +303,7 @@ else{
 		}
 		return $item;
 	}
-
+ 
 	function activateMenu($item) {
 		if (strlen($item)) {
 		global $menuStruct;
@@ -255,108 +313,92 @@ else{
 ?>
 <script type="text/javascript">
 <!--
-restoreTreeState("nav", "<?php echo $item; ?>");
+refresh_menu("<?php echo $_SERVER["REQUEST_URI"]; ?>");
 //-->
 </script>
 <?php
 		}
 	}
 
-	function generateMenu($menu_items) {
+	function generateMenu($menu_items, $depth=1	) {
 		global $URL_ROOT;
 		$menuStr = "";
+                //pre_dump($menu_items);
 		foreach ($menu_items as $k => $v) {
 			$menuStr .= "
-<div id=\"".$k."\" class=\"button\">
-	<span class=\"buttonlabel\" onclick=\"toggleMenu(this)\">
-	<img src=\"".$URL_ROOT."/backoffice/cms/img/closed-menu.gif\"
-		title=\"".$v['label']."\"
-		alt=\"+\" />".$v['label']."</span>
-</div>
-<div class=\"menu\" id=\"".$k."Menu\">\n";
-			if($v['content'] != NULL){
-				foreach($v['content'] as $key => $val) {
-					if(is_array($val['content'])) {
-						$menuStr .= generateMenu(array($key => $val));
-					} elseif($val['content'] != NULL) {
+			<li class=\"niv".$depth." ".noAccent($v['label'])."\" id=\"".$k."\">
+				<a href=\"javascript:void(0);\">";
+					if($depth == 1) $menuStr .= "<img src=\"/backoffice/cms/img/2013/theme1/img/icone/".noAccent($v['label']).".png\" border=\"0\" alt=\"".$v['label']."\" />";
+					$menuStr .= "<span>".$v['label']."</span>
+				</a>
+			
+			<ul class=\"ss_menu\" id=\"".$k."Menu\">\n";
+				if(($v['content'] != NULL) && (is_array($v['content']))){
+					foreach($v['content'] as $key => $val) {
+						if(is_array($val['content'])) {
+							$menuStr .= generateMenu(array($key => $val), ($depth+1));
+						} elseif($val['content'] != NULL) {
 						
-					// recherche du caractère ?
-					// si des paramètres ont étés passés
-					// -> passage des aramètres suivants avec le caractère &
-					if ( strstr($val['content'], "?") ) $sCarParam = "&amp;";
-					else $sCarParam = "?";
-					
-					if (!is_get('menuOpen')){
-						$_GET['menuOpen'] = false;					
-					}
-					$menuStr .= "
-	<div class=\"menuNode\">
-		<a href=\"".$val['content'].$sCarParam."menuOpen=".$_GET['menuOpen']."\">".$val['label']."</a>
-	</div>";
+						// recherche du caractère ?
+						// si des paramètres ont étés passés
+						// -> passage des aramètres suivants avec le caractère &
+						if ( strstr($val['content'], "?") ) $sCarParam = "&";
+						else $sCarParam = "?";
+						
+						if (!is_get('menuOpen')){
+							$_GET['menuOpen'] = false;					
+						}
+						$menuStr .= "
+						<li class=\"niv".($depth+1)."\">
+							<a href=\"".$val['content']."\">".$val['label']."</a>
+						</li>";
 					}
 				}
 			}
-			$menuStr.="</div>\n";
+			$menuStr.="</ul></li>\n";
 
 		}
 		return $menuStr;
 	}
-	
-if (is_get('noMenu') && $_GET['noMenu']=='true'){	
-	echo '<div id="nav" class="AnimTree" style="display:none">';
-}
-else{
-	echo '<div id="nav" class="AnimTree">';
-}
 ?>
-	<table border="0" cellpadding="0" cellspacing="0">
-	  <tr>
-	   <td class="arbo">
-	   <table width="100%"  border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td class="title">Adéquat'<span>website<sup>&reg;</sup></span><!-- <img src="/backoffice/cms/img/tt_menu.jpg" border="0" alt="Module d'administration" /> --></td>
-  </tr>
+	<div id="col_left">	
+		<a href="#" class="affichage_menu"><img src="/backoffice/cms/img/2013/picto/fleche_noire2.png" alt="cacher"/></a>
+		<p class="site_travail"><span><?php $translator->echoTransByCode('sitedetravail'); ?>&nbsp;:	<?php  echo $_SESSION['site']; ?></span></p>
+		<ul id="menu" class="open_menu">
 
- <tr>
-    <td class="sous_titre_site">&nbsp;<?php $translator->echoTransByCode('sitedetravail'); ?>&nbsp;:</td></tr>
-    <tr><td class="titre_site">
-	<?php  echo $_SESSION['site']; ?></td>
-  </tr>
+  		
+		<?php 
+			echo generateMenu($menuStruct['main']['content'], 1);
+		?>
+		</ul>       
+	</div>
 
-  <tr>
-    <td align="center"><img src="/backoffice/cms/img/white_star.jpg" align="left" alt="***********" /></td>
-  </tr>
-  <tr>
-    <td><img src="/backoffice/cms/img/user-group2.gif" alt="user:" /> <a href="/backoffice/index.php"><?php echo $_SESSION['user']; ?>&nbsp;/&nbsp;<?php echo $_SESSION['site']; ?></a></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="/backoffice/cms/img/white_star.jpg" align="left" alt="***********" /></td>
-  </tr>
-</table>		
-<?php
-	echo generateMenu($menuStruct);
-?>
-       </td>
-	   <td align="left" valign="top">        
-		   <table border="0" cellspacing="0" cellpadding="0">
-			 <tr>
-			   <td valign="top"><a href="javascript:OpenMenu('nav');">	   
-			   <?php
-			   if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/img/controle_menu.'.$_SESSION['BO']['site_langue'].'.png')){
-			   	echo '<img src="/backoffice/cms/img/controle_menu.'.$_SESSION['BO']['site_langue'].'.png" border="0" />';
-			   }
-			   else{
-			   	echo '<img src="/backoffice/cms/img/controle_menu.gif" border="0" />';
-			   }
-			   //
-			   ?></a></td>
-			 </tr>
-		   </table>
-	   </td>
-	  </tr>
-	  <tr>
-		<td colspan="2"><img src="/backoffice/cms/img/fond_menu2.jpg" /></td>
-	  </tr>
-     </table>
-</div>
-</td><td>
+
+
+  <script>
+      $(window).load(function(){
+          if( window.self === window.top ) { 
+            } else { 
+                $('header').css('display', 'none');
+                $('#col_left').css('display', 'none');
+                $('#col_right').css('width', '100%');
+                $('footer').css('display', 'none');
+
+                $('section').css('height', $(window).height());
+              }
+      });
+  </script>
+  <?php
+  if(isset($_SESSION['BO']['menu']) && $_SESSION['BO']['menu'] == 'close'){
+      ?>
+        <script>
+            $(window).load(function(){
+                $("a.affichage_menu").trigger('click');
+            });
+        </script>
+  <?php
+  }
+  ?>
+  
+  
+	<div id="col_right">

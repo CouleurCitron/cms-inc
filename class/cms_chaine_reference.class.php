@@ -82,10 +82,8 @@ function cms_chaine_reference($id=null)
 
 	if($id!=null) {
 		$tempThis = dbGetObjectFromPK(get_class($this), $id);
-		if(is_object($tempThis)){
-			foreach ($tempThis as $tempKey => $tempValue){
-				$this->$tempKey = $tempValue;
-			}
+		foreach ($tempThis as $tempKey => $tempValue){
+			$this->$tempKey = $tempValue;
 		}
 		$tempThis = null;
 	} else {

@@ -109,7 +109,7 @@ class Pagination {
 	global $PHP_SELF;
 		if ($anchor) {
 	?>
-		<a class="cms_first" href="<?php echo $PHP_SELF,'?',$this->id;?>_next_page=1<?php echo $this->sParam; ?>"><?php echo $this->first;?></a> &nbsp; 
+		<a class="cms_first" href="<?php echo $PHP_SELF,'?',$this->id;?>_next_page=1<?php echo $this->sParam; ?>"><?php echo $this->first;?> &nbsp; </a> 
 	<?php
 		} else {
 			print "<a class=\"cms_first\">$this->first &nbsp; </a>";
@@ -124,7 +124,7 @@ class Pagination {
 	
 		if ($anchor) {
 		?>
-		<a class="cms_next" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() + 1 ?><?php echo $this->sParam; ?>"><?php echo $this->next;?></a> &nbsp; 
+		<a class="cms_next" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() + 1 ?><?php echo $this->sParam; ?>"><?php echo $this->next;?> &nbsp;</a>  
 		<?php
 		} else {
 			print "<a class=\"cms_next\">$this->next &nbsp; </a>";
@@ -145,7 +145,7 @@ class Pagination {
 		
 		if ($anchor) {
 		?>
-			<a class="cms_last" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->LastPageNo() ?><?php echo $this->sParam; ?>"><?php echo $this->last;?></a> &nbsp; 
+			<a class="cms_last" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->LastPageNo() ?><?php echo $this->sParam; ?>"><?php echo $this->last;?> &nbsp; </a> 
 		<?php
 		} else {
 			print "<a class=\"cms_last\">$this->last &nbsp; </a>";
@@ -180,7 +180,7 @@ class Pagination {
             } 
 			
 			for($i=$start; $i <= $end; $i++) {
-				if ($i != $start) $numbers .=  $this->separator;
+				//if ($i != $start) $numbers .=  $this->separator;
                 if ($this->rs->AbsolutePage() == $i)
                      $numbers .= "<a href=\"$PHP_SELF?$link=$i".$this->sParam."\" class=\"actif\" >$i</a>  ";
                 else 
@@ -189,7 +189,7 @@ class Pagination {
             }
 			if ($this->moreLinks && $end < $pages) 
 				$numbers .= "<a href=\"$PHP_SELF?$link=$i".$this->sParam."\">$this->moreLinks</a>  ";
-            print $numbers . ' &nbsp; ';
+            print $numbers . ' ';
         }
 	// Link to previous page
 	function render_prev($anchor=true)
@@ -197,7 +197,7 @@ class Pagination {
 	global $PHP_SELF;
 		if ($anchor) {
 	?>
-		<a class="cms_prev" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() - 1 ?><?php echo $this->sParam; ?>"><?php echo $this->prev;?></a> &nbsp; 
+		<a class="cms_prev" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() - 1 ?><?php echo $this->sParam; ?>"><?php echo $this->prev;?> &nbsp;</a>  
 	<?php 
 		} else {			
 			print "<a class=\"cms_prev\">$this->prev &nbsp; </a>";

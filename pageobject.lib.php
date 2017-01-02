@@ -43,7 +43,7 @@ class pageObject {
 		if(is_null($idPage)){
 			global $courant;
 			
-			$idPage = $this->getIdPage($courant);
+			$idPage = $this->getIdPage($courant);			
 		}
 		
 		if(is_null($nomClasse)){
@@ -51,13 +51,13 @@ class pageObject {
 			$sql = "select xcp_objet as id, (Select cms_nom from classe where cms_id=cms_assoclassepage.xcp_classe) as cms_nom from cms_assoclassepage where xcp_cms_page=".$idPage;
 		}else{
 			//sinon, uniquement le type d'objet demandÃ©
-			$sql = "select cms_assoclassepage.*, '".$nomClasse."' as 'cms_nom' from cms_assoclassepage where xcp_cms_page=".$idPage;
-			$sql .= " AND xcp_classe=(Select cms_id from classe where cms_nom='".$nomClasse."')";
+			$sql = "select cms_assoclassepage.*, xcp_objet as id, '".$nomClasse."' as 'cms_nom' from cms_assoclassepage where xcp_cms_page=".$idPage;
+			$sql .= " AND xcp_classe=(Select cms_id from classe where cms_nom='".$nomClasse."')";			
 		}
 		
 		//on ordonne
 		$sql .= " ORDER BY xcp_classe, xcp_order";
-		// echo $sql;
+		//echo $sql;
 		if(is_null($nomClasse)){
 			$aResultat = array();
 			//on rÃ©cupÃ¨re le retour de la requÃªte puis pour chaque Ã©lÃ©ment, on crÃ©e le tableaux d'objets
@@ -81,11 +81,59 @@ class pageObject {
 				}
 				$rs->Close();
 			}
-			
+                        
+                        
+                        //on récupère les objets parents
+                        $sSqlParent = "SELECT * FROM cms_assoclassepage WHERE xcp_cms_page = '".$idPage."' AND xcp_parent != '0' AND xcp_parent != '-1' ORDER BY xcp_classe, xcp_order";
+                        $aParent = dbGetObjectsFromRequete('cms_assoclassepage',$sSqlParent);
+            
+                        foreach($aParent as $oParent){
+                            //pre_dump($oParent);
+                            $oClass = new classe($oParent->get_classe());
+                            $oObjectParent = new cms_assoclassepage($oParent->get_parent());
+                            $aResultat[$oClass->get_nom()]['parents'][$oParent->get_objet()] = $oObjectParent->get_objet();
+                        }
+                        
+			//die();
 			return $aResultat;
 		}else{
 			//on crÃ©e directement le tableau d'objets
-			return dbGetObjectsFromRequete($nomClasse,$sql);
+			//$aResultat = dbGetObjectsFromRequete($nomClasse,$sql);
+			$aResultat = array();
+			//on rÃ©cupÃ¨re le retour de la requÃªte puis pour chaque Ã©lÃ©ment, on crÃ©e le tableaux d'objets
+			$rs = $db->Execute($sql);
+			if($rs) {
+				while(!$rs->EOF) {
+				
+					if ($rs->fields['id'] !=-1) {
+						$nom = $rs->fields['cms_nom'];
+						if(!isset($aResultat)){
+							$aResultat = array();
+						}
+						if (class_exists($nom)){
+							array_push($aResultat,new $nom($rs->fields['id']));
+						}
+						else{
+							echo 'WARNING: unable to access class '.$nom.'<br />'.$sql.'<br />';
+						}
+					}
+					$rs->MoveNext();
+				}
+				$rs->Close();
+			}
+                        
+                        //on récupère les éléments parents
+                        //on récupère les objets parents
+                        $sSqlParent = "SELECT * FROM cms_assoclassepage AS a, classe AS c WHERE a.xcp_cms_page = '".$idPage."' AND a.xcp_parent != '0' AND a.xcp_classe = c.cms_id AND c.cms_nom = '".$nomClasse."' ORDER BY xcp_classe, xcp_order";
+                        $aParent = dbGetObjectsFromRequete('cms_assoclassepage',$sSqlParent);
+                        
+                        foreach($aParent as $oParent){
+                            $oClass = new classe($oParent->get_classe());
+                            $oObjectParent = new cms_assoclassepage($oParent->get_parent());
+                            $aResultat[$oClass->get_nom()]['parents'][$oParent->get_objet()] = $oObjectParent->get_objet();
+                        }
+                        
+                        return $aResultat;
 		}
 
 		// die();

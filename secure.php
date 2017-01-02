@@ -1,23 +1,43 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /*
-	$Id: secure.php,v 1.82 2014-09-11 09:20:43 pierre Exp $
+	$Id: secure.php,v 1.10 2014-09-04 12:45:36 pierre Exp $
 	$Author: pierre $
 
 	$Log: secure.php,v $
-	Revision 1.82  2014-09-11 09:20:43  pierre
+	Revision 1.10  2014-09-04 12:45:36  pierre
 	*** empty log message ***
 
-	Revision 1.81  2014-05-16 13:12:47  pierre
+	Revision 1.9  2014-05-26 14:30:30  pierre
 	*** empty log message ***
 
-	Revision 1.80  2014-04-08 13:17:36  pierre
+	Revision 1.8  2014-04-08 08:09:27  quentin
+	Correction test constante
+
+	Revision 1.7  2014-02-19 14:39:24  pierre
 	*** empty log message ***
 
-	Revision 1.79  2014-02-19 14:39:13  pierre
+	Revision 1.6  2014-02-18 14:06:17  pierre
 	*** empty log message ***
 
-	Revision 1.78  2014-02-18 14:06:20  pierre
+	Revision 1.5  2014-02-18 08:18:31  quentin
+	Ajout constante ip autorisé depuis config.php
+
+	Revision 1.4  2014-02-17 08:34:00  quentin
+	Ajout constante ip autorisé depuis config.php
+
+	Revision 1.3  2013-10-02 13:51:38  raphael
+	*** empty log message ***
+
+	Revision 1.2  2013-10-02 13:25:27  raphael
+	Ajout d'un session_destroy pour vraiment supprimer notre session à la déconnexion
+
+	Ajout de jquery validate pour le formulaire de login, réactivation du bouton entrée lors
+	 de la connexion
+
+	Manque à charter le bouton submit de l'accueil
+
+	Revision 1.1  2013-09-30 09:28:33  raphael
 	*** empty log message ***
 
 	Revision 1.77  2013-09-24 09:20:33  pierre
@@ -301,13 +321,6 @@ if (strpos($_SERVER['REQUEST_URI'], 'secure.php')!==false){
 	die();	
 }
 
-if (!isset($translator)){
-	$translator =& TslManager::getInstance(); 
-}
-if (!isset($_SESSION['BO']['cms_texte'])){
-	$translator->loadAllTransToSession();
-}
-
 // déconnexion :: vidage session
 if (is_post('operation')){
 	if ($_POST['operation'] == "logoff") {
@@ -380,7 +393,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 			}
 			elseif (preg_match('/10\.69\.[0-9]{1,3}\.[0-9]{1,3}/', $_SERVER['REMOTE_ADDR'])==1){
 				//ok local thales tls
-			}
+			}			
 			else{				
 				if(defined('DEF_IP_ADMIN')){
 					$aIPs = explode(',', str_replace(' ', '', DEF_IP_ADMIN));
@@ -503,12 +516,16 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <title>Identification backoffice</title>
-<script src="/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>
-<script src="/backoffice/cms/js/validForm.js" type="text/javascript"></script>
+
+<!--<script src="/backoffice/cms/js/validForm.js" type="text/javascript"></script>-->
 <script src="/backoffice/cms/js/cufon-yui.js" type="text/javascript"></script>
 <script src="/backoffice/cms/js/Helvetica_Neue.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/backoffice/cms/css/login-bo.css" type="text/css" />
 <script src="<?php echo $URL_ROOT;?>/backoffice/cms/js/jquery-1.6.4.min.js" type="text/javascript"></script>
+<script src="/backoffice/cms/js/jquery.validate.js" type="text/javascript"></script>
+
+<script src="/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>
+<script src="/backoffice/cms/js/fojsutils2013.js" type="text/javascript"></script>
 <!-- appel d'une autre feuille de style pour l'accueil-->
 <?php
  	if (getCount_where("cms_site", array("cms_url"), array($_SERVER["HTTP_HOST"]), array("TEXT"))) {	
@@ -577,15 +594,16 @@ $(document).ready(function() {
 	<h1>Adéquat'<span>website<sup>&reg;</sup></span></h1>
 </div>
 <div id="logo">
-	<a href="http://www.couleur-citron.com" target="_blank" title="Couleur Citron"><img src="/backoffice/cms/img/logo_cc_bo.png" alt="Couleur Citron" border="0" /></a>
+	<a href="http://www.couleur-citron.com" target="_blank" title="Couleur Citron"><img src="/backoffice/cms/img/2013/logo_cc_bo.png" alt="Couleur Citron" border="0" /></a>
 </div>
 <div id="center">
 	<form name="frm_log" id="frm_log" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 		<h2><?php $translator->echoTransByCode('bienvenuedansvotremodule'); ?></h2>
-		<p><label><?php $translator->echoTransByCode('Identifiant'); ?></label><input name="login" type="text" class="champ" id="login" value="<?php if(is_post('login')){ echo $_POST['login']; } ?>" size="40" pattern="^.+$" errorMsg="<?php $translator->echoTransByCode('Vous_devez_saisir_votre_identifiant_login'); ?>" /></p>
-		<p><label><?php $translator->echoTransByCode('Mot_de_passe'); ?></label><input name="password" type="password" class="champ" id="password" value="<?php if(is_post('password')){ echo $_POST['password']; } ?>" size="40" pattern="^.+$" errorMsg="<?php $translator->echoTransByCode('Vous_devez_saisir_votre_mot_de_passe.'); ?>" /></p>
+		<p><label for="login"><?php $translator->echoTransByCode('Identifiant'); ?></label><input name="login" type="text" class="champ" id="login" value="<?php if(is_post('login')){ echo $_POST['login']; } ?>" size="40" pattern="^.+$" errorMsg="<?php $translator->echoTransByCode('Vous_devez_saisir_votre_identifiant_login'); ?>" /></p>
+		<p><label for="password"><?php $translator->echoTransByCode('Mot_de_passe'); ?></label><input name="password" type="password" class="champ" id="password" value="<?php if(is_post('password')){ echo $_POST['password']; } ?>" size="40" pattern="^.+$" errorMsg="<?php $translator->echoTransByCode('Vous_devez_saisir_votre_mot_de_passe.'); ?>" /></p>
 		<p class="forget"><a id="forget_password" href="#"><?php $translator->echoTransByCode('Mot_de_passe_oublie'); ?></a></p>
-		<p class="valider"><a href="javascript:submitValidForm(0);"><?php $translator->echoTransByCode('Valider'); ?></a></p>
+<!--		<p class="valider"><a href="javascript:submitValidForm(0);"><?php $translator->echoTransByCode('Valider'); ?></a></p>-->
+                <p class="valider"><input type="submit" name="submit" value="<?php $translator->echoTransByCode('Valider'); ?>" /></p>
 		<?php
 		if ($erreur>0) {
 		?>
@@ -595,6 +613,21 @@ $(document).ready(function() {
 		?>
 	</form>
 </div>
+    
+    <script>
+        /* Validation du formulaire de login */
+	$("#frm_log").validate({
+            rules: {
+               login:{
+                 required: true 
+               },
+               password:{ 
+                   required: true
+               }
+            }
+        });
+    </script>
+    
 <div id="footer">&nbsp;</div>
 </body>
 </html>

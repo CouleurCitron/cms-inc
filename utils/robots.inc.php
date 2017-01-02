@@ -11,9 +11,7 @@ $bDebug = false;
 //$bDebug = true;
 //-----------------------------------------------------------------
 
-if(!isset($oSiteToMap)	||	$oSiteToMap==false	|| $oSiteToMap==NULL){
-	$oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
-}
+$oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
 
 if ($oSiteToMap==false){
 	$aSites = listSite("ALL");
@@ -48,6 +46,7 @@ User-agent: *
 if ($oSiteToMap != NULL){
 ?>
 Disallow: /custom/upload/
+Disallow: /backoffice/
 Disallow: /frontoffice/
 Disallow: /modules/
 Disallow: /include/

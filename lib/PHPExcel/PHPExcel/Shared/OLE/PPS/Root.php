@@ -1,5 +1,4 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | PHP Version 4                                                        |
@@ -18,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | Based on OLE::Storage_Lite by Kawai, Takanori                        |
 // +----------------------------------------------------------------------+
 //
-// $Id: Root.php,v 1.2 2013-03-01 10:34:08 pierre Exp $
+// $Id: Root.php,v 1.2 2014-09-24 15:57:37 pierre Exp $
 
 
 /**
@@ -32,10 +31,10 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 	{
 
 	/**
-	 *	Directory for temporary files
-	 *	@var string
+	 * Directory for temporary files
+	 * @var string
 	 */
-	protected $_tmp_dir		= '';
+	protected $_tmp_dir		= NULL;
 
 	/**
 	 * @param integer $time_1st A timestamp
@@ -80,20 +79,22 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 		if (is_resource($filename)) {
 		    $this->_FILEH_ = $filename;
 		} else if ($filename == '-' || $filename == '') {
+			if ($this->_tmp_dir === NULL)
+				$this->_tmp_dir = PHPExcel_Shared_File::sys_get_temp_dir();
 			$this->_tmp_filename = tempnam($this->_tmp_dir, "OLE_PPS_Root");
 			$this->_FILEH_ = fopen($this->_tmp_filename,"w+b");
 			if ($this->_FILEH_ == false) {
-				throw new Exception("Can't create temporary file.");
+				throw new PHPExcel_Writer_Exception("Can't create temporary file.");
 			}
 		} else {
 			$this->_FILEH_ = fopen($filename, "wb");
 		}
 		if ($this->_FILEH_ == false) {
-			throw new Exception("Can't open $filename. It may be in use or protected.");
+			throw new PHPExcel_Writer_Exception("Can't open $filename. It may be in use or protected.");
 		}
 		// Make an array of PPS's (for Save)
 		$aList = array();
-		$this->_savePpsSetPnt($aList);
+		PHPExcel_Shared_OLE_PPS::_savePpsSetPnt($aList, array($this));
 		// calculate values for header
 		list($iSBDcnt, $iBBcnt, $iPPScnt) = $this->_calcSize($aList); //, $rhInfo);
 		// Save Header
@@ -205,31 +206,31 @@ class PHPExcel_Shared_OLE_PPS_Root extends PHPExcel_Shared_OLE_PPS
 
 		// Save Header
 		fwrite($FILE,
-				  "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1"
-				  . "\x00\x00\x00\x00"
-				  . "\x00\x00\x00\x00"
-				  . "\x00\x00\x00\x00"
-				  . "\x00\x00\x00\x00"
-				  . pack("v", 0x3b)
-				  . pack("v", 0x03)
-				  . pack("v", -2)
-				  . pack("v", 9)
-				  . pack("v", 6)
-				  . pack("v", 0)
-				  . "\x00\x00\x00\x00"
-				  . "\x00\x00\x00\x00"
-				  . pack("V", $iBdCnt)
-				  . pack("V", $iBBcnt+$iSBDcnt) //ROOT START
-				  . pack("V", 0)
-				  . pack("V", 0x1000)
-				  . pack("V", $iSBDcnt ? 0 : -2)                  //Small Block Depot
-				  . pack("V", $iSBDcnt)
+				"\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1"
+				. "\x00\x00\x00\x00"
+				. "\x00\x00\x00\x00"
+				. "\x00\x00\x00\x00"
+				. "\x00\x00\x00\x00"
+				. pack("v", 0x3b)
+				. pack("v", 0x03)
+				. pack("v", -2)
+				. pack("v", 9)
+				. pack("v", 6)
+				. pack("v", 0)
+				. "\x00\x00\x00\x00"
+				. "\x00\x00\x00\x00"
+				. pack("V", $iBdCnt)
+				. pack("V", $iBBcnt+$iSBDcnt) //ROOT START
+				. pack("V", 0)
+				. pack("V", 0x1000)
+				. pack("V", $iSBDcnt ? 0 : -2)                  //Small Block Depot
+				. pack("V", $iSBDcnt)
 		  );
 		// Extra BDList Start, Count
 		if ($iBdCnt < $i1stBdL) {
 			fwrite($FILE,
-					  pack("V", -2).      // Extra BDList Start
-					  pack("V", 0)        // Extra BDList Count
+					pack("V", -2)      // Extra BDList Start
+					. pack("V", 0)        // Extra BDList Count
 				  );
 		} else {
 			fwrite($FILE, pack("V", $iAll+$iBdCnt) . pack("V", $iBdExL));

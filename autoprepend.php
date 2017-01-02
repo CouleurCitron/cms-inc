@@ -18,7 +18,7 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 					if (($gValue<(time()+3600))	&&	($gValue>(time()-3600))){
 						$tempBlock = false;
 						break;
-					}			
+					}
 				}
 				// tester les wildcards
 				foreach ($getVars as $authKey => $authValue){
@@ -46,7 +46,7 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 					$_GET[$gKey] = intval($_GET[$gKey]);
 				}
 				else{ //varchar
-					$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);
+					$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);			
                                         
                                         /* on enlève les injections HTML
                                          * + vérification du typage
@@ -65,6 +65,7 @@ ini_set('register_globals', false);
 ini_set('session.bug_compat_warn', false);
 ini_set('allow_call_time_pass_reference', true);
 ini_set('allow_url_include', false);
+
 
 $prevMask=umask(0022);
 //error_log($prevMask);
@@ -129,24 +130,24 @@ if (!isset($_SESSION['initiated'])){
 }
 
 if (isset($_SERVER['HTTP_USER_AGENT'])){
-	if (isset($_SESSION['HTTP_USER_AGENT'])){
-		//pas ce test si flash - Shockwave Flash
-		if (($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash')&&($_SESSION['HTTP_USER_AGENT_MD5'] != md5($_SERVER['HTTP_USER_AGENT']))){
-			// Prompt for password 
-		   // session_destroy(); // SID désactivé cause of IE10
-			error_log('---------------------------------------------------');
-			error_log('session_destroy >> USER AGENT '.$_SERVER['HTTP_USER_AGENT']);
-			error_log('session_destroy >> PREV. WAS '.$_SESSION['HTTP_USER_AGENT']);
-			error_log('---------------------------------------------------');
-		}
+if (isset($_SESSION['HTTP_USER_AGENT'])){
+	//pas ce test si flash - Shockwave Flash
+	if (($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash')&&($_SESSION['HTTP_USER_AGENT_MD5'] != md5($_SERVER['HTTP_USER_AGENT']))){
+        // Prompt for password 
+       // session_destroy(); // SID désactivé cause of IE10
+		error_log('---------------------------------------------------');
+		error_log('session_destroy >> USER AGENT '.$_SERVER['HTTP_USER_AGENT']);
+		error_log('session_destroy >> PREV. WAS '.$_SESSION['HTTP_USER_AGENT']);
+		error_log('---------------------------------------------------');
+    }
+}
+else{
+	//pas ce test si flash - Shockwave Flash
+	if ($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash'){
+   		$_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
+		$_SESSION['HTTP_USER_AGENT_MD5'] = md5($_SERVER['HTTP_USER_AGENT']);
 	}
-	else{
-		//pas ce test si flash - Shockwave Flash
-		if ($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash'){
-			$_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
-			$_SESSION['HTTP_USER_AGENT_MD5'] = md5($_SERVER['HTTP_USER_AGENT']);
-		}
-	}
+}
 }
 
 if (!isset($_SERVER['HTTP_HOST'])){
@@ -196,17 +197,17 @@ else{
 //error_reporting :
 // 3 cas :
 if (preg_match('/pierre\..+\.hephaistos/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-}
+		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	}
 elseif (preg_match('/hephaistos/', $_SERVER['HTTP_HOST'])==1){// - dev
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-}
+		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	}
 elseif (preg_match('/preprod/', $_SERVER['HTTP_HOST'])==1){// - dev
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-}
+		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+	}
 else{// - prod
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
-}
+		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
+	}
 
 $aCcIps = array('82.243.117.135', '82.228.89.184', '82.234.79.170');
 
@@ -232,7 +233,6 @@ if ($resCon==false){
 		echo '<!-- <p>'.$db->_errorMsg.'</p> -->';
 	}
 }
-
 
 // redir auto de homepage
 include_once('homepage.inc.php');
@@ -430,7 +430,7 @@ $exclude_list = array(
 	'/backoffice/purchaseorder/importmovex_purchaseorder.php', 
 	'/backoffice/repairorder/importquantum_repairorder.php', 
 	'/backoffice/repairorder/importmovex_repairorder.php', 	
-	'/backoffice/cms/lib/ckeditor/Filemanager-master/index.php'
+	'/backoffice/cms/lib/ckeditor/Filemanager-master/index.php' 
 );
 
 // liste des urls où il ne faut pas mettre de append/prepend

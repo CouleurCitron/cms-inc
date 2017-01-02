@@ -911,8 +911,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 	$tempStyles .= "}\n";
 	echo "</div>\n";
 // pour plus tard au cas où
-//echo "<a href=\"javascript:modifEmp('".$oRes->get_id()."')\" title='Modifier'><img src='/backoffice/cms/img/modifier.gif' border='0' alt='Modifier' align='top' /></a>&nbsp";
-//echo "<a href=\"javascript:deleteEmp('".$oRes->get_id()."')\" title='Supprimer'><img src='/backoffice/cms/img/supprimer.gif' border='0' alt='Supprimer' align='top' /></a>&nbsp";
+//echo "<a href=\"javascript:modifEmp('".$oRes->get_id()."')\" title='Modifier'><img src='/backoffice/cms/img/2013/icone/modifier.png' border='0' alt='Modifier' align='top' /></a>&nbsp";
+//echo "<a href=\"javascript:deleteEmp('".$oRes->get_id()."')\" title='Supprimer'><img src='/backoffice/cms/img/2013/icone/supprimer.png' border='0' alt='Supprimer' align='top' /></a>&nbsp";
 
 
 echo "<br style=\"clear: both;\"/></div><!-- fin div id=\"".$classeName."_record\" class=\"".$classeName."_record\" > -->\n";

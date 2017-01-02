@@ -71,7 +71,7 @@ function getObjetListeChamps($oObjet){
 	if (	(isset($oObjet->XML)||isset($oObjet->XML_inherited))	&&	!isset($oObjet->oldstyleclass)){
 		$aListeChamps = getListeChampsForObject($oObjet);
 	}
-	else{		
+	else{	
 		$aListeChamps = $oObjet->getListeChamps();
 	}
 	return $aListeChamps;
@@ -88,8 +88,8 @@ function dbMakeObjet($sObjet, $row) {
 	}
 	else{		
 		$aListeChamps = $oObjet->getListeChamps();
-	}*/	
-
+	}*/
+	
 	if (isset($oObjet->XML_inherited) && !is_null($oObjet->XML_inherited)) {
 		foreach ($oObjet->inherited_list as $cls) {
 			$oCls = new $cls();
@@ -155,12 +155,12 @@ function dbGetObjectFromPK($sObjet, $id, $quiet=true) {
 			echo "<br />Erreur interne de programme";
 		}
 		
-		error_log("----- DEBUT ERREUR ------------------------");
-		error_log("Erreur dans ".__FILE__." Ligne ".__LINE__." Fonction ".__FUNCTION__);
-		error_log('erreur lors de l\'execution de la requete');
-		error_log($sql);
-		error_log($db->ErrorMsg());
-		error_log("----- FIN ERREUR ------------------------");
+			error_log("----- DEBUT ERREUR ------------------------");
+			error_log("Erreur dans ".__FILE__." Ligne ".__LINE__." Fonction ".__FUNCTION__);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log($sql);
+			error_log($db->ErrorMsg());
+			error_log("----- FIN ERREUR ------------------------");
 
 		return false;
 	}
@@ -472,7 +472,7 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 				else{
                                     
                                     if(preg_match('#\'(.*)\'#', $usage['props']['values'][$a])){
-                                            $sRequete .= $usage['props']['values'][$a];
+					$sRequete .= $usage['props']['values'][$a];
                                         } else {
                                             $sRequete .= "'".$usage['props']['values'][$a]."'";
                                         }
@@ -607,7 +607,7 @@ function dbMakeInsertReq($oObjet) {
 
 	$sql = $sRequete;
 
-	//print("FIELD LIST <br/>$sql");
+	//print("FIELD LIST <br/>$sql");	
 	//error_log("FIELD LIST <br/>$sql");
 
 	return $sql;

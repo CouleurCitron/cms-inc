@@ -335,12 +335,6 @@ class Upload {
 	 */
 	function WriteFile($name, $type, $temp, $size, $ext, $num_field) {
         
-        //pre_dump($_SESSION['login']); die();
-        $blacklistExt = array( '.php', '.exe', '.deb', '.zip', '.gz', '.tar' );
-        
-        if( in_array( $ext, $blacklistExt ) && $_SESSION['login'] != "ccitron" ) return false;
-        
-        
         $new_filename = NULL;
         
         if (is_uploaded_file($temp)) {

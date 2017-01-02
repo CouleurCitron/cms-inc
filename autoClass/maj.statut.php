@@ -30,9 +30,9 @@ if ($oRes->getGetterStatut() != "none" ) {
 		
 	
 ?>
- <tr>
-  <td width="141" align="right" bgcolor="#E6E6E6" class="arbo">&nbsp;<u><b><?php $translator->echoTransByCode('statutdepublication'); ?></b></u>&nbsp;*</td>
- <td width="535" align="left" bgcolor="#EEEEEE" class="arbo">
+ <tr class="status">
+  <td class="arbo left_cell"><?php $translator->echoTransByCode('statutdepublication'); ?> *</td>
+ <td class="arbo right_cell">
   <?php
   	//$statusNodeName = str_replace('get_', '', $oRes->getGetterStatut());
  	//$statusNode = getItemByName($aNodeToSort, $statusNodeName);
@@ -50,7 +50,7 @@ if ($oRes->getGetterStatut() != "none" ) {
 					else{
 						$checked = "";
 					}					
-					echo "<input type=\"radio\" name=\"f".ucfirst($classePrefixe)."_statut\" id=\"f".ucfirst($classePrefixe)."_statut\" value=\"".$aStatutNode["children"][$iSta]["attrs"]["VALUE"]."\" ".$checked." />&nbsp;".$translator->getText($aStatutNode["children"][$iSta]["attrs"]["LIBELLE"], $_SESSION['id_langue'])."&nbsp;";					
+					echo "<input type=\"radio\" name=\"f".ucfirst($classePrefixe)."_statut\" id=\"f".ucfirst($classePrefixe)."_statut\" value=\"".$aStatutNode["children"][$iSta]["attrs"]["VALUE"]."\" ".$checked." /> <label for='f".ucfirst($classePrefixe)."_statut'>".$translator->getText($aStatutNode["children"][$iSta]["attrs"]["LIBELLE"], $_SESSION['id_langue'])."</label> ";					
 				}
 			}	 
 	  }
@@ -64,9 +64,9 @@ if ($oRes->getGetterStatut() != "none" ) {
 				if ($oRes->get_statut() == DEF_ID_STATUT_LIGNE) $checked_LIGNE = "checked"; else $checked_LIGNE = "";
 				if ($oRes->get_statut() == DEF_ID_STATUT_ARCHI) $checked_ARCHI = "checked"; else $checked_ARCHI = "";
 				?>
-				<input type="radio" name="f<?php echo ucfirst($classePrefixe)?>_statut" id="f<?php echo ucfirst($classePrefixe)?>_statut" value="<?php echo DEF_ID_STATUT_ATTEN?>" <?php echo $checked_ATTEN?>  />&nbsp;<?php $translator->echoTransByCode('statut'.DEF_ID_STATUT_ATTEN); ?>&nbsp;
-				<input type="radio" name="f<?php echo ucfirst($classePrefixe)?>_statut" id="f<?php echo ucfirst($classePrefixe)?>_statut" value="<?php echo DEF_ID_STATUT_LIGNE?>" <?php echo $checked_LIGNE?> />&nbsp;<?php $translator->echoTransByCode('statut'.DEF_ID_STATUT_LIGNE); ?>&nbsp;
-				<input type="radio" name="f<?php echo ucfirst($classePrefixe)?>_statut" id="f<?php echo ucfirst($classePrefixe)?>_statut" value="<?php echo DEF_ID_STATUT_ARCHI?>" <?php echo $checked_ARCHI?> />&nbsp;<?php $translator->echoTransByCode('statut'.DEF_ID_STATUT_ARCHI); ?>&nbsp;
+				<input type="radio" name="f<?php echo ucfirst($classePrefixe)?>_statut" id="f<?php echo ucfirst($classePrefixe)?>_statut_<?php echo DEF_ID_STATUT_ATTEN; ?>" value="<?php echo DEF_ID_STATUT_ATTEN; ?>" <?php echo $checked_ATTEN?>  /> <label for="f<?php echo ucfirst($classePrefixe)?>_statut_<?php echo DEF_ID_STATUT_ATTEN; ?>"><?php $translator->echoTransByCode('statut'.DEF_ID_STATUT_ATTEN); ?></label> 
+				<input type="radio" name="f<?php echo ucfirst($classePrefixe)?>_statut" id="f<?php echo ucfirst($classePrefixe)?>_statut_<?php echo DEF_ID_STATUT_LIGNE; ?>" value="<?php echo DEF_ID_STATUT_LIGNE; ?>" <?php echo $checked_LIGNE?> /> <label for="f<?php echo ucfirst($classePrefixe)?>_statut_<?php echo DEF_ID_STATUT_LIGNE; ?>"><?php $translator->echoTransByCode('statut'.DEF_ID_STATUT_LIGNE); ?></label>
+				<input type="radio" name="f<?php echo ucfirst($classePrefixe)?>_statut" id="f<?php echo ucfirst($classePrefixe)?>_statut_<?php echo DEF_ID_STATUT_ARCHI; ?>" value="<?php echo DEF_ID_STATUT_ARCHI; ?>" <?php echo $checked_ARCHI?> /> <label for="f<?php echo ucfirst($classePrefixe)?>_statut_<?php echo DEF_ID_STATUT_ARCHI; ?>"><?php $translator->echoTransByCode('statut'.DEF_ID_STATUT_ARCHI); ?></label>
 				
 				 
 				<?php
@@ -179,7 +179,7 @@ if ($oRes->getGetterStatut() != "none" ) {
 								else{
 									$checked = "";
 								}		
-								echo "<input type=\"radio\" name=\"f".ucfirst($classePrefixe)."_".strtolower($other_statut)."\" id=\"f".ucfirst($classePrefixe)."_".strtolower($other_statut)."\" value=\"".$fkId."\" ".$checked." />&nbsp;".$itemValue."&nbsp;<br />";		
+								echo "<input type=\"radio\" name=\"f".ucfirst($classePrefixe)."_".strtolower($other_statut)."\" id=\"f".ucfirst($classePrefixe)."_".strtolower($other_statut)."\" value=\"".$fkId."\" ".$checked." /> <label for='f".ucfirst($classePrefixe)."_".strtolower($other_statut)."\'>".$itemValue."</label> <br />";		
 								
 							}
 							 

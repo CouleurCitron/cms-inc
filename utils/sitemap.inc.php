@@ -107,9 +107,7 @@ function arboNodeToSiteMap($oSite, $idNode){
 	return true;
 }
 
-if(!isset($oSiteToMap)	||	$oSiteToMap==false	|| $oSiteToMap==NULL){
-	$oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
-}
+$oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
 
 if ($oSiteToMap==false){
 	$aSites = listSite("ALL");

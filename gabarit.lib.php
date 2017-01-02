@@ -42,13 +42,15 @@ function getListGabarits($idSite="")
 	}
 
 	// site du gabarit (s'il est spécifié)
-	if ($idSite != "" && $idSite != -1) $sql.= " AND id_site=".$idSite;
+	if ($idSite != "" && $idSite != -1){
+		$sql.= " AND (id_site=".$idSite." OR id_site=-1) ";
+	}
 
 	$sql.= " ORDER BY name_page ASC";		
 
 	if(DEF_MODE_DEBUG==true) error_log("TRACE :: ".$sql);
 
-//print("<br>".$sql);
+	//print("<br>".$sql);
 
 	$rs = $db->Execute($sql);
 
@@ -63,12 +65,13 @@ function getListGabarits($idSite="")
 		$return = false;
 	} else {
 		while(!$rs->EOF) {
-
-			if ($rs->fields[n('dateupd_page')] != "")
+			if (($rs->fields[n('dateupd_page')] != "")&&($rs->fields[n('dateupd_page')] != "0000-00-00")){
 				$modif = date('d/m/Y', strtotime($rs->fields[n('dateupd_page')]));
-			else
-				$modif = "---";
-				
+			}
+			else{
+				$modif = "n/a";
+			}
+			
 			$addDate = date('d/m/Y', strtotime($rs->fields[n('dateadd_page')]));
 
 			$tmparray = array(

@@ -53,7 +53,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 *
 * @author  Richard Heyes <richard@phpguru.org>
 * @author  Chuck Hagenbuch <chuck@horde.org>
-* @version $Revision: 1.3 $
+* @version $Revision: 1.1 $
 * @license BSD
 * @package Mail
 */

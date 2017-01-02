@@ -102,81 +102,6 @@ $aListeChamps=$oRes->getListeChamps();
 $sOrderField = $stack[0]["attrs"]["DEF_ORDER_FIELD"];
 $sOrderDir = $stack[0]["attrs"]["DEF_ORDER_DIRECTION"];
 
-/*
- * Champs peuplés dynamiquement
- * Construction de l'objet dans l'attribut dyn de la classe
- * ex : [luz_product][libelle][2][luz_ordre]
- * param 0 = classe
- * param 1 = colonne du titre à récupérer
- * param 2 = ID du parent. -1 si aucun
- * param 3 = colonne ordre pour condition ORDER en ASC si applicable
- */
-if(isset($stack[0]["attrs"]["DYN"])) {
-	$classeDynamique = $stack[0]["attrs"]["DYN"];
-	$dyn_classes = explode(',', $classeDynamique);
-	foreach($dyn_classes as $k => $object) {
-		preg_match_all("/\[([^\]]*)\]/", $object, $result);
-		$result = $result[1];
-		$classe = $result[0];
-		$prefix = explode('_', $classe);
-		$prefix = $prefix[0];
-		$label = $result[1];
-		$parent = '-1';
-		if(isset($result[2])) {
-			$parent = $result[2];
-		}
-		//Condition order
-		$champ_order = '';
-		if(isset($result[3])) {
-			$champ_order = " ORDER BY ".$result[3]." ASC";
-		}
-		$C = new $classe();
-		$champ_statut = $C->getFieldStatut();
-		$sql = "
-		SELECT * 
-		FROM ".$classe." 
-		WHERE ".$champ_statut." = ".DEF_ID_STATUT_LIGNE;
-		$sql .= $champ_order;
-		$objects = dbGetObjectsFromRequete($classe, $sql);
-		foreach($objects as $object) {
-			//Vérif objet déjà existant
-			$sql = "
-			SELECT * 
-			FROM luz_regafffolder 
-			WHERE luz_dyntype = '".$classe."' 
-			AND luz_dossier = '".$parent."' 
-			AND luz_dynid = ".$object->get_id();
-			$oE = dbGetObjectsFromRequete('luz_regafffolder', $sql);
-			//Mise à jour si existant
-			if(count($oE) > 0) {
-				$sql = "
-				UPDATE luz_regafffolder 
-				SET luz_titre = '".$object->$label."'  
-				WHERE luz_dyntype = '".$classe."' 
-				AND luz_dossier = '".$parent."' 
-				AND luz_dynid = ".$object->get_id();
-				dbExecuteQuery($sql);
-			//Nouvel enregistrement
-			} else {
-				$sql = "
-				SELECT * 
-				FROM luz_regafffolder 
-				WHERE luz_id = ".$parent;
-				$oC = dbGetObjectsFromRequete('luz_regafffolder', $sql);
-				if(count($oC) > 0) {
-					$oF = new Luz_regafffolder();
-					$oF->set_titre($object->$label);
-					$oF->set_dossier($parent);
-					$oF->set_dyntype($classe);
-					$oF->set_dynid($object->get_id());
-					$oF->set_statut(4);
-					dbSauve($oF);
-				}
-			}
-		}
-	}
-}
-
 //===============================
 // operations de BDD
 //===============================
@@ -606,7 +531,6 @@ if ($default_filter || (strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SELF']) !
 		$aGetterSensOrderBy[] = $_SESSION['sensTri_res'];
 }
 
-
 // autres tris 
 for ($i=0; $i < sizeof($aListeTri); $i++){
 	$oTri = $aListeTri[$i]; 
@@ -672,7 +596,7 @@ if($eStatut==""){
 	$eStatut=$_SESSION['eStatut'];
 }
 
-if (!preg_match("/backoffice/si", $_SERVER['PHP_SELF'])){ // hors BO only "en ligne"
+if (!ereg("backoffice", $_SERVER['PHP_SELF'])){ // hors BO only "en ligne"
 	$eStatut = DEF_ID_STATUT_LIGNE;
 }
 
@@ -778,7 +702,6 @@ if ($sCms_site!="") {
 
 
 $aPostFilters = getFilterPosts();
-
 //viewArray($aPostFilters, 'FILTERS BEFORE CLEANUP');
  
 // Cleanup filters according to posted fields
@@ -831,7 +754,7 @@ if (!empty($aPostFilters)) {
 			unset($aPostFilters[$pos]);
 	}
 }
-
+ 
 // End Filters cleanup
 //viewArray($aPostFilters, 'FILTERS AFTER CLEANUP');
 
@@ -850,13 +773,12 @@ include_once ("list.process.keyword.php");
 if (!empty($aPostFilters)) {
 	foreach ($aPostFilters as $kFilter => $aPostFilter) {
 		foreach ($aPostFilter as $filterName => $filterValue) {
-			
+			 
 			$_SESSION[$filterName] = $filterValue;	
 			 
 			//if($eStatut==""){
 			//$eStatut=$_SESSION['eStatut'];
 			//}		
-                        
 			if (isset($classeNameAsso) && $classeNameAsso != "" ) {
 				
 				// on récupére le préfixe de l'asso
@@ -877,39 +799,17 @@ if (!empty($aPostFilters)) {
 			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && ereg($classePrefixe."_", $filterName)) { 
 			//echo $nbSub.'<br />';
 			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && doesFieldExist($aListeChamps, $filterName)) { 
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && doesFieldExist($aListeChamps, $filterName)) {
-			if ( $filterValue!=-1 && $filterValue != "" || $filterValue == 0 && doesFieldExist($aListeChamps, $filterName)) { 
+			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && doesFieldExist($aListeChamps, $filterName)) { 	
+			if ($filterValue!=-1 &&  $filterValue != "" || $filterValue == 0 && doesFieldExist($aListeChamps, $filterName)) { 	
 				$oRech3 = new dbRecherche();				
 				$oRech3->setValeurRecherche("declencher_recherche");
-				$oRech3->setTableBD($classeNameAsso);
-
-				if (preg_match ("/,/", $filterValue)) {
-					$oRech3->setJointureBD(" {$classeName}.{$filterName} IN (".$filterValue.") ");
-				}
-				//Ecart date
-				else if( (preg_match("/(\d{4})?(\d{2})?(\d{2}) (\d{2}):(\d{2}):(\d{2})/", $filterValue) || preg_match("/(\d{4})?(\d{2})?(\d{2})/", $filterValue) ) && ( strpos($filterName, 'start') || strpos($filterName, 'end') )) {
-					//champ date débnut
-					$filterValue = trim($filterValue);
-					$filterValue = str_replace('/', '-', $filterValue);
-					if(count(explode(' ', $filterValue)) > 0) {
-						$filterValue = explode(' ', $filterValue);
-						$filterValue = $filterValue[0];
-					}
-					$filterValue = explode('-', $filterValue);
-					$filterValue = $filterValue[2].'-'.$filterValue[1].'-'.$filterValue[0];
-					if($a = strpos($filterName, 'start')) {
-						$filterName = substr($filterName, 0, $a-1);
-						$oRech3->setJointureBD(" {$classeName}.{$filterName} >= '".$filterValue."' ");
-					}
-					if($a = strpos($filterName, 'end')) {
-						$filterName = substr($filterName, 0, $a-1);
-						$oRech3->setJointureBD(" {$classeName}.{$filterName} <= '".$filterValue."' ");
-					}
-				} else {
+				$oRech3->setTableBD($classeNameAsso); 
+				if (preg_match ("/,/", $filterValue)) 
+					$oRech3->setJointureBD(" {$classeName}.{$filterName} IN (".$filterValue.") ");  
+				else
 					$oRech3->setJointureBD(" {$classeName}.{$filterName}=".$filterValue." ");
-				}
 						 
-				$oRech3->setPureJointure(1);	
+				$oRech3->setPureJointure(1);				
 				$aRecherche[] = $oRech3;
 			}
 		}
@@ -967,7 +867,6 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 //On finalise la requete de recherche
 $sql_end = dbMakeRequeteWithCriteres2($classeName, $aRecherche, $aGetterOrderBy, $aGetterSensOrderBy);
 $sql.= $sql_end;   
-
 // variable de session pour alimenter la pagination de show_ 
  
 $_SESSION['sqlpag'] = $sql;
@@ -976,11 +875,11 @@ $_SESSION['sqlpag'] = $sql;
 //echo $sql;
 
 $_SESSION['sqlend'] = $sql_end;
-//var_dump( $aRecherche );
+
 unset($aRecherche);
 unset($aGetterOrderBy);
 unset($aGetterSensOrderBy); 
-//var_dump( $sql );
+
 // execution de la requette avec pagination
 $sParam = ""; 
 if ($_SERVER["QUERY_STRING"]!="" && (ereg("param", $_SERVER["QUERY_STRING"]) || strstr($_SERVER["PHP_SELF"],'page_infos_reuse.php') !== FALSE) ) {
@@ -996,10 +895,11 @@ if ($_SERVER["QUERY_STRING"]!="" && (ereg("param", $_SERVER["QUERY_STRING"]) || 
 }
 
 
-error_log( $sql);
+//echo $sql;
 // die($sParam);
 
 //echo "<br />"."<br />".$sParam;
+
 
 $pager = new Pagination($db, $sql, $sParam, $_SESSION['idSite']);
 $pager->Render($rows_per_page);

@@ -406,192 +406,192 @@ if(isset($_SESSION["sqlend"])){
 	$sql.= $_SESSION["sqlend"];
 }
 else{
-	
-	//$sql.= dbMakeRequeteWithCriteres2($classeName, $aRecherche, $aGetterOrderBy, $aGetterSensOrderBy);
-	
-	if ($bDebug) print("<br>$sql");
-	
-	$sTexte = $_SESSION['S_BO_sTexte_ref'];
-	$eStatut = $_SESSION['S_BO_select3_ref'];
-	$eType = $_SESSION['S_BO_select2_ref'];
-	$eHomepage = $_SESSION['S_BO_select_ref'];
-	$aRecherche = array();
-	
-	
-	// Cas over mega pas typique du tout
-	// Cloisonnement sur administrateur loggué
-	for ($i=0;$i<count($aNodeToSort);$i++){
-		if ($aNodeToSort[$i]["name"] == "ITEM" && $aNodeToSort[$i]["attrs"]["FKEY"] == 'bo_users' && $aNodeToSort[$i]["attrs"]["RESTRICT"] == 'true' && $_SESSION["rank"] != 'ADMIN') {
-			$oRech0 = new dbRecherche();				
-			$oRech0->setValeurRecherche("declencher_recherche");
-			$oRech0->setTableBD($classeName);
-			$oRech0->setJointureBD(ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." = ".$_SESSION["userid"]);
-			$oRech0->setPureJointure(1);				
-			$aRecherche[] = $oRech0;
-		}
+
+//$sql.= dbMakeRequeteWithCriteres2($classeName, $aRecherche, $aGetterOrderBy, $aGetterSensOrderBy);
+
+if ($bDebug) print("<br>$sql");
+
+$sTexte = $_SESSION['S_BO_sTexte_ref'];
+$eStatut = $_SESSION['S_BO_select3_ref'];
+$eType = $_SESSION['S_BO_select2_ref'];
+$eHomepage = $_SESSION['S_BO_select_ref'];
+$aRecherche = array();
+
+
+// Cas over mega pas typique du tout
+// Cloisonnement sur administrateur loggué
+for ($i=0;$i<count($aNodeToSort);$i++){
+	if ($aNodeToSort[$i]["name"] == "ITEM" && $aNodeToSort[$i]["attrs"]["FKEY"] == 'bo_users' && $aNodeToSort[$i]["attrs"]["RESTRICT"] == 'true' && $_SESSION["rank"] != 'ADMIN') {
+		$oRech0 = new dbRecherche();				
+		$oRech0->setValeurRecherche("declencher_recherche");
+		$oRech0->setTableBD($classeName);
+		$oRech0->setJointureBD(ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." = ".$_SESSION["userid"]);
+		$oRech0->setPureJointure(1);				
+		$aRecherche[] = $oRech0;
 	}
+}
+$oRech = new dbRecherche();
+
+//////////////////////////
+// recherche par mot clé
+//////////////////////////
+if($sTexte==""){
+$sTexte=trim($_POST['sTexte']);
+$_SESSION['sTexte']=$sTexte;
+}
+if($sTexte==""){
+$sTexte=trim($_SESSION['sTexte']);
+}
+if ($sTexte != "") {
+$_SESSION['sTexte']=$sTexte;
 	$oRech = new dbRecherche();
 	
-	//////////////////////////
-	// recherche par mot clé
-	//////////////////////////
-	if($sTexte==""){
-	$sTexte=trim($_POST['sTexte']);
-	$_SESSION['sTexte']=$sTexte;
-	}
-	if($sTexte==""){
-	$sTexte=trim($_SESSION['sTexte']);
-	}
-	if ($sTexte != "") {
-	$_SESSION['sTexte']=$sTexte;
-		$oRech = new dbRecherche();
-		
-		$oRech->setValeurRecherche("declencher_recherche");
-		$oRech->setTableBD(join (", ", $aClasse));
-		
-		$cptvarchar=0;
-		
-		//on compte le nombre de varchar dans la classe
-		for ($i=0;$i<count($aNodeToSort);$i++){
-			if(($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
-			$cptvarchar++;
-			}
+	$oRech->setValeurRecherche("declencher_recherche");
+	$oRech->setTableBD(join (", ", $aClasse));
+	
+	$cptvarchar=0;
+	
+	//on compte le nombre de varchar dans la classe
+	for ($i=0;$i<count($aNodeToSort);$i++){
+		if(($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
+		$cptvarchar++;
 		}
-	
-		//construction de la requete dynamique
-		for ($i=0;$i<count($aNodeToSort);$i++){
-			if (($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
-				$cpt++;
-				
-				if($cptvarchar!=$cpt){				
-					if($cpt==1){$sRechercheTexte="(";}
-					$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%' OR ";
-				}
-				else{	
-					if($cpt==1){$sRechercheTexte="(";}
-					$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%' )";
-					//$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%'";
-				}
-			}//fin if (($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")
-		}// fin for ($i=0;$i<count($aNodeToSort);$i++)	
-	
-		$oRech->setJointureBD($sRechercheTexte);
-		$oRech->setPureJointure(1);
-		$aRecherche[] = $oRech;
-		
-	}//fin if ($sTexte != "")
-	
-	
-	//////////////////////////
-	// recherche par statut
-	//////////////////////////
-	if (isset($_POST['eStatut'])){
-		$eStatut=$_POST['eStatut'];
-		$_SESSION['eStatut']=$eStatut;
 	}
-	if($eStatut==""){
-		$eStatut=$_SESSION['eStatut'];
-	}
+
+	//construction de la requete dynamique
+	for ($i=0;$i<count($aNodeToSort);$i++){
+		if (($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
+			$cpt++;
+			
+			if($cptvarchar!=$cpt){				
+				if($cpt==1){$sRechercheTexte="(";}
+				$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%' OR ";
+			}
+			else{	
+				if($cpt==1){$sRechercheTexte="(";}
+				$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%' )";
+				//$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%'";
+			}
+		}//fin if (($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")
+	}// fin for ($i=0;$i<count($aNodeToSort);$i++)	
+
+	$oRech->setJointureBD($sRechercheTexte);
+	$oRech->setPureJointure(1);
+	$aRecherche[] = $oRech;
 	
-	if ($eStatut != -1 && $eStatut != "") {
-	$oRech2 = new dbRecherche();
-	
-	$oRech2->setValeurRecherche("declencher_recherche");
-	$oRech2->setTableBD(join (", ", $aClasse));
-	$oRech2->setJointureBD(" ".ucfirst($classePrefixe)."_statut=".$eStatut." ");
-	$oRech2->setPureJointure(1);
-	
-	$aRecherche[] = $oRech2;
-	}
-	
-	$aPostFilters = getFilterPosts();    
-	if ($aPostFilters != false){
-		foreach($aPostFilters as $kFilter => $aPostFilter){
-			foreach($aPostFilter as $filterName => $filterValue){
-				$_SESSION[$filterName]=$filterValue;		
-				if (isset($classeNameAsso) && $classeNameAsso!="") {
-						
-					// on récupére le préfixe de l'asso
-					$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
-					if (in_array($filterNameTemp, $itemToCheckForAsso)) {
-						$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
-					}
-					else {
-						$classeNameAsso = "";
-					}
-					if (isset($classeNameAsso) && $classeNameAsso!="") {
-	
-							$oRech3 = new dbRecherche();				
-							$oRech3->setValeurRecherche("declencher_recherche");
-							$oRech3->setTableBD($classeNameAsso);
-							 
-							$oRech3->setJointureBD(" ".$classeName.".".ucfirst($classePrefixe)."_id IN (".$classeNameAsso.".".$classePrefixeAsso."_".$classeName.") ");
-							$oRech3->setJointureBD(" ".$classeName.".".ucfirst($classePrefixe)."_id=".$classeNameAsso.".".$classePrefixeAsso."_".$classeName." ");
-							$oRech3->setPureJointure(1);				
-							$aRecherche[] = $oRech3;
-								
-					}
-				}
-				if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0) {
-					$oRech3 = new dbRecherche();				
-					$oRech3->setValeurRecherche("declencher_recherche");
-					$oRech3->setTableBD(join (", ", $aClasse));
+}//fin if ($sTexte != "")
+
+
+//////////////////////////
+// recherche par statut
+//////////////////////////
+if (isset($_POST['eStatut'])){
+	$eStatut=$_POST['eStatut'];
+	$_SESSION['eStatut']=$eStatut;
+}
+if($eStatut==""){
+	$eStatut=$_SESSION['eStatut'];
+}
+
+if ($eStatut != -1 && $eStatut != "") {
+$oRech2 = new dbRecherche();
+
+$oRech2->setValeurRecherche("declencher_recherche");
+$oRech2->setTableBD(join (", ", $aClasse));
+$oRech2->setJointureBD(" ".ucfirst($classePrefixe)."_statut=".$eStatut." ");
+$oRech2->setPureJointure(1);
+
+$aRecherche[] = $oRech2;
+}
+
+$aPostFilters = getFilterPosts();    
+if ($aPostFilters != false){
+	foreach($aPostFilters as $kFilter => $aPostFilter){
+		foreach($aPostFilter as $filterName => $filterValue){
+			$_SESSION[$filterName]=$filterValue;		
+			if (isset($classeNameAsso) && $classeNameAsso!="") {
 					
-					if (sizeof($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
-					if (preg_match('/,/', $filterValue))
-						$oRech3->setJointureBD(" ".$filterName." IN (".$filterValue.") ".$sCondition."  ");
-					else 
-						$oRech3->setJointureBD(" ".$filterName."=".$filterValue." ".$sCondition);
-					$oRech3->setPureJointure(1);				
-					$aRecherche[] = $oRech3;
+				// on récupére le préfixe de l'asso
+				$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
+				if (in_array($filterNameTemp, $itemToCheckForAsso)) {
+					$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
 				}
+				else {
+					$classeNameAsso = "";
+				}
+				if (isset($classeNameAsso) && $classeNameAsso!="") {
+
+						$oRech3 = new dbRecherche();				
+						$oRech3->setValeurRecherche("declencher_recherche");
+						$oRech3->setTableBD($classeNameAsso);
+						 
+						$oRech3->setJointureBD(" ".$classeName.".".ucfirst($classePrefixe)."_id IN (".$classeNameAsso.".".$classePrefixeAsso."_".$classeName.") ");
+						$oRech3->setJointureBD(" ".$classeName.".".ucfirst($classePrefixe)."_id=".$classeNameAsso.".".$classePrefixeAsso."_".$classeName." ");
+						$oRech3->setPureJointure(1);				
+						$aRecherche[] = $oRech3;
+							
+				}
+			}
+			if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0) {
+				$oRech3 = new dbRecherche();				
+				$oRech3->setValeurRecherche("declencher_recherche");
+				$oRech3->setTableBD(join (", ", $aClasse));
+				
+				if (sizeof($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
+				if (preg_match('/,/', $filterValue))
+					$oRech3->setJointureBD(" ".$filterName." IN (".$filterValue.") ".$sCondition."  ");
+				else 
+					$oRech3->setJointureBD(" ".$filterName."=".$filterValue." ".$sCondition);
+				$oRech3->setPureJointure(1);				
+				$aRecherche[] = $oRech3;
 			}
 		}
 	}
-	else {
-		$classeNameAsso = "";
-	}
-	
-	//paramètre 
+}
+else {
+	$classeNameAsso = "";
+}
+
+//paramètre 
+ 
+$k=0;
+while (isset($_GET['champ'.$k])&& $_GET['champ'.$k]!=""){ 
+	if (isset($_GET['operateur'.$k]) && $_GET['operateur'.$k]!="" && isset($_GET['valeur'.$k]) && $_GET['valeur'.$k]!="") 
+	$oRech4 = new dbRecherche();
+	$oRech4->setValeurRecherche("declencher_recherche");
+	$oRech4->setTableBD(join (", ", $aClasse));
+	if (sizeof($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
+	$oRech4->setJointureBD(" ".$_GET['champ'.$k]." ".urldecode($_GET['operateur'.$k])." '".$_GET['valeur'.$k]."' ".$sCondition);
+	$oRech4->setPureJointure(1);
+	$aRecherche[] = $oRech4;
+	$k++;
+}
+
+if (sizeof($aRecherche) == 0) {
 	 
-	$k=0;
-	while (isset($_GET['champ'.$k])&& $_GET['champ'.$k]!=""){ 
-		if (isset($_GET['operateur'.$k]) && $_GET['operateur'.$k]!="" && isset($_GET['valeur'.$k]) && $_GET['valeur'.$k]!="") 
-		$oRech4 = new dbRecherche();
-		$oRech4->setValeurRecherche("declencher_recherche");
-		$oRech4->setTableBD(join (", ", $aClasse));
-		if (sizeof($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
-		$oRech4->setJointureBD(" ".$_GET['champ'.$k]." ".urldecode($_GET['operateur'.$k])." '".$_GET['valeur'.$k]."' ".$sCondition);
-		$oRech4->setPureJointure(1);
-		$aRecherche[] = $oRech4;
-		$k++;
-	}
+	$oRech = new dbRecherche();
+	$oRech->setValeurRecherche("declencher_recherche");
+	$oRech->setTableBD(join (", ", $aClasse));
+	if (sizeof($aCondition) > 0) $sCondition = " " .join (" AND ", $aCondition);
+	$oRech->setJointureBD($sCondition);
+	$oRech->setPureJointure(1);
+	$aRecherche[] = $oRech;
+
+} 
+//pre_dump($aRecherche); 
+ 
+$sql.= dbMakeRequeteWithCriteres2($classeName, $aRecherche, $aGetterOrderBy, $aGetterSensOrderBy);
+
+
+//echo $sql;
+//$aListe_res = dbGetObjectsFromRequete($classeName, $sql);
+ 
+$sContent ="";  
+ 
+
 	
-	if (sizeof($aRecherche) == 0) {
-		 
-		$oRech = new dbRecherche();
-		$oRech->setValeurRecherche("declencher_recherche");
-		$oRech->setTableBD(join (", ", $aClasse));
-		if (sizeof($aCondition) > 0) $sCondition = " " .join (" AND ", $aCondition);
-		$oRech->setJointureBD($sCondition);
-		$oRech->setPureJointure(1);
-		$aRecherche[] = $oRech;
-	
-	} 
-	//pre_dump($aRecherche); 
-	 
-	$sql.= dbMakeRequeteWithCriteres2($classeName, $aRecherche, $aGetterOrderBy, $aGetterSensOrderBy);
-	
-	
-	//echo $sql;
-	//$aListe_res = dbGetObjectsFromRequete($classeName, $sql);
-	 
-	$sContent ="";  
-	 
-	
-	
-	
-	//echo $sql."<br />";
+
+//echo $sql."<br />";
 
 }
 

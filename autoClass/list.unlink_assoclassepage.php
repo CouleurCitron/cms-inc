@@ -1,8 +1,8 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 //Page permettant de traiter la rupture d'association d'un objet à une page
-require_once ($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_cms.php');
-require_once ($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');
+require_once 'cms-inc/include_cms.php';
+require_once 'cms-inc/include_class.php';
 
 if(isset($_POST['xcp_id']) && $_POST['xcp_id'] != ''){
 	$xcp = new cms_assoclassepage($_POST['xcp_id']);

@@ -1,5 +1,2 @@
-*.cvsignore
-*.bak
-/lib/phpfastcache/cache.storage/files
 dwsync.xml
-.Parent
+*.bak

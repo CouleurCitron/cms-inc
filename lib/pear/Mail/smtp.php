@@ -25,7 +25,7 @@ require_once 'cms-inc/lib/pear/Mail/mail.php';
  * Net_SMTP:: class.
  * @access public
  * @package Mail
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  */
 class Mail_smtp extends Mail {
 

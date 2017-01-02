@@ -10,8 +10,8 @@ if (empty($aNodeToSort)) {
 	// AJAX or direct call
 	// Added by Luc
 	$direct_call = true;
-	include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-	include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");
+	include_once("cms-inc/include_cms.php");
+	include_once("cms-inc/include_class.php");
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 	// translation engine
@@ -413,7 +413,7 @@ if ($bCms_site == true){
 if (sizeof($aSelect) > 0)
 	$sql.=" ".join(" , ", $aSelect);
 
-$sql.= " FROM ".getCorrectTable ($oTemp)." fn ";
+$sql.= " FROM ".$foreignName." fn ";
 
 if ($tempIsAbstractForeign)
 	$sql.= " , ".$tempForeignAbstract." fa ";
@@ -702,7 +702,8 @@ if ($_GET['mode'] != 'search' && $aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') 
 						}
 					}
 				}
-			} else	$aExpectedStatuses[] = DEF_ID_STATUT_LIGNE;		
+			} else	$aExpectedStatuses[] = DEF_ID_STATUT_LIGNE;
+			
 			
 			
 			 
@@ -761,9 +762,8 @@ if ($_GET['mode'] != 'search' && $aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') 
 									}
 									if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
 										if ($aForeignAttributes["TYPE"] == "int") {
-											if ($aForeignAttributes["TRANSLATE"] == 'reference'){												
+											if ($aForeignAttributes["TRANSLATE"] == 'reference')
 												$itemValue = $translator->getByID($itemValue);
-											}
 										} elseif ($aForeignAttributes["TYPE"] == "enum") {
 											if ($aForeignAttributes["TRANSLATE"] == "value")
 												$itemValue = $translator->getText($itemValue);
@@ -840,12 +840,22 @@ if ($_GET['mode'] != 'search' && $aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') 
 										break;
 									}
 								}
-							
+								//echo "TEST : ".$aForeignAttributes["TYPE"];
 								if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
 									
 									if ($aForeignAttributes["TYPE"] == "int") {
-										if ($aForeignAttributes["TRANSLATE"] == 'reference')
-											$itemValue = $translator->getByID($itemValue);
+										if ($aForeignAttributes["TRANSLATE"] == 'reference'){																					
+											$refKeyValue = (int)$itemValue;
+											$itemValue = $translator->getByID((int)$itemValue);
+											if ($itemValue==''){ // cas pas de traduc pour la langue en cours
+												foreach($translator->getActiveLangIds() as $kL => $IdL){ // on cherche dans toutes les langues
+													$itemValue = $translator->getByID($refKeyValue, $IdL);
+													if ($itemValue!=''){
+														break;
+													}
+												}
+											}
+										}
 									} elseif ($aForeignAttributes["TYPE"] == "enum") {
 									 	if ($aForeignAttributes["TRANSLATE"] == "value")
 									 		$itemValue = $translator->getText($itemValue);
@@ -853,9 +863,8 @@ if ($_GET['mode'] != 'search' && $aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') 
 								}
 								// end translation data
 								
-								// TLS display
-								
-								
+								// TLS display 
+									
 								if (DEF_APP_USE_TRANSLATIONS && $translateDisplay) { 
 									if ($typeForeignDisplay == "int") {
 										if ($translateDisplay == 'reference')
@@ -865,7 +874,7 @@ if ($_GET['mode'] != 'search' && $aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') 
 											$itemValue =  $translator->getText($itemValue);
 									} else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";
 								}
-
+								
 								
 								$selItem .= $itemValue;
 
@@ -932,7 +941,17 @@ if ($_GET['mode'] != 'search' && $aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') 
 										if (DEF_APP_USE_TRANSLATIONS && $aForeignAttributes["TRANSLATE"]) {
 											if ($aForeignAttributes["TYPE"] == "int") {
 												if ($aForeignAttributes["TRANSLATE"] == 'reference')
-													$itemValue = $translator->getByID($itemValue);
+													//$itemValue = $translator->getByID($itemValue);
+													$refKeyValue = (int)$itemValue;
+													$itemValue = $translator->getByID((int)$itemValue);
+													if ($itemValue==''){ // cas pas de traduc pour la langue en cours
+														foreach($translator->getActiveLangIds() as $kL => $IdL){ // on cherche dans toutes les langues
+															$itemValue = $translator->getByID($refKeyValue, $IdL);
+															if ($itemValue!=''){
+																break;
+															}
+														}
+													}
 											} elseif ($aForeignAttributes["TYPE"] == "enum") {
 											 	if ($aForeignAttributes["TRANSLATE"] == "value")
 											 		$itemValue = $translator->getText($itemValue);

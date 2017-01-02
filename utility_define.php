@@ -15,16 +15,11 @@ function showDefine($sLibDefine, $sValDefine)
 
 // vrai nom des champs en BDD (oracle sensible à la casse)
 // pour boulogne, BDD oracle créée en Majuscules
-function doRightFieldName($sField){
-	if (DEF_NAME_FIELD == "UPPER"){
-		return strtoupper($sField);
-	}
-	elseif(DEF_NAME_FIELD == "LOWER"){
-		return strtolower($sField);
-	}
-	else{
-		return $sField;
-	}
+function doRightFieldName($sField)
+{
+	if (DEF_NAME_FIELD == "UPPER") return(strtoupper($sField));
+	else if (DEF_NAME_FIELD == "LOWER") return(strtolower($sField));	
+	else return($sField);
 }
 
 // alias de la fonction précédente

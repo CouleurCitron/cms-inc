@@ -1,4 +1,5 @@
 <?php
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 if(file_exists($_SERVER['DOCUMENT_ROOT'].'/include/bo/class/nws_content.class.php')  && (strpos(__FILE__,'/include/bo/class/nws_content.class.php')===FALSE) ){
 		include_once($_SERVER['DOCUMENT_ROOT'].'/include/bo/class/nws_content.class.php');
@@ -68,8 +69,8 @@ CREATE TABLE nws_content
 <item name="url" libelle="URL" type="varchar" length="256" option="url" /> 
 <item name="remontee" libelle="Remontee" type="enum" length="'Y','N'" default="N" />
 <item name="ordre" libelle="Ordre" type="int" length="11" list="true" order="true" />
-<item name="date_pub_debut" libelle="Début de publication" type="datetime" list="true" order="true"  format="l j F Y" rss="pubDate" />
-<item name="date_pub_fin" libelle="Fin de publication" type="datetime" list="true" order="true"  format="l j F Y" rss="pubendDate" /> 
+<item name="date_pub_debut" libelle="Début de publication" type="datetime"  format="l j F Y" rss="pubDate" />
+<item name="date_pub_fin" libelle="Fin de publication" type="datetime"  format="l j F Y" rss="pubendDate" /> 
 <item name="cdate" libelle="Date de création" type="date" />
 <item name="mdate" libelle="Date de modification" type="date" />
 </class>
@@ -263,7 +264,6 @@ function getFieldStatut() {return("nws_statut"); }
 //
 function getTable() { return("nws_content"); }
 function getClasse() { return("nws_content"); }
-function getPrefix() { return(""); }
 function getDisplay() { return("titre_court"); }
 function getAbstract() { return("sous_titre"); }
 
@@ -272,11 +272,11 @@ function getAbstract() { return("sous_titre"); }
 
 
 // ecriture des fichiers
-if (!is_dir($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content")){
-	mkdir($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content");
-	$list = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/list_nws_content.php", "w");
+if (!is_dir($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content")){
+	mkdir($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content");
+	$list = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/list_nws_content.php", "w");
 	$listContent = "<"."?php
-include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); 
+
 \$"."script = explode('/',\$"."_SERVER['PHP_SELF']);
 \$"."script = \$"."script[sizeof(\$"."script)-1];
 
@@ -287,28 +287,32 @@ include('cms-inc/autoClass/list.php');
 ?".">";
 	fwrite($list, $listContent);
 	fclose($list);
-	$maj = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/maj_nws_content.php", "w");
-	$majContent = "<"."?php include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); include('cms-inc/autoClass/maj.php'); ?".">";
+	$maj = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/maj_nws_content.php", "w");
+	$majContent = "<"."?php include('cms-inc/autoClass/maj.php'); ?".">";
 	fwrite($maj, $majContent);
 	fclose($maj);
-	$show = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/show_nws_content.php", "w");
-	$showContent = "<"."?php include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); include('cms-inc/autoClass/show.php'); ?".">";
+	$show = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/show_nws_content.php", "w");
+	$showContent = "<"."?php include('cms-inc/autoClass/show.php'); ?".">";
 	fwrite($show, $showContent);
 	fclose($show);
-	$rss = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/rss_nws_content.php", "w");
-	$rssContent = "<"."?php include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); include('cms-inc/autoClass/rss.php'); ?".">";
+	$rss = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/rss_nws_content.php", "w");
+	$rssContent = "<"."?php include('cms-inc/autoClass/rss.php'); ?".">";
 	fwrite($rss, $rssContent);
 	fclose($rss);
-	$xml = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/xml_nws_content.php", "w");
-	$xmlContent = "<"."?php include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); include('cms-inc/autoClass/xml.php'); ?".">";
+	$xml = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/xml_nws_content.php", "w");
+	$xmlContent = "<"."?php include('cms-inc/autoClass/xml.php'); ?".">";
 	fwrite($xml, $xmlContent);
 	fclose($xml);
-	$xmlxls = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/xlsx_nws_content.php", "w");
-	$xmlxlsContent = "<"."?php include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); include('cms-inc/autoClass/xlsx.php'); ?".">";
+	$xmlxls = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/xmlxls_nws_content.php", "w");
+	$xmlxlsContent = "<"."?php include('cms-inc/autoClass/xmlxls.php'); ?".">";
 	fwrite($xmlxls, $xmlxlsContent);
 	fclose($xmlxls);
-	$import = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/nws_content/import_nws_content.php", "w");
-	$importContent = "<"."?php include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); include('cms-inc/autoClass/import.php'); ?".">";
+	$export = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/export_nws_content.php", "w");
+	$exportContent = "<"."?php include('cms-inc/autoClass/export.php'); ?".">";
+	fwrite($export, $exportContent);
+	fclose($export);
+	$import = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/nws_content/import_nws_content.php", "w");
+	$importContent = "<"."?php include('cms-inc/autoClass/import.php'); ?".">";
 	fwrite($import, $importContent);
 	fclose($import);
 }

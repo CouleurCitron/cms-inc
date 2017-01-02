@@ -416,17 +416,17 @@ function drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id=null,
 			if(!isset($_GET['v_comp_path']) && !isset($_POST['v_comp_path'])){
 				$full_path_to_curr_id='0,13';
 			}			
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=14\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine carte</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=14\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine carte</b></a><br/></td></tr><tr><td>\n";
 		}
 		elseif($_SESSION['provenance']=="publication"){
 			if(!isset($_GET['v_comp_path']) && !isset($_POST['v_comp_path'])){
 				$full_path_to_curr_id='0,14';
 			}		
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=13\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine publication</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=13\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine publication</b></a><br/></td></tr><tr><td>\n";
 		}
 		else{
 			$full_path_to_curr_id="0";
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=".$full_path_to_curr_id."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=".$full_path_to_curr_id."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 		}	
 	}
 	else{
@@ -450,13 +450,13 @@ function drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id=null,
 
 		if (!in_array($id,split(',',$virtualPath))) {
 			//dossier ferme
-			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
+			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
 		} else {
 			//dossier ouvert
 			if(array_pop(split(',',$virtualPath))==$id)
-				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small><span class=\"arbo\">".strip_tags(str_replace(' ','&nbsp;',$libelle))."</span></small></a></span><br/>\n";
+				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small><span class=\"arbo\">".strip_tags(str_replace(' ','&nbsp;',$libelle))."</span></small></a></span><br/>\n";
 			else
-				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
+				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
 			//echo $full_path_to_curr_id.','.$id;
 			$strHTML.=drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id.','.$id,$destination);
 		}

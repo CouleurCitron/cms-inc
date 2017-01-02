@@ -18,7 +18,6 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				
 		
 		} else {
-                    
 			// md5 field for translation references
 			if ($classeName == 'cms_chaine_reference' && $aNodeToSort[$i]["attrs"]["NAME"] == 'md5') {
 				setItemValue($oRes, 'md5', md5($_POST['fCms_crf_chaine']));
@@ -109,110 +108,110 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					
 						
 						if ( basename($url_image) !=  $url_image  ){ 
-						 // copy
+							 // copy
 							 $subfile = basename($url_image);
-
+							 
 							 if ($_SERVER['DOCUMENT_ROOT'].$url_image != $_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$subfile) {
 								 if (!copy($_SERVER['DOCUMENT_ROOT'].$url_image, $_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$subfile)) {
-							//echo "failed to copy ".$_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$subfile."...\n";
-						} else {
+									//echo "failed to copy ".$_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$subfile."...\n";
+								} else {
 									$url_image = 	$subfile;  
 								} 
 							}
 							else {
 								$url_image = 	$subfile; 
+							}
+							 
 						}
-						 
-					}
-					// file récupéré avec le bouton parcourir l'ordinateur local
-					else {
-						// echo "custom<br />";
-					}
+						// file récupéré avec le bouton parcourir l'ordinateur local
+						else {
+							// echo "custom<br />";
+						}
 						
 						$filePath = $_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$url_image;  
 						if (is_file($filePath ) && $url_image!=""){
 							if (preg_match("/png|jpeg|jpg|gif|bmp/msi",  	$url_image)==1) {			
-							if (is_array($aNodeToSort[$i]['children'])){
-								$aImageOptions = array();
-								$aImageOutputs = array(basename($filePath));
-								foreach($aNodeToSort[$i]['children'] as  $kO => $nOption){
-									if ($nOption['attrs']['TYPE']=='image'){
-									$aImageOptions[]=$nOption['attrs'];
+								if (is_array($aNodeToSort[$i]['children'])){
+									$aImageOptions = array();
+									$aImageOutputs = array(basename($filePath));
+									foreach($aNodeToSort[$i]['children'] as  $kO => $nOption){
+										if ($nOption['attrs']['TYPE']=='image'){
+										$aImageOptions[]=$nOption['attrs'];
+										}
 									}
-								}
-								// on effectue les opés de rigueur
-								if (count($aImageOptions)>0){
-									foreach($aImageOptions as $kO => $aOption){
-										$aOption['src']=$filePath;
-										//echo 'traiter l\'image '.$aOption['src'].' en X '.$aOption["MAXWIDTH"].' et Y '.$aOption["MAXHEIGHT"].'<br />';
+									// on effectue les opés de rigueur
+									if (count($aImageOptions)>0){
+										foreach($aImageOptions as $kO => $aOption){
+											$aOption['src']=$filePath;
+											//echo 'traiter l\'image '.$aOption['src'].' en X '.$aOption["MAXWIDTH"].' et Y '.$aOption["MAXHEIGHT"].'<br />';
 											//echo 'traiter l\'image '.$aOption['src'].' en X '.$aOption["WIDTH"].' et Y '.$aOption["HEIGHT"].'<br />';
-										
-										$oIm = imagecreatefromAnyFile($aOption['src']);
-										$bDoResize=false;
-										if(isset($aOption['WIDTH'])&&($aOption['WIDTH']!='')&&isset($aOption['HEIGHT'])&&($aOption['HEIGHT']!='')){											
-											if((imagesx($oIm)!=$aOption['WIDTH']) || (imagesy($oIm)!=$aOption['HEIGHT'])){
-												$oIm = resizeImageObjectWidthHeightStrict($oIm, $aOption['WIDTH'], $aOption['HEIGHT']);
-												$bDoResize=true;
+											
+											$oIm = imagecreatefromAnyFile($aOption['src']);
+											$bDoResize=false;
+											if(isset($aOption['WIDTH'])&&($aOption['WIDTH']!='')&&isset($aOption['HEIGHT'])&&($aOption['HEIGHT']!='')){											
+												if((imagesx($oIm)!=$aOption['WIDTH']) || (imagesy($oIm)!=$aOption['HEIGHT'])){
+													$oIm = resizeImageObjectWidthHeightStrict($oIm, $aOption['WIDTH'], $aOption['HEIGHT']);
+													$bDoResize=true;
+												}
+											}	
+											elseif(isset($aOption['WIDTH'])&&($aOption['WIDTH']!='')){											
+												if((imagesx($oIm)!=$aOption['WIDTH'])){
+													$oIm = resizeImageObjectWidthWise($oIm, $aOption['WIDTH']);
+													$bDoResize=true;
+												}
+											}	
+											elseif(isset($aOption['HEIGHT'])&&($aOption['HEIGHT']!='')){											
+												if((imagesy($oIm)!=$aOption['HEIGHT'])){
+													$oIm = resizeImageObjectHeightWise($oIm, $aOption['HEIGHT']);
+													$bDoResize=true;
+												}
 											}
-										}	
-										elseif(isset($aOption['WIDTH'])&&($aOption['WIDTH']!='')){											
-											if((imagesx($oIm)!=$aOption['WIDTH'])){
-												$oIm = resizeImageObjectWidthWise($oIm, $aOption['WIDTH']);
-												$bDoResize=true;
+											elseif(isset($aOption['MAXWIDTH'])&&($aOption['MAXWIDTH']!='')&&isset($aOption['MAXHEIGHT'])&&($aOption['MAXHEIGHT']!='')){
+												if ((imagesx($oIm)>$aOption['MAXWIDTH'])||(imagesy($oIm)>$aOption['MAXHEIGHT'])){
+													$oIm = resizeImageObjectWidthHeightWise($oIm, $aOption['MAXWIDTH'], $aOption['MAXHEIGHT']);
+													$bDoResize=true;
+												}
 											}
-										}	
-										elseif(isset($aOption['HEIGHT'])&&($aOption['HEIGHT']!='')){											
-											if((imagesy($oIm)!=$aOption['HEIGHT'])){
-												$oIm = resizeImageObjectHeightWise($oIm, $aOption['HEIGHT']);
-												$bDoResize=true;
-											}
-										}
-										elseif(isset($aOption['MAXWIDTH'])&&($aOption['MAXWIDTH']!='')&&isset($aOption['MAXHEIGHT'])&&($aOption['MAXHEIGHT']!='')){
-											if ((imagesx($oIm)>$aOption['MAXWIDTH'])||(imagesy($oIm)>$aOption['MAXHEIGHT'])){
-												$oIm = resizeImageObjectWidthHeightWise($oIm, $aOption['MAXWIDTH'], $aOption['MAXHEIGHT']);
-												$bDoResize=true;
-											}
-										}
 											//if ($bDoResize==true){
-											if (preg_match('/^.+\.bmp$/msi', $aOption['src'])==1){
+												if (preg_match('/^.+\.bmp$/msi', $aOption['src'])==1){
 													$aOption['resize']=preg_replace('/^(.+)\.bmp$/i', $aNodeToSort[$i]["attrs"]["NAME"].'_$1-size-'.($kO+1).'.jpg', basename($aOption['src']));
-											}
-											else{							
+												}
+												else{							
 													$aOption['resize']=preg_replace('/^(.+)\.([png|jpeg|jpg|gif]+)$/i', $aNodeToSort[$i]["attrs"]["NAME"].'_$1-size-'.($kO+1).'.$2', basename($aOption['src']));
-											}
-											$aImageOutputs[]=$aOption['resize'];
-											$newFilePath=$_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$aOption['resize'];
-											//echo $newFilePath.'<br />';												
-											imageoutputtoAnyFile($oIm, $newFilePath);
+												}
+												$aImageOutputs[]=$aOption['resize'];
+												$newFilePath=$_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$aOption['resize'];
+												//echo $newFilePath.'<br />';												
+												imageoutputtoAnyFile($oIm, $newFilePath);
 											//}								
-										
+											
+										}
 									}
 								}
-							}
-							else { 
+								else { 
 									$aImageOutputs = array($url_image);
-							}	
-						}
-						else {  
+								}	
+							}
+							else {  
 								$aImageOutputs = array($url_image);
-						} 
-						if (count($aImageOutputs)>0){ // custom  
+							} 
+							if (count($aImageOutputs)>0){ // custom  
 								//setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], implode(';', $aImageOutputs)); // par défaut
 								//
 								//pre_dump( $aImageOutputs);
 								$aImageOutputsAll[]= implode(';', $aImageOutputs);
+							}
 						}
-					}
-					else { 
+						else { 
 							$url_image = basename($url_image); 
-						// valeur vide, arrive quand on efface le fichier
+							// valeur vide, arrive quand on efface le fichier
 							//setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], $url_image); // par défaut
 							$aImageOutputsAll[]= $url_image;
 						}
 						
 					} // end foreach ($aAll_images as $url_image) {
 					
-
+					
 					
 					if (sizeof($aImageOutputsAll) > 1) {
 						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], "{".implode ("}{", $aImageOutputsAll)."}" );
@@ -231,24 +230,17 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				}
 				else{
 					 //die("MAJ_SAVE");
-					//pre_dump( $aNodeToSort[$i]["attrs"]["TYPE"] );
-                                        if( $aNodeToSort[$i]["attrs"]["TYPE"] != "date" ){
-                                            $value = compliesFCKhtmlForModuleContenu(rewriteIfNeeded($_POST[$form_field]));
-                                        } else {
-                                            $value = $_POST[$form_field];
-                                        }
-                                        
-                                        //pre_dump( $value );
+					
+					$value = compliesFCKhtmlForModuleContenu(rewriteIfNeeded($_POST[$form_field]));
 					setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], $value);
 				}
 			}
 		}
 	}
-        
 }
 //die();
 $oRes->set_id($id);
-//pre_dump($oRes); die();
+//pre_dump($oRes);
 //die();
 //pre_dump($oRes);
 

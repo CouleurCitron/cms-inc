@@ -16,7 +16,7 @@ REM ----------------------------------------------------------------------
 REM  Authors:     Alexander Merz (alexmerz@php.net)
 REM ----------------------------------------------------------------------
 REM
-REM  $Id: pear.bat,v 1.1 2008-11-27 17:59:55 pierre Exp $
+REM  $Id: pear.bat,v 1.1 2013-09-30 09:46:17 raphael Exp $
 
 REM change this lines to match the paths of your system
 REM -------------------
