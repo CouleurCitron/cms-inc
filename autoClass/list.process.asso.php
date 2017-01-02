@@ -5,6 +5,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 $oRech = new dbRecherche();
 
 $aPostAssos = getFilterPostsAsso();
+
  
 if (!empty($aPostAssos)) {
 	foreach ($aPostAssos as $kFilter => $aPostFilter) {
@@ -18,7 +19,7 @@ if (!empty($aPostAssos)) {
 			
 			$classeNameAsso = str_replace ("assofiltre", "", $filterName);
 			//echo $classeNameAsso.' '.'<br />';		
-			if (isset($classeNameAsso) && $classeNameAsso != "" && $filterValue!= -1) { 
+			if (isset($classeNameAsso) && $classeNameAsso != "" && $filterValue!= -1	&&	class_exists($classeNameAsso)) { 
 					$asso = dbGetAssocProps($oRes, $classeNameAsso) ;
 	 				 
 					$oRech3 = new dbRecherche();				

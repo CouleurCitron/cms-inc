@@ -137,8 +137,8 @@ function getColspan ($ligneTD, $HTML) {
 		$colspan = str_replace($toDel, "", $ligneCOLSPAN);
 		$ligneTEXT = stristr($ligneTD, "id=\"");
 		$ligneTEXT2 = strchr($ligneTEXT, "\"");
-		$ligneTEXT3 = split(" ",$ligneTEXT2);
-		$ligneTEXT4 = split("/",$ligneTEXT3[0]);
+		$ligneTEXT3 = explode(" ",$ligneTEXT2);
+		$ligneTEXT4 = explode("/",$ligneTEXT3[0]);
 		$ref=$ligneTEXT4[0]."/".$ligneTEXT4[1];
 		$ligne = $ligneTEXT4[0];
 		$col = $ligneTEXT4[1];
@@ -165,8 +165,8 @@ function getColspan ($ligneTD, $HTML) {
 		$colspan = str_replace($toDel, "", $ligneCOLSPAN2);
 		$ligneTEXT = stristr($ligneTD, "id=\"");
 		$ligneTEXT2 = strchr($ligneTEXT, "\"");
-		$ligneTEXT3 = split(" ",$ligneTEXT2);
-		$ligneTEXT4 = split("/",$ligneTEXT3[0]);
+		$ligneTEXT3 = explode(" ",$ligneTEXT2);
+		$ligneTEXT4 = explode("/",$ligneTEXT3[0]);
 		$ref=$ligneTEXT4[0]."/".$ligneTEXT4[1];
 		$ligne = $ligneTEXT4[0];
 		$col = $ligneTEXT4[1];
@@ -566,7 +566,7 @@ function initRowspanColspan($html) {
 					$contenuCourantPDF = str_replace ("<B>", "", $contenuCourantPDF);
 					$contenuCourantPDF = str_replace ("</B>", "", $contenuCourantPDF);
 					//echo $contenuCourantPDF."<br>\n";
-					if (ereg("-PDF", $contenuCourantPDF)) {
+					if (preg_match("/-PDF/msi", $contenuCourantPDF)) {
 						$contenuCourantPDF = strchr($contenuCourantPDF, "-PDF");
 						$contenuCourantPDF = str_replace ("-PDF", "", $contenuCourantPDF);
 					}
@@ -668,7 +668,7 @@ function deleteRowspanColspan ($oRes) {
 	
 				$ligneTDcontenu = $aItems[1][$cptArrayTD];
 				if ($l==0) {
-					if (!ereg ("<b>", $ligneTDcontenu) && ltrim($ligneTDcontenu)!="") {
+					if (!preg_match ("/<b>/msi", $ligneTDcontenu) && ltrim($ligneTDcontenu)!="") {
 					//echo "-------------------";
 						$ligneTD = str_replace ($aItems[1][$cptArrayTD], "<b>".$aItems[1][$cptArrayTD]."</b>", $ligneTD);
 					}

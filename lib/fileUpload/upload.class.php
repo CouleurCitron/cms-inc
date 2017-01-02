@@ -211,7 +211,7 @@ class Upload {
         $this-> Required     = false;
         $this-> TrackError   = true;
         $this-> ArrOfError   = Array();
-        $this-> MaxFilesize  = ereg_replace('M', '', ini_get('upload_max_filesize')) * 1024;
+        $this-> MaxFilesize  = preg_replace('/M/msi', '', ini_get('upload_max_filesize')) * 1024;
 	}
 	
 	
@@ -509,7 +509,7 @@ class Upload {
         // Bloque tous les fichiers executables, et tous les fichiers php pouvant être interprété mais dont l'entête ne peut les identifier comme étant dangereux
 		if ($this-> SecurityMax===true) {
 			// Note : is_executable ne fonctionne pas => ?
-            if (ereg ('application/octet-stream', $this-> _type) || preg_match("/.php$|.inc$|.php3$/i", $this-> _ext) ) {
+            if (preg_match ('/application\/octet\-stream/msi', $this-> _type) || preg_match("/.php$|.inc$|.php3$/i", $this-> _ext) ) {
                 $this-> AddError(5);
 				return false;
             }
@@ -551,7 +551,7 @@ class Upload {
         if (realpath($Dir)) $Dir = realpath($Dir);
         
         // Position du dernier slash/antislash
-        if (eregi('windows', php_uname()) && ($Dir[strlen($Dir)-1] != '\\') ) $Dir .= '\\';
+        if (preg_match('/windows/msi', php_uname()) && ($Dir[strlen($Dir)-1] != '\\') ) $Dir .= '\\';
         else if ($Dir[strlen($Dir)-1] != '/') $Dir .= '/';
         
         return $Dir;
@@ -569,18 +569,18 @@ class Upload {
 		$return = '';
 		
 		for ($i=0; $i <= strlen($str)-1; $i++) {
-            if (eregi('[a-z]',$str{$i}))              $return .= $str{$i};
-			elseif (eregi('[0-9]', $str{$i}))         $return .= $str{$i};
-			elseif (ereg('[àâäãáåÀÁÂÃÄÅ]', $str{$i})) $return .= 'a';
-			elseif (ereg('[æÆ]', $str{$i}))           $return .= 'a';
-			elseif (ereg('[çÇ]', $str{$i}))           $return .= 'c';
-			elseif (ereg('[éèêëÉÈÊËE]', $str{$i}))    $return .= 'e';
-			elseif (ereg('[îïìíÌÍÎÏ]', $str{$i}))     $return .= 'i';
-			elseif (ereg('[ôöðòóÒÓÔÕÖ]', $str{$i}))   $return .= 'o';
-			elseif (ereg('[ùúûüÙÚÛÜ]', $str{$i}))     $return .= 'u';
-			elseif (ereg('[ýÿÝŸ]', $str{$i}))         $return .= 'y';
-			elseif (ereg('[ ]', $str{$i}))            $return .= '_';
-			elseif (ereg('[.]', $str{$i}))            $return .= '_';
+            if     (preg_match('/[a-z]/msi',$str{$i}))              $return .= $str{$i};
+			elseif (preg_match('/[0-9]/msi', $str{$i}))         $return .= $str{$i};
+			elseif (preg_match('/[àâäãáåÀÁÂÃÄÅ]/msi', $str{$i})) $return .= 'a';
+			elseif (preg_match('/[æÆ]/msi', $str{$i}))           $return .= 'a';
+			elseif (preg_match('/[çÇ]/msi', $str{$i}))           $return .= 'c';
+			elseif (preg_match('/[éèêëÉÈÊËE]/msi', $str{$i}))    $return .= 'e';
+			elseif (preg_match('/[îïìíÌÍÎÏ]/msi', $str{$i}))     $return .= 'i';
+			elseif (preg_match('/[ôöðòóÒÓÔÕÖ]/msi', $str{$i}))   $return .= 'o';
+			elseif (preg_match('/[ùúûüÙÚÛÜ]/msi', $str{$i}))     $return .= 'u';
+			elseif (preg_match('/[ýÿÝŸ]/msi', $str{$i}))         $return .= 'y';
+			elseif (preg_match('/[ ]/msi', $str{$i}))            $return .= '_';
+			elseif (preg_match('/[.]/msi', $str{$i}))            $return .= '_';
 			else                                      $return .= $str{$i};
 		}
 		
@@ -599,8 +599,8 @@ class Upload {
             $headerref = $_SERVER['HTTP_REFERER'];
             
             // On enlève toutes les variables passées par url
-            if (ereg("\?",$headerref)){
-			    list($url, $getstuff) = split('\?', $headerref);
+            if (preg_match("/\?",$headerref)){
+			    list($url, $getstuff) = explode('\?', $headerref);
 			    $headerref = $url;
 		    }
             

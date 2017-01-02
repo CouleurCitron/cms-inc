@@ -91,10 +91,10 @@ librairies de manipulatio nde l'arbo des composants
 */
 
 function deleteNode($db,$virtualPath){
-	$array_path = split(',',$virtualPath);
+	$array_path = explode(',',$virtualPath);
 	$node_id = array_pop($array_path);
 	$result = false;
-	$parentVirtualPath = join(',',$array_path);
+	$parentVirtualPath = implode(',',$array_path);
 	$children=getNodeChildren($db,$virtualPath);
 	foreach($children as $k => $child) {
 		if (deleteNode($db, $virtualPath.','.$child['id'])==false) {
@@ -124,7 +124,7 @@ function deleteNode($db,$virtualPath){
 }
 
 function addNode($db,$virtualPath,$libelle,$urlHome){
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 
 	$sql = " select node_id, node_parent_id, node_libelle from cms_arbo_site where node_id=$node_id";
@@ -155,7 +155,7 @@ function addNode($db,$virtualPath,$libelle,$urlHome){
 }
 
 function renameNode($db,$virtualPath,$libelle){
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$sql = "select node_id, node_parent_id, node_libelle from cms_arbo_site where node_id=$node_id";
 	if (DEF_BDD != "ORACLE") $sql.=";";	
@@ -179,7 +179,7 @@ function renameNode($db,$virtualPath,$libelle){
 }
 
 function savehome($db,$virtualPath,$url) {
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = null;
 	$sql = "update cms_arbo_site 
 	set url_home_categorie='$url'
@@ -197,7 +197,7 @@ function savehome($db,$virtualPath,$url) {
 }
 
 function getNodeInfos($db,$virtualPath){
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = null;
 	$sql = "select node_id, node_parent_id, node_libelle, url_home_categorie from cms_arbo_site where node_id=$node_id";
 	if (DEF_BDD != "ORACLE") $sql.=";";	
@@ -229,7 +229,7 @@ function drawCompTree($db,$virtualPath,$full_path_to_curr_id=null,$destination=n
 		$strHTML .= "<a href=\"".$destination."\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 		
 	} else {
-		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
+		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
 	}
 	$children = getNodeChildren($db,$full_path_to_curr_id);
 	//indentation :
@@ -241,12 +241,12 @@ function drawCompTree($db,$virtualPath,$full_path_to_curr_id=null,$destination=n
 		$id = $v['id'];
 		$libelle = $v['libelle'];
 		//debut de ligne...
-		if (!in_array($id,split(',',$virtualPath))) {
+		if (!in_array($id,explode(',',$virtualPath))) {
 			//dossier ferme
 			$strHTML .= "$indent<a href=\"".$destination.$OP."v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\">".strip_tags($libelle, '<br><sup><ub>')."</a><br/>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(split(',',$virtualPath))==$id)
+			if(array_pop(explode(',',$virtualPath))==$id)
 				$strHTML .= "$indent<a class=\"arbo\" href=\"".$destination."?v_comp_path=$full_path_to_curr_id,$id\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><span class=\"arbo\">".strip_tags($libelle, '<br><sup><ub>')."</span></a><br/>\n";
 			else
 				$strHTML .= "$indent<a class=\"arbo\" href=\"".$destination."?v_comp_path=$full_path_to_curr_id,$id\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\">".strip_tags($libelle, '<br><sup><ub>')."</a><br/>\n";
@@ -265,7 +265,7 @@ function getAbsolutePathString($db, $virtualPath,$destination=null) {
 		$OP = '&';
 	$strPath = '<a href="'.$destination.'" class="arbo"><b>Racine</b></a>';
 	$localPath='0';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$localPath.=",$id";
 			$sql = "select node_libelle from cms_arbo_site where node_id=$id";
@@ -285,7 +285,7 @@ function getAbsolutePathString($db, $virtualPath,$destination=null) {
 }
 
 function getNodeChildren($db,$path) {
-	$node_id = array_pop(split(',',$path));
+	$node_id = array_pop(explode(',',$path));
 	$result = array();
 	$sql = "select node_id, node_libelle from cms_arbo_site
 		where node_parent_id=$node_id

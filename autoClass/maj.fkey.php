@@ -530,7 +530,7 @@ if ($valueAbstract!="" || $valueDisplay!="") {
 	$aName = array ();
 	$needle = "filter";
 	foreach ($_SESSION as $key => $postedvar){ 
-		if (ereg($needle, $key) == true){
+		if (strpos($key, $needle) === 0){
 			$aKeyVar = array();
 			$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 			

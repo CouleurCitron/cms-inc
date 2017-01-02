@@ -180,7 +180,7 @@ include('list.filters.php');
 	function addEmp(){
 		document.<?php echo $classePrefixe; ?>_list_form.actiontodo.value = "MODIF";
 		document.<?php echo $classePrefixe; ?>_list_form.display.value = null;
-		document.<?php echo $classePrefixe; ?>_list_form.action = "maj_<?php echo $classeName; ?>.php?id=-1<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
+		document.<?php echo $classePrefixe; ?>_list_form.action = "maj_<?php echo $classeName; ?>.php?id=-1<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>";
 		document.<?php echo $classePrefixe; ?>_list_form.submit();
 	}
 	
@@ -190,10 +190,10 @@ include('list.filters.php');
 		document.<?php echo $classePrefixe; ?>_list_form.display.value = null;
 		document.<?php echo $classePrefixe; ?>_list_form.actiontodo.value = "";
 		<?php if ($classeName == "cms_tableau") { ?>
-			document.<?php echo $classePrefixe; ?>_list_form.action = "/backoffice/cms/cms_tableau/show_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
+			document.<?php echo $classePrefixe; ?>_list_form.action = "/backoffice/cms/cms_tableau/show_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>";
 		<?php }
 		else { ?>
-			document.<?php echo $classePrefixe; ?>_list_form.action = "show_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
+			document.<?php echo $classePrefixe; ?>_list_form.action = "show_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>";
 <?php 		} ?>
 		
 		document.<?php echo $classePrefixe; ?>_list_form.submit();
@@ -204,7 +204,7 @@ include('list.filters.php');
 		document.<?php echo $classePrefixe; ?>_list_form.id.value = id;
 		document.<?php echo $classePrefixe; ?>_list_form.display.value = null;
 		document.<?php echo $classePrefixe; ?>_list_form.actiontodo.value = "MODIF";
-		document.<?php echo $classePrefixe; ?>_list_form.action = "maj_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
+		document.<?php echo $classePrefixe; ?>_list_form.action = "maj_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>";
 		document.<?php echo $classePrefixe; ?>_list_form.submit();
 	}
 

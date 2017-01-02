@@ -526,7 +526,7 @@ if ($valueAbstract!="" || $valueDisplay!="") {
 	$aReturn = array ();
 	$aName = array (); 
 	foreach ($_SESSION as $key => $postedvar){  
-		if (ereg($needle, $key) == true){
+		if (strpos($key, $needle) === 0){
 			$aKeyVar = array();
 			$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 			
@@ -555,7 +555,7 @@ if ($valueAbstract!="" || $valueDisplay!="") {
 	$aReturn = array ();
 	$aName = array (); 
 	foreach ($_POST as $key => $postedvar){ 
-		if (ereg($needle, $key) == true){
+		if (strpos($key, $needle) === 0){
 			$aKeyVar = array();
 			$aKeyVar[strtolower(str_replace("assoFiltre", "", $key))] = $postedvar;
 			

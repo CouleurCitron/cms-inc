@@ -48,9 +48,9 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 
 			$aTempClasse = array();
 			if ($aNodeToSort[$i]["attrs"]["ASSO"])
-				$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
 			elseif ($aNodeToSort[$i]["attrs"]["ASSO_VIEW"])
-				$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]);		
 
 			if (!empty($aTempClasse)) {
 				foreach ($aTempClasse as $assoc) {
@@ -111,7 +111,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 							//viewArray($row);
 							if ($bCms_site == true && $classeName != "classe") {
 								$temp_cms_site = $row[$foreignPrefixe.'_cms_site'];
-								if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail'] != "" &&  ereg("backoffice", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || ($temp_cms_site == $idSite)) {
+								if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail'] != "" &&  preg_match("/backoffice/msi", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || ($temp_cms_site == $idSite)) {
 									// Only show direct asso link (fkey_1) if assymetric mode is active
 									if ($tempAsymetric && ($row['fkey_1'] == $row['ref_id'] && $row['fkey_2'] == $id))
 										continue;

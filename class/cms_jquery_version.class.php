@@ -26,10 +26,8 @@ if (!ispatched('cms_jquery_version')){
         //pre_dump("ok table");
         
         $sSQl = "SELECT * FROM cms_jquery_version";
-        $result = mysql_query($sSQl);
-        $number = mysql_num_rows($result);
-        //pre_dump($number);
-        if($number == "0"){
+		$aO = dbGetObjectsFromRequete('cms_jquery_version', $sSQl);
+        if(count($aO) == 0){
             //pre_dump("no data");
             
             $sInsert = "INSERT INTO  `cms_jquery_version` (

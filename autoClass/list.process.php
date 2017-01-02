@@ -241,7 +241,7 @@ if ($operation == "DELETE") {
 } else if ($operation == "CHANGE_STATUT") {
 
 	// toutes les cc sélectionnées
-	$aEmp = split(";", $_POST['cbToChange']);
+	$aEmp = explode(";", $_POST['cbToChange']);
 	
 	for ($p=0; $p<sizeof($aEmp); $p++) {
 
@@ -513,7 +513,7 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 				$sCmsSiteChamp = ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"];			
 		
 			if ($sCmsSiteChamp != '') {
-				if (isset($_SESSION["idSite_travail"]) && $_SESSION["idSite_travail"]!= "" &&  ereg("backoffice", $_SERVER['PHP_SELF']))
+				if (isset($_SESSION["idSite_travail"]) && $_SESSION["idSite_travail"]!= "" &&  preg_match("/backoffice/si", $_SERVER['PHP_SELF']))
 					$_POST['filter'.$sCmsSiteChamp] = $_SESSION["idSite_travail"];
 				else	$_POST['filter'.$sCmsSiteChamp] = $idSite;
 			}
@@ -596,7 +596,7 @@ if($eStatut==""){
 	$eStatut=$_SESSION['eStatut'];
 }
 
-if (!ereg("backoffice", $_SERVER['PHP_SELF'])){ // hors BO only "en ligne"
+if (!preg_match("/backoffice/si", $_SERVER['PHP_SELF'])){ // hors BO only "en ligne"
 	$eStatut = DEF_ID_STATUT_LIGNE;
 }
 
@@ -626,7 +626,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		
 		
 		$aTempClasse = array();
-		$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
+		$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
 		
 		for ($m=0; $m<sizeof($aTempClasse);$m++) { 
 			$classeNameAsso = $aTempClasse[$m];
@@ -643,11 +643,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				
 				$itemToCheckForAsso = array ();
 				for ($i=0;$i<count($aNodeToSortAsso);$i++){
-					if (($aNodeToSortAsso[$i]["name"] == "ITEM") && (!ereg("statut|ordre|id", $aNodeToSortAsso[$i]["attrs"]["NAME"]))) {
+					if (($aNodeToSortAsso[$i]["name"] == "ITEM") && (!preg_match("/statut|ordre|id/msi", $aNodeToSortAsso[$i]["attrs"]["NAME"]))) {
 						$itemToCheckForAsso[] =  $aNodeToSortAsso[$i]["attrs"]["NAME"];
 					}
 					elseif (($aNodeToSortAsso[$i]["name"] == "ITEM") && ($aNodeToSortAsso[$i]["attrs"]["NAME"] == "ordre")) {
-						if (!ereg("/backoffice/", $_SERVER['PHP_SELF'])){	
+						if (!preg_match("/backoffice/msi", $_SERVER['PHP_SELF'])){	
 							$aGetterOrderByAsso[] = $classePrefixeAsso."_ordre";
 							$aGetterSensOrderByAsso[] = "ASC";
 							
@@ -782,9 +782,9 @@ if (!empty($aPostFilters)) {
 			if (isset($classeNameAsso) && $classeNameAsso != "" ) {
 				
 				// on récupére le préfixe de l'asso
-				$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
+				$filterNameTemp = preg_replace("/([^_]+)_(.*)/msi", "$2", $filterName);
 				if (in_array($filterNameTemp, $itemToCheckForAsso)) { 
-					$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
+					$filterName = preg_replace("/([^_]+)_(.*)/msi", $classePrefixeAsso."_$2", $filterName);
 				} else	$classeNameAsso = "";
 
 				if (isset($classeNameAsso) && $classeNameAsso!="") {
@@ -796,10 +796,7 @@ if (!empty($aPostFilters)) {
 						$aRecherche[] = $oRech3;		
 				}
 			}
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && ereg($classePrefixe."_", $filterName)) { 
-			//echo $nbSub.'<br />';
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && doesFieldExist($aListeChamps, $filterName)) { 
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && doesFieldExist($aListeChamps, $filterName)) { 	
+
 			if ($filterValue!=-1 &&  $filterValue != "" || $filterValue == 0 && doesFieldExist($aListeChamps, $filterName)) { 	
 				$oRech3 = new dbRecherche();				
 				$oRech3->setValeurRecherche("declencher_recherche");
@@ -882,14 +879,14 @@ unset($aGetterSensOrderBy);
 
 // execution de la requette avec pagination
 $sParam = ""; 
-if ($_SERVER["QUERY_STRING"]!="" && (ereg("param", $_SERVER["QUERY_STRING"]) || strstr($_SERVER["PHP_SELF"],'page_infos_reuse.php') !== FALSE) ) {
-	$aParam = split('&', $_SERVER["QUERY_STRING"]);
+if ($_SERVER["QUERY_STRING"]!="" && (preg_match("/param/msi", $_SERVER["QUERY_STRING"]) || strstr($_SERVER["PHP_SELF"],'page_infos_reuse.php') !== FALSE) ) {
+	$aParam = explode('&', $_SERVER["QUERY_STRING"]);
 	 
 	if (isset($_GET['champTri']) && !in_array ( "champTri=".$_GET['champTri'], $aParam)) $aParam[] = "champTri=".$_GET['champTri'];
 	if (isset($_SESSION['sensTri_res']) && !in_array ( "sensTri=".$_SESSION['sensTri_res'], $aParam) ) $aParam[] = "sensTri=".$_SESSION['sensTri_res'];	 
 	
 	for ($i = 0; $i<sizeof($aParam) ; $i++) {
-		if (!ereg("adodb", $aParam[$i]))
+		if (!preg_match("/adodb/msi", $aParam[$i]))
 			$sParam.="&".$aParam[$i];  
 	}	 
 }

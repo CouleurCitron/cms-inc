@@ -958,7 +958,7 @@ function multiPartMail_image($to , $sujet , $html , $text, $from, $attachPath, $
 	error_log("to = $destinataire");
 	
 	$entetes = $message['headers'];
-	$from = ereg_replace("(.*) <(.*)>", "\"\\1\" <\\2>", $from);
+	$from = preg_replace("/(.*) <(.*)>/msi", "\"$1\" <$2>", $from);
 
 	$entetes["From"]= $from;
 	

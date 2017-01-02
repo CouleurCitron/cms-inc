@@ -426,7 +426,7 @@ function dbGetCountIdListRech($sObjet, $aRecherche, $sOrderBy)
 	// construction de la requete (clause FROM et WHERE)
 	$sRequete.= dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy);
 	if (!isset($aRecherche)){
-		$sRequete = eregi_replace("(where.*)", "", $sRequete); 
+		$sRequete = preg_replace("/(where.*)/msi", "", $sRequete); 
 	}
 
 	
@@ -517,14 +517,14 @@ function dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy="")
 		if (($oRech->getValeurRecherche() != "") && ($oRech->getValeurRecherche() != "-1")) {
 
 			// composition de la clause FROM (tables de jointure)
-			$aFromThis = split(";", $oRech->getTableBD());
+			$aFromThis = explode(";", $oRech->getTableBD());
 			
 			for($m=0; $m<sizeof($aFromThis); $m++) {
 				if ($aFromThis[$m] != "") array_push($aFromTemp, $aFromThis[$m]);
 			}
 			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = split(";", $oRech->getJointureBD());
+			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
 			for($m=0; $m<sizeof($aJointure); $m++) {
 				if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
 			}
@@ -612,7 +612,7 @@ function dbMakeRequeteWithCriteres2($sObjet, $aRecherche, $aOrderBy,  $aSensOrde
 		// si une valeur est recherchée
 		if ($oRech->getValeurRecherche() != "" && $oRech->getValeurRecherche() != "-1") {
 			// composition de la clause FROM (tables de jointure)
-			$aFromThis = split(";", $oRech->getTableBD());
+			$aFromThis = explode(";", $oRech->getTableBD());
 			for($m=0; $m<sizeof($aFromThis); $m++) {
 				if ($aFromThis[$m] != "")
 					array_push($aFromTemp, $aFromThis[$m]);
@@ -620,7 +620,7 @@ function dbMakeRequeteWithCriteres2($sObjet, $aRecherche, $aOrderBy,  $aSensOrde
 			
 			// composition de la clause WHERE (jointures)
 			if (sizeof($oRech->getJointureBD() != 0))
-				$aJointure = split(";", $oRech->getJointureBD());
+				$aJointure = explode(";", $oRech->getJointureBD());
                                 //pre_dump($aJointure);
 			for ($m=0; $m<sizeof($aJointure); $m++) {
 				if ($aJointure[$m] != "")
@@ -755,14 +755,14 @@ function dbMakeRequeteWithCriteres2_OR($sObjet, $aRecherche, $aOrderBy,  $aSensO
 		if (($oRech->getValeurRecherche() != "") && ($oRech->getValeurRecherche() != "-1")) {
 
 			// composition de la clause FROM (tables de jointure)
-			$aFromThis = split(";", $oRech->getTableBD());
+			$aFromThis = explode(";", $oRech->getTableBD());
 			
 			for($m=0; $m<sizeof($aFromThis); $m++) {
 				if ($aFromThis[$m] != "") array_push($aFromTemp, $aFromThis[$m]);
 			}
 			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = split(";", $oRech->getJointureBD());
+			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
 			for($m=0; $m<sizeof($aJointure); $m++) {
 				if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
 			}
