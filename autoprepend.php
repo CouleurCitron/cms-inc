@@ -24,7 +24,7 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 				foreach ($getVars as $authKey => $authValue){
 					$tempBlock = true;
 					if (preg_match("/\*/msi", $authKey)==1){
-						if (ereg('/'.$authKey.'/msi', $gKey)==1){							
+						if (preg_match('/'.$authKey.'/msi', $gKey)==1){							
 							if ($authValue == 'int'){ // integer strict
 								$_GET[$gKey] = intval($_GET[$gKey]);
 							}
@@ -48,11 +48,11 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 				else{ //varchar
 					$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);			
                                         
-                                        /* on enlève les injections HTML
-                                         * + vérification du typage
-                                         * MAJ 12/09/2014 @ Raphael
-                                         */
-                                        $_GET[$gKey] = strval( htmlspecialchars( strip_tags( $_GET[$gKey] ) ) );
+					/* on enlève les injections HTML
+					 * + vérification du typage
+					 * MAJ 12/09/2014 @ Raphael
+					 */
+					$_GET[$gKey] = strval( htmlspecialchars( strip_tags( $_GET[$gKey] ) ) );
 				}
 			}
 			//pre_dump($_GET[$gKey]);

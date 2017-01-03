@@ -550,8 +550,8 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 			$tempGetter = str_replace("get_".$classePrefixe."_", "get", $tempGetter);
 			eval($tempGetter);
 			 
-			if (ereg(";", $tempFile)) {
-				$aTempFile = split (";", $tempFile);
+			if (preg_match("/;/msi", $tempFile)) {
+				$aTempFile = explode (";", $tempFile);
 				foreach ($aTempFile as $tempFile) {
 					$tempFile = $DIR_MEDIA.$tempFile; 
 					@unlink($tempFile);	

@@ -20,23 +20,23 @@ class Browser_Util
   {
     $browser = $_SERVER['HTTP_USER_AGENT'];
     // check if msie
-    if (eregi("MSIE[^;]*",$browser,$msie))
+    if (preg_match("/MSIE[^;]*/msi",$browser,$msie))
     {
       // get version 
-      if (eregi("[0-9]+\.[0-9]+",$msie[0],$version))
+      if (preg_match("/[0-9]+\.[0-9]+/msi",$msie[0],$version))
       {
         // check version
         if ((float)$version[0]>=5.5)
         {
           // finally check if it's not opera impersonating ie
-          if (!eregi("opera",$browser))
+          if (!preg_match("/opera/msi",$browser))
           {
             return true;
           }
         }
       }
     }
-    elseif (ereg("Gecko/([0-9]*)",$browser,$build))
+    elseif (preg_match("/Gecko\/([0-9]*)/msi",$browser,$build))
     {
       // build date of version 1.3 is 20030312
       if ($build[1] > "20030312")
@@ -51,15 +51,15 @@ class Browser_Util
   function getBrowser()
   {
     $browser = $_SERVER['HTTP_USER_AGENT'];
-    if (eregi('opera',$browser))
+    if (preg_match('/opera/msi',$browser))
     {
       return 'Opera';
     }
-    elseif (eregi('MSIE',$browser))
+    elseif (preg_match('/MSIE/msi',$browser))
     {
       return 'IE';
     }
-    elseif (eregi('Gecko',$browser))
+    elseif (preg_match('/Gecko/msi',$browser))
     {
       return 'Gecko';
     }

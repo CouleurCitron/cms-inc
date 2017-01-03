@@ -52,7 +52,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		}
 		
 			
-		if (!ereg("statut|ordre|id", $aNodeToSort[$i]["attrs"]["NAME"])){ // cas pas statut|ordre|id	
+		if (!preg_match("/statut|ordre|id/msi", $aNodeToSort[$i]["attrs"]["NAME"])){ // cas pas statut|ordre|id	
 			$eKeyValue = getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]);
 			if (critereIfdisplay($aNodeToSort[$i], $oRes, $eKeyValue) == true){	// displayif
 				echo "<div class=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."\" id=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."\">\n";					
@@ -250,16 +250,16 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						}
 						else if ($aNodeToSort[$i]["attrs"]["TYPE"] == "date"){ // date
 							// expected : jj/mm/aaaa
-							if (ereg("([0-9]{2})/[0-9]{2}/[0-9]{4}", $eKeyValue)){	
-								$jj = ereg_replace("([0-9]{2})/[0-9]{2}/[0-9]{4}", "\\1", $eKeyValue);	
-								$mm = ereg_replace("[0-9]{2}/([0-9]{2})/[0-9]{4}", "\\1", $eKeyValue);
-								$aaaa = ereg_replace("[0-9]{2}/[0-9]{2}/([0-9]{4})", "\\1", $eKeyValue);						
+							if (preg_match("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", $eKeyValue)){	
+								$jj = preg_replace("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", "$1", $eKeyValue);	
+								$mm = preg_replace("/[0-9]{2}\/([0-9]{2})\/[0-9]{4}/msi", "$1", $eKeyValue);
+								$aaaa = preg_replace("/[0-9]{2}\/[0-9]{2}\/([0-9]{4})/msi", "$1", $eKeyValue);						
 							
 							}
-							else if (ereg("([0-9]{4})/[0-9]{2}/[0-9]{2}", $eKeyValue)){// expected : aaaa/mm/jj
-								$aaaa = ereg_replace("([0-9]{4})/[0-9]{2}/[0-9]{2}", "\\1", $eKeyValue);	
-								$mm = ereg_replace("[0-9]{4}/([0-9]{2})/[0-9]{2}", "\\1", $eKeyValue);
-								$jj = ereg_replace("[0-9]{4}/[0-9]{2}/([0-9]{2})", "\\1", $eKeyValue);							
+							else if (preg_match("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", $eKeyValue)){// expected : aaaa/mm/jj
+								$aaaa = preg_replace("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", "$1", $eKeyValue);	
+								$mm = preg_replace("/[0-9]{4}\/([0-9]{2})\/[0-9]{2}/msi", "$1", $eKeyValue);
+								$jj = preg_replace("/[0-9]{4}\/[0-9]{2}\/([0-9]{2})/msi", "$1", $eKeyValue);							
 							
 							}
 							if ($mm != "00"){	//00/00/1999 devient 1999 - 00/02/1998 devient 02/1998						
@@ -569,29 +569,6 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 										}
 									}																
 								}
-								/*
-								elseif(ereg("http://", $tempStrAbstract)){
-									// nada, c'est une irl
-									$tempStrAbstract = trim($tempStrAbstract);
-								}
-								elseif (is_file($tempStrAbstract)){
-									// nada, fichier en relatif
-								}
-								elseif (is_file($_SERVER['DOCUMENT_ROOT'].$tempStrAbstract)){
-									// nada, fichier en absolu
-								}
-								elseif (is_file($_SERVER['DOCUMENT_ROOT']."/frontoffice/".$oTemp->getClasse()."/".$tempStrAbstract)){
-									//  fichier en fo dossier de la classe
-									$tempStrAbstract = "/frontoffice/".$oTemp->getClasse()."/".$tempStrAbstract;
-								}
-								elseif (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$oTemp->getClasse()."/".$tempStrAbstract)){
-									//  fichier en custom upload dossier de la classe
-									$tempStrAbstract = "/custom/upload/".$oTemp->getClasse()."/".$tempStrAbstract;
-								}
-								else{
-									$tempStrAbstract = "";
-								}
-								*/
 								else{
 									$tempStrAbstract = controlLinkValue($tempStrAbstract, $oTemp);								
 								}
@@ -747,7 +724,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 											$tempStrAbstract = "/frontoffice/".$oTemp->getClasse()."/foshow_".$oTemp->getClasse().".php?id=".$tempStrAbstract."&";
 										}								
 									}
-									if(ereg("http://", $tempStrAbstract)){
+									if(preg_match("/http:\/\//msi", $tempStrAbstract)){
 										// nada, c'est une irl
 										$tempStrAbstract = trim($tempStrAbstract);
 									}

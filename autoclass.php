@@ -245,7 +245,7 @@ function generateClasseFromXMLString($xmlstr){
 				// Added by Luc - 9 oct. 2009
 				elseif (($aNodeToSort[$i]["attrs"]["TYPE"] == "decimal") or ($aNodeToSort[$i]["attrs"]["TYPE"] == "float")) {
 
-					$test =ereg ("([0-9]*),([0-9]*)", $aNodeToSort[$i]["attrs"]["LENGTH"], $regs);
+					$test =preg_match ("/([0-9]*),([0-9]*)/msi", $aNodeToSort[$i]["attrs"]["LENGTH"], $regs);
 					$classeSRC .=" 0."; 
 					$cptdecimal = 0;
 					while ($cptdecimal <$regs[2]) {

@@ -304,9 +304,9 @@ if ($aPostFilters != false){
 			if (isset($classeNameAsso) && $classeNameAsso!="") {
 				 
 				// on récupére le préfixe de l'asso
-				$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
+				$filterNameTemp = preg_replace("/([^_]+)_(.*)/msi", "$2", $filterName);
 				if (in_array($filterNameTemp, $itemToCheckForAsso)) {
-					$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
+					$filterName = preg_replace("/([^_]+)_(.*)/msi", $classePrefixeAsso."_$2", $filterName);
 				}
 				else {
 					$classeNameAsso = "";
@@ -324,7 +324,7 @@ if ($aPostFilters != false){
 			}
 			if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0) {
 				 
-				if(ereg($classePrefixe, $filterName)) {
+				if(preg_match('/'.$classePrefixe.'/msi', $filterName)) {
 					$oRech3 = new dbRecherche();				
 					$oRech3->setValeurRecherche("declencher_recherche");
 					$oRech3->setTableBD($classeNameAsso);
@@ -436,14 +436,14 @@ if(sizeof($aListe_res)>0) {
 		document.<?php echo $classePrefixe; ?>_list_form.id.value = id;
 		document.<?php echo $classePrefixe; ?>_list_form.display.value = null;
 		document.<?php echo $classePrefixe; ?>_list_form.actiontodo.value = "";
-		document.<?php echo $classePrefixe; ?>_list_form.action = "http://oramip.couleur-citron.com/frontoffice/actualite/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
+		document.<?php echo $classePrefixe; ?>_list_form.action = "http://oramip.couleur-citron.com/frontoffice/actualite/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>";
 		document.<?php echo $classePrefixe; ?>_list_form.submit();
 	}
 	
 //visu pop-up
 	function visupopup(id)
 	{
-	window.open("http://<?php echo $_SERVER['SERVER_NAME']; ?>/frontoffice/<?php echo $classeName; ?>/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>","", "width=520, height=500, scrollbars=yes");
+	window.open("http://<?php echo $_SERVER['SERVER_NAME']; ?>/frontoffice/<?php echo $classeName; ?>/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>","", "width=520, height=500, scrollbars=yes");
 	}	
 
 </script>
@@ -779,11 +779,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					}
 					else{
 						
-						if (ereg($slg, $oTemp->getDisplay())) $myValue = getItemValue($oTemp, $oTemp->getDisplay());
-						else if (ereg($slg, $oTemp->getAbstract())) $myValue = getItemValue($oTemp, $oTemp->getAbstract());
+						if (preg_match('/'.$slg.'/msi', $oTemp->getDisplay())) $myValue = getItemValue($oTemp, $oTemp->getDisplay());
+						else if (preg_match('/'.$slg.'/msi', $oTemp->getAbstract())) $myValue = getItemValue($oTemp, $oTemp->getAbstract());
 						else $myValue = getItemValue($oTemp, $oTemp->getDisplay());
 						
-						if (eregi("\.pdf$",$myValue) ) 
+						if (preg_match("/\.pdf$/msi",$myValue) ) 
 							echo "<a href=\"/modules/utils/telecharger.php?file=".$myValue."&chemin=/custom/upload/".$oTemp->getClasse()."/&\" title=\"".$myValue."\">".$myValue."</a>" ;
 						else 
 							echo $myValue ;
@@ -861,8 +861,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						}	
 						elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime") {
 							 
-							if (ereg("[0-9]{2}[-/]{1}[0-9]{2}[-/]{1}[0-9]{4}[- ]{1}[0-9]{2}[-:]{1}[0-9]{2}[-:]{1}[0-9]{2}", $eKeyValue)){ // FR 2 US 
-								$eKeyValue = ereg_replace("([0-9]{2}[-/]{1}[0-9]{2}[-/]{1}[0-9]{4})[- ]{1}[0-9]{2}[-:]{1}[0-9]{2}[-:]{1}[0-9]{2}", "\\1", $eKeyValue);
+							if (preg_match("/[0-9]{2}[\-\/]{1}[0-9]{2}[\-\/]{1}[0-9]{4}[\- ]{1}[0-9]{2}[\-:]{1}[0-9]{2}[\-:]{1}[0-9]{2}/msi", $eKeyValue)){ // FR 2 US 
+								$eKeyValue = preg_replace("/([0-9]{2}[\-\/]{1}[0-9]{2}[\-\/]{1}[0-9]{4})[\- ]{1}[0-9]{2}[\-:]{1}[0-9]{2}[\-:]{1}[0-9]{2}/msi", "$1", $eKeyValue);
 								
 							}
 						 

@@ -381,7 +381,7 @@ function swfEmbedToScriptForModuleContenu_flv($matches){
 		
 		if ($aAttribs['volume'] == '') $aAttribs['volume'] = "100";
 		
-		pre_dump($aAttribs);
+		//pre_dump($aAttribs);
 		
 		if ( $aAttribs['height'] == '' || $aAttribs['width'] == '' ) {
 			
@@ -727,7 +727,7 @@ function dumpObjLite($oO){
 	echo "<strong>".get_class($oO)."</strong><br />\n";
 	//print_r($oO);
 	foreach ($oO as $key => $val){
-		if (!ereg("html", $key)){
+		if (!preg_match("/html/msi", $key)){
 			echo $key." => ".$val."<br />\n";
 		}	
 	}

@@ -600,14 +600,14 @@ class CustomerAddressController extends CustomerAccountController {
 		// possible changes
 		$ordering_id = $shipping_id = 0;
 		foreach ($_POST as $key => $val) {
-			if (ereg('^address_ordering_', $key)) {
+			if (preg_match('/^address_ordering_/msi', $key)) {
 				$reg = Array();
-				ereg('_[0-9]+$', $key, $reg);
+				preg_match('/_[0-9]+$/msi', $key, $reg);
 				$ordering_id = substr($reg[0], 1);
 			}
-			if (ereg('^address_shipping_', $key)) {
+			if (preg_match('/^address_shipping_/', $key)) {
 				$reg = Array();
-				ereg('_[0-9]+$', $key, $reg);
+				preg_match('/_[0-9]+$/msi', $key, $reg);
 				$shipping_id = substr($reg[0], 1);
 			}
 		}

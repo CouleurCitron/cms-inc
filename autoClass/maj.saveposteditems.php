@@ -76,7 +76,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "url") {// cas url, on ajoute le protocole http:// si manque
 					if (isset($_POST[$form_field])) {
 						$tempUrl = trim($_POST[$form_field]);
-						if (!ereg("^http|ftp|https]://.*", $tempUrl) && ($tempUrl != ""))
+						if (!preg_match("/^http|ftp|https]:\/\/.*/msi", $tempUrl) && ($tempUrl != ""))
 							$tempUrl = "http://".$tempUrl;		
 							
 						$tempUrl = rewriteIfNeeded($tempUrl);

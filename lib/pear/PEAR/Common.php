@@ -695,7 +695,7 @@ class PEAR_Common extends PEAR
             if ($name == 'package.xml') {
                 $xml = $name;
                 break;
-            } elseif (ereg('package.xml$', $name, $match)) {
+            } elseif (preg_match('/package\.xml$/msi', $name, $match)) {
                 $xml = $match[0];
                 break;
             }

@@ -204,7 +204,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 			elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "url"){ // cas url, on ajoute le protocole http:// si manque
 				if (isset($_POST["f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]])){
 					$tempUrl = trim($_POST["f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]]);
-					if (!ereg("^http|ftp]://.*", $tempUrl) && ($tempUrl != "")){
+					if (!preg_match("/^http|ftp]:\/\/.*/msi", $tempUrl) && ($tempUrl != "")){
 						$tempUrl = "http://".$tempUrl;
 					}					
 					setItemValue(&$oRes, $aNodeToSort[$i]["attrs"]["NAME"], $tempUrl);

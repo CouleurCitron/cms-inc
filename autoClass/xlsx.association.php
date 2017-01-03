@@ -140,7 +140,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					if ($_GET["Type"]  == '') {  
 						$sql = "select ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." "; 
 						
-						if ((ereg("rau_", $tempAssoIn) || ereg("shp_", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme"  &&  ereg("shp_", $myAssoClasse) ) { 
+						if ((preg_match("/rau_/msi", $tempAssoIn) || preg_match("/shp_/msi", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme"  &&  preg_match("/shp_/msi", $myAssoClasse) ) { 
 							 $sql.= " where ".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoIn))." = ".$id." ";
 							 $sql.= " and ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id ";  
 						}
@@ -151,7 +151,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					}
 					else {
 						$sql = "select DISTINCT ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." "; 
-						if ((ereg("rau_", $tempAssoIn) || ereg("shp_", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme" &&  ereg("shp_", $myAssoClasse) ) { 
+						if ((preg_match("/rau_/msi", $tempAssoIn) || preg_match("/shp_/msi", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme" &&  preg_match("/shp_/msi", $myAssoClasse) ) { 
 							$sql.= " where   ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id ";  
 						}
 						else {

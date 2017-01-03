@@ -244,7 +244,7 @@ if ($oForm->getComm_form() != ""){
 	 
 	foreach ($addies as $key => $addy) {
 		$addy = trim(strtolower($addy));
-		if (ereg('^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]+$', $addy)){
+		if (preg_match('/^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]+$/msi', $addy)){
 		 	//echo "---".$addy;
 			 $bResult = multiPartMail($addy, $subject, $bodyHTML, '', $from_mail, '','','localhost'); 
 			 //if ($bResult) echo "ok $addy";

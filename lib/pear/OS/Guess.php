@@ -179,7 +179,7 @@ class OS_Guess
         unlink($tmpfile);
         if (!($major && $minor) && file_exists('/lib/libc.so.6')) {
             // Let's try reading the libc.so.6 symlink
-            if (ereg('^libc-([.*])\.so$', basename(readlink('/lib/libc.so.6')), $matches)) {
+            if (preg_match('/^libc-([.*])\.so$/msi', basename(readlink('/lib/libc.so.6')), $matches)) {
                 list($major, $minor) = explode('.', $matches);
             }
         }
