@@ -808,8 +808,8 @@ function pre_dump($data){
 }
 
 function textToLink($text){
-	$text = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]", "<a href=\"\\0\" target=\"_blank\">\\0</a>", $text);
-	$text = ereg_replace('[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]+', "<a href=\"mailto:\\0\">\\0</a>", $text);
+	$text = preg_replace("/[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]/msi", "<a href=\"$0\" target=\"_blank\">$0</a>", $text);
+	$text = preg_replace('/[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]+/msi', "<a href=\"mailto:$0\">$0</a>", $text);
 	return $text;
 }
 
@@ -1319,24 +1319,21 @@ function regionDate($strDate,$sDateformat){
 
 function DDMMYYYYtoEnglish($strDate){
 
-//$sDateUS = ereg_replace("^(\d{2})/(\d{2})/(\d{4})$", "\\3/\\2/\\1", $strDate);
-$sDateUS = ereg_replace("(.+)/(.+)/(.+)", "\\3/\\2/\\1", $strDate);
+$sDateUS = preg_replace("/(.+)\/(.+)\/(.+)/msi", "$3/$2/$1", $strDate);
 
 $eTimeStamp = strtotime($sDateUS);
 $sLongEnglishDate = date ( r , $eTimeStamp);
-return ereg_replace("(.*)00:00:00.*", "\\1", $sLongEnglishDate);
+return preg_replace("/(.*)00:00:00.*/msi", "$1", $sLongEnglishDate);
 
 }
 
 function DDMMYYYYtoYYYYMMDD($strDate){
-	$sDateUS = ereg_replace("([0-9]{2})(/|-)([0-9]{2})(/|-)([0-9]{4})", "\\5\\2\\3\\4\\1", $strDate);
-	//$sDateUS = ereg_replace("(.+)/(.+)/(.+)", "\\3/\\2/\\1", $strDate);	
+	$sDateUS = preg_replace("/([0-9]{2})(\/|\-)([0-9]{2})(\/|\-)([0-9]{4})/msi", "$5$2$3$4$1", $strDate);
 	return $sDateUS;
 }
 
 function YYYYMMDDtoDDMMYYYY($strDate){
-	$sDateFR = ereg_replace("([0-9]{4})(/|-)([0-9]{2})(/|-)([0-9]{2})", "\\5\\2\\3\\4\\1", $strDate);
-	//$sDateFR = ereg_replace("(.+)/(.+)/(.+)", "\\3/\\2/\\1", $strDate);	
+	$sDateFR = preg_replace("/([0-9]{4})(\/|\-)([0-9]{2})(\/|\-)([0-9]{2})/msi", "$5$2$3$4$1", $strDate);	
 	return $sDateFR;
 }
 

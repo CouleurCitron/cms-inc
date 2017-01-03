@@ -304,8 +304,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 		if (strval($_POST['fDeleteFile'.$iDel]) == "true"){		
 			$_POST[strval($_POST['fUpload'.$iDel])] = "";
 			
-			//$tempGetter = "$"."tempFile = $"."oRes->get_".ereg_replace("[^_]+_(.*)", "\\1", strval($_POST['fUpload'.$iDel]))."();";
-			$tempGetter = "$"."tempFile = $"."oRes->get_".eregi_replace(".+".$classePrefixe."_(.*)", "\\1", strval($_POST['fUpload'.$iDel]))."();";
+			$tempGetter = "$"."tempFile = $"."oRes->get_".preg_replace("/.+".$classePrefixe."_(.*)/msi", "$1", strval($_POST['fUpload'.$iDel]))."();";
 			
 			$tempGetter = str_replace("get_".$classePrefixe."_", "get", $tempGetter);
 			eval($tempGetter);

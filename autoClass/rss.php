@@ -69,10 +69,10 @@ if ($_POST['sensTri'] != "") $_SESSION['sensTri_res'] = $_POST['sensTri'];
 // TRIS
 
 // le tri utilisateur est fait en premier
-// les autres tris sont faits même si c non visible dans l'interface
-// l'odre des tris est défini ici
+// les autres tris sont faits mÃªme si c non visible dans l'interface
+// l'odre des tris est dÃ©fini ici
 
-// le premier tri est ôté de la liste pour être placé en premier par la suite
+// le premier tri est Ã´tÃ© de la liste pour Ãªtre placÃ© en premier par la suite
 for ($i=0;$i<count($aNodeToSort);$i++){
 	if ($aNodeToSort[$i]["name"] == "ITEM"){
 		if ($aNodeToSort[$i]["attrs"]["NAME"] == "ordre"){
@@ -98,14 +98,14 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 	}
 }
 
-// tri numéro 1 => celui demandé dans l'interface
+// tri numÃ©ro 1 => celui demandÃ© dans l'interface
 if (strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SELF']) !== false) {
 
 	//if ($_SESSION['champTri_res'] != "") $aGetterOrderBy[] = $_SESSION['champTri_res'];
 	//if ($_SESSION['sensTri_res']  != "") $aGetterSensOrderBy[] = $_SESSION['sensTri_res'];
 }
 else{
-	// on récupere rien
+	// on rÃ©cupere rien
 }
 
 // autres tris
@@ -151,7 +151,7 @@ $aRecherche = array();
 $oRech = new dbRecherche();
 
 //////////////////////////
-// recherche par mot clé
+// recherche par mot clÃ©
 //////////////////////////
 if($sTexte==""){
 $sTexte=trim($_POST['sTexte']);
@@ -239,14 +239,14 @@ print("<br>///////////////////////<br>");
 }
 //////// DEBUGAGE ////////
 
-// tableau d'id renvoyé par la fonction de pagination
+// tableau d'id renvoyÃ© par la fonction de pagination
 $aId = $pager->aResult;
 
 // A VOIR sponthus
 // la fonction de pagination devrait renvoyer un tableau d'objet
 // pour l'instant je n'exploite qu'un tableau d'id
-// ce ui m'oblige à re sélectionner mes objets
-// à perfectionner
+// ce ui m'oblige Ã  re sÃ©lectionner mes objets
+// Ã  perfectionner
 
 // liste des objets
 $aListe_res = array();
@@ -303,7 +303,7 @@ echo "		</image>\n";
 $URL_MEDIA = "http://".$_SERVER['HTTP_HOST']."/custom/upload/".$classeName."/";
 
 
-// s'il y a des enregistrements à afficher
+// s'il y a des enregistrements Ã  afficher
 if(sizeof($aListe_res)>0) {
 	// liste
 	for($k=0; $k<sizeof($aListe_res); $k++) {
@@ -330,7 +330,7 @@ if(sizeof($aListe_res)>0) {
 		if ($aNodeToSort[$i]["name"] == "ITEM"){
                     
                     //pre_dump($aNodeToSort[$i]['attrs']['NAME']);
-                    /* gestion des champs � mettre dans l'url des feeds */
+                    /* gestion des champs à mettre dans l'url des feeds */
                     if(isset($links_items)){
                         $value_link = noAccent(getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]));
                         if(isset($aNodeToSort[$i]["attrs"]['TRANSLATE']) && $aNodeToSort[$i]["attrs"]['TRANSLATE'] == 'reference'){
@@ -394,12 +394,11 @@ if(sizeof($aListe_res)>0) {
 								$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = date("r", $eKeyValue);
 							}
 							else{// cas typique typique typique
-								// on converti br en \n et on remove les tags 
-								//$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = utf8_encode(html_entity_decode(ereg_replace("<[^<>]+>", "", eregi_replace("<br[^<>]*>", "\n", $eKeyValue))));
+								// on converti br en \n et on remove les tags 								
                                                                 
-                                                                /* ajout de la traduction */
-                                                            //pre_dump($aNodeToSort[$i]["attrs"]);
-                                                                if(isset($aNodeToSort[$i]["attrs"]['TRANSLATE']) && $aNodeToSort[$i]["attrs"]['TRANSLATE'] == 'reference'){ $eKeyValue = $translator->getByID($eKeyValue); }
+								/* ajout de la traduction */
+								//pre_dump($aNodeToSort[$i]["attrs"]);
+								if(isset($aNodeToSort[$i]["attrs"]['TRANSLATE']) && $aNodeToSort[$i]["attrs"]['TRANSLATE'] == 'reference'){ $eKeyValue = $translator->getByID($eKeyValue); }
                                                                 
 								$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = html_to_rss($eKeyValue);
 								if ($aNodeToSort[$i]["attrs"]["RSS"] == "description" && isset ($aNodeToSort[$i]["attrs"]["RSSHTML"]) &&  $aNodeToSort[$i]["attrs"]["RSSHTML"] == true) {
@@ -432,7 +431,7 @@ if(sizeof($aListe_res)>0) {
 	if ($RSS['pubDate'] == "0000/00/00" ) $RSS['pubDate'] =""; 
 
 	if ($RSS['pubendDate'] !="" &&  $RSS['pubDate'] =="" && $RSS['pubendDate'] < date("Y/m/d")  ) {   
-		echo '<!-- périmée -->';
+		echo '<!-- pÃ©rimÃ©e -->';
 	}
 	//else if ($RSS['pubDate'] !="" && $RSS['pubendDate'] =="" && $RSS['pubDate'] > date("Y/m/d")) {   
 	//	echo '<!-- cas 2 -->';

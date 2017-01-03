@@ -512,9 +512,9 @@ if ($aPostFilters != false){
 			if (isset($classeNameAsso) && $classeNameAsso!="") {
 					
 				// on récupére le préfixe de l'asso
-				$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
+				$filterNameTemp = preg_replace("/([^_]+)_(.*)/msi", "$2", $filterName);
 				if (in_array($filterNameTemp, $itemToCheckForAsso)) {
-					$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
+					$filterName = preg_replace("/([^_]+)_(.*)/msi", $classePrefixeAsso."_$2", $filterName);
 				}
 				else {
 					$classeNameAsso = "";

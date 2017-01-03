@@ -137,10 +137,10 @@ class OS_Guess
             case 'Linux':
                 $extra = $this->_detectGlibcVersion();
                 // use only the first two digits from the kernel version
-                $release = ereg_replace('^([[:digit:]]+\.[[:digit:]]+).*', '\1', $parts[2]);
+                $release = preg_replace('/^([[:digit:]]+\.[[:digit:]]+).*/msi', '$1', $parts[2]);
                 break;
             default:
-                $release = ereg_replace('-.*', '', $parts[2]);
+                $release = preg_replace('/-.*/msi', '', $parts[2]);
                 break;
         }
 

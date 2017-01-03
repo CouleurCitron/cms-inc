@@ -156,7 +156,7 @@ function dotNotOverWrite($sFile){
 		$attempt = 1;
 		$sNewFile = $sFile;
 		while (is_file($sNewFile)){			
-			$sNewFile = ereg_replace("(.*)\.([^\.]{3,4})$", "\\1_".$attempt.".\\2",$sFile);
+			$sNewFile = preg_replace("/(.*)\.([^\.]{3,4})$/msi", "$1_".$attempt.".$2",$sFile);
 			$attempt++;
 		}
 		return $sNewFile;

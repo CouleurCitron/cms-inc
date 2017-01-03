@@ -548,7 +548,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 										//echo "cas d'item d'asso ayant lui meme des assos";
 										//echo "chercher les ".$idForeignNode["attrs"]["ASSO"]." poitant sur la valeur ".$oTemp->getClasse()." id = ".$tempStrAbstract;
 										$oTempForeignAssoAsso = new $idForeignNode["attrs"]["ASSO"]();
-										$oTempForeignAssoAssoPrefixe = ereg_replace("([^_]+)_.*", "\\1", $oTempForeignAssoAsso->getFieldPK());
+										$oTempForeignAssoAssoPrefixe = preg_replace("/([^_]+)_.*/msi", "$1", $oTempForeignAssoAsso->getFieldPK());
 										$sRequete = "SELECT * FROM ".$idForeignNode["attrs"]["ASSO"]." WHERE ".$oTempForeignAssoAssoPrefixe."_".$oTemp->getClasse()." = ".$tempStrAbstract;
 										// test cond statut
 										if ($oTempForeignAssoAsso->getGetterStatut() != "none"){

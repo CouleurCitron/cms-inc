@@ -506,7 +506,7 @@ class PEAR_Common extends PEAR
                 switch ($this->prev_element) {
                     case 'package':
                         // XXX should we check the package name here?
-                        $this->pkginfo['package'] = ereg_replace('[^a-zA-Z0-9._]', '_', $data);
+                        $this->pkginfo['package'] = preg_replace('/[^a-zA-Z0-9._]/msi', '_', $data);
                         break;
                     case 'maintainer':
                         $this->current_maintainer['name'] = $data;
