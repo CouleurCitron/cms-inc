@@ -530,7 +530,7 @@ class PEAR_Common extends PEAR
                 $this->current_maintainer['role'] = $data;
                 break;
             case 'version':
-                $data = ereg_replace ('[^a-zA-Z0-9._\-]', '_', $data);
+                $data = preg_replace ('/[^a-zA-Z0-9._\-]/msi', '_', $data);
                 if ($this->in_changelog) {
                     $this->current_release['version'] = $data;
                 } else {
