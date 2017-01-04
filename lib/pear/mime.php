@@ -36,8 +36,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 //
 // $Id: mime.php,v 1.1 2013-09-30 09:31:37 raphael Exp $
 
-require_once 'cms-inc/lib/pear/PEAR.php';
-require_once 'cms-inc/lib/pear/Mail/mimePart.php';
+
 
 /**
 * Mime mail composer class. Can handle: text and html bodies, embedded html

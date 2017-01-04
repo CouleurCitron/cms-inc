@@ -325,6 +325,10 @@ if (strpos($_SERVER['REQUEST_URI'], 'secure.php')!==false){
 if (is_post('operation')){
 	if ($_POST['operation'] == "logoff") {
 		include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/session_end.php'); 
+		if (preg_match('/^\/.+$/msi', $_POST['returnurl'])){
+			$_SESSION['BO']=array();
+			$_SESSION['BO']['returnurl']=$_POST['returnurl'];	
+		}
 	}
 }
 
@@ -372,8 +376,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 	$erreur = 0;
 	if(is_post('login')) {		
 		// controles spéciaux pour le compte ccitron // http://couleurcitron.com/allow.php
-		if (trim($_POST['login'])=='ccitron'){
-			
+		if (trim($_POST['login'])=='ccitron'){		
 			
 			if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])	&&	($_SERVER["HTTP_X_FORWARDED_FOR"] != $_SERVER['REMOTE_ADDR'])	){
 				$_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -491,7 +494,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 </head>
 <body>
 <script type="text/javascript">
-	document.location = '<?php echo $_SESSION['BO']['URL']; ?>';
+	document.location = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 </script>
 </body>
 </html>
@@ -506,7 +509,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 		} // fin if($user->id > 0) {
 	} else {
 		// login non saisi				
-		$_SESSION['BO'] = array();
+		//$_SESSION['BO'] = array();
 		$_SESSION['BO']['URL'] = $_SERVER['REQUEST_URI']; // c be
 		$_SESSION['BO']['QUERY'] = $_SERVER['QUERY_STRING'];
 	} // fin if(strlen($_POST['login'])>0) {
@@ -597,7 +600,7 @@ $(document).ready(function() {
 	<a href="http://www.couleur-citron.com" target="_blank" title="Couleur Citron"><img src="/backoffice/cms/img/2013/logo_cc_bo.png" alt="Couleur Citron" border="0" /></a>
 </div>
 <div id="center">
-	<form name="frm_log" id="frm_log" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+	<form name="frm_log" id="frm_log" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
 		<h2><?php $translator->echoTransByCode('bienvenuedansvotremodule'); ?></h2>
 		<p><label for="login"><?php $translator->echoTransByCode('Identifiant'); ?></label><input name="login" type="text" class="champ" id="login" value="<?php if(is_post('login')){ echo $_POST['login']; } ?>" size="40" pattern="^.+$" errorMsg="<?php $translator->echoTransByCode('Vous_devez_saisir_votre_identifiant_login'); ?>" /></p>
 		<p><label for="password"><?php $translator->echoTransByCode('Mot_de_passe'); ?></label><input name="password" type="password" class="champ" id="password" value="<?php if(is_post('password')){ echo $_POST['password']; } ?>" size="40" pattern="^.+$" errorMsg="<?php $translator->echoTransByCode('Vous_devez_saisir_votre_mot_de_passe.'); ?>" /></p>

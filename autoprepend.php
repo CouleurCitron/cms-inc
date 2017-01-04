@@ -6,8 +6,19 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/config.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/aodb/adodb.inc.php');	// gère la couche d'abstraction bdd
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
 
+session_start();
+
+if (!isset($_SESSION['initiated'])){
+    session_regenerate_id();
+    $_SESSION['initiated'] = true;
+	$_SESSION['confirmed'] = false;
+}
+
 //--  control des GET ----------------------------------------------------
-if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){		
+if (preg_match('/\/backoffice\//msi', $_SERVER['PHP_SELF'])==1	&&	is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])){	
+	// user loggé en BO, ok pas de filtrage
+}
+else{	
 	if (isset($getVars) == true){	
 		foreach ($_GET as $gKey => $gValue){
 			if (!isset($getVars[$gKey])){ //pas autorisé
@@ -29,7 +40,7 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 								$_GET[$gKey] = intval($_GET[$gKey]);
 							}
 							else{ //varchar
-								$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);	
+								$_GET[$gKey] = inputFilter($_GET[$gKey]);
 							}
 							$tempBlock = false;
 							break;
@@ -46,16 +57,24 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 					$_GET[$gKey] = intval($_GET[$gKey]);
 				}
 				else{ //varchar
-					$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);			
-                                        
-					/* on enlève les injections HTML
-					 * + vérification du typage
-					 * MAJ 12/09/2014 @ Raphael
-					 */
-					$_GET[$gKey] = strval( htmlspecialchars( strip_tags( $_GET[$gKey] ) ) );
+					$_GET[$gKey] = inputFilter($_GET[$gKey]);
 				}
 			}
-			//pre_dump($_GET[$gKey]);
+		}
+	}
+	else{ // pas de liste, on filtre tout en mode varchar
+		foreach ($_GET as $gKey => $gValue){
+			$_GET[$gKey] = inputFilter($_GET[$gKey]);
+		}
+	}
+	
+	// filtrage systématique des posts
+	foreach ($_POST as $gKey => $gValue){
+		if ($gKey=='id'){ // id forcés au type int
+			$_POST[$gKey] = intval($_POST[$gKey]);
+		}
+		else{
+			$_POST[$gKey] = inputFilter($_POST[$gKey]);
 		}
 	}
 }			
@@ -120,35 +139,6 @@ $CMS_ROOT = $_SERVER['DOCUMENT_ROOT'].'/'.DEF_PAGE_ROOT;
 //$URL_ROOT = '';		     // config pour prod
 
 
-session_start();
-
-
-if (!isset($_SESSION['initiated'])){
-    session_regenerate_id();
-    $_SESSION['initiated'] = true;
-	$_SESSION['confirmed'] = false;
-}
-
-if (isset($_SERVER['HTTP_USER_AGENT'])){
-if (isset($_SESSION['HTTP_USER_AGENT'])){
-	//pas ce test si flash - Shockwave Flash
-	if (($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash')&&($_SESSION['HTTP_USER_AGENT_MD5'] != md5($_SERVER['HTTP_USER_AGENT']))){
-        // Prompt for password 
-       // session_destroy(); // SID désactivé cause of IE10
-		error_log('---------------------------------------------------');
-		error_log('session_destroy >> USER AGENT '.$_SERVER['HTTP_USER_AGENT']);
-		error_log('session_destroy >> PREV. WAS '.$_SESSION['HTTP_USER_AGENT']);
-		error_log('---------------------------------------------------');
-    }
-}
-else{
-	//pas ce test si flash - Shockwave Flash
-	if ($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash'){
-   		$_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
-		$_SESSION['HTTP_USER_AGENT_MD5'] = md5($_SERVER['HTTP_USER_AGENT']);
-	}
-}
-}
 
 if (!isset($_SERVER['HTTP_HOST'])){
 	$_SERVER['HTTP_HOST'] = 'cli';	

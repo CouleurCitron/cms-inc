@@ -26,41 +26,35 @@ if (!ispatched('cms_jquery_version')){
         //pre_dump("ok table");
         
         $sSQl = "SELECT * FROM cms_jquery_version";
-		$aO = dbGetObjectsFromRequete('cms_jquery_version', $sSQl);
-        if(count($aO) == 0){
-            //pre_dump("no data");
-            
-            $sInsert = "INSERT INTO  `cms_jquery_version` (
-            `cms_id` ,
-            `cms_name` ,
-            `cms_filename` ,
-            `cms_statut`
-    )
-    VALUES 
-    (
-            '1',  'jquery 1.6.4',  'jquery-1.6.4.min.js',  '4'
-    ),
-    (
-            '2',  'jquery 1.2.6',  'jquery-1.2.6.min.js',  '4'
-    ), 
-    (
-            '3',  'jquery 1.4.2',  'jquery-1.4.2.min.js',  '4'
-    ),
-    (
-            '4',  'jquery 1.7.2',  'jquery-1.7.2.min.js',  '4'
-    ), 
-    (
-            '5',  'jquery 1.10.2',  'jquery-1.10.2.min.js',  '4'
-    ),
-    (
-            '6',  'jquery 2.0.3',  'jquery-2.0.3.min.js',  '4'
-    )";
+		$rs = $db->Execute($sSQl);
+		if (!$rs) {			
+			$sInsert = "INSERT INTO  `cms_jquery_version` (
+			`cms_id` ,
+			`cms_name` ,
+			`cms_filename` ,
+			`cms_statut`
+	)
+	VALUES 
+	(
+			'1',  'jquery 1.6.4',  'jquery-1.6.4.min.js',  '4'
+	),
+	(
+			'2',  'jquery 1.2.6',  'jquery-1.2.6.min.js',  '4'
+	), 
+	(
+			'3',  'jquery 1.4.2',  'jquery-1.4.2.min.js',  '4'
+	),
+	(
+			'4',  'jquery 1.7.2',  'jquery-1.7.2.min.js',  '4'
+	), 
+	(
+			'5',  'jquery 1.10.2',  'jquery-1.10.2.min.js',  '4'
+	),
+	(
+			'6',  'jquery 2.0.3',  'jquery-2.0.3.min.js',  '4'
+	)";
 
-
-
-            $rs = $db->Execute($sInsert);
-
-            //pre_dump($rs);
+			$rs = $db->Execute($sInsert);	
         }
 }
 /*

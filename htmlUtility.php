@@ -5,6 +5,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/getid3/getid3.php')
 sponthus 15/07/2005
 fonctions de retraitement sur des chaines html
 
+function xssFilter($data)	{
+function sqlInjectionFilter($data) {
 function htmlFCKcompliant($str)
 function compliesFCKhtml($str){
 function isAllowed ($search, $string)
@@ -52,6 +54,98 @@ function text2url($chaine) { // supprime tous les caractères spéciaux
 function truncate($sLib) {
 formatFileSize ($_size)	// Format l'affichage d'une taille de fichier
 */
+
+/*
+filtre du code html pour bloquer les attaques 
+params
+$data:string	: html
+returns
+string		: html filtered
+*/
+function inputFilter($data){
+	$data = preg_replace('/<script.*<\/script>/msi', '', $data);			
+						
+	/* on enlève les injections HTML
+	 * + vérification du typage
+	 * MAJ 12/09/2014 @ Raphael
+	 */
+	$data = strval( htmlspecialchars( strip_tags( $data ) ) );
+	
+	$data=xssFilter($data);
+	$data=sqlInjectionFilter($data);
+	
+	return $data;
+}
+
+/*
+filtre du code html pour bloquer les attaques XSS
+params
+$data:string	: html
+returns
+string		: html filtered
+*/
+function xssFilter($data)	{
+		// Fix &entity\n;
+		$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+		$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+		$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+		$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+		// Remove any attribute starting with "on" or xmlns
+		$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+		// Remove javascript: and vbscript: protocols
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
+		$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
+		// Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
+		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+		$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+		// Remove namespaced elements (we do not need them)
+		$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+		do
+		{
+			// Remove really unwanted tags
+			$old_data = $data;
+			$data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+			}
+		while ($old_data !== $data);
+		// we are done...
+		return $data;
+	}
+
+/*
+filtre du code pour bloquer les attaques SQL
+params
+$data:string	: html
+returns
+string		: html filtered
+*/
+function sqlInjectionFilter($data) {
+		// $body = '    INSERT INTO `table_name` (`field1`, `field2`) VALUES (\'a\', \'b\'), (\'c\', \'d\', $post)';
+		// $body = '    SELECT * FROM `table_name` WHERE username = $username';
+		// $body = '    select * FROM `table_name` WHERE username = $username';
+		// $body = '    UPDATE table_name SET username = $username WHERE ...';
+
+		$sqlInjectionRegexes = array(
+			'/SELECT\s+.*?\sFROM\s.*?\sWHERE\s.*?\$[a-zA-Z_].*?/i', // SELECT ... FROM ... WHERE email = "$email"
+			'/SELECT\s+.*?\$[a-zA-Z_].*?\sFROM.*?/i', // SELECT ... $email ... FROM...
+			'/INSERT\s+INTO\s.*?\$[a-zA-Z_].*?/i', // INSERT INTO ... $email ...
+			'/UPDATE\s+.*?\sSET\s.*?\$[a-zA-Z_].*?/i', // UPDATE ... SET ... email = $email ...
+			// '/UPDATE\s+.*?\$[a-zA-Z_].*?\sSET.*?/i', // UPDATE $table SET ...
+			'/DELETE\s+FROM\s+.*?\$[a-zA-Z_].*?/i', // DELETE FROM ... $somevar ...
+		);
+		
+		do{
+			// Remove really unwanted SQL
+			$old_data = $data;
+			foreach($sqlInjectionRegexes as $k => $pattern){				
+				$data = preg_replace($pattern, '', $data);				
+			}			
+		}
+		while ($old_data !== $data);
+		// we are done...
+		return $data;
+}
 
 
 /*

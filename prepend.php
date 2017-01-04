@@ -229,8 +229,9 @@ if(sOpenMenu == false){
 	function logoff()
 	{
                 //alert('logoff');
-                $("form#accueilForm").attr('action', '<?php echo $_SERVER['PHP_SELF']; ?>');
+                $("form#accueilForm").attr('action', '<?php echo $_SERVER['REQUEST_URI']; ?>');
                 $("form#accueilForm #operation").val("logoff");
+				$("form#accueilForm #returnurl").val("<?php echo $_SERVER['REQUEST_URI']; ?>");
                 $("form#accueilForm").submit();
 	}
 </script>
@@ -266,6 +267,7 @@ Yoffset= 20;
 		<p class="user_infos"><?php $translator->echoTransByCode('Header_bienvenue'); ?> <span class="nom"><?php echo $_SESSION['user']; ?></span></p>
 		<form action="/backoffice/"  name="accueilForm" id="accueilForm" method="post" >
 			<input type="hidden" name="operation" id="operation" value="<?php echo $_POST['operation']; ?>" />
+            <input type="hidden" name="returnurl" id="returnurl" value="<?php echo $_POST['returnurl']; ?>" />
 			Site : 
 			<select name="connectSite" onchange ='javascript:this.form.submit();' >
 				<?php $listSite = listSite('ALL');  ?>

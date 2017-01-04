@@ -3,16 +3,12 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/newsletter/functions.lib.php');
 
-$bPear = @include('Mail.php');
 
-if ($bPear===false){
-	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mime.php');
-	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mail.php');
-}
-else{
-	include_once('Mail/mime.php');
-	include_once('Mail/mail.php');
-}
+if(!include_once('PEAR.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/PEAR.php');}
+if(!include_once('Mail.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail.php');}
+if(!include_once('mime.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mime.php');}
+if(!include_once('Mail/mimePart.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/mimePart.php');}
+
 
 /*
 function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1){	
