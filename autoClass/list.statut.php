@@ -120,7 +120,7 @@ if (($aStatutNode != NULL)	&&	(isAllowed ($rankUser, "ADMIN;GEST") || ($_SESSION
 	}			
 	elseif ( $aStatutNode["attrs"]["TYPE"] == 'enum' ) {		// enum value dans length				  
 		if (isset($aStatutNode["attrs"]["LENGTH"]) && $aStatutNode["attrs"]["LENGTH"] != '' ) {
-			$aValues = split (",", $aStatutNode["attrs"]["LENGTH"]);
+			$aValues = explode (",", $aStatutNode["attrs"]["LENGTH"]);
 			foreach ($aValues as $value) {
 				$value  = str_replace ("'", "", $value);
 				echo "TEST : ".$value."<br/>";

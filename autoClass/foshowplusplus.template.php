@@ -99,7 +99,7 @@ if($oRes) {
 			$itemValue = $aValues[$i];
 			
 			if (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
-				$compoItems = split ("[.]", $itemName);
+				$compoItems = explode ("[.]", $itemName);
 				if ($compoItems[1] == "pagination") {
 					eval("$"."paginationDisplay_".$compoItems[0]." = $"."itemValue;");
 					//eval("echo $"."paginationDisplay_".$compoItems[0].";");

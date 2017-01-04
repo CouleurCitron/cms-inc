@@ -191,7 +191,7 @@ if ($oRes->getGetterStatut() != "none" ) {
 				else if ( $aStatutNode["attrs"]["TYPE"] == 'enum' ) {
 					  
 					if (isset($aStatutNode["attrs"]["LENGTH"]) && $aStatutNode["attrs"]["LENGTH"] != '' ) {
-						$aValues = split (",", $aStatutNode["attrs"]["LENGTH"]);
+						$aValues = explode (",", $aStatutNode["attrs"]["LENGTH"]);
 						foreach ($aValues as $value) {
 							$value  = str_replace ("'", "", $value);
 							 
