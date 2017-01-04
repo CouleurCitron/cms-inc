@@ -95,7 +95,7 @@ for ($irow=1;$irow<$data->sheets[0]['numRows'];$irow++){
 							
 							/////////////
 							//echo "tester la presence de ".$eKeyValue." dans la table ".$sTempClasse." : ";
-							//$tempPrefix = ereg_replace("([^_]*)_.*", "\\1", $oTemp->getFieldPK());
+							//$tempPrefix = preg_replace("/([^_]*)_.*/msi", "$1", $oTemp->getFieldPK());
 							$tempFieldWhere = $tempPrefix."_".$oTemp->getDisplay();
 							$tempGetterWhere = preg_replace("/([^_]*)_.*/msi", "get", $oTemp->getFieldPK())."_".$oTemp->getDisplay();
 							$eKeyValue_ = str_replace('\\', '\"',	$eKeyValue);

@@ -542,8 +542,8 @@ if(sizeof($aListe_res)>0) {
 			//if ($RSS['type']!="")echo "				<type>".rawurlencode(($RSS['type']))."</type>\n";
 			//if ($RSS['site']!="")echo "				<site>".rawurlencode(($RSS['site']))."</site>\n";
 			//echo "				<texte>".rawurlencode(($RSS['texte']))."</texte>\n";
-			//echo "				<texte><![CDATA[".ereg_replace("&([^q]{1})", "&amp;\\1", $RSS['texte'])."]]></texte>\n";
-			//echo "				<description><![CDATA[".ereg_replace("&([^q]{1})", "&amp;\\1", $RSS['description'])."]]></description>\n";
+			//echo "				<texte><![CDATA[".preg_replace("/&([^q]{1})/msi", "&amp;$1", $RSS['texte'])."]]></texte>\n";
+			//echo "				<description><![CDATA[".preg_replace("/&([^q]{1})/msi", "&amp;$1", $RSS['description'])."]]></description>\n";
 			echo "			</item>\n";	
 		
 		
