@@ -288,7 +288,7 @@ class User {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
-			error_log("user.class.php > authentificate");
+			error_log("bo_users.class.php > authentificate");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -322,7 +322,7 @@ class User {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
-			error_log("user.class.php > initValues");
+			error_log("bo_users.class.php > initValues");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -356,7 +356,7 @@ class User {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
-			error_log("user.class.php > getUser($sLogin, $idSite)");
+			error_log("bo_users.class.php > getUser($sLogin, $idSite)");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -390,7 +390,7 @@ class User {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
-			error_log("user.class.php > listUsers($idSite))");
+			error_log("bo_users.class.php > listUsers($idSite))");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -425,7 +425,7 @@ class User {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
-			error_log("user.class.php > listUsers($idSite))");
+			error_log("bo_users.class.php > listUsers($idSite))");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -538,13 +538,13 @@ le webmaster';
 		} else {
 			echo('Erreur interne de programme');
 			if(DEF_MODE_DEBUG==true) {
-				echo "<br />user.class.php > update($bPasswd)";
+				echo "<br />bo_users.class.php > update($bPasswd)";
 				echo "<br /><strong>$sql</strong>";
 			}
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur lors de l\'execution de la requete');
-			error_log("user.class.php > update($bPasswd))");
+			error_log("bo_users.class.php > update($bPasswd))");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -572,13 +572,13 @@ le webmaster';
 		} else {
 			echo('Erreur interne de programme');
 			if(DEF_MODE_DEBUG==true) {
-				echo "<br />user.class.php > updateValidation";
+				echo "<br />bo_users.class.php > updateValidation";
 				echo "<br /><strong>$sql</strong>";
 			}
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur lors de l\'execution de la requete');
-			error_log("user.class.php > updateValidation)");
+			error_log("bo_users.class.php > updateValidation)");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -607,13 +607,13 @@ le webmaster';
 		} else {
 			echo('Erreur interne de programme');
 			if(DEF_MODE_DEBUG==true) {
-				echo "<br />user.class.php > updatePrefsite";
+				echo "<br />bo_users.class.php > updatePrefsite";
 				echo "<br /><strong>$sql</strong>";
 			}
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur lors de l\'execution de la requete');
-			error_log("user.class.php > updatePrefsite)");
+			error_log("bo_users.class.php > updatePrefsite)");
 			error_log($sql);
 			error_log($db->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -640,13 +640,13 @@ le webmaster';
 
 			echo('Erreur interne de programme');
 			if(DEF_MODE_DEBUG==true) {
-				echo "<br />user.class.php > delete";
+				echo "<br />bo_users.class.php > delete";
 				echo "<br /><strong>$sql</strong>";
 			}
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur lors de l\'execution de la requete');
-			error_log("user.class.php > delete)");
+			error_log("bo_users.class.php > delete)");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -692,13 +692,13 @@ le webmaster';
 
 			echo('Erreur interne de programme');
 			if(DEF_MODE_DEBUG==true) {
-				echo "<br />user.class.php > add";
+				echo "<br />bo_users.class.php > add";
 				echo "<br /><strong>$sql</strong>";
 			}
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur lors de l\'execution de la requete');
-			error_log("user.class.php > add)");
+			error_log("bo_users.class.php > add)");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
@@ -741,7 +741,7 @@ le webmaster';
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur lors de l\'execution de la requete');
-			error_log("user.class.php > listUsersWidthAdmin($idSite))");
+			error_log("bo_users.class.php > listUsersWidthAdmin($idSite))");
 			error_log($sql);
 			error_log($db->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);

@@ -44,7 +44,6 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/cms_rss.class.php
 
 // utilisateurs
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/bo_users.class.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/user.class.php'); // deprecated
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/bo_groupes.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/bo_rank.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/cms_statut_content.class.php');

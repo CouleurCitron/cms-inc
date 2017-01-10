@@ -286,14 +286,121 @@ function getAbstract() { return("nom"); }
 	function authentificate($sLogin, $sPasswd) {
 		global $db;
 		$this->dbConn = &$db;
-	
+		
+		
+		// fetch login matching user
 		$sql = " SELECT * ";
 		$sql.= " FROM bo_users";
 		$sql.= " WHERE user_valid=1";
 		$sql.= " AND user_login = ".$this->dbConn->qstr($sLogin);
-		$sql.= " AND user_passwd = ".$this->dbConn->qstr(md5($sPasswd));
 		if (DEF_BDD != "ORACLE") $sql.= ";";
-//print("<br>$sql");
+		
+		$rs = $this->dbConn->Execute($sql);
+		if($rs && !$rs->EOF) {
+			// test hashed crypted pwd
+			$bAuth = password_verify ($sPasswd,trim($rs->fields[n('user_passwd')]));
+			
+			// 2nd attempt, test md5 pwd
+			if (!$bAuth	&&	preg_match('/^[a-f0-9]{32}$/i', trim($rs->fields[n('user_passwd')]))	){
+				if (md5($sPasswd)==trim($rs->fields[n('user_passwd')])){
+					$bAuth=true;
+					
+					// update and crypt pwd if needed
+					$sPasswd = password_hash($sPasswd, PASSWORD_DEFAULT);
+					//error_log("- HASHED PWD - ".$sPasswd. " --------------------");	
+					
+					// update DB					
+					$sql = 'UPDATE bo_users SET user_passwd = "'.$sPasswd.'" WHERE user_login = '.$this->dbConn->qstr($sLogin);
+					if (DEF_BDD != "ORACLE") $sql.= ";";
+					$rsUpdt = $this->dbConn->Execute($sql);
+					if($rsUpdt && !$rsUpdt->EOF) {
+						//error_log("- UPDATE OK---------------------");	
+					}
+					else{
+						//error_log("- UPDATE FAILED ---------------------");	
+					}
+					
+					error_log("- AUTH OK - MD5 ---------------------");	
+				}				
+			}
+			else{
+				error_log("- AUTH OK - BCRYPT ---------------------");	
+			}
+			
+			
+			// if successful auth
+			if ($bAuth){			
+				$this->nom = $rs->fields[n('user_nom')];
+				$this->prenom = $rs->fields[n('user_prenom')];
+				$this->mail = $rs->fields[n('user_mail')];
+				$this->mdpCrypte = trim($rs->fields[n('user_passwd')]);
+				$this->telephone = trim($rs->fields[n('user_tel')]);
+				$this->dateCreation = $rs->fields[n('user_dt')];
+				$this->id = $rs->fields[n('user_id')];
+				$this->valide = $rs->fields[n('user_valid')];
+				$this->rank = $rs->fields[n('user_rank')];
+				$this->cms_id = $rs->fields[n('user_cms_site')];
+				$this->login = $rs->fields[n('user_login')];
+				$this->validauto = $rs->fields[n('user_validauto')];			
+				$this->prefsite = $rs->fields[n('user_prefsite')];
+				$this->groupe = $rs->fields[n('user_bo_groupes')];	
+			}
+		} else {
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur ou résultat vide lors de l\'execution de la requete');
+			error_log("bo_users.class.php > authentificate");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		}
+		
+
+	
+		
+		
+	}
+	
+	function initValues($id) {
+		$sql = " SELECT * ";
+		$sql.= " FROM bo_users";
+		$sql.= " WHERE user_id = $id";
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+				
+		$rs = $this->dbConn->Execute($sql);
+		if($rs && !$rs->EOF) {
+			$this->nom = $rs->fields[n('user_nom')];
+			$this->prenom = $rs->fields[n('user_prenom')];
+			$this->mail = $rs->fields[n('user_mail')];
+			$this->mdpCrypte = trim($rs->fields[n('user_passwd')]);
+			$this->telephone = trim($rs->fields[n('user_tel')]);
+			$this->dateCreation = $rs->fields[n('user_dt')];
+			$this->id = $rs->fields[n('user_id')];
+			$this->valide = $rs->fields[n('user_valid')];
+			$this->rank = $rs->fields[n('user_rank')];
+			$this->cms_id = $rs->fields[n('user_cms_site')];						
+			$this->login = $rs->fields[n('user_login')];
+			$this->validauto = $rs->fields[n('user_validauto')];			
+			$this->prefsite = $rs->fields[n('user_prefsite')];						
+			$this->groupe = $rs->fields[n('user_bo_groupes')];
+		} else {
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur ou résultat vide lors de l\'execution de la requete');
+			error_log("bo_users.class.php > initValues");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		}
+	}
+
+	function getUser($sLogin, $idSite) {
+		$sql = " SELECT * ";
+		$sql.= " FROM bo_users";
+		$sql.= " WHERE user_login = '$sLogin' AND user_cms_site=$idSite";
+		if (DEF_BDD != "ORACLE") $sql.= ";";
 
 		$rs = $this->dbConn->Execute($sql);
 		if($rs && !$rs->EOF) {
@@ -306,22 +413,410 @@ function getAbstract() { return("nom"); }
 			$this->id = $rs->fields[n('user_id')];
 			$this->valide = $rs->fields[n('user_valid')];
 			$this->rank = $rs->fields[n('user_rank')];
-			$this->cms_id = $rs->fields[n('user_cms_site')];
-			$this->login = $rs->fields[n('user_login')];
+			$this->cms_id = $rs->fields[n('user_cms_site')];						
+			$this->login = $rs->fields[n('user_login')];						
 			$this->validauto = $rs->fields[n('user_validauto')];			
-			$this->prefsite = $rs->fields[n('user_prefsite')];
+			$this->prefsite = $rs->fields[n('user_prefsite')];						
 			$this->groupe = $rs->fields[n('user_bo_groupes')];			
-		
 		} else {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
-			error_log("user.class.php > authentificate");
+			error_log("bo_users.class.php > getUser($sLogin, $idSite)");
 			error_log($sql);
 			error_log($this->dbConn->ErrorMsg());
 			error_log($_SERVER['PHP_SELF']);
 			error_log("----------------------");
 		}
+	}
+
+	//cherche tous les users d'un site
+
+	function listUsers($idSite="") {
+
+		$result = array();
+		
+		$sql = " SELECT user_id, user_dt";
+		$sql.= " FROM bo_users";
+		if ($idSite != "" && $idSite != -1) $sql.= " WHERE bo_users.user_cms_site=".$idSite;
+		$sql.= " ORDER BY user_dt DESC";
+
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+
+//print("<br>$sql");
+		
+		$rs = $this->dbConn->Execute($sql);
+		if($rs) {
+			while(!$rs->EOF) {
+				$unInscrit = new bo_users($rs->fields[n('user_id')]);
+				array_push($result, $unInscrit);
+				$rs->MoveNext();
+			}
+		} else {
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur ou résultat vide lors de l\'execution de la requete');
+			error_log("bo_users.class.php > listUsers($idSite))");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		}
+		return $result;
+	}
+
+	//cherche tous les users d'un site + les administrateurs quelque soit le site
+
+	function listUsersPlusAdmin($idSite) {
+
+		$result = array();
+		
+		$sql = " SELECT user_id, user_dt";
+		$sql.= " FROM bo_users";
+		$sql.= " WHERE bo_users.user_cms_site=".$idSite." OR user_rank='".DEF_ADMIN."'";
+		$sql.= " ORDER BY user_rank, user_dt DESC";
+
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+
+//print("<br>$sql");
+		
+		$rs = $this->dbConn->Execute($sql);
+		if($rs) {
+			while(!$rs->EOF) {
+				$unInscrit = new bo_users($rs->fields[n('user_id')]);
+				array_push($result, $unInscrit);
+				$rs->MoveNext();
+			}
+		} else {
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur ou résultat vide lors de l\'execution de la requete');
+			error_log("bo_users.class.php > listUsers($idSite))");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		}
+		return $result;
+	}
+
+	function pwgen() {
+		$passwd = '';
+		for($i=0;$i<8;$i++) {
+			$c = 0;
+			while(!(  (($c>48) && ($c<57)) || (($c>65) && ($c<90)) || (($c>97) && ($c<122)) ))
+				$c = rand(48,122);
+			$passwd .= chr($c);
+		}
+		$this->mdpNonCrypte = $passwd;
+	}
+
+	function setPasswd() {
+		$return = false;
+		if(!(strlen($this->mdpCrypte)>0)) {
+			//$this->pwgen();
+			//$this->mdpCrypte = md5($this->mdpNonCrypte);
+			$this->mdpCrypte = password_hash($this->mdpNonCrypte, PASSWORD_DEFAULT);
+			$return = true;
+		}
+		return $return;
+	}
+
+	function notify($action) {
+		$msg = '';
+		$from = 'contact@couleur-citron.com';
+		$to = $this->mail;
+		$subject = '[Couleur Citron] Adequat : validation compte administrateur';
+		if($action=='validate') {
+			$msg = 'Bonjour '.$this->prenom.' '.$this->nom.',
+Nous avons bien reçu votre demande d\'inscription et l\'avons validée.
+
+';
+			if(strlen($this->mdpNonCrypte)>0){
+				$msg .= 'Vos codes d\'accès : 
+
+identifiant : '.$this->mail.'
+mot de passe : '.$this->mdpNonCrypte;
+				$this->mdpNonCrypte = '';
+			}
+			$msg.= '
+
+Cordialement,
+
+le webmaster.';
+		} elseif($action=='unvalidate') {
+			$msg = 'Bonjour '.$this->prenom.' '.$this->nom.',
+
+Nous avons le regret de vous informer que votre compte a été désactivé par nos services.
+
+Cordialement,
+
+le webmaster';
+		} elseif($action=='delete') {
+			$msg = 'Bonjour '.$this->prenom.' '.$this->nom.',
+Nous avons le regret de vous informer que votre compte a été supprimé de nos serveurs. Cette suppression est définitive.
+
+Cordialement,
+
+le webmaster';
+		}
+		multiPartMail($to , $subject , '' , $msg, $from, null, 'text/plain', 'localhost');
+	}
+
+	function unvalidate() {
+		$this->valide = 0;
+		return $this->update();
+	}
+
+	function validate() {
+		$this->valide = 1;
+		$this->setPasswd();
+		return $this->update();
+	}
+
+
+	function update($bPasswd=0) {
+		if(! (($this->id !=null) && ($this->id>0)) )
+			return false;
+
+		$sql = " UPDATE bo_users";
+		$sql.= " SET user_login = ".$this->dbConn->qstr($this->login).",";
+		$sql.= " user_mail = ".$this->dbConn->qstr($this->mail).",";
+
+		// par défaut pas de modification du mot de passe
+		if ($bPasswd) $sql.="user_passwd = ".$this->dbConn->qstr($this->mdpCrypte).",";
+
+		$sql.= " user_tel = ".$this->dbConn->qstr($this->telephone).",";
+		$sql.= " user_prenom = ".$this->dbConn->qstr($this->prenom).",";
+		$sql.= " user_nom = ".$this->dbConn->qstr($this->nom).",";
+		$sql.= " user_valid = ".$this->valide.",";
+		$sql.= " user_rank = ".$this->dbConn->qstr($this->rank).",";
+		$sql.= " user_cms_site = ".$this->cms_id.", ";
+		$sql.= " user_bo_groupes = ".$this->groupe." ";
+		$sql.= " WHERE user_id = ".$this->id;
+
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+
+//				user_dt = ".$this->dbConn->qstr($this->dateCreation).",
+
+		$rs = $this->dbConn->Execute($sql);
+		if($rs) {
+			return true;
+		} else {
+			echo('Erreur interne de programme');
+			if(DEF_MODE_DEBUG==true) {
+				echo "<br />bo_users.class.php > update($bPasswd)";
+				echo "<br /><strong>$sql</strong>";
+			}
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log("bo_users.class.php > update($bPasswd))");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+
+			return false;
+		}
+		return false; // sert à rien mais au cas où...
+	}
+
+
+	function updateValidation() {
+		if(! (($this->id !=null) && ($this->id>0)) )
+			return false;
+
+		$sql = " UPDATE bo_users";
+		$sql.= " SET user_validauto = ".$this->validauto." ";
+		$sql.= " WHERE user_id = ".$this->id;
+
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+
+		$rs = $this->dbConn->Execute($sql);
+		if($rs) {
+			return true;
+		} else {
+			echo('Erreur interne de programme');
+			if(DEF_MODE_DEBUG==true) {
+				echo "<br />bo_users.class.php > updateValidation";
+				echo "<br /><strong>$sql</strong>";
+			}
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log("bo_users.class.php > updateValidation)");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+
+			return false;
+		}
+		return false; // sert à rien mais au cas où...
+	}
+
+	function updatePrefsite() {
+		if(! (($this->id !=null) && ($this->id>0)) )
+			return false;
+
+		global $db;
+
+		$sql = " UPDATE bo_users";
+		$sql.= " SET user_prefsite = ".$this->prefsite." ";
+		$sql.= " WHERE user_id = ".$this->id;
+
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+
+		$rs = $db->Execute($sql);
+		if($rs) {
+			return true;
+		} else {
+			echo('Erreur interne de programme');
+			if(DEF_MODE_DEBUG==true) {
+				echo "<br />bo_users.class.php > updatePrefsite";
+				echo "<br /><strong>$sql</strong>";
+			}
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log("bo_users.class.php > updatePrefsite)");
+			error_log($sql);
+			error_log($db->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+
+			return false;
+		}
+		$rs->Close();
+		return false; // sert à rien mais au cas où...
+	}
+
+
+	function delete() {
+		if(! (($this->id !=null) && ($this->id>0)) )
+			return false;
+		$sql = " DELETE FROM bo_users WHERE user_id = ".$this->id;
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+
+		$rs = $this->dbConn->Execute($sql);
+		if($rs) {
+			return true;
+			$this->notify('delete');
+		} else {
+
+			echo('Erreur interne de programme');
+			if(DEF_MODE_DEBUG==true) {
+				echo "<br />bo_users.class.php > delete";
+				echo "<br /><strong>$sql</strong>";
+			}
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log("bo_users.class.php > delete)");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		
+			return false;
+		}
+		$rs->Close();
+		return false; // sert à rien mais au cas où...
+	}
+
+	function add() {
+
+		$eId = getNextVal("bo_users", "user_id");
+
+// a_voir sponthus valid=0 par défaut
+
+		$sql = " INSERT INTO bo_users (user_id, user_login, user_mail, ";
+		$sql.= " user_passwd, user_tel, ";
+		$sql.= " user_prenom, user_nom, user_valid, user_dt, user_rank, user_cms_site, user_validauto, user_bo_groupes, user_prefsite)";
+		$sql.= " VALUES (".$eId.", ".$this->dbConn->qstr($this->login).", ".$this->dbConn->qstr($this->mail).",";
+		$sql.= " ".$this->dbConn->qstr($this->mdpCrypte).", ".$this->dbConn->qstr($this->telephone).", ";
+		$sql.= " ".$this->dbConn->qstr($this->prenom).", ".$this->dbConn->qstr($this->nom).", ".$this->valide.", ";
+
+		if (DEF_BDD == "POSTGRES") $sql.= " cast(now() as timestamp), ";
+		else if (DEF_BDD == "MYSQL") {
+
+			$dNow = getDateNow();
+			$sDate = to_dbdate($dNow);
+			$sql.= $sDate." , ";
+		}
+		else if (DEF_BDD == "ORACLE") $sql.=" cast(sysdate as timestamp), ";
+
+		$sql.= " ".$this->dbConn->qstr($this->rank).", ".$this->cms_id.", ".$this->validauto.", ".$this->groupe.", ".$this->prefsite.")";
+		if (DEF_BDD != "ORACLE") $sql.= " ;";
+
+//print("<br>$sql");
+
+		$rs = $this->dbConn->Execute($sql);
+		if($rs) {
+			return true;
+		} else {
+
+			echo('Erreur interne de programme');
+			if(DEF_MODE_DEBUG==true) {
+				echo "<br />bo_users.class.php > add";
+				echo "<br /><strong>$sql</strong>";
+			}
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log("bo_users.class.php > add)");
+			error_log($sql);
+			error_log($this->dbConn->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		
+			return false;
+		}
+		$rs->Close();
+		return false; // sert à rien mais au cas où...
+	
+	}
+}
+
+
+	// cherche tous les users d'un site
+	// plus les administrateurs
+
+	function listUsersWidthAdmin($idSite) {
+
+		global $db;
+		$result = array();
+		
+		$sql = " SELECT user_id, user_dt";
+		$sql.= " FROM bo_users";
+		$sql.= " WHERE user_cms_site=".$idSite." OR user_rank='".DEF_ADMIN."'";
+		$sql.= " ORDER BY user_rank";
+
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+//print("<br>$sql");
+		
+		$rs = $db->Execute($sql);
+		if($rs) {
+			while(!$rs->EOF) {
+				$unInscrit = new bo_users($rs->fields[n('user_id')]);
+				array_push($result, $unInscrit);
+				$rs->MoveNext();
+			}
+		} else {
+		
+			error_log("----------------------");
+			error_log($_SERVER['PHP_SELF']);
+			error_log('erreur lors de l\'execution de la requete');
+			error_log("bo_users.class.php > listUsersWidthAdmin($idSite))");
+			error_log($sql);
+			error_log($db->ErrorMsg());
+			error_log($_SERVER['PHP_SELF']);
+			error_log("----------------------");
+		
+		}
+		$rs->Close();
+		return $result;
 	}
 	
 } //class

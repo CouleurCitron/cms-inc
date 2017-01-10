@@ -332,7 +332,7 @@ if (is_post('operation')){
 	}
 }
 
-$user = new User();
+$user = new bo_users();
 
 // utilisateurs par défaut
 $aUserLogin = explode(";", DEF_USERLOGIN);
@@ -446,7 +446,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 			}			
 		}
 		
-		$user = new User();
+		$user = new bo_users();
 		$user->authentificate($_POST['login'], $_POST['password']);
 		if($user->id > 0) {
 			$user = new bo_users($user->id);
