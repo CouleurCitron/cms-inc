@@ -303,12 +303,10 @@ function getAbstract() { return("nom"); }
 				$bAuth = true;
 			}
 			// 2nd attempt, test md5 pwd
-			elseif (!$bAuth	&&	preg_match('/^[a-f0-9]{32}$/i', trim($rs->fields[n('user_passwd')]))	){
-				if (md5($sPasswd)==trim($rs->fields[n('user_passwd')])){
-					error_log("- AUTH OK - MD5 ---------------------");
-					$bAuth=true;
-					upgradePasswordEncryption($sLogin, $sPasswd);
-				}				
+			elseif (preg_match('/^[a-f0-9]{32}$/i', trim($rs->fields[n('user_passwd')]))	&&  (md5($sPasswd)==trim($rs->fields[n('user_passwd')]))){
+				error_log("- AUTH OK - MD5 ---------------------");
+				$bAuth=true;
+				upgradePasswordEncryption($sLogin, $sPasswd);				
 			}
 			// 3rd attempt, test encrypted md5
 			elseif (password_verify (md5($sPasswd),trim($rs->fields[n('user_passwd')]))){
@@ -878,6 +876,5 @@ if (is_file(\$"."_SERVER['DOCUMENT_ROOT'].'/include/bo/cms/prepend.'.\$"."script
 	$importContent = "<"."?php include('cms-inc/autoClass/import.php'); ?".">";
 	fwrite($import, $importContent);
 	fclose($import);
-}
 }
 ?>
