@@ -297,34 +297,27 @@ function getAbstract() { return("nom"); }
 		
 		$rs = $this->dbConn->Execute($sql);
 		if($rs && !$rs->EOF) {
-			// test hashed crypted pwd
-			$bAuth = password_verify ($sPasswd,trim($rs->fields[n('user_passwd')]));
-			
+			// 1st attempt, test hashed crypted pwd			
+			if (password_verify ($sPasswd,trim($rs->fields[n('user_passwd')]))){
+				error_log("- AUTH OK - BCRYPT ---------------------");
+				$bAuth = true;
+			}
 			// 2nd attempt, test md5 pwd
-			if (!$bAuth	&&	preg_match('/^[a-f0-9]{32}$/i', trim($rs->fields[n('user_passwd')]))	){
+			elseif (!$bAuth	&&	preg_match('/^[a-f0-9]{32}$/i', trim($rs->fields[n('user_passwd')]))	){
 				if (md5($sPasswd)==trim($rs->fields[n('user_passwd')])){
+					error_log("- AUTH OK - MD5 ---------------------");
 					$bAuth=true;
-					
-					// update and crypt pwd if needed
-					$sPasswd = password_hash($sPasswd, PASSWORD_DEFAULT);
-					//error_log("- HASHED PWD - ".$sPasswd. " --------------------");	
-					
-					// update DB					
-					$sql = 'UPDATE bo_users SET user_passwd = "'.$sPasswd.'" WHERE user_login = '.$this->dbConn->qstr($sLogin);
-					if (DEF_BDD != "ORACLE") $sql.= ";";
-					$rsUpdt = $this->dbConn->Execute($sql);
-					if($rsUpdt && !$rsUpdt->EOF) {
-						//error_log("- UPDATE OK---------------------");	
-					}
-					else{
-						//error_log("- UPDATE FAILED ---------------------");	
-					}
-					
-					error_log("- AUTH OK - MD5 ---------------------");	
+					upgradePasswordEncryption($sLogin, $sPasswd);
 				}				
 			}
+			// 3rd attempt, test encrypted md5
+			elseif (password_verify (md5($sPasswd),trim($rs->fields[n('user_passwd')]))){
+				error_log("- AUTH OK - BCRYPT OVER MD5 --------------------");
+				$bAuth = true;
+				upgradePasswordEncryption($sLogin, $sPasswd);
+			}
 			else{
-				error_log("- AUTH OK - BCRYPT ---------------------");	
+				$bAuth = false;
 			}
 			
 			
@@ -345,7 +338,8 @@ function getAbstract() { return("nom"); }
 				$this->prefsite = $rs->fields[n('user_prefsite')];
 				$this->groupe = $rs->fields[n('user_bo_groupes')];	
 			}
-		} else {
+		}
+		else {
 			error_log("----------------------");
 			error_log($_SERVER['PHP_SELF']);
 			error_log('erreur ou résultat vide lors de l\'execution de la requete');
@@ -355,9 +349,28 @@ function getAbstract() { return("nom"); }
 			error_log($_SERVER['PHP_SELF']);
 			error_log("----------------------");
 		}
-		
-
+	}
 	
+	function upgradePasswordEncryption($sLogin, $sPasswd){
+		global $db;
+		$this->dbConn = &$db;
+		
+		// update and crypt pwd if needed
+		$sPasswd = password_hash($sPasswd, PASSWORD_DEFAULT);
+		//error_log("- HASHED PWD - ".$sPasswd. " --------------------");	
+		
+		// update DB					
+		$sql = 'UPDATE bo_users SET user_passwd = "'.$sPasswd.'" WHERE user_login = '.$this->dbConn->qstr($sLogin);
+		if (DEF_BDD != "ORACLE") $sql.= ";";
+		$rsUpdt = $this->dbConn->Execute($sql);
+		if($rsUpdt && !$rsUpdt->EOF) {
+			//error_log("- UPDATE OK---------------------");	
+			return true;
+		}
+		else{
+			//error_log("- UPDATE FAILED ---------------------");	
+			return false;
+		}
 		
 		
 	}
