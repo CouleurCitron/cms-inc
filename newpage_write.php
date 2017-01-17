@@ -246,8 +246,8 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 				
 				}
 				 
-				$sHeader .= ' data-expires="'.gmdate("M d Y H:i:s", mktime(0,0,0,date("n") ,date("j") ,date("Y")+1 )).'" data-cookie="AWS-cookies-optin-'.$_SESSION['idSite'].'"  data-moreinfo="'.$translator->getText('http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/').'" data-linkmsg="'.$translator->getText('En savoir plus').'" ';
-				$sHeader .= ' >';
+				$sHeader .= ' data-expires="'.gmdate("M d Y H:i:s", mktime(0,0,0,date("n") ,date("j") ,date("Y")+1 )).'" data-cookie="AWS-cookies-optin-'.$_SESSION['idSite'].'"  data-moreinfo="'.$translator->getText('http://www.cnil.fr/vos-obligations/sites-web-cookies-et-autres-traceurs/').'" data-linkmsg="'.$translator->getText('En savoir plus').'" ';				
+				$sHeader .= ' cookie-path="/" cookie-domain="'.$_SESSION['site_host'].'" cookie-secure="'.(bool)$_SESSION['https'].'"  >';
 				$sHeader .= '</script>'."\n";  
 				
 			}

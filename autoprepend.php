@@ -6,7 +6,14 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/config.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/aodb/adodb.inc.php');	// gère la couche d'abstraction bdd
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
 
-session_start();
+if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!='off'){
+	$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => true, 'cookie_httponly' => true);
+}
+else{
+	$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => false, 'cookie_httponly' => true);
+}
+
+session_start($sessionOptions);
 
 if (!isset($_SESSION['initiated'])){
     session_regenerate_id();

@@ -316,4 +316,3 @@ if(is_post('password_request')){
 	}
 	
 	?>
- 
