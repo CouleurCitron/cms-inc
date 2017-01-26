@@ -28,7 +28,7 @@ if(is_post('password_request')){
 			
 				$new_pass = makeRandomKey ('alpha', 7);
 				
-				$user->set_passwd(md5($new_pass));
+				$user->set_passwd(password_hash($new_pass, PASSWORD_DEFAULT));
 				
 				$r = dbUpdate ($user); 
 				

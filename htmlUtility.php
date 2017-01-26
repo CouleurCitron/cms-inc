@@ -5,6 +5,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/getid3/getid3.php')
 sponthus 15/07/2005
 fonctions de retraitement sur des chaines html
 
+function inputFilter($data){
 function xssFilter($data)	{
 function sqlInjectionFilter($data) {
 function htmlFCKcompliant($str)

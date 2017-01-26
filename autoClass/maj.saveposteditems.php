@@ -69,9 +69,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
                                                 
 						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], rewriteIfNeeded($_POST[$form_field]));
 					}
-				} elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "password") {// cas password, on cryte en md5
-					if (is_post($form_field))
-						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], md5($_POST[$form_field]));
+				} elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "password") {// cas password, on cryte 
+					if (is_post($form_field)){
+						//setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], md5($_POST[$form_field]));
+						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], password_hash($_POST[$form_field], PASSWORD_DEFAULT));
+					}
 				}
 				elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "url") {// cas url, on ajoute le protocole http:// si manque
 					if (isset($_POST[$form_field])) {

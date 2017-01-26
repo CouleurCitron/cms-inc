@@ -349,7 +349,9 @@ for ($i=0; $i<sizeof($aUserLogin); $i++)
 	$user->mail = $aUserMail[$i];
 	$user->login = $aUserLogin[$i];
 	$user->telephone = $aUserTel[$i];
-	$user->mdpCrypte = md5($aUserPasswd[$i]);
+	
+	$user->mdpCrypte = password_hash($aUserPasswd[$i], PASSWORD_DEFAULT);
+	
 	// les utilisateurs par défaut sont créés avec :
 	// - comme validés
 	$user->valide = 1;

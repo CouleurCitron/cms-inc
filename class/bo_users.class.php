@@ -525,8 +525,6 @@ function getAbstract() { return("nom"); }
 	function setPasswd() {
 		$return = false;
 		if(!(strlen($this->mdpCrypte)>0)) {
-			//$this->pwgen();
-			//$this->mdpCrypte = md5($this->mdpNonCrypte);
 			$this->mdpCrypte = password_hash($this->mdpNonCrypte, PASSWORD_DEFAULT);
 			$return = true;
 		}

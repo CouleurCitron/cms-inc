@@ -222,6 +222,8 @@ class AccountModel extends BaseModuleModel {
 
 	function applyEncryption ($value) {		
 		switch (ACCOUNT_PWD_ENCRYPT) {
+			case 'HASH' :	$value = password_hash($value, PASSWORD_DEFAULT);
+					break;
 			case 'MD5' :	$value = md5($value);
 					break;
 			case 'SHA1' :	$value = sha1($value);
