@@ -104,7 +104,7 @@ var $sMySql = "CREATE TABLE cms_diaporama_type
 ";
 
 // constructeur
-function cms_diaporama_type($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

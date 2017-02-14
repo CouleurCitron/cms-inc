@@ -54,7 +54,7 @@ var $params_champ;
 var $pattern_champ;
 
 // constructeur
-function Cms_champform($id=null) 
+function __construct($id=null) 
 {
 	if($id!=null) {
 		$tempThis = dbGetObjectFromPK(get_class($this), $id);

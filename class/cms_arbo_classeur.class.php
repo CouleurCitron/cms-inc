@@ -54,7 +54,7 @@ var $sMySql = "CREATE TABLE cms_arbo_classeur
 ";
 
 // constructeur
-function cms_arbo_classeur($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_arbo_classeur") == false){
 		dbExecuteQuery($this->sMySql);

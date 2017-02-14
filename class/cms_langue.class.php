@@ -71,7 +71,7 @@ var $sMySql = "CREATE TABLE cms_langue
 ";
 
 // constructeur
-function cms_langue($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_langue") == false){
 		dbExecuteQuery($this->sMySql);

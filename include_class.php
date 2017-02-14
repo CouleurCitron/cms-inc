@@ -1,5 +1,5 @@
 <?php
-if(!$includesOk){
+if(!isset($includesOk)	||	!$includesOk){
 
     include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
     // sponthus 26/07/2005

@@ -123,7 +123,7 @@ var $sMySql = "CREATE TABLE cms_sonde
 ";
 
 // constructeur
-function cms_sonde($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

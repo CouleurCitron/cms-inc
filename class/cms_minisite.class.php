@@ -106,7 +106,7 @@ var $sMySql = "CREATE TABLE cms_minisite
 ";
 
 // constructeur
-function cms_minisite($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

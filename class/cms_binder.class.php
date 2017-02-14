@@ -81,7 +81,7 @@ var $sMySql = "CREATE TABLE cms_binder
 ";
 
 // constructeur
-function cms_binder($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_binder") == false){
 		dbExecuteQuery($this->sMySql);

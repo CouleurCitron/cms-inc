@@ -212,7 +212,7 @@ var $oldstyleclass;
 
 
 // constructeur
-function Cms_page($id=null) 
+function __construct($id=null) 
 {
 	global $db;
 	if($id!=null) {

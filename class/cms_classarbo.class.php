@@ -67,7 +67,7 @@ var $sMySql = "CREATE TABLE cms_classarbo
 ";
 
 // constructeur
-function cms_classarbo($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_classarbo") == false){
 		dbExecuteQuery($this->sMySql);

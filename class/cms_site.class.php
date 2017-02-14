@@ -308,7 +308,7 @@ var $sMySql = "CREATE TABLE cms_site
 ";
 
 // constructeur
-function cms_site($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

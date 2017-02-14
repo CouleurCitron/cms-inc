@@ -113,7 +113,7 @@ var $sMySql = "CREATE TABLE cms_diapo
 ";
 
 // constructeur
-function cms_diapo($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_diapo") == false){
 		dbExecuteQuery($this->sMySql);

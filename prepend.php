@@ -335,7 +335,7 @@ refresh_menu("<?php echo $_SERVER["REQUEST_URI"]; ?>");
 				</a>
 			
 			<ul class=\"ss_menu\" id=\"".$k."Menu\">\n";
-				if(($v['content'] != NULL) && (is_array($v['content']))){
+				if(isset($v['content'])	&&	($v['content'] != NULL) && (is_array($v['content']))){
 					foreach($v['content'] as $key => $val) {
 						if(is_array($val['content'])) {
 							$menuStr .= generateMenu(array($key => $val), ($depth+1));

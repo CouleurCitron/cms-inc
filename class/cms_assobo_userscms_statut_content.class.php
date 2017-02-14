@@ -65,7 +65,7 @@ var $sMySql = "CREATE TABLE cms_assobo_userscms_statut_content
 ";
 
 // constructeur
-function cms_assobo_userscms_statut_content($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assobo_userscms_statut_content") == false){
 		dbExecuteQuery($this->sMySql);

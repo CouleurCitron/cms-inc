@@ -44,7 +44,7 @@ var $page;
 
 
 // constructeur
-function Cms_affich_content($sNature="CMS_CONTENT", $id=NULL) 
+function __construct($sNature="CMS_CONTENT", $id=NULL) 
 {
 	global $db;
 

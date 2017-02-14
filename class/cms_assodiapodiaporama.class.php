@@ -81,7 +81,7 @@ var $sMySql = "CREATE TABLE cms_assodiapodiaporama
 ";
 
 // constructeur
-function cms_assodiapodiaporama($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

@@ -74,7 +74,7 @@ var $sMySql = "CREATE TABLE cms_chaine_reference
 ";
 
 // constructeur
-function cms_chaine_reference($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_chaine_reference") == false){
 		dbExecuteQuery($this->sMySql);

@@ -83,7 +83,7 @@ var $sMySql = "CREATE TABLE cms_moderation
 ";
 
 // constructeur
-function cms_moderation($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_moderation") == false){
 		dbExecuteQuery($this->sMySql);

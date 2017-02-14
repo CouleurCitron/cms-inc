@@ -57,7 +57,7 @@ var $statut_content;
 var $isbriquedit_content;
 
 // constructeur
-function Cms_content($id=null) 
+function __construct($id=null) 
 {
 	global $db;
 	if($id!=null) {

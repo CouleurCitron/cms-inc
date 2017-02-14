@@ -71,7 +71,7 @@ var $sMySql = "CREATE TABLE cms_custom
 ";
 
 // constructeur
-function cms_custom($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_custom") == false){
 		dbExecuteQuery($this->sMySql);

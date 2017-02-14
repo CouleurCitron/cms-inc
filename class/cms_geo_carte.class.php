@@ -101,7 +101,7 @@ var $sMySql = "CREATE TABLE cms_geo_carte
 ";
 
 // constructeur
-function cms_geo_carte($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_geo_carte") == false){
 		dbExecuteQuery($this->sMySql);

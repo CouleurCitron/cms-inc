@@ -33,7 +33,7 @@ var $zindex_content;
 var $id_zonedit_content;
 
 // constructeur
-function Cms_struct_page($id=null) 
+function __construct($id=null) 
 {
 	if($id!=null) {
 		$this->initValues($id);

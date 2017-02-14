@@ -87,7 +87,7 @@ var $sMySql = "CREATE TABLE cms_survey_answer
 ";
 
 // constructeur
-function cms_survey_answer($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_survey_answer") == false){
 		dbExecuteQuery($this->sMySql);

@@ -67,7 +67,7 @@ var $sMySql = "CREATE TABLE cms_assolanguesite
 ";
 
 // constructeur
-function cms_assolanguesite($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

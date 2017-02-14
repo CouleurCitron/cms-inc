@@ -77,7 +77,7 @@ var $sMySql = "CREATE TABLE cms_flvmeta
 ";
 
 // constructeur
-function cms_flvmeta($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_flvmeta") == false){
 		dbExecuteQuery($this->sMySql);

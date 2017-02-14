@@ -70,7 +70,7 @@ class Pagination_array {
 	// constructor
 	//
 	//
-	function Pagination_array($aResult_work, $showPageLinks = true)
+	function __construct($aResult_work, $showPageLinks = true)
 	{
 	global $PHP_SELF;
 

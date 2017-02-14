@@ -69,7 +69,7 @@ var $sMySql = "CREATE TABLE cms_description
 ";
 
 // constructeur
-function cms_description($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_description") == false){
 		dbExecuteQuery($this->sMySql);

@@ -16,7 +16,7 @@ class Menu {
 		var $Url;
 		
 	// constructeur
-	function Menu($cNoeud, $cId, $cTitre, $cUrl)
+	function __construct($cNoeud, $cId, $cTitre, $cUrl)
 	{
 		$this->Noeud = $cNoeud;
 		$this->Id = $cId;

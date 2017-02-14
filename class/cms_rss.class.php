@@ -383,7 +383,7 @@ var $sMySql = "CREATE TABLE cms_rss
 ";
 
 // constructeur
-function cms_rss($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_rss") == false){
 		dbExecuteQuery($this->sMySql);

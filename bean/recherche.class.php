@@ -20,7 +20,7 @@ class dbRecherche {
 						
 
 	// constructeur
-	function dbRecherche()
+	function __construct()
 	{
 		$this->NomBD = "";
 		$this->TypeBD = "";

@@ -83,7 +83,7 @@ var $sMySql = "CREATE TABLE cms_tableau_col
 ";
 
 // constructeur
-function cms_tableau_col($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_tableau_col") == false){
 		dbExecuteQuery($this->sMySql);

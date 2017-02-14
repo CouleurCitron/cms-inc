@@ -66,7 +66,7 @@ var $sMySql = "CREATE TABLE cms_assoprependarbopages
 ";
 
 // constructeur
-function cms_assoprependarbopages($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

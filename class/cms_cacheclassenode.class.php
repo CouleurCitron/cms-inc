@@ -84,7 +84,7 @@ var $sMySql = "CREATE TABLE cms_cacheclassenode
 ";
 
 // constructeur
-function cms_cacheclassenode($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_cacheclassenode") == false){
 		dbExecuteQuery($this->sMySql);

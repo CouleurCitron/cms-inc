@@ -27,7 +27,7 @@ var $valeur_val;
 
 
 // constructeur
-function Cms_valeurform($id=null) 
+function __construct($id=null) 
 {
 	if($id!=null) {
 		$this = dbGetObjectFromPK("Cms_valeurform", $id);

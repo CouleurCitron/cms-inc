@@ -79,7 +79,7 @@ var $sMySql = "CREATE TABLE cms_chaine_traduite
 ";
 
 // constructeur
-function cms_chaine_traduite($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_chaine_traduite") == false){
 		dbExecuteQuery($this->sMySql);

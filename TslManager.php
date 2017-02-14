@@ -64,7 +64,7 @@ class TslManager {
 	 *
 	 * @return	unique instance of its own class
 	 */
-	function &getInstance() {
+	public static function &getInstance() {
 		static $singleton;
 
 		if (!$singleton)

@@ -41,7 +41,7 @@ var $date_archi;
 var $html_archi;
 
 // constructeur
-function Cms_archi_content($id=null)
+function __construct($id=null)
 {
 	if($id!=null) {
 		$tempThis = dbGetObjectFromPK(get_class($this), $id);

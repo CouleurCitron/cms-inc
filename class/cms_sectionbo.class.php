@@ -77,7 +77,7 @@ var $sMySql = "CREATE TABLE cms_sectionbo
 ";
 
 // constructeur
-function cms_sectionbo($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_sectionbo") == false){
 		dbExecuteQuery($this->sMySql);

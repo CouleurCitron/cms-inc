@@ -61,7 +61,7 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 
 
 // constructeur
-function Cms_form($id=null) 
+function __construct($id=null) 
 {
 	
 	if (istable(get_class($this)) == false){

@@ -1339,7 +1339,7 @@ function getItemByName($aNodes, $sName){
 function getItemsByOption($aNodes, $sOption){
 	$aReturn = array();
 	foreach ($aNodes as $key => $node){
-		if ($node["attrs"]["OPTION"] == $sOption){
+		if (isset($node["attrs"]["OPTION"])	&&	$node["attrs"]["OPTION"] == $sOption){
 			$aReturn[] = $node;
 		}
 	}
@@ -1370,7 +1370,7 @@ function getItemsByAsso($aNodes, $oObjet){
 	$aReturn = array();
 	$aClasseAssoc = array();
 	foreach ($aNodes as $key => $node){
-		if ($node["attrs"]["ASSO"] && (!isset($node["attrs"]["NOSEARCH"]) || $node["attrs"]["NOSEARCH"] == false)) { 
+		if (isset($node["attrs"]["ASSO"])	&&	$node["attrs"]["ASSO"] && (!isset($node["attrs"]["NOSEARCH"]) || $node["attrs"]["NOSEARCH"] == false)) { 
 			$sClasseAssoc =  $node["attrs"]["ASSO"]; 
 		}
 		
@@ -2499,31 +2499,37 @@ function getListeChampsForObject($o0){
 	$classePrefixe = $stack[0]["attrs"]["PREFIX"];
 	
 	for ($i=0;$i<count($aNodeToSort);$i++){
-		if (($aNodeToSort[$i]["attrs"]["TYPE"] == "int")){
-			$sType = 'entier';			
+		if (isset($aNodeToSort[$i]["attrs"]["TYPE"])){
+			if (($aNodeToSort[$i]["attrs"]["TYPE"] == "int")){
+				$sType = 'entier';			
+			}
+			elseif (($aNodeToSort[$i]["attrs"]["TYPE"] == "decimal") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "float")) {
+				$sType = 'decimal';
+			}
+			elseif(($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
+				$sType = 'text';
+			}
+			elseif($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime"){ // timestamp
+				$sType = 'date_formatee_timestamp';
+			}
+			elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "enum") {
+				$sType = 'text';
+			}
+			else{ // date
+				$sType = 'date_formatee';
+			}
+			
+			$sNom = trim($aNodeToSort[$i]["attrs"]["NAME"]);
+
+			if ($sNom!=''){		
+				$oDbChamp = new dbChamp(ucfirst($classePrefixe).'_'.$sNom, $sType, 'get_'.$sNom, 'set_'.$sNom);
+				$laListeChamps[] = $oDbChamp;
+			}
 		}
-		elseif (($aNodeToSort[$i]["attrs"]["TYPE"] == "decimal") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "float")) {
-			$sType = 'decimal';
-		}
-		elseif(($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
-			$sType = 'text';
-		}
-		elseif($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime"){ // timestamp
-			$sType = 'date_formatee_timestamp';
-		}
-		elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "enum") {
-			$sType = 'text';
-		}
-		else{ // date
-			$sType = 'date_formatee';
+		else{
+			// pas un item
 		}
 		
-		$sNom = trim($aNodeToSort[$i]["attrs"]["NAME"]);
-		
-		if ($sNom!=''){		
-			$oDbChamp = new dbChamp(ucfirst($classePrefixe).'_'.$sNom, $sType, 'get_'.$sNom, 'set_'.$sNom);
-			$laListeChamps[] = $oDbChamp;
-		}
 	}		
 	
 	// en cas de fail de la méthode XML, on prend l'ancien getter

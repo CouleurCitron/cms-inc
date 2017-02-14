@@ -78,7 +78,7 @@ class Pagination {
 	//		if you have multiple on 1 page. 
 	//		$id should be only be [a-z0-9]*
 	//
-	function Pagination(&$db, $sql, $sParam="", $idSite=null, $id = 'adodb', $showPageLinks = true)
+	function __construct(&$db, $sql, $sParam="", $idSite=null, $id = 'adodb', $showPageLinks = true)
 	{
 	global $PHP_SELF;
 	

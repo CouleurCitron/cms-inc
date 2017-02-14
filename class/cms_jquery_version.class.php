@@ -171,7 +171,7 @@ var $sMySql = "CREATE TABLE cms_jquery_version
 	cms_statut			int (11) not null
 )";
 // constructeur
-function cms_jquery_version($id=null)
+function __construct($id=null)
 {
     //pre_dump(istable(get_class($this)));
 	if (istable(get_class($this)) == false){
