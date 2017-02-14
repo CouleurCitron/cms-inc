@@ -92,7 +92,7 @@ var $sMySql = "CREATE TABLE classe
 ";
 
 // constructeur
-function classe($id=null)
+function __construct($id=null)
 {
 	if (istable("classe") == false){
 		dbExecuteQuery($this->sMySql);

@@ -73,7 +73,7 @@ var $sMySql = "CREATE TABLE bo_groupes
 ";
 
 // constructeur
-function bo_groupes($id=null)
+function __construct($id=null)
 {
 	if (istable("bo_groupes") == false){
 		dbExecuteQuery($this->sMySql);

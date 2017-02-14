@@ -194,7 +194,7 @@ function generateClasseFromXMLString($xmlstr){
 	
 	//-  ----- constructeur -------------------
 	$classeSRC .= "// constructeur\n";
-	$classeSRC .= "function ".$classeName."($"."id=null)\n";
+	$classeSRC .= "function __construct($"."id=null)\n";
 	$classeSRC .= "{\n";
 	$classeSRC .= "	if (istable(get_class($"."this)) == false){\n";
 	$classeSRC .= "		dbExecuteQuery($"."this->sMySql);\n";

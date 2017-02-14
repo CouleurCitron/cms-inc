@@ -65,7 +65,7 @@ var $sMySql = "CREATE TABLE bo_rank
 ";
 
 // constructeur
-function bo_rank($id=null)
+function __construct($id=null)
 {
 	if (istable("bo_rank") == false){
 		dbExecuteQuery($this->sMySql);

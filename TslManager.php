@@ -33,7 +33,7 @@ class TslManager {
 	 *
 	 * @return	Void
 	 */
-	function TslManager() {
+	function __construct() {
 		// Initialisation
 		$this->reference = new cms_chaine_reference();
 		$this->translated = new cms_chaine_traduite();

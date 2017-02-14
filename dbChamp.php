@@ -18,7 +18,7 @@ class dbChamp {
 		var $Target; //table enfant
 						
 	// constructeur
-	function dbChamp($leNom, $leType, $leGetter, $leSetter)
+	function __construct($leNom, $leType, $leGetter, $leSetter)
 	{
 		$this->NomBD=$leNom;
 		$this->TypeBD=$leType;
