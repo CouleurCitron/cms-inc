@@ -306,13 +306,13 @@ function getAbstract() { return("nom"); }
 			elseif (preg_match('/^[a-f0-9]{32}$/i', trim($rs->fields[n('user_passwd')]))	&&  (md5($sPasswd)==trim($rs->fields[n('user_passwd')]))){
 				error_log("- AUTH OK - MD5 ---------------------");
 				$bAuth=true;
-				upgradePasswordEncryption($sLogin, $sPasswd);				
+				$this->upgradePasswordEncryption($sLogin, $sPasswd);				
 			}
 			// 3rd attempt, test encrypted md5
 			elseif (password_verify (md5($sPasswd),trim($rs->fields[n('user_passwd')]))){
 				error_log("- AUTH OK - BCRYPT OVER MD5 --------------------");
 				$bAuth = true;
-				upgradePasswordEncryption($sLogin, $sPasswd);
+				$this->upgradePasswordEncryption($sLogin, $sPasswd);
 			}
 			else{
 				$bAuth = false;

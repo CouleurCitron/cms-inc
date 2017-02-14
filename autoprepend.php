@@ -22,7 +22,7 @@ if (!isset($_SESSION['initiated'])){
 }
 
 //--  control des GET ----------------------------------------------------
-if (preg_match('/\/backoffice\//msi', $_SERVER['PHP_SELF'])==1	&&	is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])){	
+if (preg_match('/\/backoffice\//msi', $_SERVER['PHP_SELF'])==1	&&	isset($_SESSION['BO']) 	&&	is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])){	
 	// user loggé en BO, ok pas de filtrage
 }
 else{	
@@ -195,6 +195,9 @@ else{
 // 3 cas :
 if (preg_match('/pierre\..+\.hephaistos/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
 		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	}
+elseif (preg_match('/php7/', $_SERVER['HTTP_HOST'])==1){// - dev
+		error_reporting(E_ALL);
 	}
 elseif (preg_match('/hephaistos/', $_SERVER['HTTP_HOST'])==1){// - dev
 		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
