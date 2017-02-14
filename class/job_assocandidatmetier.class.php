@@ -74,7 +74,7 @@ var $sMySql = "CREATE TABLE job_assocandidatmetier
 ";
 
 // constructeur
-function job_assocandidatmetier($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

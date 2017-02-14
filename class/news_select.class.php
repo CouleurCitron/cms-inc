@@ -83,7 +83,7 @@ var $sMySql = "CREATE TABLE news_select
 ";
 
 // constructeur
-function news_select($id=null)
+function __construct($id=null)
 {
 	if (istable("news_select") == false){
 		dbExecuteQuery($this->sMySql);

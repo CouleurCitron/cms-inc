@@ -183,7 +183,7 @@ var $sMySql = "CREATE TABLE pa_quartier
 ";
 
 // constructeur
-function pa_quartier($id=null)
+function __construct($id=null)
 {
 	if (istable("pa_quartier") == false){
 		dbExecuteQuery($this->sMySql);

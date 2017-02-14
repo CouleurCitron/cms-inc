@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE shp_commande_statut
 ";
 
 // constructeur
-function shp_commande_statut($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_commande_statut") == false){
 		dbExecuteQuery($this->sMySql);

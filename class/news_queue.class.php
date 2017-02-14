@@ -170,7 +170,7 @@ var $sMySql = "CREATE TABLE news_queue
 ";
 
 // constructeur
-function news_queue($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

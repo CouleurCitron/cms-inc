@@ -160,7 +160,7 @@ var $sMySql = "CREATE TABLE job_candidature
 ";
 
 // constructeur
-function job_candidature($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

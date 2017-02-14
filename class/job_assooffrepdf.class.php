@@ -68,7 +68,7 @@ var $sMySql = "CREATE TABLE job_assooffrepdf
 ";
 
 // constructeur
-function job_assooffrepdf($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

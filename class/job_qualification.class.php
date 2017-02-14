@@ -74,7 +74,7 @@ var $sMySql = "CREATE TABLE job_qualification
 ";
 
 // constructeur
-function job_qualification($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

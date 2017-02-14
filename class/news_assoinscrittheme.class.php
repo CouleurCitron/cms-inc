@@ -112,7 +112,7 @@ var $sMySql = "CREATE TABLE news_assoinscrittheme
 ";
 
 // constructeur
-function news_assoinscrittheme($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

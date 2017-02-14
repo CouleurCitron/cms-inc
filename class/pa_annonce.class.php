@@ -805,7 +805,7 @@ var $sMySql = "CREATE TABLE pa_annonce
 ";
 
 // constructeur
-function pa_annonce($id=null)
+function __construct($id=null)
 {
 	if (istable("pa_annonce") == false){
 		dbExecuteQuery($this->sMySql);

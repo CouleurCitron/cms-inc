@@ -77,7 +77,7 @@ var $sMySql = "CREATE TABLE shp_unite
 ";
 
 // constructeur
-function shp_unite($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_unite") == false){
 		dbExecuteQuery($this->sMySql);

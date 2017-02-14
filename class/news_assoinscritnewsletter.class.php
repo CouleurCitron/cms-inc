@@ -67,7 +67,7 @@ var $sMySql = "CREATE TABLE news_assoinscritnewsletter
 ";
 
 // constructeur
-function news_assoinscritnewsletter($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

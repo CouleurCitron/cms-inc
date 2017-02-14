@@ -405,7 +405,7 @@ var $sMySql = "CREATE TABLE pa_inscrit
 ";
 
 // constructeur
-function pa_inscrit($id=null)
+function __construct($id=null)
 {
 	if (istable("pa_inscrit") == false){
 		dbExecuteQuery($this->sMySql);

@@ -147,7 +147,7 @@ var $sMySql = "CREATE TABLE nws_content
 ";
 
 // constructeur
-function nws_content($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

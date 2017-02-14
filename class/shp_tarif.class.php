@@ -128,7 +128,7 @@ var $sMySql = "CREATE TABLE shp_tarif
 ";
 
 // constructeur
-function shp_tarif($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

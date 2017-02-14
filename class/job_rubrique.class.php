@@ -68,7 +68,7 @@ var $sMySql = "CREATE TABLE job_rubrique
 ";
 
 // constructeur
-function job_rubrique($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

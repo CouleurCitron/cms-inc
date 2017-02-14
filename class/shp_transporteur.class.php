@@ -103,7 +103,7 @@ var $sMySql = "CREATE TABLE shp_transporteur
 ";
 
 // constructeur
-function shp_transporteur($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_transporteur") == false){
 		dbExecuteQuery($this->sMySql);

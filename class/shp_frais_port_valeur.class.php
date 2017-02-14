@@ -95,7 +95,7 @@ var $sMySql = "CREATE TABLE shp_frais_port_valeur
 ";
 
 // constructeur
-function shp_frais_port_valeur($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_frais_port_valeur") == false){
 		dbExecuteQuery($this->sMySql);

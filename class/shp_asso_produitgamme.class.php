@@ -71,7 +71,7 @@ var $sMySql = "CREATE TABLE shp_asso_produitgamme
 ";
 
 // constructeur
-function shp_asso_produitgamme($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_asso_produitgamme") == false){
 		dbExecuteQuery($this->sMySql);
