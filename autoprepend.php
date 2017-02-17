@@ -233,6 +233,14 @@ if ($resCon==false){
 		echo '<!-- <p>'.$db->_errorMsg.'</p> -->';
 	}
 }
+else{
+	if (defined("DEF_BDD_CHARSET")){
+		$db->SetCharSet(DEF_BDD_CHARSET);
+	}
+	else{
+		$db->SetCharSet('latin1');
+	}
+}
 
 // redir auto de homepage
 include_once('homepage.inc.php');
