@@ -553,7 +553,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 												else if ($nodeValue["attrs"]["OPTION"] == "file"){ // cas file
 													if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue)){ // le fichier existe
 														
-														if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+														if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 															//echo $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue."<br>";
 															ResizeImg($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue, 400,100, $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue);
 															if(!unlink($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue)) {
@@ -995,7 +995,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 																			
 																			if ($eKeyValue != ""){
 																				if (is_file($_SERVER['DOCUMENT_ROOT'].$eKeyValue)){ // le fichier existe
-																					if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+																					if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 																						if (isset($assoNodeValue["children"]) && (count($assoNodeValue["children"]) > 0)){									
 																							foreach ($assoNodeValue["children"] as $childKey => $childNode){
 																								if($childNode["name"] == "OPTION"){ // on a un node d'option	

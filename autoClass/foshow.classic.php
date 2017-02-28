@@ -113,7 +113,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					if ($eKeyValue > -1){ // cas typique typique
 						if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
 							if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)){ // le fichier existe
-								if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+								if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 									if (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)){
 										foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
 											$widthMax=$childNode["attrs"]["WIDTH"];
@@ -156,7 +156,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 										echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$eKeyValue."\" title=\"Télécharger le fichier : '".$eKeyValue."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$eKeyValue."\" /></a>\n";
 									}
 								}
-								elseif (eregi("\.flv$",$eKeyValue)){ // video
+								elseif (preg_match("/\.flv$/msi",$eKeyValue)){ // video
 									/*						
 									$file = $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue;									
 									require_once('flv4php/FLV.php'); // Path to flv.php / (flv4php)									

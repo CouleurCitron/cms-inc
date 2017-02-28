@@ -751,7 +751,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									}
 								}
 							}							
-							if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image	
+							if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image	
 							
 								if (is_file ($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)) {
 									echo "<img border=\"0\" alt=\"".$eKeyValue."\" src=\"/custom/upload/".$classeName."/".$eKeyValue."\" />\n";

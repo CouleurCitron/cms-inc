@@ -140,7 +140,7 @@ class PayPal {
 				$this->ipn_response .= fgets($fp, 1024); 
 			fclose($fp); // close connection
 		}
-		if (eregi("VERIFIED", $this->ipn_response)) {
+		if (preg_match("/VERIFIED/msi", $this->ipn_response)) {
 
 			if ($_POST['payment_status'] == "Completed") {
 				// vérifier que txn_id n'a pas été précédemment traité: Créez une fonction qui va interroger votre base de données
