@@ -1,11 +1,6 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']. PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'].'/include');
 
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/utility_define.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/config.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/aodb/adodb.inc.php');	// gère la couche d'abstraction bdd
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
-
 if(!isset($_SERVER['HTTP_HOST'])){	
 	$_SERVER['HTTP_HOST']='cli';
 	$sessionOptions = array('cookie_domain' => '', 'cookie_secure' => false, 'cookie_httponly' => true);
@@ -18,6 +13,11 @@ else{
 		$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => false, 'cookie_httponly' => true);
 	}
 }
+
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/utility_define.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/config.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/aodb/adodb.inc.php');	// gère la couche d'abstraction bdd
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
 
 session_start($sessionOptions);
 
