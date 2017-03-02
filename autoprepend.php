@@ -6,11 +6,17 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/config.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/aodb/adodb.inc.php');	// gère la couche d'abstraction bdd
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
 
-if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!='off'){
-	$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => true, 'cookie_httponly' => true);
+if(!isset($_SERVER['HTTP_HOST'])){	
+	$_SERVER['HTTP_HOST']='cli';
+	$sessionOptions = array('cookie_domain' => '', 'cookie_secure' => false, 'cookie_httponly' => true);
 }
 else{
-	$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => false, 'cookie_httponly' => true);
+	if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!='off'){
+		$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => true, 'cookie_httponly' => true);
+	}
+	else{
+		$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => false, 'cookie_httponly' => true);
+	}
 }
 
 session_start($sessionOptions);
@@ -193,13 +199,13 @@ else{
 
 //error_reporting :
 // 3 cas :
-if (preg_match('/pierre\..+\.hephaistos/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
+if (preg_match('/pierre\..+\..+/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
 		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 	}
 elseif (preg_match('/php7/', $_SERVER['HTTP_HOST'])==1){// - dev
 		error_reporting(E_ALL);
 	}
-elseif (preg_match('/hephaistos/', $_SERVER['HTTP_HOST'])==1){// - dev
+elseif (preg_match('/emulgator|zout|ccbr/', $_SERVER['HTTP_HOST'])==1){// - dev
 		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 	}
 elseif (preg_match('/preprod/', $_SERVER['HTTP_HOST'])==1){// - dev
