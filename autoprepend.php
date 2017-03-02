@@ -151,12 +151,6 @@ $URL_ROOT = ''; // config pour dev
 $CMS_ROOT = $_SERVER['DOCUMENT_ROOT'].'/'.DEF_PAGE_ROOT;
 //$URL_ROOT = '';		     // config pour prod
 
-
-
-if (!isset($_SERVER['HTTP_HOST'])){
-	$_SERVER['HTTP_HOST'] = 'cli';	
-}
-
 // langage switch and storage
 if (isset($_SESSION['id_langue'])){
 	// nada
