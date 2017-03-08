@@ -84,7 +84,10 @@ else{
 	// filtrage systématique des posts
 	foreach ($_POST as $gKey => $gValue){
 		if ($gKey=='id'){ // id forcés au type int
-			$_POST[$gKey] = intval($_POST[$gKey]);
+			$_POST[$gKey]=trim($_POST[$gKey]);
+			if($_POST[$gKey]!=''){
+				$_POST[$gKey] = intval($_POST[$gKey]);				
+			}			
 		}
 		else{
 			$_POST[$gKey] = inputFilter($_POST[$gKey]);
