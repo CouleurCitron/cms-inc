@@ -284,6 +284,12 @@ function getDisplay() { return("login"); }
 function getAbstract() { return("nom"); }
 
 	function authentificate($sLogin, $sPasswd) {
+		
+		if (!isEmail($sLogin)	&&	!isLogin($sLogin)){
+			$bAuth = false;
+			error_log('hack attempt from '.$_SERVER['REMOTE_ADDR'].' onto bo_users::authentificate() method ');
+		}
+		
 		global $db;
 		$this->dbConn = &$db;
 		
