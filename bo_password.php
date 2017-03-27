@@ -9,14 +9,18 @@ if(is_post('password_request')){
 	$emaillogin = inputFilter($_POST["password_email"]);
 	
 	if ($emaillogin != "") { 
-		error_log($emaillogin);
+
 		if (isEmail($emaillogin)){
 			$sql = "select * from bo_users where user_login = '".$emaillogin."' OR user_mail = '".$emaillogin."';";
 		}
-		else{
+		elseif (isLogin($emaillogin)){
 			$sql = "select * from bo_users where user_login = '".$emaillogin."';";			
 		}
-		error_log($sql);
+		else{
+			echo 0;
+			error_log('hack attempt from '.$_SERVER['REMOTE_ADDR'].' onto bo_password.php ');
+		}
+
 		$aUser = dbGetObjectsFromRequete('bo_users', $sql); 
 		
 		if ($aUser	&&	(sizeof ($aUser) > 0)) {						
