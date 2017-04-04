@@ -141,7 +141,7 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
             $sHeader .= '	<script src="/backoffice/cms/js/jquery-1.6.4.min.js" type="text/javascript"></script>'."\n";
         }
         
-
+	if(method_exists($aJquery[0], 'get_filename')){
 	if($aJquery[0]->get_filename() == 'jquery-1.6.4.min.js'){
             if ($_SESSION['mobile']){
                     if (is_file($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/js/mobile/jquery.mobile-1.2.0.min.js')){
@@ -173,7 +173,7 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
                     }
             }
         }
-	
+	}
 	$sHeader .= '	<script src="/backoffice/cms/js/fojsutils.js" type="text/javascript"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/XHRConnector.js"></script>'."\n";
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/ancre.js.php"></script>'."\n";
