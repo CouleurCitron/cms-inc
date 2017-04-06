@@ -242,7 +242,7 @@ function dirIsValid($dirName, $filters) {
 	global $_SERVER;
 	foreach($filters as $ctrl => $type) {
 		if($type=='exact') {
-			if(array_pop(split('/',$dirName))==$ctrl)
+			if(array_pop(explode('/',$dirName))==$ctrl)
 				$result = false;
 		} elseif($type=='pattern') {
 			if(preg_match("/".$ctrl."/",$dirName))
@@ -256,7 +256,7 @@ function fileIsValid($fileName, $filters) {
 	$result = true;
 	foreach($filters as $ctrl => $type) {
 		if($type=='exact') {
-			if(array_pop(split('/',$fileName))==$ctrl)
+			if(array_pop(explode('/',$fileName))==$ctrl)
 				$result = false;
 		} elseif($type=='pattern') {
 			if(preg_match($ctrl,$fileName))
