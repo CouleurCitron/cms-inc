@@ -1,27 +1,22 @@
 <?php
 function check_field ($aPOST=NULL) {	 
-	$aError = array (); 
-	$is_form_ok = true; 
-
+	$aError = array ();
+	$is_form_ok = true;
 	if (preg_match ( "/".$_SERVER['HTTP_HOST']."/", $_SERVER['HTTP_REFERER'])  && $_POST["protect"] == '' )   {
-		if (is_post("fields_control")) {
-			$fields_control = explode (",", $_POST["fields_control"]);	
-			
-		}
-		else{ // fallback si pas de $_POST["fields_control"]
-			$fields_control=array();
-			foreach($_POST as $k => $v){
-				$fields_control[]=$k;
-			}
-		}		
-		
-		if (isset($fields_control)){		
+		if (isset($_POST["fields_control"]) && $_POST["fields_control"]!= '') {
+			$fields_control = explode(",", $_POST["fields_control"]);
 			foreach ($fields_control as $field_control ) {				  
 				eval ('$'.'my_field = '.'$'.'_POST["'.$field_control.'"];'); 				
+				
 				$my_field = trim ($my_field) ;
 				//$my_field = mb_convert_encoding($my_field, "ISO-8859-1", "auto");
 				
-				if ($field_control!='') {					
+				if ($field_control!='') {	
+					if (preg_match('/\[url=http.+\[\/url\]/msi', $my_field) ){
+						$is_form_ok = false;
+						array_push($aError, "bb code [url]");
+					}					
+					
 					if (preg_match ('/country/', $field_control)) {					 	
 						if ($my_field == -1 || $my_field == '') {
 							array_push($aError, "country vide");
@@ -279,7 +274,7 @@ function check_field ($aPOST=NULL) {
 			}
 		 } 
 		if (isset ($_POST["job_title"]) && $_POST["job_title"] != ''  ) {
-			if (preg_match('/viagra/', strtolower($_POST["job_title"]))) { 
+			if (preg_match('/viagra|prozac|topamax|topiramate/', strtolower($_POST["job_title"]))) { 
 				array_push($aError, "job_title mauvaise syntaxe");
 				$is_form_ok = false; 
 			}
@@ -300,7 +295,7 @@ function check_field ($aPOST=NULL) {
 		$spost.= "SERVER['HTTP_HOST'] : ".$_SERVER['HTTP_HOST']."<br />";
 		$spost.= "SERVER['HTTP_REFERER'] : ".$_SERVER['HTTP_REFERER']."<br />";
 		
-		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','','localhost');
+		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','',DEF_MAIL_HOST);
 	}
 	return $is_form_ok;
 }
