@@ -94,11 +94,11 @@ function check_field ($aPOST=NULL) {
 							array_push($aError, "tel mauvaise syntaxe 1234");
 							$is_form_ok = false; 
 						}
-						if (strlen($my_field) > 15) { 
-							array_push($aError, "tel mauvaise syntaxe > 15");
+						if (strlen($my_field) > 20) { 
+							array_push($aError, "tel mauvaise syntaxe > 20");
 							$is_form_ok = false; 
 						}
-						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ ]+$/msi', $my_field)){
+						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ \(\)]+$/msi', $my_field)){
 							array_push($aError, "tel non valide : ".$field_control." = ".$my_field);
 							$is_form_ok = false; 
 						}
