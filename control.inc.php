@@ -94,8 +94,8 @@ function check_field ($aPOST=NULL) {
 							array_push($aError, "tel mauvaise syntaxe 1234");
 							$is_form_ok = false; 
 						}
-						if (strlen($my_field) > 20) { 
-							array_push($aError, "tel mauvaise syntaxe > 20");
+						if (strlen($my_field) > 32) { 
+							array_push($aError, "tel mauvaise syntaxe > 32");
 							$is_form_ok = false; 
 						}
 						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ \(\)]+$/msi', $my_field)){
@@ -275,6 +275,7 @@ function check_field ($aPOST=NULL) {
 		$spost.= "Erreur : <br />".join ("<br /> ", $aError )."<br />";
 		$spost.= "SERVER['HTTP_HOST'] : ".$_SERVER['HTTP_HOST']."<br />";
 		$spost.= "SERVER['HTTP_REFERER'] : ".$_SERVER['HTTP_REFERER']."<br />";
+		$spost.= "SERVER['HTTP_USER_AGENT'] : ".$_SERVER['HTTP_USER_AGENT']."<br />";
 		
 		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','',DEF_MAIL_HOST);
 	}
