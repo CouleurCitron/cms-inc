@@ -835,6 +835,7 @@ if (!empty($aPostFilters)) {
 // End Filters cleanup
 //viewArray($aPostFilters, 'FILTERS AFTER CLEANUP');
 
+
 include_once ("list.process.custom.php");
 include_once ("list.process.asso.php");
 
@@ -850,67 +851,68 @@ include_once ("list.process.keyword.php");
 if (!empty($aPostFilters)) {
 	foreach ($aPostFilters as $kFilter => $aPostFilter) {
 		foreach ($aPostFilter as $filterName => $filterValue) {
-			
-			$_SESSION[$filterName] = $filterValue;	
-			 
-			//if($eStatut==""){
-			//$eStatut=$_SESSION['eStatut'];
-			//}		
-                        
-			if (isset($classeNameAsso) && $classeNameAsso != "" ) {
-				
-				// on récupére le préfixe de l'asso
-				$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
-				if (in_array($filterNameTemp, $itemToCheckForAsso)) { 
-					$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
-				} else	$classeNameAsso = "";
+			if ($filterName!='menus'	&& $filterName!='menufilters'){
+				$_SESSION[$filterName] = $filterValue;	
 
-				if (isset($classeNameAsso) && $classeNameAsso!="") {
-						$oRech3 = new dbRecherche();				
-						$oRech3->setValeurRecherche("declencher_recherche");
-						$oRech3->setTableBD($classeNameAsso);
-						$oRech3->setJointureBD(" {$classeName}.".ucfirst($classePrefixe)."_id={$classeNameAsso}.{$classePrefixeAsso}_{$classeName} ");
-						$oRech3->setPureJointure(1);				
-						$aRecherche[] = $oRech3;		
-				}
-			}
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && ereg($classePrefixe."_", $filterName)) { 
-			//echo $nbSub.'<br />';
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && doesFieldExist($aListeChamps, $filterName)) { 
-			//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && doesFieldExist($aListeChamps, $filterName)) {
-			if ( $filterValue!=-1 && $filterValue != "" || $filterValue == 0 && doesFieldExist($aListeChamps, $filterName)) { 
-				$oRech3 = new dbRecherche();				
-				$oRech3->setValeurRecherche("declencher_recherche");
-				$oRech3->setTableBD($classeNameAsso);
+				//if($eStatut==""){
+				//$eStatut=$_SESSION['eStatut'];
+				//}		
 
-				if (preg_match ("/,/", $filterValue)) {
-					$oRech3->setJointureBD(" {$classeName}.{$filterName} IN (".$filterValue.") ");
+				if (isset($classeNameAsso) && $classeNameAsso != "" ) {
+
+					// on récupére le préfixe de l'asso
+					$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
+					if (in_array($filterNameTemp, $itemToCheckForAsso)) { 
+						$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
+					} else	$classeNameAsso = "";
+
+					if (isset($classeNameAsso) && $classeNameAsso!="") {
+							$oRech3 = new dbRecherche();				
+							$oRech3->setValeurRecherche("declencher_recherche");
+							$oRech3->setTableBD($classeNameAsso);
+							$oRech3->setJointureBD(" {$classeName}.".ucfirst($classePrefixe)."_id={$classeNameAsso}.{$classePrefixeAsso}_{$classeName} ");
+							$oRech3->setPureJointure(1);				
+							$aRecherche[] = $oRech3;		
+					}
 				}
-				//Ecart date
-				else if( (preg_match("/(\d{4})?(\d{2})?(\d{2}) (\d{2}):(\d{2}):(\d{2})/", $filterValue) || preg_match("/(\d{4})?(\d{2})?(\d{2})/", $filterValue) ) && ( strpos($filterName, 'start') || strpos($filterName, 'end') )) {
-					//champ date débnut
-					$filterValue = trim($filterValue);
-					$filterValue = str_replace('/', '-', $filterValue);
-					if(count(explode(' ', $filterValue)) > 0) {
-						$filterValue = explode(' ', $filterValue);
-						$filterValue = $filterValue[0];
+				//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && ereg($classePrefixe."_", $filterName)) { 
+				//echo $nbSub.'<br />';
+				//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0 && doesFieldExist($aListeChamps, $filterName)) { 
+				//if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && doesFieldExist($aListeChamps, $filterName)) {
+				if ( $filterValue!=-1 && $filterValue != "" || $filterValue == 0 && doesFieldExist($aListeChamps, $filterName)) { 
+					$oRech3 = new dbRecherche();				
+					$oRech3->setValeurRecherche("declencher_recherche");
+					$oRech3->setTableBD($classeNameAsso);
+
+					if (preg_match ("/,/", $filterValue)) {
+						$oRech3->setJointureBD(" {$classeName}.{$filterName} IN (".$filterValue.") ");
 					}
-					$filterValue = explode('-', $filterValue);
-					$filterValue = $filterValue[2].'-'.$filterValue[1].'-'.$filterValue[0];
-					if($a = strpos($filterName, 'start')) {
-						$filterName = substr($filterName, 0, $a-1);
-						$oRech3->setJointureBD(" {$classeName}.{$filterName} >= '".$filterValue."' ");
+					//Ecart date
+					else if( (preg_match("/(\d{4})?(\d{2})?(\d{2}) (\d{2}):(\d{2}):(\d{2})/", $filterValue) || preg_match("/(\d{4})?(\d{2})?(\d{2})/", $filterValue) ) && ( strpos($filterName, 'start') || strpos($filterName, 'end') )) {
+						//champ date débnut
+						$filterValue = trim($filterValue);
+						$filterValue = str_replace('/', '-', $filterValue);
+						if(count(explode(' ', $filterValue)) > 0) {
+							$filterValue = explode(' ', $filterValue);
+							$filterValue = $filterValue[0];
+						}
+						$filterValue = explode('-', $filterValue);
+						$filterValue = $filterValue[2].'-'.$filterValue[1].'-'.$filterValue[0];
+						if($a = strpos($filterName, 'start')) {
+							$filterName = substr($filterName, 0, $a-1);
+							$oRech3->setJointureBD(" {$classeName}.{$filterName} >= '".$filterValue."' ");
+						}
+						if($a = strpos($filterName, 'end')) {
+							$filterName = substr($filterName, 0, $a-1);
+							$oRech3->setJointureBD(" {$classeName}.{$filterName} <= '".$filterValue."' ");
+						}
+					} else {
+						$oRech3->setJointureBD(" {$classeName}.{$filterName}=".$filterValue." ");
 					}
-					if($a = strpos($filterName, 'end')) {
-						$filterName = substr($filterName, 0, $a-1);
-						$oRech3->setJointureBD(" {$classeName}.{$filterName} <= '".$filterValue."' ");
-					}
-				} else {
-					$oRech3->setJointureBD(" {$classeName}.{$filterName}=".$filterValue." ");
+
+					$oRech3->setPureJointure(1);	
+					$aRecherche[] = $oRech3;
 				}
-						 
-				$oRech3->setPureJointure(1);	
-				$aRecherche[] = $oRech3;
 			}
 		}
 	}
@@ -934,8 +936,6 @@ if(isset($stack[0]["attrs"]["FILTER_ON"])){
 		$aRecherche[] = $oRech4;
 	}
 }
-
-
 
 // Cas over mega pas typique du tout
 // Cloisonnement sur administrateur loggué
@@ -963,10 +963,9 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 	}
 }
 
-
 //On finalise la requete de recherche
 $sql_end = dbMakeRequeteWithCriteres2($classeName, $aRecherche, $aGetterOrderBy, $aGetterSensOrderBy);
-$sql.= $sql_end;   
+$sql.= $sql_end;  
 
 // variable de session pour alimenter la pagination de show_ 
  
@@ -1035,9 +1034,5 @@ for ($m=0; $m< $maxResults ; $m++)
  //eval("$"."aTempObjects = $"."a".ucfirst($sTempClasse)."Objects;");
 					
 // new
-
-
-
-
 
 ?>
