@@ -94,11 +94,11 @@ function check_field ($aPOST=NULL) {
 							array_push($aError, "tel mauvaise syntaxe 1234");
 							$is_form_ok = false; 
 						}
-						if (strlen($my_field) > 15) { 
-							array_push($aError, "tel mauvaise syntaxe > 15");
+						if (strlen($my_field) > 32) { 
+							array_push($aError, "tel mauvaise syntaxe > 32");
 							$is_form_ok = false; 
 						}
-						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ ]+$/msi', $my_field)){
+						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ \(\)]+$/msi', $my_field)){
 							array_push($aError, "tel non valide : ".$field_control." = ".$my_field);
 							$is_form_ok = false; 
 						}
@@ -189,26 +189,7 @@ function check_field ($aPOST=NULL) {
 				$is_form_ok = false;  
 			}
 		}
-		if (isset ($_POST["tel"]) && $_POST["tel"] != ''  ) {
-			if (preg_match('/google|viagra|url|http:\/\//', $_POST["tel"])) { 
-				array_push($aError, "tel mauvaise syntaxe");
-				$is_form_ok = false; 
-			}
-			if (preg_match ('/1234/',$_POST["tel"])) { 
-				array_push($aError, "tel mauvaise syntaxe 1234");
-				$is_form_ok = false; 
-			}
-			if (strlen($_POST["tel"]) > 15) { 
-				array_push($aError, "tel mauvaise syntaxe > 15");
-				$is_form_ok = false; 
-			}
-		} 
-		if (isset ($_POST["account_telephone"]) && $_POST["account_telephone"] != ''  ) {
-			if (!preg_match("/[0-9]+/i", $_POST["account_telephone"]) && $_POST["account_telephone"]!= '123456' ) { 
-				array_push($aError, "account_telephone non oblig mauvaise syntaxe ");
-				$is_form_ok = false;  
-			}
-		}
+		
 		if (isset ($_POST["zipcode"]) && $_POST["zipcode"] != ''  ) {
 			if (!preg_match("/[0-9]+/i", $_POST["zipcode"]) && $_POST["zipcode"] != '123456') { 
 				array_push($aError, "zipcode non oblig mauvaise syntaxe ");
@@ -294,6 +275,7 @@ function check_field ($aPOST=NULL) {
 		$spost.= "Erreur : <br />".join ("<br /> ", $aError )."<br />";
 		$spost.= "SERVER['HTTP_HOST'] : ".$_SERVER['HTTP_HOST']."<br />";
 		$spost.= "SERVER['HTTP_REFERER'] : ".$_SERVER['HTTP_REFERER']."<br />";
+		$spost.= "SERVER['HTTP_USER_AGENT'] : ".$_SERVER['HTTP_USER_AGENT']."<br />";
 		
 		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','',DEF_MAIL_HOST);
 	}
