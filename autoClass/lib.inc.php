@@ -357,7 +357,7 @@ function cacheObject($sObject, $eId){
 		$bFound=false;
 	}
 	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])	&&	($_SESSION['BO']['CACHE'][$sObject][$eId]!=NULL)	){ // FOUND !!		
-		if (method_exists($_SESSION['BO']['CACHE'][$sObject][$eId], 'get_id')	&&	$_SESSION['BO']['CACHE'][$sObject][$eId]->get_id()==$eId){
+		if (is_object($_SESSION['BO']['CACHE'][$sObject][$eId])	&& method_exists($_SESSION['BO']['CACHE'][$sObject][$eId], 'get_id')	&&	$_SESSION['BO']['CACHE'][$sObject][$eId]->get_id()==$eId){
 			$bFound=true;
 		}
 		else{

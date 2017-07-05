@@ -18,7 +18,7 @@ if (!ispatched('newsletter')){
 		}
 		
 		if (!in_array('news_nbrecu', $names)) {
-			$rs = $db->Execute("ALTER TABLE `newsletter` ADD `news_nbrecu` INT( 11 ) NOT NULL DEFAULT \'0\'  AFTER `news_nbmail` ;");
+			$rs = $db->Execute("ALTER TABLE `newsletter` ADD `news_nbrecu` INT( 11 ) NOT NULL DEFAULT '0'  AFTER `news_nbmail` ;");
 		}
 	}
 }
