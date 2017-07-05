@@ -1435,7 +1435,7 @@ function getFilterPosts($needle="filter"){
 	$aReturn = array();
 	$aName = array();
 	foreach ($_POST as $key => $postedvar){
-		if (ereg($needle, $key) == true){
+		if (preg_match('/'.$needle.'/si', $key) == true){
 			$aKeyVar = array();
 			$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 			$aReturn[] = $aKeyVar;
@@ -1451,7 +1451,7 @@ function getFilterPosts($needle="filter"){
 		// session qui permet de récupérer la recherche quand on revient à la page
 		// de liste suite à une modification de fiche
 		foreach ($_SESSION as $key => $postedvar){ 
-			if (ereg($needle, $key) == true){
+			if (preg_match('/'.$needle.'/si', $key) == true){
 				$aKeyVar = array();
 				$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 				
@@ -1477,7 +1477,7 @@ function getFilterPostsAsso(){
 	$aReturn = array();
 	$aName = array();
 	foreach ($_POST as $key => $postedvar){
-		if (ereg($needle, $key) == true && $postedvar != -1){
+		if (preg_match('/'.$needle.'/si', $key) == true && $postedvar != -1){
 			$aKeyVar = array();
 			$aKeyVar[strtolower($key)] = $postedvar;
 			$aReturn[] = $aKeyVar;
@@ -1502,14 +1502,14 @@ function initFilterSession($needle="filter"){
 	// session qui permet de récupérer la recherche quand on revient à la page
 	// de liste suite à une modification de fiche
 	foreach ($_POST as $key => $postedvar){
-		if (ereg($needle, $key) == true){
+		if (preg_match('/'.$needle.'/si', $key) == true){
 			unset ($_POST[$key]); 
 			unset ($_POST[strtolower(str_replace("filter", "", $key))]); 
 		}
 	} 
 	
 	foreach ($_SESSION as $key => $postedvar){
-		if (ereg($needle, $key) == true){ 
+		if (preg_match('/'.$needle.'/si', $key) == true){ 
 			unset ($_SESSION[$key]); 
 			unset ($_SESSION[strtolower(str_replace("filter", "", $key))]); 
 		}

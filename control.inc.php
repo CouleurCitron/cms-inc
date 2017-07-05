@@ -1,27 +1,22 @@
 <?php
 function check_field ($aPOST=NULL) {	 
-	$aError = array (); 
-	$is_form_ok = true; 
-
+	$aError = array ();
+	$is_form_ok = true;
 	if (preg_match ( "/".$_SERVER['HTTP_HOST']."/", $_SERVER['HTTP_REFERER'])  && $_POST["protect"] == '' )   {
-		if (is_post("fields_control")) {
-			$fields_control = explode (",", $_POST["fields_control"]);	
-			
-		}
-		else{ // fallback si pas de $_POST["fields_control"]
-			$fields_control=array();
-			foreach($_POST as $k => $v){
-				$fields_control[]=$k;
-			}
-		}		
-		
-		if (isset($fields_control)){		
+		if (isset($_POST["fields_control"]) && $_POST["fields_control"]!= '') {
+			$fields_control = explode(",", $_POST["fields_control"]);
 			foreach ($fields_control as $field_control ) {				  
 				eval ('$'.'my_field = '.'$'.'_POST["'.$field_control.'"];'); 				
+				
 				$my_field = trim ($my_field) ;
 				//$my_field = mb_convert_encoding($my_field, "ISO-8859-1", "auto");
 				
-				if ($field_control!='') {					
+				if ($field_control!='') {	
+					if (preg_match('/\[url=http.+\[\/url\]/msi', $my_field) ){
+						$is_form_ok = false;
+						array_push($aError, "bb code [url]");
+					}					
+					
 					if (preg_match ('/country/', $field_control)) {					 	
 						if ($my_field == -1 || $my_field == '') {
 							array_push($aError, "country vide");
@@ -99,11 +94,11 @@ function check_field ($aPOST=NULL) {
 							array_push($aError, "tel mauvaise syntaxe 1234");
 							$is_form_ok = false; 
 						}
-						if (strlen($my_field) > 15) { 
-							array_push($aError, "tel mauvaise syntaxe > 15");
+						if (strlen($my_field) > 32) { 
+							array_push($aError, "tel mauvaise syntaxe > 32");
 							$is_form_ok = false; 
 						}
-						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ ]+$/msi', $my_field)){
+						if ($my_field!=''	&&	!preg_match('/^[0-9\-\.\+ \(\)]+$/msi', $my_field)){
 							array_push($aError, "tel non valide : ".$field_control." = ".$my_field);
 							$is_form_ok = false; 
 						}
@@ -194,26 +189,7 @@ function check_field ($aPOST=NULL) {
 				$is_form_ok = false;  
 			}
 		}
-		if (isset ($_POST["tel"]) && $_POST["tel"] != ''  ) {
-			if (preg_match('/google|viagra|url|http:\/\//', $_POST["tel"])) { 
-				array_push($aError, "tel mauvaise syntaxe");
-				$is_form_ok = false; 
-			}
-			if (preg_match ('/1234/',$_POST["tel"])) { 
-				array_push($aError, "tel mauvaise syntaxe 1234");
-				$is_form_ok = false; 
-			}
-			if (strlen($_POST["tel"]) > 15) { 
-				array_push($aError, "tel mauvaise syntaxe > 15");
-				$is_form_ok = false; 
-			}
-		} 
-		if (isset ($_POST["account_telephone"]) && $_POST["account_telephone"] != ''  ) {
-			if (!preg_match("/[0-9]+/i", $_POST["account_telephone"]) && $_POST["account_telephone"]!= '123456' ) { 
-				array_push($aError, "account_telephone non oblig mauvaise syntaxe ");
-				$is_form_ok = false;  
-			}
-		}
+		
 		if (isset ($_POST["zipcode"]) && $_POST["zipcode"] != ''  ) {
 			if (!preg_match("/[0-9]+/i", $_POST["zipcode"]) && $_POST["zipcode"] != '123456') { 
 				array_push($aError, "zipcode non oblig mauvaise syntaxe ");
@@ -279,7 +255,7 @@ function check_field ($aPOST=NULL) {
 			}
 		 } 
 		if (isset ($_POST["job_title"]) && $_POST["job_title"] != ''  ) {
-			if (preg_match('/viagra/', strtolower($_POST["job_title"]))) { 
+			if (preg_match('/viagra|prozac|topamax|topiramate/', strtolower($_POST["job_title"]))) { 
 				array_push($aError, "job_title mauvaise syntaxe");
 				$is_form_ok = false; 
 			}
@@ -299,8 +275,9 @@ function check_field ($aPOST=NULL) {
 		$spost.= "Erreur : <br />".join ("<br /> ", $aError )."<br />";
 		$spost.= "SERVER['HTTP_HOST'] : ".$_SERVER['HTTP_HOST']."<br />";
 		$spost.= "SERVER['HTTP_REFERER'] : ".$_SERVER['HTTP_REFERER']."<br />";
+		$spost.= "SERVER['HTTP_USER_AGENT'] : ".$_SERVER['HTTP_USER_AGENT']."<br />";
 		
-		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','','localhost');
+		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','',DEF_MAIL_HOST);
 	}
 	return $is_form_ok;
 }
