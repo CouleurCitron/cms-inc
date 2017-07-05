@@ -13,7 +13,6 @@ if (!ispatched('newsletter')){
 			 	if (preg_match('/varchar/', $rs->fields["Type"])==1){
 					$db->Execute('ALTER TABLE `newsletter` CHANGE `news_html` `news_html` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL');
 				}
-				break;
 			}
 			$rs->MoveNext();
 		}
