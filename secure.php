@@ -295,6 +295,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 	newslettrer
 */
 
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_cms.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');
+
 if (strpos($_SERVER['REQUEST_URI'], 'secure.php')!==false){
 	// hack attempt
 	error_log('hack attempt on '.$_SERVER['PHP_SELF'].' from '.$_SERVER['REMOTE_ADDR']);
