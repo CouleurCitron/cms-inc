@@ -544,50 +544,8 @@ $tempStyles .= "}\n";
 	$classeName = $stack[0]["attrs"]["NAME"];
 	$classePrefixe = $stack[0]["attrs"]["PREFIX"];
 	$aNodeToSort = $stack[0]["children"]; 
-?>
-<!-- Pour plus tard au cas où
-<table border="0" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo" width="100%">
-	<tr>
-		<td colspan="6">
-		<?php
-		
-		/* for ($i=0;$i<count($aNodeToSort);$i++){
-			if ($aNodeToSort[$i]["name"] == "ITEM"){
-				if ($aNodeToSort[$i]["attrs"]["NAME"] == "statut"){
-					$aStatutNode = $aNodeToSort[$i];
-					break;
-				}
-			}
-		}
 
-		if (isset($aStatutNode["children"]) && (count($aStatutNode["children"]) > 0)){			
-			foreach ($aStatutNode["children"] as $childKey => $childNode){
-				if($childNode["name"] == "OPTION"){ // on a un node d'option			
-					if ($childNode["attrs"]["TYPE"] == "value"){ */
-						?>
-						<input type="button" name="btATTEN" id="btATTEN" value="<?//=$childNode["attrs"]["LIBELLE"]?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=$childNode["attrs"]["VALUE"]?>)" />&nbsp;
-						<?php
-					 //} //fin type  == value				
-				//}
-			//}
-		//} // if nodes children
-		//else{	
-			?>
-			<input type="button" name="btATTEN" id="btATTEN" value="<?//=lib(DEF_ID_STATUT_ATTEN)?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=DEF_ID_STATUT_ATTEN?>)" />&nbsp;
-			<input type="button" name="btLIGNE" id="btLIGNE" value="<?//=lib(DEF_ID_STATUT_LIGNE)?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=DEF_ID_STATUT_LIGNE?>)" />&nbsp;
-			<input type="button" name="btARCHI" id="btARCHI" value="<?//=lib(DEF_ID_STATUT_ARCHI)?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=DEF_ID_STATUT_ARCHI?>)" />&nbsp; 
-			<?php
-		//}
-		?>
-</td>
-	</tr>
-</table> 
 
-<table border="0" align="center" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo" width="100%">
-<tr>
-<td align="center" nowrap>&nbsp;</td>-->
-
-<?php
 echo "<div class='actions'>Actions</div>";
 $tempStyles .= ".actions"."{\n";
 $tempStyles .= "}\n";

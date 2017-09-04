@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: text/html; charset=ISO-8859-1');
+
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); 
 // sponthus 20/06/2005
 // si présence de paramètres dans la définition des menus, 

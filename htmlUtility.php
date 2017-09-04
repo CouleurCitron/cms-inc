@@ -42,6 +42,7 @@ function makeTableauModulo($aData) {
 function encodePath($chainePath){
 function noAccent($texte){
 function strtoupperAccent($texte){
+function isLogin($str){
 function isEmail($email)
 function removeXitiForbiddenChars($strChars){
 function regionDateBO($strDate){
@@ -1333,6 +1334,23 @@ function strtoupperAccent($texte){
 	$texte = strtr(strtoupper($texte),$do,$up);
 	return $texte;
 
+}
+
+function isLogin($str){
+	// caracteres interdits dans un login
+	$aBadChars = Array(' ', "'", "’", '"', "—", "\'", "\\\"", "“", "”", '|', '?', '&', ';' , ',', "\t", "\n", "\r");
+	
+	$cleanStr = str_replace($aBadChars, '', $str);
+	
+	if ($str == $cleanStr){
+		
+		return true;
+	}
+	else{
+		
+		return false;
+	}
+	
 }
 
 function isEmail($email)

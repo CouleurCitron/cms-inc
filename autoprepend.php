@@ -206,7 +206,7 @@ elseif (preg_match('/emulgator|zout|ccbr/', $_SERVER['HTTP_HOST'])==1){// - dev
 		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 	}
 elseif (preg_match('/preprod/', $_SERVER['HTTP_HOST'])==1){// - dev
-		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
 	}
 else{// - prod
 		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
@@ -216,7 +216,10 @@ $aCcIps = array('82.243.117.135', '82.228.89.184', '82.234.79.170');
 
 if (!ini_get('display_errors')) {
 	if (in_array($_SERVER['REMOTE_ADDR'], $aCcIps)){
-   		ini_set('display_errors', 1);
+   		ini_set('display_errors', 'On');
+	}
+	else{
+		ini_set('display_errors', 'Off');
 	}
 }
 
