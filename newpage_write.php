@@ -197,7 +197,7 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/ancre.js.php"></script>'."\n";
 	
 	// flash
-	if (!$_SESSION['mobile']){
+	if (defined('DEF_FLASHPLAYERREQUIRED')	&&	((int)DEF_FLASHPLAYERREQUIRED>0)	&&	!$_SESSION['mobile']){
 		$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/flashDetection.js.php"></script>'."\n";
 		$sHeader .= '	<script type="text/vbscript" src="/backoffice/cms/js/flashDetection.vbs.php"></script>'."\n";
 		$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/flashDetection.php"></script>'."\n";
