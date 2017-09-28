@@ -91,7 +91,8 @@ function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlte
 
 function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter){	
 	global $db;
-	//error_log('rewriteNewsletterBody('.$eNews.')');
+	error_log('rewriteNewsletterBody('.$eNews.')');
+	error_reporting(A_LL);
 
 	if($bUseCriteres==1){
 		// newsletter inscrit	
@@ -183,7 +184,7 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 	}
 
 	$sBodyHTML = preg_replace('/http:\/\/[^\/]+\.interne\//msi', '/', $sBodyHTML);	
-	$sBodyHTML = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '/', $sBodyHTML);	
+	$sBodyHTML = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '/', $sBodyHTML);
 
 	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == true)){	
 		// ici rewirte pour taggage ins=300-6805-MD5
@@ -199,25 +200,29 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 			
 			foreach($aAllLinks as $k => $link){
 				
-				$sql='SELECT count(*) FROM news_links WHERE news_md5 = "'.md5($link).'"';
-				$rs = $db->Execute($sql);
-				$linkDejaMD5=0;
-				if($rs){
-					while(!$rs->EOF) {
-						$linkDejaMD5 = $rs->fields[0];
-						break;
-					}					
+				if(!preg_match('/google/msi', $link)){
+				
+					$sql='SELECT count(*) FROM news_links WHERE news_md5 = "'.md5($link).'"';
+					$rs = $db->Execute($sql);
+					$linkDejaMD5=0;
+					if($rs){
+						while(!$rs->EOF) {
+							$linkDejaMD5 = $rs->fields[0];
+							break;
+						}					
+					}
+					if($linkDejaMD5==0){
+						$oO = new news_links();
+						$oO->set_url($link);
+						$oO->set_md5(md5($link));
+						dbSauve($oO);					
+					}
+
+					if (!preg_match('/^mailto/msi', $link)	&&	$link!='#'	&&	!preg_match('/^#/msi', $link)){
+						$sBodyHTML = str_replace($link, 'http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'-'.md5($link).'"', $sBodyHTML);
+					}	
+
 				}
-				if($linkDejaMD5==0){
-					$oO = new news_links();
-					$oO->set_url($link);
-					$oO->set_md5(md5($link));
-					dbSauve($oO);					
-				}
-					
-				if (!preg_match('/^mailto/msi', $link)	&&	$link!='#'	&&	!preg_match('/^#/msi', $link)){
-					$sBodyHTML = str_replace($link, 'http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'-'.md5($link).'"', $sBodyHTML);
-				}				
 				
 			}
 			
@@ -284,7 +289,7 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 		 
 		$dateFY = ucfirst(str_replace ($mois_EN, $mois_FR, strtolower($dateFY))) ; 
 	}
-	
+
 	$sBodyHTML = str_replace("XX-MAIL-DATE-FY-XX", $dateFY, $sBodyHTML);
 	if($eIns>0){
 		$sBodyHTML = str_replace("XX-ID-INSCRIT-XX", md5($eIns), $sBodyHTML);
@@ -297,16 +302,15 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 	if ($sSubject!=NULL){
 		$sBodyHTML = str_replace("XX-SUJET-XX", $sSubject, $sBodyHTML); 
 	}
-	
-	 wordwrap($text, 20, "<br />\n");
+
+	wordwrap($text, 20, "<br />\n");
 	// taggage ouverture de la letter	
 	if(preg_match('/<\/body>/msi', $sBodyHTML)){
-		$sBodyHTML= str_replace('</body>', '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" /></body>');
+		$sBodyHTML= str_replace('</body>', '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" /></body>', $sBodyHTML);
 	}
 	else{
 		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" />';
 	}	
-	
 	$sBodyHTML =  wordwrap($sBodyHTML, 78, "\r\n");
 	return $sBodyHTML;
 }
