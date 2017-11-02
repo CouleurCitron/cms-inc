@@ -89,7 +89,7 @@ function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlte
 	return $sSubject;
 }
 
-function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter){	
+function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter=NULL){	
 	global $db;
 	error_log('rewriteNewsletterBody('.$eNews.')');
 	error_reporting(A_LL);
@@ -120,23 +120,11 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 				$aCriteres['date_published']=date('Y-m-d');
 
 				if(is_array($aCriteres)){					
-					/*
-					if ($aCriteres['type'] != "-1" || $aCriteres['place'] != "-1" || $aCriteres['function'] != "-1" || $aCriteres['experience'] != "-1" || $aCriteres['text'] != "" || $aCriteres['reference'] != "") {// on interdit la rech ALL *					
-						
-						$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
-						
-						foreach($aRes as $kRes => $oRes){// dedoublonnage
-							$aOs[$oRes["id"]]=$oRes;
-						}
+					$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
+
+					foreach($aRes as $kRes => $oRes){// dedoublonnage
+						$aOs[$oRes["id"]]=$oRes;
 					}
-					*/
-					//else {
-						$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
-						
-						foreach($aRes as $kRes => $oRes){// dedoublonnage
-							$aOs[$oRes["id"]]=$oRes;
-						}
-					//}
 				}
 				else{
 					$aRes = $jm->getOffers (-1, $aCriteres['place'], -1, -1, '', '', $aCriteres['date_published'], '');
@@ -159,8 +147,10 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 				$_SESSION['id_langue']=$lang;
 				$translator =& TslManager::getInstance();
 			}
-						
-			//$oCriNlter = new critereNewsletter();
+				
+			if ($oCriNlter==NULL){ // si n'est pas passé en param
+				$oCriNlter = new critereNewsletter();
+			}			
 			
 			$oCriNlter->eIns=$eIns;
 			$oCriNlter->eNews=$eNews;
@@ -218,8 +208,8 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 						dbSauve($oO);					
 					}
 
-					if (!preg_match('/^mailto/msi', $link)	&&	$link!='#'	&&	!preg_match('/^#/msi', $link)){
-						$sBodyHTML = str_replace($link, 'http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'-'.md5($link).'"', $sBodyHTML);
+					if ($link!=''	&&	!preg_match('/^mailto/msi', $link)	&&	!preg_match('/^tel/msi', $link)	&&	$link!='#'	&&	!preg_match('/^#/msi', $link)){
+						$sBodyHTML = str_replace('href="'.$link, 'href="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'-'.md5($link).'"', $sBodyHTML);
 					}	
 
 				}
