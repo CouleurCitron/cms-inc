@@ -16,15 +16,17 @@ else {
 }
  
 $aTabNews = array();
-
+$sqlTabNews='SELECT DISTINCT news_queue.news_newsletter FROM news_queue';
+$rs = $db->Execute($sqlTabNews);
+while(!$rs->EOF) {
+	$aTabNews[] = $rs->fields["news_newsletter"];
+	$rs->MoveNext();
+}
 
 
 $sql = 'select * from news_queue where news_statut = '.DEF_ID_STATUT_ATTEN.' order by news_inscrit ASC LIMIT 0,'.$nb_envoi_max_lots;    
-
 echo $sql;
-
 $aObj = dbGetObjectsFromRequete("news_queue", $sql); 
-
 
 $sql_redact = 'select * from news_queue where news_statut = '.DEF_ID_STATUT_REDACT.' order by news_inscrit';     
 $aObj_redact = dbGetObjectsFromRequete("news_queue", $sql_redact); 
@@ -78,9 +80,7 @@ if (sizeof($aObj_redact) > 0) {
 
 			echo "queued id : ".$id_queue."<br />";
 			
-			if (!in_array ($idnews, $aTabNews)) {
-				$aTabNews[] = $idnews;
-			}
+			
 			
 			$obj->set_statut(DEF_ID_STATUT_REDACT) ; // en cours de traitement (évite qu'on l'envoie plusieurs fois);
 			$b = dbUpdate ($obj);
@@ -166,7 +166,7 @@ foreach ($aTabNews as $news) {
 	
 	echo "nb_queue".$nb_queue  ;
 	$oNews = new Newsletter($news);
-	if ($nb_queue == 0 && $oNews->get_statut() == DEF_ID_STATUT_LIGNE)  {
+	if ($nb_queue == 0 && $oNews->get_statut() != DEF_ID_STATUT_ARCHI)  {
 	
 		$oNews->set_statut(DEF_ID_STATUT_ARCHI);
 		 
@@ -187,7 +187,7 @@ foreach ($aTabNews as $news) {
 		
 		$bSend = (bool)  multiPartMail_file(DEF_CONTACT_TO_ADMIN , $_SERVER['HTTP_HOST'].' : Envoi de la newsletter '.$oNews->get_libelle()." finalisée" , $html , html2text($html), $from, $attachPath, $aName_file, $typeAttach='text/plain', DEF_MAIL_HOST, $replyto);	
 		
-		if (!preg_match('/hephaistos/', $_SERVER['HTTP_HOST']) == 1 ) {
+		if (!preg_match('/zout/', $_SERVER['HTTP_HOST']) == 1 ) {
 			$bSend = (bool)  multiPartMail_file("technique@couleur-citron.com" , $_SERVER['HTTP_HOST'].' : Envoi de la newsletter '.$oNews->get_libelle()." finalisée" , $html , html2text($html), $from, $attachPath, $aName_file, $typeAttach='text/plain', DEF_MAIL_HOST, $replyto); 
 		}
                 

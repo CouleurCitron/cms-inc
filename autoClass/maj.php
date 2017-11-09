@@ -213,19 +213,23 @@ if (isset ($stack[0]["attrs"]["STATUT"]) ) {
 	$other_statut = $stack[0]["attrs"]["STATUT"];
 }
 if (defined("DEF_FCK_VERSION") && DEF_FCK_VERSION == "ckeditor" ) {
-	echo "<script type=\"text/javascript\">\n
-		function SetUrl(fileUrl, w , h, field){\n 
+	echo "<script type=\"text/javascript\">
+		function SetUrl(fileUrl, w , h, field){ 
 		
 			//alert (fileUrl +' '+ w +' '+ h+' '+field);
+			
+			if (field==undefined){
+				alert(\"erreur : mauvaise configuration	du File Manager\");
+			}
+			
 			var field_conteneur = field+\"_conteneur\";
 			var fileName = basename(fileUrl);
-			document.getElementById(field).value=fileUrl;\n
+			document.getElementById(field).value=fileUrl;
 			
-			document.getElementById(field_conteneur).innerHTML = \"<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'>\"+fileName+\"</a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='/backoffice/cms/img/telecharger.gif' width='14' height='16' border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>\"; 
+			document.getElementById(field_conteneur).innerHTML = \"<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'>\"+fileName+\"</a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='/backoffice/cms/img/telecharger.gif' width='14' height='16' border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>\";			
 			
-			
-		}\n
-		</script>\n";
+		}
+		</script>";
 }
 else {
 	echo "<script type=\"text/javascript\">\n

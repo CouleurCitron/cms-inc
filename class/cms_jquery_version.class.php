@@ -1,98 +1,45 @@
 <?php
-//pre_dump("jquery_version");
 /* [Begin patch] */
 
-//if(in_array('cms_site', $_SESSION['patches'])){
-//    $key = array_search('cms_site', $_SESSION['patches']);
-//    
-//    unset($_SESSION['patches'][$key]);
-//}
-
-//pre_dump(ispatched('cms_jquery_version'));
 if (!ispatched('cms_jquery_version')){
     //pre_dump("patch");
     //pre_dump(istable("cms_jquery_version"));
     if(!istable("cms_jquery_version")){
-        $ctable = "CREATE TABLE cms_jquery_version
-(
-	cms_id			int (11) PRIMARY KEY not null,
-	cms_name			varchar (255),
-	cms_filename			varchar (255),
-	cms_statut			int (11) not null
-)";
-        
+        $ctable = "CREATE TABLE cms_jquery_version (
+					cms_id			int (11) PRIMARY KEY not null,
+					cms_name			varchar (255),
+					cms_filename			varchar (255),
+					cms_statut			int (11) not null
+				)";        
         dbExecuteQuery($ctable);
-    }
-        //pre_dump("ok table");
+    }   
         
-        $sSQl = "SELECT * FROM cms_jquery_version";
-        $result = mysql_query($sSQl);
-        $number = mysql_num_rows($result);
-        //pre_dump($number);
-        if($number == "0"){
-            //pre_dump("no data");
-            
-            $sInsert = "INSERT INTO  `cms_jquery_version` (
-            `cms_id` ,
-            `cms_name` ,
-            `cms_filename` ,
-            `cms_statut`
-    )
-    VALUES 
-    (
-            '1',  'jquery 1.6.4',  'jquery-1.6.4.min.js',  '4'
-    ),
-    (
-            '2',  'jquery 1.2.6',  'jquery-1.2.6.min.js',  '4'
-    ), 
-    (
-            '3',  'jquery 1.4.2',  'jquery-1.4.2.min.js',  '4'
-    ),
-    (
-            '4',  'jquery 1.7.2',  'jquery-1.7.2.min.js',  '4'
-    ), 
-    (
-            '5',  'jquery 1.10.2',  'jquery-1.10.2.min.js',  '4'
-    ),
-    (
-            '6',  'jquery 2.0.3',  'jquery-2.0.3.min.js',  '4'
-    )";
+	$sSQl = "SELECT count(*) FROM cms_jquery_version";
+	$rs = $db->Execute($sSQl);
+	if ($rs) {
+		while(!$rs->EOF) {
+			$number = $rs->fields[0];
 
-
-
-            $rs = $db->Execute($sInsert);
-
-            //pre_dump($rs);
-        }
+			if($number == "0"){
+				$sInsert = "INSERT INTO  `cms_jquery_version` (
+				`cms_id` ,
+				`cms_name` ,
+				`cms_filename` ,
+				`cms_statut`)
+				VALUES 
+				('1',  'jquery 1.6.4',  'jquery-1.6.4.min.js',  '4'),
+				('2',  'jquery 1.2.6',  'jquery-1.2.6.min.js',  '4'), 
+				('3',  'jquery 1.4.2',  'jquery-1.4.2.min.js',  '4'),
+				('4',  'jquery 1.7.2',  'jquery-1.7.2.min.js',  '4'), 
+				('5',  'jquery 1.10.2',  'jquery-1.10.2.min.js',  '4'),
+				('6',  'jquery 2.0.3',  'jquery-2.0.3.min.js',  '4')";
+				$rs = $db->Execute($sInsert);
+			}
+			break;
+		}
+	}
 }
-/*
-INSERT INTO  `cms_jquery_version` (
-        `cms_id` ,
-        `cms_name` ,
-        `cms_filename` ,
-        `cms_statut`
-)
-VALUES 
-(
-        '1',  'jquery 1.6.4',  'jquery-1.6.4.min.js',  '4'
-),
-(
-        '2',  'jquery 1.2.6',  'jquery-1.2.6.min.js',  '4'
-), 
-(
-        '3',  'jquery 1.4.2',  'jquery-1.4.2.min.js',  '4'
-),
-(
-        '4',  'jquery 1.7.2',  'jquery-1.7.2.min.js',  '4'
-), 
-(
-        '5',  'jquery 1.10.2',  'jquery-1.10.2.min.js',  '4'
-),
-(
-        '6',  'jquery 2.0.3',  'jquery-2.0.3.min.js',  '4'
-);
 
-*/
 /* [End patch] */
 if(file_exists($_SERVER['DOCUMENT_ROOT'].'/include/bo/class/cms_jquery_version.class.php')  && (strpos(__FILE__,'/include/bo/class/cms_jquery_version.class.php')===FALSE) ){
     //pre_dump("choix1");

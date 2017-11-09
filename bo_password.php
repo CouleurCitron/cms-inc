@@ -1,5 +1,5 @@
 <?php
-
+include_once($_SERVER['DOCUMENT_ROOT']."/include/autopreprend.php");
 include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
 include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");  
 
@@ -8,7 +8,7 @@ $translator =& TslManager::getInstance();
  
 	
 	
-	if (isset ( $_POST["password_email"]) &&  $_POST["password_email"] != "") { 
+	if (is_post('password_email')) { 
 		// enregistrer le compte en session  
 		$emaillogin = $_POST["password_email"];
 		if (isEmail($emaillogin)){

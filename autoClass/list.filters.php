@@ -8,7 +8,7 @@ function rechercher() {
 function filterChange() {
 <?php
 	unset($_SESSION["adodb_curr_page"]);
-	if (!ereg("backoffice", $_SERVER['PHP_SELF'])){
+	if (!preg_match("/backoffice/si", $_SERVER['PHP_SELF'])){
 ?>
 	document.<?php echo $classePrefixe; ?>_rech_form.action = "<?php echo $_SERVER['SCRIPT_URI']; ?>";
 	document.<?php echo $classePrefixe; ?>_rech_form.submit();

@@ -89,9 +89,10 @@ function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlte
 	return $sSubject;
 }
 
-function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter){	
-	
-	//error_log('rewriteNewsletterBody('.$eNews.')');
+function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter=NULL){	
+	global $db;
+	error_log('rewriteNewsletterBody('.$eNews.')');
+	error_reporting(A_LL);
 
 	if($bUseCriteres==1){
 		// newsletter inscrit	
@@ -119,23 +120,11 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 				$aCriteres['date_published']=date('Y-m-d');
 
 				if(is_array($aCriteres)){					
-					/*
-					if ($aCriteres['type'] != "-1" || $aCriteres['place'] != "-1" || $aCriteres['function'] != "-1" || $aCriteres['experience'] != "-1" || $aCriteres['text'] != "" || $aCriteres['reference'] != "") {// on interdit la rech ALL *					
-						
-						$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
-						
-						foreach($aRes as $kRes => $oRes){// dedoublonnage
-							$aOs[$oRes["id"]]=$oRes;
-						}
+					$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
+
+					foreach($aRes as $kRes => $oRes){// dedoublonnage
+						$aOs[$oRes["id"]]=$oRes;
 					}
-					*/
-					//else {
-						$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
-						
-						foreach($aRes as $kRes => $oRes){// dedoublonnage
-							$aOs[$oRes["id"]]=$oRes;
-						}
-					//}
 				}
 				else{
 					$aRes = $jm->getOffers (-1, $aCriteres['place'], -1, -1, '', '', $aCriteres['date_published'], '');
@@ -158,8 +147,10 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 				$_SESSION['id_langue']=$lang;
 				$translator =& TslManager::getInstance();
 			}
-						
-			//$oCriNlter = new critereNewsletter();
+				
+			if ($oCriNlter==NULL){ // si n'est pas passé en param
+				$oCriNlter = new critereNewsletter();
+			}			
 			
 			$oCriNlter->eIns=$eIns;
 			$oCriNlter->eNews=$eNews;
@@ -183,12 +174,52 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 	}
 
 	$sBodyHTML = preg_replace('/http:\/\/[^\/]+\.interne\//msi', '/', $sBodyHTML);	
-	$sBodyHTML = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '/', $sBodyHTML);	
+	$sBodyHTML = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '/', $sBodyHTML);
 
-	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == 'ON')){	
-		// ici rewirte pour taggage /newsletter/[$eNews]/[$eIns]/link		
-		$sBodyHTML = str_replace('href="http://'.$_SERVER['HTTP_HOST'].'/', 'href="/', $sBodyHTML);	
-		$sBodyHTML = str_replace('href="/', 'href="http://'.$_SERVER['HTTP_HOST'].'/newsletter/'.$eNews.'/'.$eIns.'/', $sBodyHTML);	
+	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == true)){	
+		// ici rewirte pour taggage ins=300-6805-MD5
+		
+		//$sBodyHTML = str_replace('href="http://'.$_SERVER['HTTP_HOST'].'/', 'href="/', $sBodyHTML);	
+		//$sBodyHTML = str_replace('href="/', 'href="http://'.$_SERVER['HTTP_HOST'].'/newsletter/'.$eNews.'/'.$eIns.'/', $sBodyHTML);
+		
+		preg_match_all('/href="([^"]+)"/msi', $sBodyHTML, $aAllLinks);
+		
+		if(isset($aAllLinks[1])){
+			
+			$aAllLinks = $aAllLinks[1];
+			
+			foreach($aAllLinks as $k => $link){
+				
+				if(!preg_match('/google/msi', $link)){
+				
+					$sql='SELECT count(*) FROM news_links WHERE news_md5 = "'.md5($link).'"';
+					$rs = $db->Execute($sql);
+					$linkDejaMD5=0;
+					if($rs){
+						while(!$rs->EOF) {
+							$linkDejaMD5 = $rs->fields[0];
+							break;
+						}					
+					}
+					if($linkDejaMD5==0){
+						$oO = new news_links();
+						$oO->set_url($link);
+						$oO->set_md5(md5($link));
+						dbSauve($oO);					
+					}
+
+					if ($link!=''	&&	!preg_match('/^mailto/msi', $link)	&&	!preg_match('/^tel/msi', $link)	&&	$link!='#'	&&	!preg_match('/^#/msi', $link)){
+						$sBodyHTML = str_replace('href="'.$link, 'href="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'-'.md5($link).'"', $sBodyHTML);
+					}	
+
+				}
+				
+			}
+			
+			
+		}
+		
+		
 	}
 	else{
 		$sBodyHTML = str_replace('href="/', 'href="http://'.$_SERVER['HTTP_HOST'].'/', $sBodyHTML);
@@ -248,7 +279,7 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 		 
 		$dateFY = ucfirst(str_replace ($mois_EN, $mois_FR, strtolower($dateFY))) ; 
 	}
-	
+
 	$sBodyHTML = str_replace("XX-MAIL-DATE-FY-XX", $dateFY, $sBodyHTML);
 	if($eIns>0){
 		$sBodyHTML = str_replace("XX-ID-INSCRIT-XX", md5($eIns), $sBodyHTML);
@@ -261,16 +292,15 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 	if ($sSubject!=NULL){
 		$sBodyHTML = str_replace("XX-SUJET-XX", $sSubject, $sBodyHTML); 
 	}
-	
-	 wordwrap($text, 20, "<br />\n");
-	// taggage ouverture de la letter
-	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == 'ON')){	
-		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/newsletter/'.$eNews.'/'.$eIns.'/index.php" style="display:none" width="1" height="1" />';
+
+	wordwrap($text, 20, "<br />\n");
+	// taggage ouverture de la letter	
+	if(preg_match('/<\/body>/msi', $sBodyHTML)){
+		$sBodyHTML= str_replace('</body>', '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" /></body>', $sBodyHTML);
 	}
 	else{
 		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" />';
-	}
-	
+	}	
 	$sBodyHTML =  wordwrap($sBodyHTML, 78, "\r\n");
 	return $sBodyHTML;
 }
