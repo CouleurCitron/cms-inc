@@ -516,6 +516,7 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
     }
 
     function multiPartMail_file($to , $sujet , $html , $text, $from, $attach, $aName_file, $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
+			$sujetRaw = $sujet;
             $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
             $//$from = mb_convert_encoding($from, "UTF-8");
             $from = mb_encode_mimeheader($from);
@@ -586,7 +587,7 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
             $message = $email->encode(); 
 
             $destinataire = $to;
-            error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
+			error_log('to = '.$destinataire.' | sujet = '.$sujetRaw.' | from = '.$from.' | '.DEF_MAIL_ENGINE.': '.$host.':'.DEF_MAIL_PORT);
 
             $entetes = $message['headers'];
 
@@ -623,8 +624,14 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
             else {
                     $params['auth'] = false;
             }
-
-            $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params);
+			
+			if (DEF_MAIL_ENGINE=='smtp'){
+				$mailObj = new Mail_smtp($params);					
+			}
+			else{			
+				$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
+				//$mailObj = new Mail_mail(DEF_MAIL_ENGINE.' '.implode(' ', $params));
+			}
             $result = $mailObj->send($destinataire, $entetes, $message['body']);
             if($result!=true) {
                     error_log($result->getMessage());
