@@ -774,7 +774,7 @@ function displayOptionSelect($sql, $res, $stack, $oTemp, $aCurrentNode, $eKeyVal
 	global $isRecursive;
 	global $aOps;
 	global $db;
-        global $oUser;
+    global $oUser;
 
 	$aListeChamps = $oTemp->getListeChamps();
 	$foreignPrefixe = $stack[0]["attrs"]["PREFIX"];
