@@ -81,7 +81,6 @@ function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlte
 		if (method_exists($oCriNlter, 'getSubject')){
 			$sSubject = $oCriNlter->getSubject($sSubject, $aOs, $translator);			
 		}
-		
 	}
 	
 	$sSubject = html_entity_decode(accent2Html($sSubject, true)); // accent2Html avec param true execute html2accent
@@ -92,7 +91,7 @@ function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlte
 function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter=NULL){	
 	global $db;
 	error_log('rewriteNewsletterBody('.$eNews.')');
-	error_reporting(A_LL);
+	//error_reporting(A_LL);
 
 	if($bUseCriteres==1){
 		// newsletter inscrit	
@@ -299,8 +298,9 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 		$sBodyHTML= str_replace('</body>', '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" /></body>', $sBodyHTML);
 	}
 	else{
-		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" />';
-	}	
+		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" alt="" />';
+	}
+	
 	$sBodyHTML =  wordwrap($sBodyHTML, 78, "\r\n");
 	return $sBodyHTML;
 }
@@ -440,12 +440,8 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                     return (htmlmail($from,$to,$sujet,$html));
             }
             else {
+                    if(is_array($to)) $to = implode(', ', $to);
 
-                    if(is_array($to)) $to = join(', ', $to);
-
-                    if(is_array($to)) $to = join(', ', $to);
-
-            //	$parammulti['content_type'] = 'multipart/mixed';
                     $parammulti['content_type'] = 'multipart/alternative';
 
 
