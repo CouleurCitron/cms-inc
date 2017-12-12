@@ -301,7 +301,13 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" alt="" />';
 	}
 	
-	$sBodyHTML =  wordwrap($sBodyHTML, 78, "\r\n");
+	$sBodyHTML = preg_replace('/[ ]{2,}/msi' , ' ', $sBodyHTML);
+	$aBodyHTML = explode("\n", $sBodyHTML);
+	foreach($aBodyHTML as $k => $sBodyHTMLline){
+		$aBodyHTML[$k] = wordwrap($sBodyHTMLline, 78, "\r\n");		
+	}
+	$sBodyHTML = implode("\n", $aBodyHTML);
+	//$sBodyHTML = wordwrap($sBodyHTML, 78, "\r\n");
 	return $sBodyHTML;
 }
 
