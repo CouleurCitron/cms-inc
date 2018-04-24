@@ -40,6 +40,7 @@ define("RECAPTCHA_API_SERVER", "http://www.google.com/recaptcha/api");
 define("RECAPTCHA_API_SECURE_SERVER", "https://www.google.com/recaptcha/api");
 define("RECAPTCHA_VERIFY_SERVER", "www.google.com");
 
+
 /**
  * Encodes the given data into a query string format
  * @param $data - array of string elements to be encoded
@@ -66,30 +67,69 @@ function _recaptcha_qsencode ($data) {
  * @return array response
  */
 function _recaptcha_http_post($host, $path, $data, $port = 80) {
+	
+	if($port==80){
+		$protocol='http://';
+	}
+	else{
+		$protocol='https://';	
+	}
+	
+	$url = $protocol.$host.$path."?secret=".$data['secret']."&response=".$data['response'];
+	//error_log($url);
 
-        $req = _recaptcha_qsencode ($data);
+	$curl = curl_init();
+	curl_setopt($curl, CURLOPT_URL, $url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, TRUE); 
+	$curlData = curl_exec($curl);
 
-        $http_request  = "POST $path HTTP/1.0\r\n";
-        $http_request .= "Host: $host\r\n";
-        $http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
-        $http_request .= "Content-Length: " . strlen($req) . "\r\n";
-        $http_request .= "User-Agent: reCAPTCHA/PHP\r\n";
-        $http_request .= "\r\n";
-        $http_request .= $req;
+	curl_close($curl);
 
-        $response = '';
-        if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
-                die ('Could not open socket');
-        }
+	return $curlData;
 
-        fwrite($fs, $http_request);
+   /* $res = json_decode($curlData, TRUE);
+	if($res['success'] == 'true') 
+		return TRUE;
+	else
+		return FALSE;*/
 
-        while ( !feof($fs) )
-                $response .= fgets($fs, 1160); // One TCP-IP packet
-        fclose($fs);
-        $response = explode("\r\n\r\n", $response, 2);
 
-        return $response;
+	/*
+	error_log('$host '.$host.', $path '.$path.', $data '.$data.', $port '.$port);
+
+	$req = _recaptcha_qsencode ($data);
+
+	$http_request  = "POST $path HTTP/1.0\r\n";
+	$http_request .= "Host: $host\r\n";
+	$http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
+	$http_request .= "Content-Length: " . strlen($req) . "\r\n";
+	$http_request .= "User-Agent: reCAPTCHA/PHP\r\n";
+	$http_request .= "\r\n";
+	$http_request .= $req;
+
+	$response = '';
+	if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
+			die ('Could not open socket');
+	}
+
+	fwrite($fs, $http_request);
+
+	while ( !feof($fs) )
+			$response .= fgets($fs, 1160); // One TCP-IP packet
+	fclose($fs);
+
+	var_dump($http_request);
+	var_dump($response);
+
+	$response = explode("\r\n\r\n", $response, 2);
+
+	error_log($errno);
+	error_log($errstr);
+
+	return $response;*/
 }
 
 
@@ -148,9 +188,10 @@ class ReCaptchaResponse {
   * @param string $challenge
   * @param string $response
   * @param array $extra_params an array of extra variables to post to the server
+  * @param int $version default set to 1 (now obsolete)
   * @return ReCaptchaResponse
   */
-function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array())
+function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array(), $version=1)
 {
 	if ($privkey == null || $privkey == '') {
 		die ("To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>");
@@ -159,37 +200,60 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	if ($remoteip == null || $remoteip == '') {
 		die ("For security reasons, you must pass the remote ip to reCAPTCHA");
 	}
-
 	
-	
-        //discard spam submissions
-        if ($challenge == null || strlen($challenge) == 0 || $response == null || strlen($response) == 0) {
-                $recaptcha_response = new ReCaptchaResponse();
-                $recaptcha_response->is_valid = false;
-                $recaptcha_response->error = 'incorrect-captcha-sol';
-                return $recaptcha_response;
-        }
+	//discard spam submissions
+	if ($response == null || strlen($response) == 0) {
+			$recaptcha_response = new ReCaptchaResponse();
+			$recaptcha_response->is_valid = false;
+			$recaptcha_response->error = 'incorrect-captcha-sol';
+			return $recaptcha_response;
+	}
 
-        $response = _recaptcha_http_post (RECAPTCHA_VERIFY_SERVER, "/recaptcha/api/verify",
-                                          array (
-                                                 'privatekey' => $privkey,
-                                                 'remoteip' => $remoteip,
-                                                 'challenge' => $challenge,
-                                                 'response' => $response
-                                                 ) + $extra_params
-                                          );
+	if($version==1){
+		$url = '/recaptcha/api/verify';
+		$params = array (
+					'privatekey' => $privkey,
+					'remoteip' => $remoteip,
+					'response' => $response,
+					'challenge' => $challenge
+					);
+		$port=80;
+	}
+	else{
+		$url = '/recaptcha/api/siteverify';
+		$params = array (
+					'secret' => $privkey,
+					'remoteip' => $remoteip,
+					'response' => $response
+					);
+		$port = 443;
+	}
 
-        $answers = explode ("\n", $response [1]);
-        $recaptcha_response = new ReCaptchaResponse();
+	$response = _recaptcha_http_post (RECAPTCHA_VERIFY_SERVER, $url,
+									  array_merge($params, $extra_params),
+									  $port
+									  );
+	$res = json_decode($response, TRUE);
 
-        if (trim ($answers [0]) == 'true') {
-                $recaptcha_response->is_valid = true;
-        }
-        else {
-                $recaptcha_response->is_valid = false;
-                $recaptcha_response->error = $answers [1];
-        }
-        return $recaptcha_response;
+	$recaptcha_response = new ReCaptchaResponse();
+
+	if($res['success'] == 'true'){
+		 $recaptcha_response->is_valid = true;
+	}
+	else{
+	   $recaptcha_response->is_valid = false;
+	   $recaptcha_response->error = $res;
+		error_log($curlData);
+	}
+
+   /* if (trim ($answers [0]) == 'true') {
+			$recaptcha_response->is_valid = true;
+	}
+	else {
+			$recaptcha_response->is_valid = false;
+			$recaptcha_response->error = $answers [1];
+	}*/
+	return $recaptcha_response;
 
 }
 
@@ -274,5 +338,3 @@ function recaptcha_mailhide_html($pubkey, $privkey, $email) {
 
 }
 
-
-?>
