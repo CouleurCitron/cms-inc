@@ -927,7 +927,7 @@ function getContentForUser($idUser, $sTri="")
 function getFolderContents($idSite, $nodeId) {
 
 	if(strlen($nodeId)>0)
-			$nodeId=array_pop(split(',',$nodeId));
+			$nodeId=array_pop(explode(',',$nodeId));
 	else
 			return false;
 	global $db;
@@ -977,7 +977,7 @@ function getFolderContents($idSite, $nodeId) {
 function getFolderEditContents($idSite, $nodeId) {
 
 	if(strlen($nodeId)>0)
-			$nodeId=array_pop(split(',',$nodeId));
+			$nodeId=array_pop(explode(',',$nodeId));
 	else
 			return false;
 	global $db;
