@@ -179,12 +179,12 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 	$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/ancre.js.php"></script>'."\n";
 	
 	// flash
-	if (!$_SESSION['mobile']){
+	/*if (!$_SESSION['mobile']){
 		$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/flashDetection.js.php"></script>'."\n";
 		$sHeader .= '	<script type="text/vbscript" src="/backoffice/cms/js/flashDetection.vbs.php"></script>'."\n";
 		$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/flashDetection.php"></script>'."\n";
 		$sHeader .= '	<script type="text/javascript" src="/backoffice/cms/js/AC_RunActiveContent.js"></script>'."\n";  
-	}
+	}*/
 	
 	// cookie banner
 	// wiki.adequation.cc/index.php?title=Cookie_opt%27in
