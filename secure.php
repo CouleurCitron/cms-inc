@@ -420,7 +420,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 					curl_close($ch);
 				}
 				
-				if ((!$contents) || ($contents=='incorrect usage') || ($contents=='forbidden')){ // pas de réponse, on teste localement
+				if ((!$contents) || ($contents=='incorrect usage') || ($contents=='forbidden')	||	preg_match('/<html>/msi', $contents)){ // pas de réponse, on teste localement
 					$aNames = array('suhali.dyndns.org'); 
 					$aIPs = array('37.1.253.222', '37.1.253.217', '82.124.17.60', '82.228.89.184', '82.228.167.148', '81.249.110.2', '82.234.79.170', '88.124.114.41', '82.238.143.116', '92.245.150.148', '37.1.253.217');
 					
