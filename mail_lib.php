@@ -506,7 +506,11 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                             {
                                $typeAttach="image/gif";
                             }
-                            else if($extension == "xls")
+                            else if($extension == "xlsx")
+                            {
+                               $typeAttach="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                            }
+							else if($extension == "xls")
                             {
                                $typeAttach="text/vnd.ms-excel";
                             }
@@ -795,6 +799,10 @@ for ($i=0; $i<sizeof($aName_file); $i++)
 		else if($extension == "xls")
 		{
 		   $typeAttach="text/vnd.ms-excel";
+		}
+		else if($extension == "xlsx")
+		{
+		   $typeAttach="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 		}
 		else if($extension == "pdf")
 		{
