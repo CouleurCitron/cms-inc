@@ -48,11 +48,11 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 				else{ //varchar
 					$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);
                                         
-                                        /* on enlève les injections HTML
-                                         * + vérification du typage
-                                         * MAJ 12/09/2014 @ Raphael
-                                         */
-                                        $_GET[$gKey] = strval( htmlspecialchars( strip_tags( $_GET[$gKey] ) ) );
+					/* on enlève les injections HTML
+					 * + vérification du typage
+					 * MAJ 12/09/2014 @ Raphael
+					 */
+					$_GET[$gKey] = strval( htmlspecialchars( strip_tags( $_GET[$gKey] ) ) );
 				}
 			}
 			//pre_dump($_GET[$gKey]);
@@ -133,11 +133,11 @@ if (isset($_SERVER['HTTP_USER_AGENT'])){
 		//pas ce test si flash - Shockwave Flash
 		if (($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash')&&($_SESSION['HTTP_USER_AGENT_MD5'] != md5($_SERVER['HTTP_USER_AGENT']))){
 			// Prompt for password 
-		   // session_destroy(); // SID désactivé cause of IE10
-			error_log('---------------------------------------------------');
+			// session_destroy(); // SID désactivé cause of IE10
+			/*	error_log('---------------------------------------------------');
 			error_log('session_destroy >> USER AGENT '.$_SERVER['HTTP_USER_AGENT']);
 			error_log('session_destroy >> PREV. WAS '.$_SESSION['HTTP_USER_AGENT']);
-			error_log('---------------------------------------------------');
+			error_log('---------------------------------------------------');*/
 		}
 	}
 	else{
@@ -195,10 +195,7 @@ else{
 
 //error_reporting :
 // 3 cas :
-if (preg_match('/pierre\..+\.hephaistos/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-}
-elseif (preg_match('/hephaistos/', $_SERVER['HTTP_HOST'])==1){// - dev
+if (preg_match('/zout|emulgator/', $_SERVER['HTTP_HOST'])==1){// - dev
 	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 }
 elseif (preg_match('/preprod/', $_SERVER['HTTP_HOST'])==1){// - dev
