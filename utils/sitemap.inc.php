@@ -93,7 +93,11 @@ function arboNodeToSiteMap($oSite, $idNode){
 			if (intval($oNode['order']) > 0){
 				$fullpath = '/content'.$oNode['path'];
 				if (is_file($_SERVER['DOCUMENT_ROOT'].$fullpath.'index.php') ||  is_file($_SERVER['DOCUMENT_ROOT'].$fullpath.'index.html')){
-					echo "<url><loc>http://".XMLconformeURL($_SERVER['SERVER_NAME'].$fullpath)."</loc>\n"; 
+					echo "<url><loc>http";
+					if($_SERVER['HTTPS'] == 'on'){
+						echo 's';
+					}						
+					echo "://".XMLconformeURL($_SERVER['SERVER_NAME'].$fullpath)."</loc>\n"; 
 					
 					arboNodeToSiteMapVideo ($oSite, $oNode['id']);  
 					
