@@ -925,7 +925,8 @@ function renameNode($idSite, $db, $virtualPath, $libelle){
 
 
 function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
-	$node_id = array_pop(explode(',',$virtualPath));
+	$avirtualPath = explode(',', $virtualPath);
+	$node_id = array_pop($avirtualPath);
 	$result = false;
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle, node_absolute_path_name";
@@ -972,8 +973,8 @@ function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
 }
 
 function getNodeInfos($db, $virtualPath){
-
-	$node_id = array_pop(explode(',',$virtualPath));
+	$avirtualPath = explode(',', $virtualPath);
+	$node_id = array_pop($avirtualPath);
 	$result = null;
 	if (trim($node_id)==''){
 		//error_log('getNodeInfos('.$virtualPath.') appel incorrect '.__FILE__.':'.__LINE__);
@@ -1300,7 +1301,8 @@ function getAbsolutePathString($idSite, $db, $virtualPath,$destination=null) {
 }
 
 function getNodeChildren($idSite, $db, $path) {
-	$node_id = array_pop(explode(',',$path));
+	$avirtualPath = explode(',', $path);
+	$node_id = array_pop($avirtualPath);
 	$result = array();
 
 	$sql = " SELECT * FROM cms_arbo_pages";

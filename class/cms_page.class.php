@@ -124,7 +124,7 @@ function updateToutenligne($idPage)
 function updateExisteligne($idPage)
 function pageTravail($idPage, $sMode, $eIdTravail)
 function afficheIconePreviewPage($idContent, $sNature, $idPage, $sNomPage, $bToutenligne_page, $bExisteligne_page, $sUrlPageLigne)
-function getPagesFromXGabarits($aIdGab) {
+function getPagesFromXGabarits($aIdGab, $idSite) {
 function getIdPageWithUrl($idNode, $idSite, $sPage)
 function analyseUrlToGetIdPage($sUrlComplete)
 function getUrlWithIdPage($idPage)
@@ -925,7 +925,7 @@ function ifExisteligne($idPage)
 
 	// taille du div_array pour cette page :: ensemble des briques de cette page
 
-	if ($divArray[0]['id'] != "") $eIdDivarray = 1;
+	if (isset($divArray[0]['id'])	&&	$divArray[0]['id'] != "") $eIdDivarray = 1;
 	else $eIdDivarray = 0;
 
 	// composants
@@ -1223,7 +1223,7 @@ $sUrlPageLigne = str_replace("%25E9", "%E9", $sUrlPageLigne);
 // + les gabarits eux mêmes
 ///////////////////////////////////
 
-function getPagesFromXGabarits($aIdGab) {
+function getPagesFromXGabarits($aIdGab, $idSite) {
 
 	global $db;
 	$result = array();
@@ -1255,8 +1255,12 @@ function getPagesFromXGabarits($aIdGab) {
 		else $sql.=" ) "; // fin deuxième parenthèse
 	}
 	
+	
+	
 	// fin grande parenthèse
 	if (sizeof($aIdGab)) $sql.=" ) ";	
+	
+	$sql.= " AND id_site=$idSite ";
 	
 	$sql.=" ORDER BY isgabarit_page DESC, gabarit_page ASC";
 	

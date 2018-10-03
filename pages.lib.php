@@ -1209,7 +1209,8 @@ function getListPageToGenerate()
 function getFolderInfos($virtualPath)
 {
 	global $db;
-	$node_id = array_pop(explode(',',$virtualPath));
+	$avirtualPath = explode(',', $virtualPath);
+	$node_id = array_pop($avirtualPath);
 	$result = null; 
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle, node_absolute_path_name ";

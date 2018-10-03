@@ -204,7 +204,7 @@ class TslManager {
 			}
 			// fin cas champ vide 
 			
-		} else	$ref_id = $this->addReference($text, true);
+		} else	$ref_id = $this->addReference($text, true, true);
 			//$ref_id = $this->getTextID($text, true);
 			//$this->checkTextID($text, true);
 		if ($lang == DEF_APP_LANGUE && $_SESSION['tsl_langue'] == DEF_APP_LANGUE) {
@@ -277,6 +277,14 @@ class TslManager {
 			$bDetectLang = false;
 		}
 		
+                if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' ){
+                    /* on rcupre la vrai ID */
+                    if( strlen($ref_id) == 32 ){
+                        $ref_id = $this->getReferenceID($ref_id);
+                    }
+                }
+                
+                
 		//error_log( 'getByID('.$lang.')');
 		if ($ref_id > 0) {
 			$text = $this->getText('', $lang, $ref_id);	
@@ -391,13 +399,21 @@ class TslManager {
 	function getReferenceID ($MD5=null) {
 		if (!is_null($MD5)) {
 			$res = dbGetObjectsFromFieldValue('cms_chaine_reference', Array('get_md5'), Array($MD5), null);
-			if (count($res) == 1)
+			if (count($res) == 1){
 				return (Int) $res[0]->get_id();
+			}
 		    	elseif (count($res) > 1) {
-		    		echo 'Error - MD5 hash for translation is not unique in DB records ('.$MD5.')';
+		    		//echo 'Error - MD5 hash for translation is not unique in DB records ('.$MD5.')';
 		    		return -1;
-			} else	return (Int) 0;
-		} else	return (Int) 0;
+			}
+			else{
+				//echo 'no result for '.$MD5;
+				return (Int) 0;
+			}
+		} else{
+			//echo 'no MD5 provided';
+			return (Int) 0;
+		}
 	}
 
 
@@ -410,16 +426,31 @@ class TslManager {
 	 * @return	Int		Text string ID
 	 * @todo		Why not try to use getTextID with the forced 'create' parameter ?
 	 */
-	function addReference ($text, $check=true) {
+	function addReference ($text, $check=true, $return_id = false) {
+            
+            
+            $md5 = md5($text);
+            
 		if ($check) {
+                    if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
+                        $ref_id = $this->getReferenceID ($md5);
+                    else
 			$ref_id = $this->getTextID($text);
+                    
+                    
 			if ($ref_id > 0){
 				//echo 'check '.$ref_id;
+                            if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' && !$return_id )
+                                return $md5;
+                            else
 				return (Int) $ref_id;
 			}
 		}
+                
+                
+                
 		$this->reference->set_chaine($text);
-		$this->reference->set_MD5(md5($text));
+		$this->reference->set_MD5($md5);
 		$ref_id = (Int) dbInsertWithAutoKey($this->reference);
 		//echo 'inset '.$ref_id;
 		return $ref_id;
@@ -435,6 +466,12 @@ class TslManager {
 	 * @return	Int		Reference text id
 	 */
 	function addTranslation ($ref_text, $units=null) {
+            //pre_dump($ref_text); //die();
+            $md5 = md5($ref_text);
+            
+            if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
+		$ref_id = $this->getReferenceID($md5);
+            else
 		$ref_id = $this->getTextID($ref_text);
 		//echo "<br />addTranslation<br />".$ref_id." ".$ref_text."<br />";		
 		
@@ -469,7 +506,9 @@ class TslManager {
 				}
 			}
 		}
-		
+                if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
+                    return $md5;
+                else
 		return (Int) $ref_id;
 	}
 
