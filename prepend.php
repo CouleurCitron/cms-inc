@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: text/html; charset=ISO-8859-1');
+
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); 
 // sponthus 20/06/2005
 // si présence de paramètres dans la définition des menus, 
@@ -102,8 +104,8 @@ else{
 	$_SESSION['id_langue'] = 1;
 }
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<!--[if gt IE 8]><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /><![endif]-->

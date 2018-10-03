@@ -265,10 +265,10 @@ function folderdescriptionToXML($sDescription){
 	$aFolderDescriptionVariable = array();
 	$aFolderDescriptionValue = array();
 	
-	$aFolderdescription = split("&", $sDescription);
+	$aFolderdescription = explode("&", $sDescription);
 	$ePaireCounter = 0;
 	foreach ($aFolderdescription as $paire => $paireAspliter) {
-		$aTempPaireSplit = split("=", $paireAspliter);
+		$aTempPaireSplit = explode("=", $paireAspliter);
 		$ePaireCounter++;
 		$aFolderDescriptionVariable[$ePaireCounter] = rawurldecode($aTempPaireSplit[0]);
 		$aFolderDescriptionValue[$ePaireCounter] = rawurldecode($aTempPaireSplit[1]);
@@ -310,7 +310,7 @@ function deleteNode($idSite, $db, $virtualPath){
 	global $CMS_ROOT;
 	if( ($virtualPath=='0') || (strlen($virtualPath)=='0'))
 		return false;
-	$array_path = split(',',$virtualPath);
+	$array_path = explode(',',$virtualPath);
 	$node_id = array_pop($array_path);
 	$result = false;
 	$parentVirtualPath = join(',',$array_path);
@@ -372,7 +372,7 @@ function deleteNode($idSite, $db, $virtualPath){
 function addNode($idSite, $db, $virtualPath, $libelle){
 
 	global $CMS_ROOT;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 
 	// Les guillements font foirer l'enregistrement du répertoire sur le disque
@@ -562,7 +562,7 @@ function renameNode_cms_arbo_pages($idSite, $db, $virtualPath, $libelle, $node_i
 
 // rename un noeud 
 function renameNode($idSite, $db, $virtualPath, $libelle){
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 
 	// arbo pages
 	$result_arbopages = renameNode_cms_arbo_pages($idSite, $db, $virtualPath, $libelle, $node_id);
@@ -572,7 +572,8 @@ function renameNode($idSite, $db, $virtualPath, $libelle){
 
 
 function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
-	$node_id = array_pop(split(',',$virtualPath));
+	$avirtualPath = explode(',', $virtualPath);
+	$node_id = array_pop($avirtualPath);
 	$result = false;
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle, node_absolute_path_name";
@@ -619,8 +620,8 @@ function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
 }
 
 function getNodeInfos($db, $virtualPath){
-
-	$node_id = array_pop(explode(',',$virtualPath));
+	$avirtualPath = explode(',', $virtualPath);
+	$node_id = array_pop($avirtualPath);
 	$result = null;
 	if (trim($node_id)==''){
 		//error_log('getNodeInfos('.$virtualPath.') appel incorrect '.__FILE__.':'.__LINE__);
@@ -723,7 +724,7 @@ function path2idside($db, $absolutePath){
 
 function node2idside($db, $virtualPath){
 	
-	$eCurrNode = end(split(',',$virtualPath));
+	$eCurrNode = end(explode(',',$virtualPath));
 	
 	$sSql = "SELECT node_absolute_path_name FROM cms_arbo_pages WHERE node_id =".$eCurrNode;
 	$absolutePath = dbGetUniqueValueFromRequete($sSql);
@@ -767,7 +768,7 @@ function path2nodesReverse($idSite, $db, $virtualPath) {
 // $virtualpath = arbo numérique $node_parent_parent_id,$node_parent_id,$current_node_id
 // Retourne l'absolutePath
 	$strPath = '/';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$sql = " SELECT node_libelle FROM cms_arbo_pages WHERE node_id=".$id;
 			// une seule racine pour tous les arbres
@@ -808,7 +809,7 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=0\"><img border=\"0\" src=\"".$URL_ROOT."/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 
 	} else {
-		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
+		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
 	}
 
 	$children = getNodeChildren($idSite, $db, $full_path_to_curr_id);
@@ -823,12 +824,12 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 		$libelle = $v['libelle'];
 		$description = $v['description'];
 		//debut de ligne...
-		if (!in_array($id,split(',',$virtualPath))) {
+		if (!in_array($id,explode(',',$virtualPath))) {
 			//dossier ferme
 			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a><br/></span>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(split(',',$virtualPath))==$id)
+			if(array_pop(explode(',',$virtualPath))==$id)
 				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a class=\"arbo\" href=\"".$destination."?idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small><span class=\"arbo\">".strip_tags(str_replace(' ','&nbsp;',$libelle))."</span></small></a><br/></span>\n";
 			else
 				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination."?idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a><br/></span>\n";
@@ -857,7 +858,7 @@ function drawCompTreeMinisite($idSite, $db, $virtualPath, $full_path_to_curr_id=
 			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=0&source=minisite\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 
 	} else {
-		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
+		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
 	}
 
 	$children = getNodeChildren($idSite, $db, $full_path_to_curr_id);
@@ -872,7 +873,7 @@ function drawCompTreeMinisite($idSite, $db, $virtualPath, $full_path_to_curr_id=
 		$libelle = $v['libelle'];
 		$description = $v['description'];
 		//debut de ligne...
-		if (!in_array($id,split(',',$virtualPath))) {
+		if (!in_array($id,explode(',',$virtualPath))) {
 			//dossier ferme
 			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id&source=minisite\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\">";
 			if ($tree_depth == 1 && is_cms_minisite ($idSite , $id) ) $strHTML .= "<img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_minisite_off.gif\">&nbsp;";
@@ -880,7 +881,7 @@ function drawCompTreeMinisite($idSite, $db, $virtualPath, $full_path_to_curr_id=
 			$strHTML .= "<small>".str_replace(' ','&nbsp;',$libelle)."</small></a><br/></span>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(split(',',$virtualPath))== $id && is_cms_minisite ($idSite , $id) ) {
+			if(array_pop(explode(',',$virtualPath))== $id && is_cms_minisite ($idSite , $id) ) {
 				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a class=\"arbo\" href=\"".$destination."?idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id&source=minisite\" title=\"".str_replace('"', "''", $description)."\">";
 				if ($tree_depth == 1) $strHTML .= "<img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_minisite_on_opened.gif\">&nbsp;";
 				else $strHTML .= "<img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\">&nbsp;";
@@ -919,7 +920,7 @@ function getAbsolutePathString($idSite, $db, $virtualPath,$destination=null) {
 		$OP = '&';
 	$strPath = '<a href="'.$destination.$OP.'v_comp_path=0" class="arbo"><b>Racine</b></a>';
 	$localPath='0';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$localPath.=",$id";
 
@@ -947,7 +948,8 @@ function getAbsolutePathString($idSite, $db, $virtualPath,$destination=null) {
 }
 
 function getNodeChildren($idSite, $db, $path) {
-	$node_id = array_pop(explode(',',$path));
+	$avirtualPath = explode(',', $path);
+	$node_id = array_pop($avirtualPath);
 	$result = array();
 
 	$sql = " SELECT * FROM cms_arbo_pages";
@@ -1023,7 +1025,7 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 // $new_virtualPath = path destination
 // Renvoi "true" si ok, "false" sinon
 	global $CMS_ROOT;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$nodeInfos = getNodeInfos($db, $virtualPath);
 	$new_nodeInfos = getNodeInfos($db, $new_virtualPath);
@@ -1039,9 +1041,8 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 	if (DEF_BDD != "ORACLE") $sql.=";\n";
 
 	$rs = $db->Execute($sql);
-//	$oldpath = $CMS_ROOT.utf8_encode(ereg_replace("[/]?$","",$nodeInfos['path']));
-//	$newpath = $CMS_ROOT.utf8_encode($new_nodeInfos['path']).utf8_encode($nodeInfos['libelle']);
-	$oldpath = $CMS_ROOT.ereg_replace("[/]?$","",$nodeInfos['path']);
+
+	$oldpath = $CMS_ROOT.preg_replace("/[\/]?$/msi","",$nodeInfos['path']);
 	$newpath = $CMS_ROOT.$new_nodeInfos['path'].$nodeInfos['libelle'];
 	if($rs!=false) {
 		if(file_exists($newpath)) // Si le nom existe déjà on fait rien
@@ -1064,7 +1065,7 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 
 function getFolderPages($idSite, $path) {
 	global $db;
-	$node_id = array_pop(split(',',$path));
+	$node_id = array_pop(explode(',',$path));
 	$return = array();
 
 	$sql = " SELECT id_page, name_page, gabarit_page, cast(dateadd_page as date) as dateadd_page, ";
@@ -1242,7 +1243,7 @@ function getLangue($idSite) {
 
 
 function getNodesByKeyword($idSite, $db, $keyword) {
-	$node_id = array_pop(split(',',$path));
+	$node_id = array_pop(explode(',',$path));
 	$result = array();
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle , node_absolute_path_name, node_order, node_description";

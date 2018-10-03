@@ -33,7 +33,7 @@ class TslManager {
 	 *
 	 * @return	Void
 	 */
-	function TslManager() {
+	function __construct() {
 		// Initialisation
 		$this->reference = new cms_chaine_reference();
 		$this->translated = new cms_chaine_traduite();
@@ -64,7 +64,7 @@ class TslManager {
 	 *
 	 * @return	unique instance of its own class
 	 */
-	function &getInstance() {
+	public static function &getInstance() {
 		static $singleton;
 
 		if (!$singleton)
@@ -212,7 +212,6 @@ class TslManager {
 			$text = $this->checkNoInput($text);
 			return (String) $text;
 		} else {
-                    //pre_dump($ref_id);
 			// dealing with translation if it exists otherwise return reference	
 			
 			/* 
@@ -376,10 +375,8 @@ class TslManager {
 	 * @return	Int		Text string ID
 	 */
 	function getTextID ($text, $new=false) {
-            //pre_dump($text);
 		if ($text <> '') {
 			$id = $this->getReferenceID(md5($text));
-                        //pre_dump($id); die();
 			//echo "test : ".$id."<br/>";
 			if ($id > 0)
 				return (Int) $id;
@@ -403,7 +400,6 @@ class TslManager {
 		if (!is_null($MD5)) {
 			$res = dbGetObjectsFromFieldValue('cms_chaine_reference', Array('get_md5'), Array($MD5), null);
 			if (count($res) == 1){
-				//echo $res[0]->get_id();
 				return (Int) $res[0]->get_id();
 			}
 		    elseif (count($res) > 1) {
@@ -457,10 +453,6 @@ class TslManager {
 		$this->reference->set_MD5($md5);
 		$ref_id = (Int) dbInsertWithAutoKey($this->reference);
 		//echo 'inset '.$ref_id;
-                
-//                if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
-//                    return $md5;
-//                else
                     return $ref_id;
 	}
 
@@ -482,12 +474,10 @@ class TslManager {
             else
                 $ref_id = $this->getTextID($ref_text);
 		//echo "<br />addTranslation<br />".$ref_id." ".$ref_text."<br />";		
-		//pre_dump($ref_id);
+		
 		if ($ref_id == 0)
 			$ref_id = $this->getTextID($ref_text, true);
                  
-                 //pre_dump($units);
-                 //die();
 		if (!empty($units)) { 
 			foreach ($units as $lang => $trad_text) {
 	    		if ($lang != DEF_APP_LANGUE)
@@ -681,7 +671,7 @@ class TslManager {
 		if ($verbose)
 			echo 'downloadLangPacks';	
 			
-		if ($_SERVER['HTTP_HOST']=='www.couleur-citron.com'){
+		if ($_SERVER['HTTP_HOST']=='aws.couleur-citron.com'){
 			//dont sybc the repo on itself
 			return true;	
 		}
@@ -701,7 +691,7 @@ class TslManager {
 		
 		$stack = array();
 		
-		xmlUrlParse('http://www.couleur-citron.com/backoffice/cms/cms_texte/xml_cms_texte.php');
+		xmlUrlParse('http://aws.couleur-citron.com/backoffice/cms/cms_texte/xml_cms_texte.php');
 		
 		$aTexts = $stack[0]["children"];
 		
@@ -748,7 +738,6 @@ class TslManager {
 				//pre_dump($aCache[$code]);
 			}	
 		}
-	
 	}
 }
 
