@@ -427,7 +427,8 @@ $exclude_list = array(
 	'/backoffice/purchaseorder/importmovex_purchaseorder.php', 
 	'/backoffice/repairorder/importquantum_repairorder.php', 
 	'/backoffice/repairorder/importmovex_repairorder.php', 	
-	'/backoffice/cms/lib/ckeditor/Filemanager-master/index.php'
+	'/backoffice/cms/lib/ckeditor/Filemanager-master/index.php',
+	'/backoffice/cms/js/ancre.js.php'
 );
 
 // liste des urls où il ne faut pas mettre de append/prepend
@@ -444,7 +445,9 @@ $exclude_patterns = array(
 	'/sonde_',
 	'/feed_',
 	'/lib/',
-	'/js/'
+	'/js/',
+	'/flashDetection',
+	'/cookiebanner'
 );
 
 $excludePattern = '/'.str_replace(array('/', '.'), array('\/', '\.'), implode('|', $exclude_patterns)).'/si';
