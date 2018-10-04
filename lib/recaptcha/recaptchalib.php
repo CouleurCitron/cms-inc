@@ -89,47 +89,6 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	curl_close($curl);
 
 	return $curlData;
-
-   /* $res = json_decode($curlData, TRUE);
-	if($res['success'] == 'true') 
-		return TRUE;
-	else
-		return FALSE;*/
-
-
-	/*
-	error_log('$host '.$host.', $path '.$path.', $data '.$data.', $port '.$port);
-
-	$req = _recaptcha_qsencode ($data);
-
-	$http_request  = "POST $path HTTP/1.0\r\n";
-	$http_request .= "Host: $host\r\n";
-	$http_request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
-	$http_request .= "Content-Length: " . strlen($req) . "\r\n";
-	$http_request .= "User-Agent: reCAPTCHA/PHP\r\n";
-	$http_request .= "\r\n";
-	$http_request .= $req;
-
-	$response = '';
-	if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
-			die ('Could not open socket');
-	}
-
-	fwrite($fs, $http_request);
-
-	while ( !feof($fs) )
-			$response .= fgets($fs, 1160); // One TCP-IP packet
-	fclose($fs);
-
-	var_dump($http_request);
-	var_dump($response);
-
-	$response = explode("\r\n\r\n", $response, 2);
-
-	error_log($errno);
-	error_log($errstr);
-
-	return $response;*/
 }
 
 
@@ -160,13 +119,18 @@ function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)
         if ($error) {
            $errorpart = "&amp;error=" . $error;
         }
-        return '<script type="text/javascript" src="'. $server . '/challenge?k=' . $pubkey . $errorpart . '"></script>
+       /* return '<script type="text/javascript" src="'. $server . '/challenge?k=' . $pubkey . $errorpart . '"></script>
 
 	<noscript>
   		<iframe src="'. $server . '/noscript?k=' . $pubkey . $errorpart . '" height="300" width="500" frameborder="0"></iframe><br/>
   		<textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
   		<input type="hidden" name="recaptcha_response_field" value="manual_challenge"/>
-	</noscript>';
+	</noscript>';*/
+	
+	
+		return '<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+				<div class="g-recaptcha" data-sitekey="'.DEV_RECAPTCHA_SITEKEY.'"></div>                 
+				</div>';
 }
 
 
@@ -233,17 +197,17 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 									  array_merge($params, $extra_params),
 									  $port
 									  );
+	
 	$res = json_decode($response, TRUE);
 
 	$recaptcha_response = new ReCaptchaResponse();
 
-	if($res['success'] == 'true'){
+	if($res['success'] == 'true'	||	$res['success'] == 1){
 		 $recaptcha_response->is_valid = true;
 	}
 	else{
 	   $recaptcha_response->is_valid = false;
 	   $recaptcha_response->error = $res;
-		error_log($curlData);
 	}
 
    /* if (trim ($answers [0]) == 'true') {
