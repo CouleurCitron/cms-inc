@@ -81,7 +81,7 @@ elseif ((preg_match('/^\/content\/[^\/]+\/$/msi', $_SERVER['REQUEST_URI'])==1)||
 	
 	$oSite = detectSite();
 	$siteUrl = trim($oSite->get_url());
-	if ((preg_match('/hephaistos/', $siteUrl)==0)&&($siteUrl!='')&&(preg_match('/SwishSpider/', $_SERVER['HTTP_USER_AGENT'])==0)){ // pas de controle sur sites en dev, ni vers site n'ayant pas de nom d'hote, ni lors du passage de swish-e
+	if ((preg_match('/zout|emulgator/', $siteUrl)==0)&&($siteUrl!='')&&(preg_match('/SwishSpider/', $_SERVER['HTTP_USER_AGENT'])==0)){ // pas de controle sur sites en dev, ni vers site n'ayant pas de nom d'hote, ni lors du passage de swish-e
 		if ($siteUrl != $_SERVER['HTTP_HOST']){
 			if($_SERVER['HTTPS'] == 'on'){
 				$redirUrl = 'https://';

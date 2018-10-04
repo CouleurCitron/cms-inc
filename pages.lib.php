@@ -55,7 +55,7 @@ function saveDatePeremption($id_page, $datePeremption=null) {
 	$sql = "BEGIN
 	delete from cms_content_perempt where id_content=$id_page;\n";
 	if($datePeremption != null) {
-		$date = split('/',$datePeremption);
+		$date = explode('/',$datePeremption);
 		$date = $date[2].'-'.$date[1].'-'.$date[0].' 00:00:00.000000';
 		$sql.= " INSERT INTO cms_content_perempt (id_content, dateperempt) values ($id_page,".$db->qstr($date).");\n";
 	}
@@ -80,8 +80,8 @@ function getDatePeremption($id_page) {
                 return false;
         } else {
 		if(!$rs->EOF) {
-			$date = split(' ',$rs->fields[0]);
-			$date = split('-', $date[0]);
+			$date = explode(' ',$rs->fields[0]);
+			$date = explode('-', $date[0]);
 			$date = $date[2].'/'.$date[1].'/'.$date[0];
 			$rs->Close();
 			return $date;
@@ -100,7 +100,7 @@ function getListPerim() {
 	$rs = $db->Execute($sql);
 	if($rs) {
 		while(!$rs->EOF) {
-			$date = split(' ',$rs->fields[1]);
+			$date = explode(' ',$rs->fields[1]);
 			$date = $date[0];
 			$array = array();
 			$array['id'] = $rs->fields[0];
@@ -197,7 +197,7 @@ function generatePage($divArray, $oPage, $oIinfos_page, $sMode="LIGNE", $eIdTrav
 					if ($sMode == "LIGNE") {
 						$oArchi = getArchiWithIdContent($oContent->getId_content());
 						$contenuHTML = $oArchi->getHtml_archi();
-						// correction d'un BUG encore inexpliqué
+						// correction d'un BUG encore inexpliquÃ©
 						if ($contenuHTML == ''){
 							// on n'est pas dans la marde
 							$contenuHTML = $oContent->getHtml_content();
@@ -359,7 +359,7 @@ function updatePage($divArray,$titre,$motsclefs,$description,$idPage)
 	if (DEF_BDD == "ORACLE" || DEF_BDD == "POSTGRES") {
 	
 		$datemep = date("Y/m/d/H:m:s");
-		$datemep = split('/', $datemep);
+		$datemep = explode('/', $datemep);
 		$datemep = "to_date('".$datemep[2]."/".$datemep[1]."/".$datemep[0]."', 'dd/mm/yyyy')";
 	
 	} else if (DEF_BDD == "MYSQL") {
@@ -955,7 +955,8 @@ function getListPageToGenerate()
 function getFolderInfos($virtualPath)
 {
 	global $db;
-	$node_id = array_pop(explode(',',$virtualPath));
+	$avirtualPath = explode(',', $virtualPath);
+	$node_id = array_pop($avirtualPath);
 	$result = null; 
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle, node_absolute_path_name ";
@@ -996,7 +997,7 @@ function deletePage($id)
 		$sql = " UPDATE cms_page";
 		$sql.= " SET valid_page=0,";
 
-		$aDate = split("-", $date);
+		$aDate = explode("-", $date);
 		$sql.= " datedlt_page = ".to_dbdate($aDate[2]."/".$aDate[1]."/".$aDate[0]);
 
 		$sql.= " where id_page = $id";
@@ -1142,7 +1143,7 @@ function controlNewPagePath($finalfilepathacontroler){
 }
 
 /**
- * Récupération des pages du site
+ * Rï¿½cupï¿½ration des pages du site
  *
  * @param int $idSite id du site en cours
  * @param int $idParent id du noeud parent

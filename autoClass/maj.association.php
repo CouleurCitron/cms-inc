@@ -68,7 +68,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					$asso_block = '';
 					$asso_block_checked = '';
 					$asso_list = dbGetAssocies($oRes, $assoc, true);
-					//pre_dump($asso_list); die();
+					//pre_dump($asso_list['list']); die();
 					//pre_dump($asso_list);
 					
 					//viewArray($asso_list);
@@ -113,7 +113,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					$cnt_asso_total = 0;
 					$asso_pile = array();
 					if (!empty($asso_list['list'])) {
-						//pre_dump($asso_list);
+						//pre_dump($asso_list['list']);
 						foreach($asso_list['list'] as $row) {
 							//viewArray($row, 'row');
 							$displayValueShort = "";  
@@ -121,7 +121,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 								$tempStatus = $row['ref_statut'];
 							} else	$tempStatus = DEF_ID_STATUT_LIGNE;
 
-							if ($tempStatus == DEF_ID_STATUT_LIGNE) {
+							if ($tempStatus == DEF_ID_STATUT_LIGNE) {								
 								$tempId = $row['ref_id'];
 								if ($tempAssoFull && $tempAssoOut != ''){ // par table d'asso
 									$asso_fld = "fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut)."_".$tempId;
@@ -169,9 +169,9 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 									}				
 
 								} else {	// class ne comportant PAS un champs CMS SITE		
-												
+										
 									if ($operation != "INSERT" && $row['ref_fkey'] != -1)  {	 
-										//echo 'only process while editing<br>';		
+										//echo 'only process while editing<br>';	
 										if (!$tempAssoFull && $row['ref_fkey'] == $id && $id != -1 ) {
 											$asso_pile[$asso_fld]['checked'] = true;
 											//echo ' 1 +++ ';
@@ -416,7 +416,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 
 			
 				echo "</td>\n</tr>\n";
-				echo "<table>\n";
+				echo "</table>\n";
 				}
 			}
 		}

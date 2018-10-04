@@ -212,7 +212,7 @@ var $oldstyleclass;
 
 
 // constructeur
-function Cms_page($id=null) 
+function __construct($id=null) 
 {
 	global $db;
 	if($id!=null) {
@@ -925,7 +925,7 @@ function ifExisteligne($idPage)
 
 	// taille du div_array pour cette page :: ensemble des briques de cette page
 
-	if ($divArray[0]['id'] != "") $eIdDivarray = 1;
+	if (isset($divArray[0]['id'])	&&	$divArray[0]['id'] != "") $eIdDivarray = 1;
 	else $eIdDivarray = 0;
 
 	// composants

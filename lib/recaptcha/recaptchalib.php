@@ -82,10 +82,10 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, TRUE); 
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE); 
 	$curlData = curl_exec($curl);
-
+	//error_log($curlData);
 	curl_close($curl);
 
 	return $curlData;
