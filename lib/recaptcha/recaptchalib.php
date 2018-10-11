@@ -203,7 +203,6 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	$recaptcha_response = new ReCaptchaResponse();
 
 	if($res['success'] == 'true'	||	$res['success'] == 1){
-		//log_dump($res);
 		 $recaptcha_response->is_valid = true;
 	}
 	else{
