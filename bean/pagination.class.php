@@ -78,7 +78,7 @@ class Pagination {
 	//		if you have multiple on 1 page. 
 	//		$id should be only be [a-z0-9]*
 	//
-	function Pagination(&$db, $sql, $sParam="", $idSite=null, $id = 'adodb', $showPageLinks = true)
+	function __construct(&$db, $sql, $sParam="", $idSite=null, $id = 'adodb', $showPageLinks = true)
 	{
 	global $PHP_SELF;
 	
@@ -109,7 +109,7 @@ class Pagination {
 	global $PHP_SELF;
 		if ($anchor) {
 	?>
-		<a class="cms_first" href="<?php echo $PHP_SELF,'?',$this->id;?>_next_page=1<?php echo $this->sParam; ?>"><?php echo $this->first;?></a> &nbsp; 
+		<a class="cms_first" href="<?php echo $PHP_SELF,'?',$this->id;?>_next_page=1<?php echo $this->sParam; ?>"><?php echo $this->first;?> &nbsp; </a>
 	<?php
 		} else {
 			print "<a class=\"cms_first\">$this->first &nbsp; </a>";
@@ -124,7 +124,7 @@ class Pagination {
 	
 		if ($anchor) {
 		?>
-		<a class="cms_next" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() + 1 ?><?php echo $this->sParam; ?>"><?php echo $this->next;?></a> &nbsp; 
+		<a class="cms_next" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() + 1 ?><?php echo $this->sParam; ?>"><?php echo $this->next;?> &nbsp;</a>
 		<?php
 		} else {
 			print "<a class=\"cms_next\">$this->next &nbsp; </a>";
@@ -145,7 +145,7 @@ class Pagination {
 		
 		if ($anchor) {
 		?>
-			<a class="cms_last" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->LastPageNo() ?><?php echo $this->sParam; ?>"><?php echo $this->last;?></a> &nbsp; 
+			<a class="cms_last" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->LastPageNo() ?><?php echo $this->sParam; ?>"><?php echo $this->last;?> &nbsp; </a>
 		<?php
 		} else {
 			print "<a class=\"cms_last\">$this->last &nbsp; </a>";
@@ -180,7 +180,7 @@ class Pagination {
             } 
 			
 			for($i=$start; $i <= $end; $i++) {
-				if ($i != $start) $numbers .=  $this->separator;
+				//if ($i != $start) $numbers .=  $this->separator;
                 if ($this->rs->AbsolutePage() == $i)
                      $numbers .= "<a href=\"$PHP_SELF?$link=$i".$this->sParam."\" class=\"actif\" >$i</a>  ";
                 else 
@@ -189,7 +189,7 @@ class Pagination {
             }
 			if ($this->moreLinks && $end < $pages) 
 				$numbers .= "<a href=\"$PHP_SELF?$link=$i".$this->sParam."\">$this->moreLinks</a>  ";
-            print $numbers . ' &nbsp; ';
+            print $numbers . ' ';
         }
 	// Link to previous page
 	function render_prev($anchor=true)
@@ -197,7 +197,7 @@ class Pagination {
 	global $PHP_SELF;
 		if ($anchor) {
 	?>
-		<a class="cms_prev" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() - 1 ?><?php echo $this->sParam; ?>"><?php echo $this->prev;?></a> &nbsp; 
+		<a class="cms_prev" href="<?php echo $PHP_SELF,'?',$this->id,'_next_page=',$this->rs->AbsolutePage() - 1 ?><?php echo $this->sParam; ?>"><?php echo $this->prev;?> &nbsp;</a>
 	<?php 
 		} else {			
 			print "<a class=\"cms_prev\">$this->prev &nbsp; </a>";
@@ -301,9 +301,9 @@ print("<br>".var_dump($aEnr));
 
 
 		if ($this->cache)
-			$rs = &$this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
+			$rs = $this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
 		else
-			$rs = &$this->db->PageExecute($this->sql,$rows,$this->curr_page);
+			$rs = $this->db->PageExecute($this->sql,$rows,$this->curr_page);
 
 		if((bool)($rs) == false){
 			error_log($this->sql);
@@ -330,9 +330,9 @@ print("<br>".var_dump($aEnr));
 
 
 		if ($this->cache)
-			$rs = &$this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
+			$rs = $this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
 		else
-			$rs = &$this->db->PageExecute($this->sql, $rows, $this->curr_page);
+			$rs = $this->db->PageExecute($this->sql, $rows, $this->curr_page);
 
 		$ADODB_COUNTRECS = $savec;
 		

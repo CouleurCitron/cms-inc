@@ -45,11 +45,12 @@ function to_dbdate($sDate) {
 		return "to_date('$sDate', 'dd/mm/yyyy')"; // version oracle et postgres
 	}
 	if (DEF_BDD == "MYSQL"){
-		$sDate=dateToYmd($sDate);
-		//if (preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}.*/msi", $sDate)==1){
-		//	$sDate = preg_replace("/([0-9]{4})-([0-9]{2})-([0-9]{2}).*/msi", "$3/$2/$1", $sDate);
-		//}
-		return "str_to_date('$sDate', '%Y-%m-%d')"; // version mysql mariadb
+		$sDate=dateToYmd($sDate);		
+		if (preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}.*/msi", $sDate)==1){ // remove time
+			$sDate = preg_replace("/([0-9]{4})-([0-9]{2})-([0-9]{2}).*/msi", "$1-$2-$3", $sDate);
+		}
+		//return "str_to_date('$sDate', '%Y-%m-%d')"; // version mysql mariadb
+		return "'".$sDate."'"; // version mysql mariadb
 	}
 }
 
