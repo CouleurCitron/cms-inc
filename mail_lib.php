@@ -416,9 +416,11 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
 					}
                     $result = $mailObj->send($destinataire,$entetes,$message['body']);
                     if($result===true) {
+                      error_log('sent OK');
                             return true;			
                     }
                     else {
+                      error_log('sent FAILED');
 						if(method_exists($result, 'getMessage')){
                             error_log($result->getMessage());
                             if (preg_match('/email\.php$/msi', $_SERVER['PHP_SELF'])){
