@@ -106,7 +106,11 @@ Disallow: /content/
 	}
 	
 	if ($bAllow == true){
-		echo 'Sitemap: http://'.$_SERVER['HTTP_HOST'].'/sitemap.xml'."\n";
+    echo "Sitemap: http";
+    if($_SERVER['HTTPS'] == 'on'){
+      echo 's';
+    }
+		echo '://'.$_SERVER['HTTP_HOST'].'/sitemap.xml'."\n";
 	}
 }
 else{
