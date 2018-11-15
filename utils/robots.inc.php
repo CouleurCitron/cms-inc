@@ -11,7 +11,9 @@ $bDebug = false;
 //$bDebug = true;
 //-----------------------------------------------------------------
 
+if(!isset($oSiteToMap)	||	$oSiteToMap==false	|| $oSiteToMap==NULL){
 $oSiteToMap = hostToSite($_SERVER['HTTP_HOST']);
+}
 
 if ($oSiteToMap==false){
 	$aSites = listSite("ALL");
@@ -46,7 +48,6 @@ User-agent: *
 if ($oSiteToMap != NULL){
 ?>
 Disallow: /custom/upload/
-Disallow: /backoffice/
 Disallow: /frontoffice/
 Disallow: /modules/
 Disallow: /include/
@@ -105,7 +106,11 @@ Disallow: /content/
 	}
 	
 	if ($bAllow == true){
-		echo 'Sitemap: http://'.$_SERVER['HTTP_HOST'].'/sitemap.xml'."\n";
+    echo "Sitemap: http";
+    if($_SERVER['HTTPS'] == 'on'){
+      echo 's';
+    }
+		echo '://'.$_SERVER['HTTP_HOST'].'/sitemap.xml'."\n";
 	}
 }
 else{
