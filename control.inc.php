@@ -1,5 +1,5 @@
 <?php
-function check_field ($_POST) {	 
+function check_field () {	 
 	$aError = array (); 
 	$is_form_ok = true; 
 	if (preg_match ( "/".$_SERVER['HTTP_HOST']."/", $_SERVER['HTTP_REFERER'])  && $_POST["protect"] == '' )   {
@@ -304,4 +304,3 @@ function check_field ($_POST) {
 	}
 	return $is_form_ok;
 }
-?>
