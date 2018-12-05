@@ -310,22 +310,19 @@ Yoffset= 20;
  
 	function activateMenu($item) {
 		if (strlen($item)) {
-		global $menuStruct;
+		  global $menuStruct;
 		
-		$item = findValidMenuItem($item, $menuStruct);
-		
-?>
-<script type="text/javascript">
-<!--
-refresh_menu("<?php echo $_SERVER["REQUEST_URI"]; ?>");
-//-->
-</script>
-<?php
+      $item = findValidMenuItem($item, $menuStruct);		
+
+      echo '<script type="text/javascript">'."\n";
+      echo '<!--'."\n";
+      echo 'refresh_menu("'.$_SERVER["REQUEST_URI"].'");'."\n";
+      echo '//-->'."\n";
+      echo '</script>'."\n";
 		}
 	}
 
 	function generateMenu($menu_items, $depth=1	) {
-		global $URL_ROOT;
 		$menuStr = "";
                 //pre_dump($menu_items);
 		foreach ($menu_items as $k => $v) {
