@@ -39,7 +39,7 @@ class TslManager {
 		$this->translated = new cms_chaine_traduite();
 
 		//Verify language in session
-		if (($_SESSION['BO']['id_langue'] > 0)&&(preg_match('/[0-9]+/si', $_SESSION['BO']['id_langue'])==1)	&& 	preg_match('/backoffice/', $_SERVER['PHP_SELF'])) {
+		if (isset($_SESSION['BO'])  &&  ($_SESSION['BO']['id_langue'] > 0)&&(preg_match('/[0-9]+/si', $_SESSION['BO']['id_langue'])==1)	&& 	preg_match('/backoffice/', $_SERVER['PHP_SELF'])) {
 			// session OK
 			$_SESSION['tsl_langue']=$_SESSION['BO']['id_langue'];
 			if (!defined('DEF_APP_LANGUE')){

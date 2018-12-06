@@ -2581,7 +2581,7 @@ function xmlClassParse($sXML){
 						}
 						// noeuds options
 						// <option type="link" 
-						if(is_array($stackBack[0]['children'][$bakChildKey]['children'])){// le back a des options nodes
+						if(isset($stackBack[0]['children'][$bakChildKey]['children'])  &&  is_array($stackBack[0]['children'][$bakChildKey]['children'])){// le back a des options nodes
 							if(is_array($childNode['children'])){// la surcharge a des options nodes
 								foreach($childNode['children'] as $opKey => $opNode){
 									$bMatched=false;
@@ -2601,7 +2601,7 @@ function xmlClassParse($sXML){
 							}
 						}
 						// le back n'a pas d'options nodes
-						else{
+						elseif(isset($childNode['children'])){
 							//echo ' pas de options nodes ';
 							$stackBack[0]['children'][$bakChildKey]['children'] = $childNode['children'];
 						}

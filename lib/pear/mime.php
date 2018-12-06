@@ -103,7 +103,7 @@ class Mail_mime
     *
     * @access public
     */
-    function Mail_mime($crlf = "\r\n")
+    function __contructor($crlf = "\r\n")
     {
         if (!defined('MAIL_MIME_CRLF')) {
             define('MAIL_MIME_CRLF', $crlf, true);

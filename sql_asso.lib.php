@@ -134,7 +134,7 @@ function dbGetAssocProps($oObjet, $sClasseAssoc) {
 	 
 	if ($tempAssoIn != '') {
 		eval("$"."oTemp = new ".$tempAssoIn."();"); 
-		if (!is_null($oTemp->XML_inherited))
+		if (isset($oTemp->XML_inherited)  &&  !is_null($oTemp->XML_inherited))
 			$sXML = $oTemp->XML_inherited;
 		else	$sXML = $oTemp->XML;
 		$stack = xmlClassParse($sXML); 

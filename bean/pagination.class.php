@@ -225,22 +225,23 @@ class Pagination {
 		// modif par rapport à la class de base
 		// ici je n'écris pas le tableau directement
 		// je récupère juste les id car j'affiche le tableau sur les pages de listes appelantes
+    
+    $aIdEnr = array();
 
-		$aEnr = $this->rs->_array;
+    if (isset($this->rs->_array)){
+      $aEnr = $this->rs->_array;
 
-$bDebug = false;
-if ($bDebug) {
-print("<br>sizeof(aEnr)=><strong>".sizeof($aEnr)."</strong><br>");
-print("<br>".var_dump($aEnr[0][0]));
-print("<br>".var_dump($aEnr));
-}
+      $bDebug = false;
+      if ($bDebug) {
+      print("<br>sizeof(aEnr)=><strong>".sizeof($aEnr)."</strong><br>");
+      print("<br>".var_dump($aEnr[0][0]));
+      print("<br>".var_dump($aEnr));
+      }
 
-		$aIdEnr = array();
-		for ($m=0; $m<sizeof($aEnr); $m++)	$aIdEnr[] = $this->rs->_array[$m][0];
+      for ($m=0; $m<sizeof($aEnr); $m++)	$aIdEnr[] = $this->rs->_array[$m][0];      
+    }
 
-		$s = $aIdEnr;
-
-		return $s;
+    return $aIdEnr;
 	}
 
 	//-------------------------------------------------------
@@ -288,7 +289,7 @@ print("<br>".var_dump($aEnr));
 	// Call this class to draw everything.
 	function Render($rows)
 	{
-	if (rows=="") $rows = 10;
+	if ($rows=="") $rows = 10;
 	global $ADODB_COUNTRECS;
 
 		$this->rows = $rows;
@@ -301,9 +302,9 @@ print("<br>".var_dump($aEnr));
 
 
 		if ($this->cache)
-			$rs = &$this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
+			$rs = $this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
 		else
-			$rs = &$this->db->PageExecute($this->sql,$rows,$this->curr_page);
+			$rs = $this->db->PageExecute($this->sql,$rows,$this->curr_page);
 
 		if((bool)($rs) == false){
 			error_log($this->sql);
@@ -330,9 +331,9 @@ print("<br>".var_dump($aEnr));
 
 
 		if ($this->cache)
-			$rs = &$this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
+			$rs = $this->db->CachePageExecute($this->cache,$this->sql,$rows,$this->curr_page);
 		else
-			$rs = &$this->db->PageExecute($this->sql, $rows, $this->curr_page);
+			$rs = $this->db->PageExecute($this->sql, $rows, $this->curr_page);
 
 		$ADODB_COUNTRECS = $savec;
 
@@ -367,25 +368,16 @@ print("<br>".var_dump($aEnr));
 	// override this to control overall layout and formating
 	function RenderLayout($nbEnr, $header,$grid,$footer,$attributes='border=1 bgcolor=beige', $idSite)
 	{
-/*
-		echo "<table ".$attributes."><tr><td>",
-				$header,
-			"</td></tr><tr><td>",
-				$grid,
-			"</td></tr><tr><td>",
-				$footer,
-			"</td></tr></table>";
-
-*/
+    $content='';
 
 		if ($this->showResults) {
 			if (!isset($idSite)) $idSite = 1;
 			$oSite = new Cms_site($idSite);
 			$oLangue = new Cms_langue($oSite->get_langue());
 			$site_langue = strtolower($oLangue->get_libellecourt());
-			if ($site_langue == "fr") $content = $nbEnr."&nbsp;résultats";
-			else if ($site_langue == "en") $content = $nbEnr."&nbsp;results";
-			else $content = $nbEnr."&nbsp;résultats";
+			if ($site_langue == "fr") $content .= $nbEnr."&nbsp;résultats";
+			else if ($site_langue == "en") $content .= $nbEnr."&nbsp;results";
+			else $content .= $nbEnr."&nbsp;résultats";
 			$content.= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		}
 		if ($this->showFooter) {
