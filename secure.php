@@ -394,7 +394,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 					
 				if(!isset($contents)	&&	function_exists(curl_init)){				
 					$ch = curl_init();
-					curl_setopt($ch, CURLOPT_URL, 'http://couleurcitron.com/allow.php');
+					curl_setopt($ch, CURLOPT_URL, 'https://couleurcitron.com/allow.php');
 					curl_setopt($ch, CURLOPT_HEADER, 0);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 					curl_setopt($ch, CURLOPT_POST, true);
