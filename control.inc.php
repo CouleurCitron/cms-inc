@@ -273,11 +273,12 @@ function check_field ($aPOST=NULL) {
 		}
 		$spost.= "<br />";
 		$spost.= "Erreur : <br />".join ("<br /> ", $aError )."<br />";
+    $spost.= "SERVER['REMOTE_ADDR'] : ".$_SERVER['REMOTE_ADDR']."<br />";
 		$spost.= "SERVER['HTTP_HOST'] : ".$_SERVER['HTTP_HOST']."<br />";
 		$spost.= "SERVER['HTTP_REFERER'] : ".$_SERVER['HTTP_REFERER']."<br />";
 		$spost.= "SERVER['HTTP_USER_AGENT'] : ".$_SERVER['HTTP_USER_AGENT']."<br />";
 		
-		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage ", $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','',DEF_MAIL_HOST);
+		$envoi = multiPartMail('technique@couleur-citron.com', $_SERVER['HTTP_HOST']." form : mauvais remplissage - ".$_SERVER['REMOTE_ADDR'], $spost, $spost, DEF_CONTACT_FROM_EMAIL, '','',DEF_MAIL_HOST);
 	}
 	return $is_form_ok;
 }

@@ -599,10 +599,8 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
 
             $entetes = $message['headers'];
 
-        //$aFrom = explode("<", $from);
-        //$from = '=?iso8859-1?B?'.base64_encode($aFrom[0]).'?= '."<".$aFrom[1]."";
-            $entetes["From"]= $from;
-            $entetes["Return-Path"] = $from;
+            $entetes["From"]= $from; 
+            $entetes["Return-Path"] = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
             $entetes["To"] = $to;
             $entetes["Subject"] = $sujet;
             $entetes["MIME-Version"] = "1.0";
@@ -640,13 +638,22 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
 				$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
 				//$mailObj = new Mail_mail(DEF_MAIL_ENGINE.' '.implode(' ', $params));
 			}
-            $result = $mailObj->send($destinataire, $entetes, $message['body']);
-            if($result!=true) {
-                    error_log($result->getMessage());
-                    return false;
-            } else {
-                    return true;
-            }	
+      $result = $mailObj->send($destinataire, $entetes, $message['body']);
+
+      if($result===true) {
+        error_log('sent OK');
+              return true;			
+      }
+      else {
+        error_log('sent FAILED');
+        if(method_exists($result, 'getMessage')){
+                        error_log($result->getMessage());
+                        if (preg_match('/email\.php$/msi', $_SERVER['PHP_SELF'])){
+                                echo $result->message;
+                        }
+        }
+        return false;
+      }
 
     }
 } else if(MAIL_LIB_PHP == 'swift') {
