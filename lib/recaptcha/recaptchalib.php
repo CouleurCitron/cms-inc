@@ -81,8 +81,8 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, TRUE); 
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE); 
 	$curlData = curl_exec($curl);
 
 	curl_close($curl);
@@ -164,22 +164,22 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 		die ("For security reasons, you must pass the remote ip to reCAPTCHA");
 	}
 
-        //discard spam submissions
+	//discard spam submissions
 	if ($response == null || strlen($response) == 0) {
-                $recaptcha_response = new ReCaptchaResponse();
-                $recaptcha_response->is_valid = false;
-                $recaptcha_response->error = 'incorrect-captcha-sol';
-                return $recaptcha_response;
-        }
+			$recaptcha_response = new ReCaptchaResponse();
+			$recaptcha_response->is_valid = false;
+			$recaptcha_response->error = 'incorrect-captcha-sol';
+			return $recaptcha_response;
+	}
 
 	if($version==1){
 		$url = '/recaptcha/api/verify';
 		$params = array (
-                                                 'privatekey' => $privkey,
-                                                 'remoteip' => $remoteip,
-					'response' => $response,
-					'challenge' => $challenge
-					);
+				'privatekey' => $privkey,
+				'remoteip' => $remoteip,
+				'response' => $response,
+				'challenge' => $challenge
+				);
 		$port=80;
 	}
 	else{
@@ -187,8 +187,8 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 		$params = array (
 					'secret' => $privkey,
 					'remoteip' => $remoteip,
-                                                 'response' => $response
-                                          );
+					'response' => $response
+					);
 		$port = 443;
 	}
 
@@ -197,9 +197,9 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 									  $port
 									  );
 	
-	$res = json_decode($response, TRUE);
+	$res = json_decode($response, TRUE);	
 
-        $recaptcha_response = new ReCaptchaResponse();
+	$recaptcha_response = new ReCaptchaResponse();
 
 	if($res['success'] == 'true'	||	$res['success'] == 1){
 		 $recaptcha_response->is_valid = true;
@@ -210,14 +210,13 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	}
 
    /* if (trim ($answers [0]) == 'true') {
-                $recaptcha_response->is_valid = true;
-        }
-        else {
-                $recaptcha_response->is_valid = false;
-                $recaptcha_response->error = $answers [1];
+			$recaptcha_response->is_valid = true;
+	}
+	else {
+			$recaptcha_response->is_valid = false;
+			$recaptcha_response->error = $answers [1];
 	}*/
-        return $recaptcha_response;
-
+	return $recaptcha_response;
 }
 
 /**

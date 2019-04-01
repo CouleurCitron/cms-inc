@@ -458,7 +458,7 @@ function WriteHTML($html)
 				{
   				foreach($contents[0] as $v)
   				{
-  				    if(preg_match('/^([^=]*)=["\']?([^"\']*)["\']?$/msi',$v,$a3))
+  				    if(ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3))
     					{
     						$attr[strtoupper($a3[1])]=$a3[2];
      					}

@@ -1,51 +1,37 @@
 <?php
-/**
- * PEAR_Command_Common base class
- *
- * PHP versions 4 and 5
- *
- * @category   pear
- * @package    PEAR
- * @author     Stig Bakken <ssb@php.net>
- * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2009 The Authors
- * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @link       http://pear.php.net/package/PEAR
- * @since      File available since Release 0.1
- */
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
+//
+// +----------------------------------------------------------------------+
+// | PHP Version 4                                                        |
+// +----------------------------------------------------------------------+
+// | Copyright (c) 1997-2003 The PHP Group                                |
+// +----------------------------------------------------------------------+
+// | This source file is subject to version 3.0 of the PHP license,       |
+// | that is bundled with this package in the file LICENSE, and is        |
+// | available through the world-wide-web at the following url:           |
+// | http://www.php.net/license/3_0.txt.                                  |
+// | If you did not receive a copy of the PHP license and are unable to   |
+// | obtain it through the world-wide-web, please send a note to          |
+// | license@php.net so we can mail you a copy immediately.               |
+// +----------------------------------------------------------------------+
+// | Author: Stig Sæther Bakken <ssb@php.net>                             |
+// +----------------------------------------------------------------------+
+//
+// $Id: Common.php,v 1.1 2013-09-30 09:46:23 raphael Exp $
 
-/**
- * base class
- */
-require_once 'PEAR.php';
+require_once "PEAR.php";
 
-/**
- * PEAR commands base class
- *
- * @category   pear
- * @package    PEAR
- * @author     Stig Bakken <ssb@php.net>
- * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2009 The Authors
- * @license    http://opensource.org/licenses/bsd-license.php New BSD License
- * @version    Release: 1.10.1
- * @link       http://pear.php.net/package/PEAR
- * @since      Class available since Release 0.1
- */
 class PEAR_Command_Common extends PEAR
 {
+    // {{{ properties
+
     /**
      * PEAR_Config object used to pass user system and configuration
      * on when executing commands
      *
-     * @var PEAR_Config
+     * @var object
      */
     var $config;
-    /**
-     * @var PEAR_Registry
-     * @access protected
-     */
-    var $_registry;
 
     /**
      * User Interface object, for all interaction with the user.
@@ -65,7 +51,7 @@ class PEAR_Command_Common extends PEAR
 
     var $_deps_type_trans = array(
                                   'pkg' => 'package',
-                                  'ext' => 'extension',
+                                  'extension' => 'extension',
                                   'php' => 'PHP',
                                   'prog' => 'external program',
                                   'ldlib' => 'external library for linking',
@@ -75,17 +61,24 @@ class PEAR_Command_Common extends PEAR
                                   'sapi' => 'SAPI backend'
                                   );
 
+    // }}}
+    // {{{ constructor
+
     /**
      * PEAR_Command_Common constructor.
      *
      * @access public
      */
-    function __construct(&$ui, &$config)
+    function PEAR_Command_Common(&$ui, &$config)
     {
-        parent::__construct();
+        parent::PEAR();
         $this->config = &$config;
         $this->ui = &$ui;
     }
+
+    // }}}
+
+    // {{{ getCommands()
 
     /**
      * Return a list of all the commands defined by this class.
@@ -98,9 +91,11 @@ class PEAR_Command_Common extends PEAR
         foreach (array_keys($this->commands) as $command) {
             $ret[$command] = $this->commands[$command]['summary'];
         }
-
         return $ret;
     }
+
+    // }}}
+    // {{{ getShortcuts()
 
     /**
      * Return a list of all the command shortcuts defined by this class.
@@ -115,34 +110,28 @@ class PEAR_Command_Common extends PEAR
                 $ret[$this->commands[$command]['shortcut']] = $command;
             }
         }
-
         return $ret;
     }
 
+    // }}}
+    // {{{ getOptions()
+
     function getOptions($command)
     {
-        $shortcuts = $this->getShortcuts();
-        if (isset($shortcuts[$command])) {
-            $command = $shortcuts[$command];
-        }
-
-        if (isset($this->commands[$command]) &&
-              isset($this->commands[$command]['options'])) {
-            return $this->commands[$command]['options'];
-        }
-
-        return null;
+        return @$this->commands[$command]['options'];
     }
+
+    // }}}
+    // {{{ getGetoptArgs()
 
     function getGetoptArgs($command, &$short_args, &$long_args)
     {
-        $short_args = '';
+        $short_args = "";
         $long_args = array();
-        if (empty($this->commands[$command]) || empty($this->commands[$command]['options'])) {
+        if (empty($this->commands[$command])) {
             return;
         }
-
-        reset($this->commands[$command]['options']);
+        reset($this->commands[$command]);
         while (list($option, $info) = each($this->commands[$command]['options'])) {
             $larg = $sarg = '';
             if (isset($info['arg'])) {
@@ -156,15 +145,15 @@ class PEAR_Command_Common extends PEAR
                     $arg = $info['arg'];
                 }
             }
-
             if (isset($info['shortopt'])) {
                 $short_args .= $info['shortopt'] . $sarg;
             }
-
             $long_args[] = $option . $larg;
         }
     }
 
+    // }}}
+    // {{{ getHelp()
     /**
     * Returns the help message for the given command
     *
@@ -176,38 +165,29 @@ class PEAR_Command_Common extends PEAR
     function getHelp($command)
     {
         $config = &PEAR_Config::singleton();
-        if (!isset($this->commands[$command])) {
-            return "No such command \"$command\"";
-        }
-
-        $help = null;
-        if (isset($this->commands[$command]['doc'])) {
-            $help = $this->commands[$command]['doc'];
-        }
-
+        $help = @$this->commands[$command]['doc'];
         if (empty($help)) {
             // XXX (cox) Fallback to summary if there is no doc (show both?)
-            if (!isset($this->commands[$command]['summary'])) {
+            if (!$help = @$this->commands[$command]['summary']) {
                 return "No help for command \"$command\"";
             }
-            $help = $this->commands[$command]['summary'];
         }
-
         if (preg_match_all('/{config\s+([^\}]+)}/e', $help, $matches)) {
             foreach($matches[0] as $k => $v) {
                 $help = preg_replace("/$v/", $config->get($matches[1][$k]), $help);
             }
         }
-
         return array($help, $this->getHelpArgs($command));
     }
 
+    // }}}
+    // {{{ getHelpArgs()
     /**
-     * Returns the help for the accepted arguments of a command
-     *
-     * @param  string $command
-     * @return string The help string
-     */
+    * Returns the help for the accepted arguments of a command
+    *
+    * @param  string $command
+    * @return string The help string
+    */
     function getHelpArgs($command)
     {
         if (isset($this->commands[$command]['options']) &&
@@ -216,7 +196,7 @@ class PEAR_Command_Common extends PEAR
             $help = "Options:\n";
             foreach ($this->commands[$command]['options'] as $k => $v) {
                 if (isset($v['arg'])) {
-                    if ($v['arg'][0] == '(') {
+                    if ($v['arg']{0} == '(') {
                         $arg = substr($v['arg'], 1, -1);
                         $sapp = " [$arg]";
                         $lapp = "[=$arg]";
@@ -227,46 +207,44 @@ class PEAR_Command_Common extends PEAR
                 } else {
                     $sapp = $lapp = "";
                 }
-
                 if (isset($v['shortopt'])) {
                     $s = $v['shortopt'];
-                    $help .= "  -$s$sapp, --$k$lapp\n";
+                    @$help .= "  -$s$sapp, --$k$lapp\n";
                 } else {
-                    $help .= "  --$k$lapp\n";
+                    @$help .= "  --$k$lapp\n";
                 }
-
                 $p = "        ";
                 $doc = rtrim(str_replace("\n", "\n$p", $v['doc']));
                 $help .= "        $doc\n";
             }
-
             return $help;
         }
-
         return null;
     }
 
+    // }}}
+    // {{{ run()
+
     function run($command, $options, $params)
     {
-        if (empty($this->commands[$command]['function'])) {
+        $func = @$this->commands[$command]['function'];
+        if (empty($func)) {
             // look for shortcuts
             foreach (array_keys($this->commands) as $cmd) {
-                if (isset($this->commands[$cmd]['shortcut']) && $this->commands[$cmd]['shortcut'] == $command) {
-                    if (empty($this->commands[$cmd]['function'])) {
-                        return $this->raiseError("unknown command `$command'");
-                    } else {
-                        $func = $this->commands[$cmd]['function'];
-                    }
+                if (@$this->commands[$cmd]['shortcut'] == $command) {
                     $command = $cmd;
-
-                    //$command = $this->commands[$cmd]['function'];
+                    $func = @$this->commands[$command]['function'];
+                    if (empty($func)) {
+                        return $this->raiseError("unknown command `$command'");
+                    }
                     break;
                 }
             }
-        } else {
-            $func = $this->commands[$command]['function'];
         }
-
         return $this->$func($command, $options, $params);
     }
+
+    // }}}
 }
+
+?>

@@ -10,8 +10,8 @@ function getTinyURL($sLong){
 		
 		while(!feof($fh)) {
 			$gets = fgets($fh);
-			if (preg_match('/<a href="http:\/\/tinyurl.com\/[^"]+" target="_blank">Open in new window<\/a>/msi', $gets)){
-				return preg_replace('/.*<a href="(http:\/\/tinyurl.com\/[^"]+)" target="_blank">Open in new window<\/a>.*/msi', '$1', $gets);			
+			if (ereg('<a href="http://tinyurl.com/[^"]+" target="_blank">Open in new window</a>', $gets)){
+				return ereg_replace('.*<a href="(http://tinyurl.com/[^"]+)" target="_blank">Open in new window</a>.*', '\\1', $gets);			
 			}			
 			$sBodyHTML.=$gets;
 		}
