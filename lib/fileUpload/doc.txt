@@ -1,0 +1,598 @@
+Upload de fichiers
+
+Introduction
+
+Présentation de la classe Upload 2.0
+Cette classe permet de gérer simplement et avec des fonctionnalités avancées le traitement d'une upload via HTTP, pour un ou plusieurs fichiers. Il vous est présenté ici sa logique de fonctionnement et son paramètrage.
+
+Présentation
+
+La classe que je vais tâcher de décrire dans cet article a pour but de vous simplifier l'upload de fichier via le protocole HTTP. 
+Quelques lignes de codes suffisent généralement à l'obtention d'un résultat satisfaisant lorsqu'il s'agit de charger un seul et unique fichier. En revanche, il devient (quelque) peu plus compliqué lorsque l'on souhaite charger plusieurs fichiers simultanémebt.
+
+Grâce à la classe Upload, vous pourrez gérer autant de fichiers que vous le souhaitez, tout en appliquant des politiques de sécurités optimales. En voici les caractéristiques principales :
+- Upload d'un ou plusieurs fichiers
+- Vérification possible des extensions
+- Vérification possible des entêtes de fichiers
+- Vérification de la largeur/hauteur d'une image
+- Formatage automatique des noms de fichiers pour interopérabilité entre les OS serveur distant / machine client
+- Renommage des fichiers à la volée
+- Gestion avancée des erreurs
+- Gestion du mode d'écriture
+- Récupération aisée des informations sur les fichiers (poids, nom, chemin, extension, entête...)
+...
+
+Côté technique, la classe fonctionne à partir de la version 4.2.0 de PHP. Du côté client, un navigateur au minimum en version 3 fera l'affaire (ce qui j'espère ne pose plus de problème de nos jours). Concernant PHP, vous aurez à vérifier sa configuration dans le php.ini. La première chose à vérifier est que votre hébergeur ait autorisé l'upload de fichiers. Affichez donc les informations de configuration de PHP sur votre serveur distant (par le biais de la fonction "php_info()" ) et vérifiez que le paramètre "file_uploads" soit positionné sur "On". Si tel n'est pas le cas, la classe ne pourra vous être d'aucune utilité et il vous faudra probablement trouver un autre hébergeur.
+
+La classe a été écrite en respectant les dernières recommandations de sécurité avec PHP, ce qui signifie qu'elle fonctionne avec l'option $REGISTER_GLOBALS positionné à "Off".
+
+La classe est compatible avec le "safe_mode" actif, pour peu qu'on vous ait alloué les droits d'accès au répertoire temporaire d'upload dans lequel PHP fait transiter les fichiers.
+
+Nous avons pu tester cette classe dans un environnement Linux/Windows, accompagné du serveur Apache en version 1.3 et 2.0 ainsi qu'avec les versions 4.2.0, 4.3.1 et 4.3.4 de PHP. En revanche, aucun test de compatibilité avec PHP5 n'a été effectué. J'espère que cette liste de tests se remplissera avec vos participations ;o).
+
+Rentrons dans le vif du sujet en étudiant un exemple simple d'upload de fichier.
+
+Un exemple simple
+
+    I. Création du formulaire
+
+Nous allons commencer par uploader un seul champ de fichier. La première chose à faire est de construire notre formulaire HTML. A ce niveau, la classe va uniquement intervenir pour la création du champ 'MAX_FILE_SIZE', qui permet de définir la taille maximale d'un fichier, et celle du champ de type fichier. Tout le reste est à la charge du programmeur, ce qui lui permet de personnaliser son formulaire et de ne pas le restreindre à ne l'utiliser que pour de l'upload.
+
+Comme dans tout script utilisant des classes, nous allons devoir charger la classe Upload et instancier un nouvel objet. Une fois cette étape effectuée, nous allons lancer la méthode "InitForm()", qui va configurer les deux champs précédemments cités.
+
+[CODE]
+<?php
+// Chargement de la classe
+require_once('../upload.class.php');
+
+// Instanciation d'un objet Upload
+$Upload = new Upload();
+
+// Initialise les champs MAX_FILE_SIZE et le champ de type 'FILE'
+$Upload-> InitForm();
+?>
+[/CODE]
+
+Maintenant, passons à l'écriture du formulaire. Nous allons faire le plus simplement du monde en limitant notre formulaire à la gestion d'un seul fichier :
+
+[CODE]
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<title>Exemple Classe Upload</title>
+</head>
+
+<body>
+<form action="un_champ.php" method="post" enctype="multipart/form-data" name="formulaire" id="formulaire">
+<?php
+print $Upload-> Field[0];
+print $Upload-> Field[1];
+?>
+<br>
+<input type="submit" value="Envoyer" name="submit">
+</form>
+</body>
+</html>
+[/CODE]
+
+Une remarque très importante à ce niveau. La balise HTML "form" doit obligatoirement contenir l'attribut enctype="multipart/form-data". Sans ce dernier, il est impossible de faire de l'upload. C'est la première chose à vérifier si vous n'arrivez pas en envoyer vos fichiers. Après avoir appelé la méthode "InitForm()", vous pouvez manipuler vos champs grâce aux attributs "Field[num_champ]" de votre objet Upload. Field[0] contient le champ MAX_FILE_SIZE, Field[1] notre champ de type 'FILE'.
+
+Le champ MAX_FILE_SIZE est configuré par défaut avec la valeur contenue dans le php.ini. Nous verrons par la suite comment modifier cette propriété, mais cette configuration devrait convenir dans la majorité des cas.
+
+Voyons maintenant comment gérer notre formulaire.
+
+    II. Gestion du formulaire
+
+Nous allons gérer la soumission de notre formulaire dans le même script que celui de la création. Pour ce faire, nous avons mis un nom à notre bouton "submit". Nous n'avons qu'a tester son existence dans le script pour savoir si le formulaire a bien été soumis. Juste en dessous de l'instanciation de notre objet Upload, nous allons ajouter le code suivant :
+
+[CODE]
+// Teste la soumission du formulaire
+if (!Empty($_POST['submit'])) {
+    // lance la procédure d'upload
+    $Upload-> Execute();
+    
+    // Teste le bon déroulement des opérations
+    if ($UploadError) {
+        print 'Il y a eu une erreur :';
+    } else {
+        print 'L\'upload s\'est déroulée normalement';
+    }
+}
+[/CODE]    
+
+Que faisons-nous ici? Si le formulaire a été soumis, nous lançons la procédure de gestion de l'upload par l'appel à la méthode "Execute()". La classe gère ensuite une variable globale nommée "UploadError" permettant de tester la réussite ou l'échec de notre upload. En cas d'erreur, cette variable vaut "true", si tout s'est bien passé elle vaut "false". Nous reviendrons plus tard sur la gestion des erreurs.
+
+Vous pouvez maintenant tester le code, vous venez d'uploader votre premier fichier avec la classe Upload. Le script complet se résume donc à ceci :
+
+[CODE]
+<?php
+// Chargement de la classe
+require_once('../upload.class.php');
+
+// Instanciation d'un objet Upload
+$Upload = new Upload();
+
+// Teste la soumission du formulaire
+if (!Empty($_POST['submit'])) {
+    // lance la procédure d'upload
+    $Upload-> Execute();
+    
+    // Teste le bon déroulement des opérations
+    if ($UploadError) {
+        print 'Il y a eu une erreur.';
+    } else {
+        print 'L\'upload s\'est déroulée normalement';
+    }
+}
+
+// Initialise les champs MAX_FILE_SIZE et le champ de type 'FILE'
+$Upload-> InitForm();
+?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<title>Exemple Classe Upload</title>
+</head>
+
+<body>
+<form action="un_champ.php" method="post" enctype="multipart/form-data" name="formulaire" id="formulaire">
+<?php
+print $Upload-> Field[0];
+print $Upload-> Field[1];
+?>
+<br>
+<input type="submit" value="Envoyer" name="submit">
+</form>
+</body>
+</html>
+[/CODE]
+
+A ce niveau, quelques explications sur le paramétrage par défaut de la classe s'imposent. Comme nous n'avons effectué aucun paramétrage de la classe, elle se paramètre de la manière suivante :
+    - autorise tout type de fichier
+    - autorise les fichier allant jusqu'à la taille maximale spécifiée dans le php.ini
+    - envoie le(s) fichier(s) dans le répertoire courant de la classe
+ 	- ne prépare qu'un seul champ de type file
+    - permet de laisser les champs de fichiers vides
+    - écrase le fichier s'il existe déjà
+    - n'exécute aucune vérification
+
+Notre fichier a donc été uploadé dans le répertoire où se situe le script "upload.class.php". Prenons un peu de temps pour personnaliser tout ça?
+
+    III. Paramétrage de la classe
+    
+Revenons tout d'abord à notre formulaire. Comme suscité, la classe Upload se base sur la configuration du php.ini pour configurer le champ de fichier MAX_FILE_SIZE. Cet attribut permet d'indiquer la taille maximale, exprimée en octet, qu'il sera possible d'uploader. Par défaut lorsque l'on installe PHP, cette taille est fixée à 2Mo. Si nous voulions maintenant la limiter à 1Mo, il faudrait alors renseigner à notre objet Upload, juste avant l'appel à la méthode "InitForm()", la propriété "MaxFilesize" :
+
+[CODE]
+$Upload-> MaxFilesize = 1024;
+$Upload-> InitForm();
+[/CODE] 
+
+Comme je trouvais qu'il était peu intuitif de préciser cette valeur en octets, je me suis dis qu'il était préférable de renseigner la propriété en kilo-octets et de laisser le travail de conversion à la classe. Avec ce paramètrage, tout fichier dépassant 1Mo sera refusé et générera une erreur.
+
+Autre paramètrage possible de la classe à ce niveau, ajouter des attributs à notre champ de type file. Si nous voulons rendre notre bouton un peu plus attrayant en utilisant les css, il suffirant de renseigner la propriété "FieldOptions" :
+
+[CODE]
+$Upload-> FieldOptions = 'style="border-color:black;border-width:1px;"';
+$Upload-> InitForm();
+[/CODE]
+
+Ici nous n'avons fait qu'ajouter des styles, mais vous pouvez en fait ajoutez tout ce qu'il vous semble nécessaire, comme des évènements JavaScript.
+
+Nous allons maintenant nous intéresser au paramétrage de l'exécution de l'upload. Le premier paramétrage susceptible de vous intéresser fortement concerne le répertoire de destination de vos fichiers. Il devra bien entendu disposer des droits d'écritures. Pour paramétrer cette variable, vous pouvez soit passer par des chemins relatifs, soit par des chemins absolus. Concernant la règle d'écriture, si vous êtes sous Windows vous utiliserez des slashs comme séparateur de répertoire, tandis que sous Linux ce sont des antislashs. La présence en fin du chemin du slash/antislash n'est pas obligatoire. S'il n'est pas trouvé, il sera automatiquement ajouté. La propriété à configurer se nomme "DirUpload". Il suffit de la préciser juste avant l'appel à la méthode "Execute()" :
+
+[CODE]
+// Définition du répertoire de destination (ici le répertoire courant du script)
+$Upload-> DirUpload = '.';
+$Upload-> Execute();
+[/CODE]
+
+On va s'en arrêter ici pour la personnalisation de la classe. Nous verrons la suite peu plus tard car il est maintenant grand temps de s'intéresser à la gestion des informations retournées par la classe lors du succès d'une upload.
+
+
+Récupération des informations sur le fichier uploadé
+
+Lorsque vous faîtes de l'upload de fichier, vous êtes certainement intéressé par récupérer quelques informations, ne serait-ce que pour alimenter votre base de données. Dans notre exemple, nous testons la variable globale $UploadError. Si une upload se passe correctement, elle vaut "false". Considérons que nous venons d'uploader un fichier texte et que tout s'est bien passé. Vous pouvez alors récupérer les informations suivantes sur le fichier :
+- son nom original
+- son nom tel qu'il a été sauvegardé sur le serveur
+- le type du fichier (entête)
+- son extension
+- le chemin d'accès au fichier.
+- son poids expimé en Ko à une précision de 3 chiffres après la virgule
+
+Il existe deux méthodes pour récupérer ces informations. La première consiste à appeler la méthode GetSummary(). L'appel à cette méthode retourne un tableau à deux dimensions de la manière suivante : $arr[numero_du_champ] = Array(nom, nom_originel, chemin, poids, mime-type, extension). Pour bien comprendre ce fonctionnement, ajoutons à notre code les quelques lignes suivantes :
+
+[CODE]
+// Chargement de la classe
+require_once('../upload.class.php');
+
+// Instanciation d'un objet Upload
+$Upload = new Upload();
+
+// Teste la soumission du formulaire
+if (!Empty($_POST['submit'])) {
+    // lance la procédure d'upload
+    $Upload-> Execute();
+    
+    // Teste le bon déroulement des opérations
+    if ($UploadError) {
+        print 'Il y a eu une erreur.';
+    } else {
+        print 'L\'upload s\'est déroulée normalement';
+        print '<xmp>';
+        print_r($Upload-> GetSummary());
+        print '</xmp>';
+    }
+}
+
+{suite du code...}
+[/CODE]
+
+Ceci va vous afficher les informations suivantes :
+
+Array
+(
+    [1] => Array
+        (
+            [nom] => mon_fichier.txt
+            [nom_originel] => mon fichier.txt
+            [chemin] => D:\mon_rep\upload\mon_fichier.txt
+            [poids] => 0.010
+            [mime-type] => text/plain
+            [extension] => .txt
+        )
+
+)
+
+Le premier tableau (Array) contient le numéro du champ de type "file" à compter de 1. Comme la classe peut gérer autant de fichier que l'on souhaite, il était obligatoire de procéder de la sorte. A ce stade, si l'on veut récupérer le chemin d'accès au fichier, il nous suffit d'écrire :
+
+[CODE]
+$resume = $Upload-> GetSummary();
+$chemin_du_champ_1 = $resume[1][chemin];
+echo $chemin_du_champ_1;
+[/CODE]
+
+Bon je vous l'accorde, lorsque l'on n'a qu'un seul champ à gérer c'est un peu rébarbatif. C'est pourquoi vous pouvez passer en paramètre optionnel à GetSummary() le numéro du champ qui vous intéresse, ce qui a pour effet de récupérer un tableau a une seule dimension :
+
+[CODE]
+print '<xmp>';
+print_r($Upload-> GetSummary(1));
+print '</xmp>';
+[/CODE]
+
+Ceci va afficher :
+
+Array
+(
+    [nom] => mon_fichier.txt
+    [nom_originel] => mon fichier.txt
+    [chemin] => D:\mon_rep\upload\mon_fichier.txt
+    [poids] => 0.010
+    [mime-type] => text/plain
+    [extension] => .txt
+)
+
+Du coup, pour récupérer le poids du fichier, par exemple, il suffit dorénavant d'écrire :
+[CODE]
+$resume = $Upload-> GetSummary(1);
+$poids = $resume[poids];
+echo $poids;
+[/CODE]
+
+Une deuxième méthode pour accèder aux informations consiste à accéder directement à la variable Infos() de la classe. Cela permet de récupérer directement une information spécifique. C'est également un tableau multiple. Pour accèder à l'informations désirée, vous pouvez procéder de la sorte :
+
+[CODE]
+// Affichage du poids
+echo $Upload-> Infos[1][poids];
+
+// Affichage du chemin
+echo $Upload-> Infos[1][chemin];
+
+// Affichage du nom
+echo $Upload-> Infos[1][nom];
+
+//etc...
+[/CODE]
+
+Le "1" veut tout simplement dire que vous souhaitez accéder aux informations du premier champ de votre formulaire.
+
+Depuis que nous avons attaqué ce chapitre, vous devez vous demander pourquoi il existe deux noms de fichiers : "nom"  et "nom_originel". En fait, lorsque vous faîtes de l'upload d'un fichier, la classe teste le nom de ce dernier et supprime tous les caractères accentués par leur équivalent sans les accents, et tous les caractères spéciaux ainsi que les espaces par des soulignés (_). Ceci a tout simplement pour but de formater le nom afin de le rendre toujours compatible avec le système de fichier du serveur. La propriété "nom" représente donc le nom du fichier tel qu'il est écrit sur le serveur, tandis que "nom_originel" est le nom avant formatage, tel qu'il était sur la machine client.
+
+Les différents mode d'écriture
+
+Donc un nom identifie un fichier sur le serveur. Comment va se comporter la classe si vous uploadeez un fichier au nom identique à un autre fichier déjà présent sur le serveur? Et bien en fait cela va dépendre du mode d'écriture utilisé. Voyons ça de suite.
+
+En fait c'est extrêmement simple. Il existe 3 modes d'écritures différents. Suivant ce paramètrage, si un fichier de même nom est présent dans le répertoire de destination:
+*  0 : il est écrasé par le nouveau fichier (mode par défaut)
+*  1 : le nouveau fichier est uploadé mais précédé de la mention 'copie_de_'
+*  2 : le nouveau fichier est ignoré
+
+Pour switcher entre ces différents modes, il suffit de renseigner la propriété "WriteMode" :
+
+[CODE]
+// Mode d'écriture n°2
+$Upload-> WriteMode = 2;
+$Upload-> Execute();
+[/CODE]
+
+Refaisons un petit point. Au stade actuel des explications, notre script ressemble à ceci :
+
+[CODE]
+<?php
+// Chargement de la classe
+require_once('../upload.class.php');
+
+// Instanciation d'un objet Upload
+$Upload = new Upload();
+
+// Teste la soumission du formulaire
+if (!Empty($_POST['submit'])) {
+    
+    // Définition du répertoire de destination (ici le répertoire courant du script)
+    $Upload-> DirUpload = '.';    
+    
+    // Changement du mode d'écriture
+    $Upload-> WriteMode = 2;
+    
+    // lance la procédure d'upload
+    $Upload-> Execute();
+    
+    // Teste le bon déroulement des opérations
+    if ($UploadError) {
+        print 'Il y a eu une erreur.';
+    } else {
+        print 'L\'upload s\'est déroulée normalement';
+        print '<xmp>';
+        print_r($Upload-> GetSummary());
+        print '</xmp>';
+    }
+}
+
+// Initialise les champs MAX_FILE_SIZE et le champ de type 'FILE'
+$Upload-> MaxFilesize = '1024';
+$Upload-> FieldOptions = 'style="border-color:black;border-width:1px;"';
+$Upload-> InitForm();
+?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<title>Exemple Classe Upload</title>
+</head>
+
+<body>
+<form action="" method="post" enctype="multipart/form-data" name="formulaire" id="formulaire" action="un_champ.php">
+<?php
+print $Upload-> Field[0]; // Le champ MAX_FILE_SIZE
+print $Upload-> Field[1]; // Le champ de type FILE
+?>
+<br>
+<input type="submit" value="Envoyer" name="submit">
+</form>
+</body>
+</html>
+[/CODE]
+
+
+Personnalisation
+
+Avant d'attaquer le chapitre concerné à la sécurité, voici quelques autres paramètres susceptible d'intéresser quelques uns d'entre vous. Tous ce que l'on va voir ici sont des propriétés à placer avant la méthode Execute(). Pour gagner en clairté, nous allons les présenter sous formes de questions/réponses :
+
+1. Comment indiquer à la classe que le champ upload doit être obligatoirement saisi?
+
+Par défaut, un champ de fichier vide n'est pas considéré comme l'echec d'une upload. Si vous souhaitez gérer ceci comme étant une erreur, vous pouvez utiliser la propriété Required :
+
+[CODE]
+$Upload-> Required = true;
+[/CODE]
+
+Ainsi, un champ de fichier vide initialisera la variable $UploadError à "true". Vous pourrez ainsi détecter l'échec de l'upload et prendre les mesures qui s'imposent.
+
+2. Comment vérifier la hauteur / largeur maximale d'une image?
+
+C'est tout simple. Vous disposez pour cela des propriétés suivantes :
+[CODE]
+// Pour vérifier que l'image ne dépassera pas les 200 pixels de large
+$Upload-> ImgMaxWidth  = 200;
+
+// Pour vérifier que l'image ne dépassera pas les 200 pixels de haut
+$Upload-> ImgMaxHeight = 200;
+[/CODE]
+
+Ainsi, lorsque la classe va vérifier vos fichiers, si elle détecte que le fichier en cours d'upload est une image, alors elle procédera aux vérifications sur ses propriétés hauteur/largeur. Les types d'images sur lesquelles ces vérifications sont rendues possible sont les suivants : GIF, JPG, PNG, SWF, SWC, PSD, TIFF, BMP, IFF, JP2, JPX, JB2, JPC, XBM, et WBMP. Notez toutefois que cette liste dépend de votre version de php. Pour connaître la liste des images susceptibles d'être analysées avec PHP, référez vous à la documentation PHP sur la fonction "GetImageSize()". Ce test s'effectuera uniquement si le fichier uploadé est une image, ce qui implique qu'il n'est pas obligé d'uploader que des fichiers images lorsque ces paramètres sont mis en place.
+
+3. Comment vérifier la hauteur / largeur minimale d'une image?
+
+Exactement de la même manière, sauf qu'il faudra renseigner les propriétés "ImgMinWidth" et "ImgMaxWidth".
+
+4. Comment personnaliser le nom du fichier sur le serveur?
+
+Vous pouvez manipuler le nom du fichier sur le serveur grâce à 3 propriétés combinable : Filename, Prefixe et Suffixe.
+
+[CODE]
+// Le fichier uploadé s'appelera "fichier"
+$Upload-> Filename = 'fichier';
+
+// On lui ajoute un préfixe
+$Upload-> Prefixe = 'pre_';
+
+// Puis un suffixe
+$Upload-> Suffixe = '_suf';
+
+// Au final, le fichier sur le serveur s'appelera : pre_fichier_suf.ext
+// où ext prendra la valeur de l'extension du fichier uploadé
+[/CODE]
+
+Nous approchons de la fin de ce tutorial. Ce qui nous reste à voir n'est pas le moins intéressant puisque cela concerne les vérifications sur vos fichiers, la mise en place de quelques options de sécurités, la gestion des erreurs et enfin l'upload de plusieurs fichiers simultanément.
+
+Vérification et sécurité
+
+Avec l'exemple que nous avons étudié, l'internaute peut actuellement charger sur le serveur tous les types de fichiers qu'il souhaite. Sa seule restriction pour l'instant est celle de la taille maximum du fichier, ce dont nous avons déjà parlé avec la directive MAX_FILE_SIZE.
+
+Vous pouvez préciser à la classe de filtrer les fichiers tout d'abord par extension. Imaginons que nous voulions resérver notre espace d'upload à une banque d'image. Au lieu de filtrer toutes les extensions que nous ne voulons pas, nous allons filtrer vis à vis des seules extensions que nous considérons comme des images. Pour paramétrer ce filtre, il suffit de remplir la propriéré "Extension" par une suite d'extensions autorisées, précédées d'un point et séparées par un point virgule :
+
+[CODE]
+// Liste des extensions autorisées
+$Upload-> Extension = '.gif;.jpg;.jpeg;.bmp;.png';
+$Upload-> Execute();
+[/CODE]
+
+Tous les fichiers qui ne correspondront pas à ces extensions seront ignorés et génèreront une erreur. La liste des extensions est illimitée.
+
+Certes, notre internaute ne peut désormais qu'uploader des fichiers qui correspondent à ces extensions. Mais s'il modifie l'extension d'un fichier texte par exemple, et la remplace par un ".jpg". Alors le fichier correspond bien à notre filtre et va donc être uploadé.
+
+Heureusement, grâce aux entêtes de fichiers (Mime-Type), nous pouvons nous assurer qu'un fichier est bien celui qu'il prétend être. Dans le principe, nous allons procéder de la même façon qu'avec les extensions, hormis le fait que nous allons renseigner la propriété MimeType :
+
+[CODE]
+// Liste des entêtes de fichiers autorisés
+$Upload-> MimeType = 'image/gif;image/pjpeg;image/jpeg;image/bmp;image/x-png'; 
+$Upload-> Execute();
+[/CODE]
+
+Il devient maintenant impossible d'uploader un fichier qui ne soit pas une image. Si vous ne connaissez pas le nom d'un entête de fichier (et il faudrait vraiment être maso pour les connaîtres tous), il vous suffit de vous créer un petit formulaire d'upload et d'en afficher le résumé via cette classe.
+
+Sachez que vous disposez également d'une "mini" politique de sécurité. Si vous positionnez la propriété SecurityMax à "true", vous allez bloquer tous les fichiers exécutables, et tous les fichiers PHP pouvant être interprétés mais dont l'entête ne peut les identifier comme étant dangereux. 
+
+[CODE]
+// Interdire les fichiers potentiellement dangereux
+$Upload-> SecurityMax = true;
+[/CODE]
+
+Enfin, vous pouvez vous assurer que l'internaute provient bien du formulaire mis en place sur votre serveur. Pour cela vous devez renseigner la propriété CheckReferer. Prenons un exemple, notre formulaire d'upload provient du site "mondomaine.fr". Il est situé dans un répertoire "upload" et le nom du script gérant le formulaire s'appelle 'upload.php'. Alors vous devez renseigner la variable CheckReferer de la façon suivante :
+
+[CODE]
+$Upload-> CheckReferer = 'http://www.mondomaine.fr/upload/upload.php';
+[/CODE]
+
+Lorsque vous passerez à la phase de traitement de l'upload, la classe va tester cette variable par rapport à l'URI de la page appelante, sans toutefois se soucier des paramètres passés par url (tout ce qui est après "?" inclu est ignoré). Si les valeurs ne sont pas égales, notre internaute se verra tout simplement dans l'incapacité d'accèder à la page de traitement.
+
+Maintenant que nous avons étudiés toutes les options de la classe (hormis l'upload de plusieurs fichiers), nous allons pouvoir parler de la gestion des erreurs. 
+
+Gestion des erreurs
+
+Eu égard à ce que nous avons vu, il existe 11 codes d'erreurs différents que vous pouvez récupérer en cas d'échec d'une upload. Ces codes sont numérotés de 1 à 11 :
+
+[1]  : Le fichier à charger excède la directive upload_max_filesize (dépend de la config du php.ini)
+[2]  : Le fichier excède la directive MAX_FILE_SIZE qui a été spécifiée dans le formulaire (dépend de la propriété MaxFileSize)
+[3]  : Le fichier n'a pu être chargé complètement
+[4]  : Le champ du formulaire est vide (dépend de la propriété Required)
+[5]  : Fichier potentiellement dangereux (dépend de la propriété SecurityMax)
+[6]  : Le fichier n'est pas conforme à la liste des entêtes autorisés (dépend de la propriété MimeType)
+[7]  : Le fichier n'est pas conforme à la liste des extensions autorisées (dépend de la propriété Extension)
+[8]  : La largeur de l'image dépasse celle autorisée (dépend de la propriété ImgMaxWidth)
+[9]  : La hauteur de l'image dépasse celle autorisée (dépend de la propriété ImgMaxHeight)
+[10] : La largeur de l'image est inférieure à celle autorisée (dépend de la propriété ImgMinWidth)
+[11] : La hauteur de l'image est inférieure à celle autorisée (dépend de la propriété ImgMinHeight)
+
+Si vous souhaitez savoir quelle a été la cause de l'échec de l'upload, il va falloir faire appel à la méthode "GetError()", qui fonctionne à l'instar de GetSummary(). Pour détecter une erreur, nous utilisons un simple test sur la variable "UploadError". La première chose à faire est donc de se placer au sein de ce test :
+
+[CODE]
+if (!Empty($_POST['submit'])) {
+    // liste des propriétés de la classe
+    $Upload-> WriteMode    = 2;
+    $Upload-> Extension    = '.gif;.jpg;.jpeg;.bmp;.png';
+    $Upload-> MimeType     = 'image/gif;image/pjpeg;image/jpeg;image/bmp;image/x-png'; 
+    $Upload-> SecurityMax  = true;
+    
+    // Lance l'upload
+    $Upload-> Execute();
+    
+    // Teste le bon déroulement des opérations
+    if ($UploadError) {
+        print 'Il y a eu une erreur :';
+        print '<xmp>';
+        print_r($Upload-> GetError());
+        print '</xmp>';
+    } else {
+        print 'L\'upload s\'est déroulée normalement';
+    }
+}
+
+{suite du code...}
+[/CODE]
+
+Si jamais je tente d'uploader un fichier nommé 'test.php' avec ce code, cela se traduira à l'écran par :
+
+Array
+(
+    [1] => Array
+        (
+            [5] => Fichier potentiellement dangereux (test.php)
+            [6] => Le fichier n'est pas conforme à la liste des entêtes autorisés (test.php)
+            [7] => Le fichier n'est pas conforme à la liste des extensions autorisées (test.php)
+        )
+
+)
+
+Et de la même manière qu'avec GetSummary(), vous pouvez spécifiez le numéro de votre champ afin de vous retrouver avec un tableau simple : 
+
+[CODE]
+print '<xmp>';
+print_r($Upload-> GetSummary(1));
+print '</xmp>';
+[/CODE]
+
+Affichera :
+
+Array
+(
+    [5] => Fichier potentiellement dangereux (test.php)
+    [6] => Le fichier n'est pas conforme à la liste des entêtes autorisés (test.php)
+    [7] => Le fichier n'est pas conforme à la liste des extensions autorisées (test.php)
+)
+
+Rien ne vous empêche donc de manipuler ces tableaux d'erreur pour en récupérer le code et ensuite y appliquer les traitements qu'ils vous semble adéquats à l'intérieur du test "if ($UploadError)".
+
+Cette fois nous touchons vraiment au terme de notre tutorial. La dernière chose qu'il nous reste à voir concerne l'upload de plusieurs fichiers
+
+Upload de plusieurs fichiers
+
+En fait il n'y a rien de compliqué à traiter l'upload de plusieurs fichiers avec cette classe. Il suffit de revenir à notre déclaration de formulaire et de préciser combien nous voulons de champs de type file via la propriété "Field" :
+
+[CODE]
+<?php
+$Upload-> MaxFilesize  = '1024';
+$Upload-> FieldOptions = 'style="border-color:black;border-width:1px;"';
+
+// Gestion de 2 champs
+$Upload-> Fields       = 2;
+$Upload-> InitForm();
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+	<title>Exemple Classe Upload</title>
+</head>
+
+<body>
+<form action="" method="post" enctype="multipart/form-data" name="formulaire" id="formulaire" action="un_champ.php">
+<?php
+// Le champ MAX_FILE_SIZE
+print $Upload-> Field[0];
+
+// Notre premier champ FILE
+print $Upload-> Field[1] . '<br>';
+
+// Et voici le second
+print $Upload-> Field[2];
+?>
+<br>
+<input type="submit" value="Envoyer" name="submit">
+</form>
+[/CODE]
+
+Nous avons ici précisé que nous voulions deux champs. Par rapport à notre premier code, nous n'avons qu'a ajouter le seconde champ  par un simple "print $Upload-> Field[2]". Il n'y a rien d'autre à faire, les manipulations sont pour le reste identiques à celle de l'upload pour un seul fichier. En fait, lorsque vous déterminez des propriétés de vérifications à la classe, elles seront valables pour tous les champs. Il n'est pas possible de dire que tel champ n'a le droit d'accueillir que des images, et que le champ numéro X n'acceptera que des fichiers textes.
+
+Conclusion
+
+Nous en avons terminé avec la présentation de la classe Upload. J'espère qu'elle vous satisfera tant dans sa simplicité que dans ses fonctionnalités.
+
+Comme à l'accoutumée, j'aimerai conclure cet article en vous précisant que vous pouvez toujours m'écrire pour m'informer d'éventuelles bugs ou demande d'évolution.
+
+Pour toutes difficultés ou questions relatives à cette classe, n'hésitez pas à poster des commentaires ou à vous rendre sur le forum.
+
+Bonne programmation!
