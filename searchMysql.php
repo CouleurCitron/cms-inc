@@ -24,7 +24,7 @@ class searchMysql
      */
     function pageSearch($idSite, $keyword = ''){
         
-        $oPage = new pageObject();
+        $oPage = new Page();
 
         
         //activation des traductions

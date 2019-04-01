@@ -18,7 +18,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 	
 				if($bRetourImg) {	// Vérif de la suppression de l'ancien fichier
 					$old_file_name = $InfosPhoto['nom'];
-					$new_file_name = ereg_replace("^TEMP","", $old_file_name);
+					$new_file_name = preg_replace("/^TEMP/msi","", $old_file_name);
 					$old_root_file_name = DEF_ROOT_UPLOADPHOTO."/".$old_file_name;
 					$new_root_file_name = DEF_ROOT_UPLOADPHOTO."/".$new_file_name;
 	

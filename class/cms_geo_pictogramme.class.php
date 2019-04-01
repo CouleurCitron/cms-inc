@@ -89,7 +89,7 @@ var $sMySql = "CREATE TABLE cms_geo_pictogramme
 ";
 
 // constructeur
-function cms_geo_pictogramme($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_geo_pictogramme") == false){
 		dbExecuteQuery($this->sMySql);

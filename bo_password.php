@@ -1,165 +1,174 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT']."/include/autopreprend.php");
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");  
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); 
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_cms.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');  
 
 $translator =& TslManager::getInstance(); 	
 	
- 
+if(is_post('password_request')){
+	$emaillogin = inputFilter($_POST["password_email"]);
 	
-	
-	if (is_post('password_email')) { 
-		// enregistrer le compte en session  
-		$emaillogin = $_POST["password_email"];
+	if ($emaillogin != "") { 
+
 		if (isEmail($emaillogin)){
-		$sql = "select * from bo_users where user_login = '".$emaillogin."' OR user_mail = '".$emaillogin."' ";  
-		$aUser = dbGetObjectsFromRequete('bo_users', $sql); 
+			$sql = "select * from bo_users where user_login = '".$emaillogin."' OR user_mail = '".$emaillogin."';";
+		}
+		elseif (isLogin($emaillogin)){
+			$sql = "select * from bo_users where user_login = '".$emaillogin."';";			
 		}
 		else{
-			$aUser=array();
+			echo 0;
+			error_log('hack attempt from '.$_SERVER['REMOTE_ADDR'].' onto bo_password.php ');
 		}
+
+		$aUser = dbGetObjectsFromRequete('bo_users', $sql); 
 		
-		if (sizeof ($aUser) > 0) {			
-					
+		if ($aUser	&&	(sizeof ($aUser) > 0)) {						
 			
 			$user = $aUser[0] ;
 			
 			$email = $user->get_mail();
+			if (trim($email)!=''){
 			
-			$new_pass = makeRandomKey ('alpha', 7);
-			
-			$user->set_passwd(md5($new_pass));
-			
-			$r = dbUpdate ($user); 
-			
-			if (isset($_SESSION["idSite"]) && $_SESSION ["idSite"]!= '') {
-				$idSite = $_SESSION ["idSite"];
-			}
-			else {
-				$sql = " SELECT MIN(cms_id) FROM cms_site";
-				$idSite = (int)dbGetUniqueValueFromRequete($sql);
-			}
-			
-			$site = new Cms_site ($idsite);
-			$url = 'http://'.$_SERVER['HTTP_HOST'].'/backoffice/';
-			$desc = $site->get_desc();
-			$rep = $site->get_rep(); 
-			
-			
-			
-			
-			// To send HTML mail, the Content-type header must be set
-			$limite = "_----------=_parties_".md5(uniqid (rand()));
-			$headers  = 'MIME-Version: 1.0' . "\r\n";
-			$headers .= 'Content-type:  multipart/alternative; charset=iso-8859-1 ;boundary="'.$limite.'"' . "\r\n";  
-	
-			// Additional headers
-			$headers .= 'From: '.DEF_CONTACT_FROM.'' . "\r\n";
-			
-			$message_html = "<table style='font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 11px; width: 80%; border: 0px solid #000000; padding: 5px;' align='left' cellspacing='0'>";
-			//$message_html .= "<tr ><td width='40%'><img src='http://".$_SERVER['HTTP_HOST']."/custom/img/fr/logo_adequat.jpg' alt='logo adequat' /></td><td width='60%'>&nbsp;</td></tr>";					
-			$message_html .= "<tr><td colspan='2'><br /><br />"; 
-			
-			
-			$message_html .= "Bonjour,<br /><br />";
-			$message_html .= "Vous avez demandé à recevoir un nouveau mot de passe pour vous connecter en toute sécurité à votre outil « ".$desc." ».<br /><br />";
-			$message_html .= "Adresse de connexion : <a href='http://".$url."'>http://".$url."</a><br />";
-			$message_html .= "Rappel de votre login : ".$user->get_login()." <br />"; 
-			$message_html .= "Rappel de votre mot de passe : ".$new_pass." <br /><br />";
-			$message_html .= "Vous en souhaitant bonne réception, <br /><br />";
-			$message_html .= "Ce message vous est adressé automatiquement. Nous vous remercions de ne pas répondre, ni d'utiliser cette adresse email.<br /><br />"; 
-			$message_html .= "</td></tr>";
-			$message_html .="</table>"; 
-			
-	 
-			//echo $message_html;
-			
-			 
-			$message_text  = "Bonjour,<br /><br />";
-			$message_text .= "Vous avez demandé à recevoir un nouveau mot de passe pour vous connecter en toute sécurité à votre outil « ".$desc." ».<br /><br />";
-			$message_text .= "Adresse de connexion : http://".$url."<br />"; 
-			$message_text .= "Rappel de votre logi : ".$user->get_login()."\n"; 
-			$message_text .= "Rappel de votre mot de passe : ".$new_pass."\n\n\n";
-			$message_text .= "Vous en souhaitant bonne réception, \n\n";
-			$message_text .= "Ce message vous est adressé automatiquement. Nous vous remercions de ne pas répondre, ni d'utiliser cette adresse email.\n\n";   
-	
-	
-	
-			//echo $message_text;
-			
-			//-----------------------------------------------
-			 //MESSAGE TEXTE
-			 //-----------------------------------------------
-			 $message = "";
-			 $message .= "--".$limite."\n";
-			 $message .= "Content-Type: text/plain\n";
-			 $message .= "charset=\"iso-8859-1\"\n";
-			 $message .= "Content-Transfer-Encoding: 8bit\n\n";
-			 $message .= $message_text."\n\n";
+				$new_pass = makeRandomKey ('alpha', 7);
+				
+				$user->set_passwd(password_hash($new_pass, PASSWORD_DEFAULT));
+				
+				$r = dbUpdate ($user); 
+				
+				if (isset($_SESSION["idSite"]) && $_SESSION ["idSite"]!= '') {
+					$idSite = $_SESSION ["idSite"];
+				}
+				else {
+					$sql = " SELECT MIN(cms_id) FROM cms_site";
+					$idSite = (int)dbGetUniqueValueFromRequete($sql);
+				}
+				
+				$site = new Cms_site ($idsite);
+				$url = 'http://'.$_SERVER['HTTP_HOST'].'/backoffice/';
+				$desc = $site->get_desc();
+				$rep = $site->get_rep(); 
+				
+				
+				
+				
+				// To send HTML mail, the Content-type header must be set
+				$limite = "_----------=_parties_".md5(uniqid (rand()));
+				$headers  = 'MIME-Version: 1.0' . "\r\n";
+				$headers .= 'Content-type:  multipart/alternative; charset=iso-8859-1 ;boundary="'.$limite.'"' . "\r\n";  
 		
-			 //-----------------------------------------------
-			 //MESSAGE HTML
-			 //-----------------------------------------------
-			 $message .= "\n\n--".$limite."\n";
-			 $message .= "Content-Type: text/html; ";
-			 $message .= "charset=\"iso-8859-1\"; ";
-			 $message .= "Content-Transfer-Encoding: 8bit;\n\n";
-			 $message .= $message_html."\n\n";
+				// Additional headers
+				$headers .= 'From: '.DEF_CONTACT_FROM.'' . "\r\n";
+				
+				$message_html = "<table style='font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 11px; width: 80%; border: 0px solid #000000; padding: 5px;' align='left' cellspacing='0'>";
+				//$message_html .= "<tr ><td width='40%'><img src='http://".$_SERVER['HTTP_HOST']."/custom/img/fr/logo_adequat.jpg' alt='logo adequat' /></td><td width='60%'>&nbsp;</td></tr>";					
+				$message_html .= "<tr><td colspan='2'><br /><br />"; 
+				
+				
+				$message_html .= "Bonjour,<br /><br />";
+				$message_html .= "Vous avez demandé à recevoir un nouveau mot de passe pour vous connecter en toute sécurité à votre outil « ".$desc." ».<br /><br />";
+				$message_html .= "Adresse de connexion : <a href='http://".$url."'>http://".$url."</a><br />";
+				$message_html .= "Rappel de votre login : ".$user->get_login()." <br />"; 
+				$message_html .= "Rappel de votre mot de passe : ".$new_pass." <br /><br />";
+				$message_html .= "Vous en souhaitant bonne réception, <br /><br />";
+				$message_html .= "Ce message vous est adressé automatiquement. Nous vous remercions de ne pas répondre, ni d'utiliser cette adresse email.<br /><br />"; 
+				$message_html .= "</td></tr>";
+				$message_html .="</table>"; 
+				
 		 
+				//echo $message_html;
+				
+				 
+				$message_text  = "Bonjour,<br /><br />";
+				$message_text .= "Vous avez demandé à recevoir un nouveau mot de passe pour vous connecter en toute sécurité à votre outil « ".$desc." ».<br /><br />";
+				$message_text .= "Adresse de connexion : http://".$url."<br />"; 
+				$message_text .= "Rappel de votre logi : ".$user->get_login()."\n"; 
+				$message_text .= "Rappel de votre mot de passe : ".$new_pass."\n\n\n";
+				$message_text .= "Vous en souhaitant bonne réception, \n\n";
+				$message_text .= "Ce message vous est adressé automatiquement. Nous vous remercions de ne pas répondre, ni d'utiliser cette adresse email.\n\n";   
+		
+		
+		
+				//echo $message_text;
+				
+				//-----------------------------------------------
+				 //MESSAGE TEXTE
+				 //-----------------------------------------------
+				 $message = "";
+				 $message .= "--".$limite."\n";
+				 $message .= "Content-Type: text/plain\n";
+				 $message .= "charset=\"iso-8859-1\"\n";
+				 $message .= "Content-Transfer-Encoding: 8bit\n\n";
+				 $message .= $message_text."\n\n";
 			
-			
-			$message .= "\n--".$limite."--";
-			$message_erreur = "Votre compte a bien été mis à jour."; 
-			
-			
-			
-			
-			$fileHTML = 'bopassword_template.html';
-			$fileTXT = 'bopassword_template.txt';
-			
-			$sBodyHTML = getHTMLTemplate ($fileHTML, $idSite); 
-			$sBodyHTML = str_replace("XX-DESC-XX", $desc, $sBodyHTML); 
-			$sBodyHTML = str_replace("XX-URL-XX", $url, $sBodyHTML); 
-			$sBodyHTML = str_replace("XX-LOGIN-XX", $user->get_login() , $sBodyHTML); 
-			$sBodyHTML = str_replace("XX-MDP-XX", $new_pass, $sBodyHTML);  	
-			
-			
+				 //-----------------------------------------------
+				 //MESSAGE HTML
+				 //-----------------------------------------------
+				 $message .= "\n\n--".$limite."\n";
+				 $message .= "Content-Type: text/html; ";
+				 $message .= "charset=\"iso-8859-1\"; ";
+				 $message .= "Content-Transfer-Encoding: 8bit;\n\n";
+				 $message .= $message_html."\n\n";
 			 
-			$sBodyTXT = getTXTTemplate ($fileTXT, $idSite); 
-			$sBodyTXT = str_replace("XX-DESC-XX", $desc, $sBodyTXT); 
-			$sBodyTXT = str_replace("XX-URL-XX", $url, $sBodyTXT); 
-			$sBodyTXT = str_replace("XX-LOGIN-XX", $user->get_login(), $sBodyTXT); 
-			$sBodyTXT = str_replace("XX-MDP-XX", $new_pass, $sBodyTXT); 
+				
+				
+				$message .= "\n--".$limite."--";
+				$message_erreur = "Votre compte a bien été mis à jour."; 
+				
+				
+				
+				
+				$fileHTML = 'bopassword_template.html';
+				$fileTXT = 'bopassword_template.txt';
+				
+				$sBodyHTML = getHTMLTemplate ($fileHTML, $idSite); 
+				$sBodyHTML = str_replace("XX-DESC-XX", $desc, $sBodyHTML); 
+				$sBodyHTML = str_replace("XX-URL-XX", $url, $sBodyHTML); 
+				$sBodyHTML = str_replace("XX-LOGIN-XX", $user->get_login() , $sBodyHTML); 
+				$sBodyHTML = str_replace("XX-MDP-XX", $new_pass, $sBodyHTML);  	
+				
+				
+				 
+				$sBodyTXT = getTXTTemplate ($fileTXT, $idSite); 
+				$sBodyTXT = str_replace("XX-DESC-XX", $desc, $sBodyTXT); 
+				$sBodyTXT = str_replace("XX-URL-XX", $url, $sBodyTXT); 
+				$sBodyTXT = str_replace("XX-LOGIN-XX", $user->get_login(), $sBodyTXT); 
+				$sBodyTXT = str_replace("XX-MDP-XX", $new_pass, $sBodyTXT); 
+				 
 			 
-		 
-			echo $email;
-			//echo '<p>Votre mot de passe a été envoyé à l\'adresse suivante : <br />'.$email.'.</p>'; 
-			// Mail it
-			//mail($user->get_email(), $subject, $message, $headers); 
-			
-			// subject
-			if (defined("DEF_SUBJECT_BO_PASSWORD") &&  (DEF_SUBJECT_BO_PASSWORD)){
-				$subject = DEF_SUBJECT_BO_PASSWORD; 
+				echo preg_replace('/.{2}@.{2}/msi', '**@**', $email);
+				
+				//echo '<p>Votre mot de passe a été envoyé à l\'adresse suivante : <br />'.$email.'.</p>'; 
+				// Mail it
+				//mail($user->get_email(), $subject, $message, $headers); 
+				
+				// subject
+				if (defined("DEF_SUBJECT_BO_PASSWORD") &&  (DEF_SUBJECT_BO_PASSWORD)){
+					$subject = DEF_SUBJECT_BO_PASSWORD; 
+				}
+				else {
+					$subject = 'Backoffice '.$_SERVER['HTTP_HOST'].' : votre mot de passe'; 
+				}
+				
+				
+				
+				if (defined("DEF_CONTACT_FROM_BO_PASSWORD") &&  (DEF_CONTACT_FROM_BO_PASSWORD)){
+					$from = DEF_CONTACT_FROM_BO_PASSWORD;
+				}
+				else {
+					$from = DEF_CONTACT_FROM;
+				}
+				  
+				multiPartMail_file($email, $subject , $sBodyHTML, $sBodyTXT, $from, $chemin_destination, $aName_file)	;
+				//multiPartMail_file('thao@couleur-citron.com', $subject , $sBodyHTML, $sBodyTXT, $from, $chemin_destination, $aName_file)	;
+				
+				
+				unset($_POST["do"]);
+				unset($_POST["password_email"]); 
 			}
-			else {
-				$subject = 'Backoffice '.$_SERVER['HTTP_HOST'].' : votre mot de passe'; 
+			else{ // pas de mail en db pour ce login
+				echo 0;
 			}
-			
-			
-			
-			if (defined("DEF_CONTACT_FROM_BO_PASSWORD") &&  (DEF_CONTACT_FROM_BO_PASSWORD)){
-				$from = DEF_CONTACT_FROM_BO_PASSWORD;
-			}
-			else {
-				$from = DEF_CONTACT_FROM;
-			}
-			  
-			multiPartMail_file($email, $subject , $sBodyHTML, $sBodyTXT, $from, $chemin_destination, $aName_file)	;
-			//multiPartMail_file('thao@couleur-citron.com', $subject , $sBodyHTML, $sBodyTXT, $from, $chemin_destination, $aName_file)	;
-			
-			
-			unset($_POST["do"]);
-			unset($_POST["password_email"]);  
 		}
 		else {
 			echo 0;
@@ -169,7 +178,7 @@ $translator =& TslManager::getInstance();
 				
 				
 		
-	 
+	}
 		
 	
 	}
@@ -277,7 +286,7 @@ $translator =& TslManager::getInstance();
 			
 				$.ajax({
 					type	: "POST", 
-					data	: { "password_email" : password_email} ,
+					data	: { "password_email" : password_email, "password_request" : "true"} ,
 					url	: "/include/cms-inc/bo_password.php",
 					success	: function(_data) {
 						//alert(_data);
@@ -300,7 +309,7 @@ $translator =& TslManager::getInstance();
 	<form id="password_form" name="password_form" method="POST">
 		<h2><?php $translator->echoTransByCode('Mot_de_passe_oublie'); ?></h2>
 		<input type="hidden" name="do" id="do" value="send_password"/>
-		<p><label><?php $translator->echoTransByCode('Identifiant'); ?></label><input type="text" name="password_email" id="password_email" /> <span id="blocerreur_email" class="erreur_form"></span> </p>		
+		<p><label for="password_email"><?php $translator->echoTransByCode('Identifiant'); ?></label><input type="text" name="password_email" id="password_email" /> <span id="blocerreur_email" class="erreur_form"></span> </p>		
 		<p class="valider"><a class="valider" href="#" onclick="validPasswordForm();"><?php $translator->echoTransByCode('Valider'); ?></a></p>
 	</form>  
 	</div>
@@ -311,4 +320,3 @@ $translator =& TslManager::getInstance();
 	}
 	
 	?>
- 

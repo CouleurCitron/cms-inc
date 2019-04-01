@@ -52,7 +52,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		}
 		
 			
-		if (!ereg("statut|ordre|id", $aNodeToSort[$i]["attrs"]["NAME"])){ // cas pas statut|ordre|id	
+		if (!preg_match("/statut|ordre|id/msi", $aNodeToSort[$i]["attrs"]["NAME"])){ // cas pas statut|ordre|id	
 			$eKeyValue = getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]);
 			if (critereIfdisplay($aNodeToSort[$i], $oRes, $eKeyValue) == true){	// displayif
 				echo "<div class=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."\" id=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."\">\n";					
@@ -113,7 +113,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					if ($eKeyValue > -1){ // cas typique typique
 						if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
 							if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)){ // le fichier existe
-								if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+								if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 									if (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)){
 										foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
 											$widthMax=$childNode["attrs"]["WIDTH"];
@@ -156,7 +156,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 										echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$eKeyValue."\" title=\"Télécharger le fichier : '".$eKeyValue."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$eKeyValue."\" /></a>\n";
 									}
 								}
-								elseif (eregi("\.flv$",$eKeyValue)){ // video
+								elseif (preg_match("/\.flv$/msi",$eKeyValue)){ // video
 									/*						
 									$file = $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue;									
 									require_once('flv4php/FLV.php'); // Path to flv.php / (flv4php)									
@@ -250,16 +250,16 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						}
 						else if ($aNodeToSort[$i]["attrs"]["TYPE"] == "date"){ // date
 							// expected : jj/mm/aaaa
-							if (ereg("([0-9]{2})/[0-9]{2}/[0-9]{4}", $eKeyValue)){	
-								$jj = ereg_replace("([0-9]{2})/[0-9]{2}/[0-9]{4}", "\\1", $eKeyValue);	
-								$mm = ereg_replace("[0-9]{2}/([0-9]{2})/[0-9]{4}", "\\1", $eKeyValue);
-								$aaaa = ereg_replace("[0-9]{2}/[0-9]{2}/([0-9]{4})", "\\1", $eKeyValue);						
+							if (preg_match("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", $eKeyValue)){	
+								$jj = preg_replace("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", "$1", $eKeyValue);	
+								$mm = preg_replace("/[0-9]{2}\/([0-9]{2})\/[0-9]{4}/msi", "$1", $eKeyValue);
+								$aaaa = preg_replace("/[0-9]{2}\/[0-9]{2}\/([0-9]{4})/msi", "$1", $eKeyValue);						
 							
 							}
-							else if (ereg("([0-9]{4})/[0-9]{2}/[0-9]{2}", $eKeyValue)){// expected : aaaa/mm/jj
-								$aaaa = ereg_replace("([0-9]{4})/[0-9]{2}/[0-9]{2}", "\\1", $eKeyValue);	
-								$mm = ereg_replace("[0-9]{4}/([0-9]{2})/[0-9]{2}", "\\1", $eKeyValue);
-								$jj = ereg_replace("[0-9]{4}/[0-9]{2}/([0-9]{2})", "\\1", $eKeyValue);							
+							else if (preg_match("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", $eKeyValue)){// expected : aaaa/mm/jj
+								$aaaa = preg_replace("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", "$1", $eKeyValue);	
+								$mm = preg_replace("/[0-9]{4}\/([0-9]{2})\/[0-9]{2}/msi", "$1", $eKeyValue);
+								$jj = preg_replace("/[0-9]{4}\/[0-9]{2}\/([0-9]{2})/msi", "$1", $eKeyValue);							
 							
 							}
 							if ($mm != "00"){	//00/00/1999 devient 1999 - 00/02/1998 devient 02/1998						
@@ -548,7 +548,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 										//echo "cas d'item d'asso ayant lui meme des assos";
 										//echo "chercher les ".$idForeignNode["attrs"]["ASSO"]." poitant sur la valeur ".$oTemp->getClasse()." id = ".$tempStrAbstract;
 										$oTempForeignAssoAsso = new $idForeignNode["attrs"]["ASSO"]();
-										$oTempForeignAssoAssoPrefixe = ereg_replace("([^_]+)_.*", "\\1", $oTempForeignAssoAsso->getFieldPK());
+										$oTempForeignAssoAssoPrefixe = preg_replace("/([^_]+)_.*/msi", "$1", $oTempForeignAssoAsso->getFieldPK());
 										$sRequete = "SELECT * FROM ".$idForeignNode["attrs"]["ASSO"]." WHERE ".$oTempForeignAssoAssoPrefixe."_".$oTemp->getClasse()." = ".$tempStrAbstract;
 										// test cond statut
 										if ($oTempForeignAssoAsso->getGetterStatut() != "none"){
@@ -569,29 +569,6 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 										}
 									}																
 								}
-								/*
-								elseif(ereg("http://", $tempStrAbstract)){
-									// nada, c'est une irl
-									$tempStrAbstract = trim($tempStrAbstract);
-								}
-								elseif (is_file($tempStrAbstract)){
-									// nada, fichier en relatif
-								}
-								elseif (is_file($_SERVER['DOCUMENT_ROOT'].$tempStrAbstract)){
-									// nada, fichier en absolu
-								}
-								elseif (is_file($_SERVER['DOCUMENT_ROOT']."/frontoffice/".$oTemp->getClasse()."/".$tempStrAbstract)){
-									//  fichier en fo dossier de la classe
-									$tempStrAbstract = "/frontoffice/".$oTemp->getClasse()."/".$tempStrAbstract;
-								}
-								elseif (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$oTemp->getClasse()."/".$tempStrAbstract)){
-									//  fichier en custom upload dossier de la classe
-									$tempStrAbstract = "/custom/upload/".$oTemp->getClasse()."/".$tempStrAbstract;
-								}
-								else{
-									$tempStrAbstract = "";
-								}
-								*/
 								else{
 									$tempStrAbstract = controlLinkValue($tempStrAbstract, $oTemp);								
 								}
@@ -747,7 +724,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 											$tempStrAbstract = "/frontoffice/".$oTemp->getClasse()."/foshow_".$oTemp->getClasse().".php?id=".$tempStrAbstract."&";
 										}								
 									}
-									if(ereg("http://", $tempStrAbstract)){
+									if(preg_match("/http:\/\//msi", $tempStrAbstract)){
 										// nada, c'est une irl
 										$tempStrAbstract = trim($tempStrAbstract);
 									}

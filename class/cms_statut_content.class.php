@@ -77,7 +77,7 @@ var $sMySql = "CREATE TABLE cms_statut_content
 ";
 
 // constructeur
-function cms_statut_content($id=null)
+function __construct($id=null)
 {
 	 
 	if (istable("cms_statut_content") == false){

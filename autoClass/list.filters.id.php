@@ -195,12 +195,12 @@ if (preg_match('/backoffice/', $_SERVER['PHP_SELF'])==1) {
 			
 <?php
 	if ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/r/', $customActionControl[$_SESSION['rank']]))
-		echo "<a title='".$translator->getTransByCode('Visualiser')."' href='#'  id='visuSearch'><img border='0' align='top' alt='".$translator->getTransByCode('Visualiser')."' src='/backoffice/cms/img/visualiser.gif'></a>\n"; 
+		echo "<a title='".$translator->getTransByCode('Visualiser')."' href='#'  id='visuSearch'><img border='0' align='top' alt='".$translator->getTransByCode('Visualiser')."' src='/backoffice/cms/img/2013/icone/visualiser.png'></a>\n"; 
 	if ($editLink && ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/e/', $customActionControl[$_SESSION['rank']])))
-		echo "<a title='".$translator->getTransByCode('Modifier')."' href='#' id='modifSearch'><img border='0' align='top' alt='".$translator->getTransByCode('Modifier')."' src='/backoffice/cms/img/modifier.gif'></a>\n";
+		echo "<a title='".$translator->getTransByCode('Modifier')."' href='#' id='modifSearch'><img border='0' align='top' alt='".$translator->getTransByCode('Modifier')."' src='/backoffice/cms/img/2013/icone/modifier.png'></a>\n";
 		
 	if ($editLink && ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/c/', $customActionControl[$_SESSION['rank']])))
-		echo '<a href="#" id="dupliSearch" title="'.$translator->getTransByCode('Dupliquer').'"><img src="/backoffice/cms/img/dupliquer.gif" border="0" alt="'.$translator->getTransByCode('Dupliquer').'" align="top" /></a>&nbsp;';
+		echo '<a href="#" id="dupliSearch" title="'.$translator->getTransByCode('Dupliquer').'"><img src="/backoffice/cms/img/2013/icone/dupliquer.png" border="0" alt="'.$translator->getTransByCode('Dupliquer').'" align="top" /></a>&nbsp;';
 		
 		 
 	if (isset($aCustom["Action"]) && $aCustom["Action"] != '' && (empty($customActionControl) || preg_match('/a/', $customActionControl[$_SESSION['rank']]))){

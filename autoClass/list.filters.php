@@ -8,7 +8,7 @@ function rechercher() {
 function filterChange() {
 <?php
 	unset($_SESSION["adodb_curr_page"]);
-	if (!preg_match("/backoffice/si", $_SERVER['PHP_SELF'])){
+	if (!preg_match("/backoffice/msi", $_SERVER['PHP_SELF'])){
 ?>
 	document.<?php echo $classePrefixe; ?>_rech_form.action = "<?php echo $_SERVER['SCRIPT_URI']; ?>";
 	document.<?php echo $classePrefixe; ?>_rech_form.submit();
@@ -75,21 +75,6 @@ h2.titleSearch{
     float: left;
     padding: 3px 0;
 }
-.blocItem.dateblocItem:first-child {
-	clear: left;
-}
-.blocItem.dateblocItem > div {
-	float: left;
-	margin-right: 10px;
-	width: 150px;
-}
-.blocItem.dateblocItem input {
-	width: 110px;
-}
-.blocItem.dateblocItem img {
-	vertical-align: middle;
-}
-
 .new_search select{
 	width:300px;
 	margin:2px 0 3px 0;
@@ -170,7 +155,7 @@ $numChamptext = 1;
 ?>
 	<div id="filters" class="arbo">
 		<div class='search_gauche new_search'>
-                        <div style="clear:both">&nbsp;</div>
+                        <div class="spacer">&nbsp;</div>
                             <h2 class="titleSearch"><?php echo $translator->getTransByCode('Recherche_par'); ?></h2>
 <?php
 if ($numChamptext != 0) {
@@ -192,17 +177,15 @@ if ($numChamptext != 0) {
 	// en BO
 	if (preg_match("/backoffice/si", $_SERVER['PHP_SELF'])==1){ 
 		?>
-                            <div style="clear:both">&nbsp;</div>
+                            <div class="spacer">&nbsp;</div>
 			</div>
 			<div class="search_droite new_search">
-                            <div style="clear:both">&nbsp;</div>
+                            <div class="spacer">&nbsp;</div>
 	   <?php
 	   	// ------------------------------------------------------
 		// recherche by statut ----------------------------------  
 		// ------------------------------------------------------ 
-	   include_once ("list.filters.statut.php");
-
-	   include_once ("list.filters.date.php");
+	   include_once ("list.filters.statut.php");						
 		
 	} //en BO
 	else{ //en FO
@@ -232,7 +215,7 @@ if ($numChamptext != 0) {
 
 } // end if($numChamptext != 0){
 ?> 
-                            <div style="clear:both">&nbsp;</div>
+                            <div class="spacer">&nbsp;</div>
                             <?php include ("list.filters.bouton.php");   ?>
 	</div><!-- <div class='search_gauche new_search'> -->
 	</div><!-- <div id="filters" class="arbo"> -->

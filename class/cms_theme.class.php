@@ -131,7 +131,7 @@ var $sMySql = "CREATE TABLE cms_theme
 ";
 
 // constructeur
-function cms_theme($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_theme") == false){
 		dbExecuteQuery($this->sMySql);

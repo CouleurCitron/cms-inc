@@ -194,12 +194,12 @@ function generateClasseFromXMLString($xmlstr){
 	
 	//-  ----- constructeur -------------------
 	$classeSRC .= "// constructeur\n";
-	$classeSRC .= "function ".$classeName."($"."id=null)\n";
+	$classeSRC .= "function __construct($"."id=null)\n";
 	$classeSRC .= "{\n";
 	$classeSRC .= "	if (istable(get_class($"."this)) == false){\n";
 	$classeSRC .= "		dbExecuteQuery($"."this->sMySql);\n";
 	$classeSRC .= "	}\n\n";
-	$classeSRC .= "	if($"."id!==null) {\n";
+	$classeSRC .= "	if($"."id!=null) {\n";
 	$classeSRC .= "		$"."tempThis = dbGetObjectFromPK(get_class($"."this), $"."id);\n";
 	$classeSRC .= "		foreach ($"."tempThis as $"."tempKey => $"."tempValue){\n";
 	$classeSRC .= "			$"."this->$"."tempKey = $"."tempValue;\n";
@@ -245,7 +245,7 @@ function generateClasseFromXMLString($xmlstr){
 				// Added by Luc - 9 oct. 2009
 				elseif (($aNodeToSort[$i]["attrs"]["TYPE"] == "decimal") or ($aNodeToSort[$i]["attrs"]["TYPE"] == "float")) {
 
-					$test =ereg ("([0-9]*),([0-9]*)", $aNodeToSort[$i]["attrs"]["LENGTH"], $regs);
+					$test =preg_match ("/([0-9]*),([0-9]*)/msi", $aNodeToSort[$i]["attrs"]["LENGTH"], $regs);
 					$classeSRC .=" 0."; 
 					$cptdecimal = 0;
 					while ($cptdecimal <$regs[2]) {

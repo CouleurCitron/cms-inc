@@ -101,7 +101,7 @@ var $sMySql = "CREATE TABLE cms_geo_point
 ";
 
 // constructeur
-function cms_geo_point($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_geo_point") == false){
 		dbExecuteQuery($this->sMySql);

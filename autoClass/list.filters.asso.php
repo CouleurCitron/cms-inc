@@ -55,7 +55,7 @@ if ($assoNodes != false){
 			$aName = array ();  
 			 
 			foreach ($_SESSION as $key => $postedvar){ 
-				if (ereg($needle, $key) == true){ 
+				if (strpos($key, $needle) === 0){
 					$aKeyVar = array();
 					//echo "---".$key ." ".$postedvar."<br />";
 					$_POST[$key] = str_replace ("assofiltre", "assoFiltre", $_SESSION[$key]); 

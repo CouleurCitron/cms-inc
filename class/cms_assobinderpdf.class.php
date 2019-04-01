@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_assobinderpdf
 ";
 
 // constructeur
-function cms_assobinderpdf($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assobinderpdf") == false){
 		dbExecuteQuery($this->sMySql);

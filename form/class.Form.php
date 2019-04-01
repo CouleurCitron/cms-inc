@@ -706,8 +706,7 @@ class Form  {
 		 
 			if (!captcha_ok) {\r  
 				
-				// $.post(\"/backoffice/cms/formulaire/captcha.php\", { recaptcha_response_field: $(\"#".$nameForm." input#recaptcha_response_field\").val(), recaptcha_challenge_field: $(\"#".$nameForm." input#recaptcha_challenge_field\").val()},  \r
-				$.post(\"/backoffice/cms/formulaire/captcha.php\", { recaptcha_response_field: grecaptcha.getResponse(), recaptcha_version: 2},  \r
+				 $.post(\"/backoffice/cms/formulaire/captcha.php\", { privatekey: $(\"#".$nameForm." input#privatekey\").val(),  recaptcha_response_field: $(\"#".$nameForm." input#recaptcha_response_field\").val(), recaptcha_challenge_field: $(\"#".$nameForm." input#recaptcha_challenge_field\").val()},  \r
 					function success(data){  \r 
 						
 						if(data == 1){  \r
@@ -1080,10 +1079,7 @@ class Form  {
 		 
 	}*/
 	function getHtml_captcha ($field) {
-		// config overides XML
-		if (defined('DEV_RECAPTCHA_SITEKEY')){
-			$field['pubkey']=DEV_RECAPTCHA_SITEKEY;
-		}
+		
 		 
 		if ($field["display"] == "true") {
 			
@@ -1109,7 +1105,7 @@ class Form  {
 			$html.= recaptcha_get_html($field['pubkey']);
 		
 			$html.= '</div>';
-			//$html.= '<input type="hidden" id="privatekey" name="privatekey" value="'.$field["privkey"].'" />';
+			$html.= '<input type="hidden" id="privatekey" name="privatekey" value="'.$field["privkey"].'" />';
 		
 		}
 		

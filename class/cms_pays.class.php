@@ -88,7 +88,7 @@ var $sMySql = "CREATE TABLE cms_pays
 ";
 
 // constructeur
-function cms_pays($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_pays") == false){
 		dbExecuteQuery($this->sMySql);

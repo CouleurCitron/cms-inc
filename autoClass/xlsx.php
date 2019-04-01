@@ -5,25 +5,26 @@ if (!isset($classeName)){
 }
 //------------------------------------------------------------------------------------------------------
 if (!function_exists('sanitize')){
-	function sanitize($str){
-		$search = array();
-		//$search = getExtendedAsciiTable(128, 255);
-		$search[] = 'apos;';
-		$search[] = 'quot;';
-		$search[] = '&';
-		$search[] = chr(10);
-		$search[] = '<';
-		$destroy = array();
-		//$destroy = getExtendedAsciiTableUTF8(128, 255);
-		$destroy[] = "'";
-		$destroy[] = '"';
-		$destroy[] = '&amp;';
-		$destroy[] = "&#10;";
-		$destroy[] = "&lt;";	
-		
-		return str_replace($search, $destroy, $str);
-	}
+function sanitize($str){
+	$search = array();
+	//$search = getExtendedAsciiTable(128, 255);
+	$search[] = 'apos;';
+	$search[] = 'quot;';
+	$search[] = '&';
+	$search[] = chr(10);
+	$search[] = '<';
+	$destroy = array();
+	//$destroy = getExtendedAsciiTableUTF8(128, 255);
+	$destroy[] = "'";
+	$destroy[] = '"';
+	$destroy[] = '&amp;';
+	$destroy[] = "&#10;";
+	$destroy[] = "&lt;";	
+	
+	return str_replace($search, $destroy, $str);
 }
+}
+
 
 //------------------------------------------------------------------------------------------------------
 
@@ -32,8 +33,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 ini_set ('max_execution_time', 0); // Aucune limite d'execution
-ini_set("memory_limit","1024M");
-ini_set('display_errors', false);
+ini_set("memory_limit","512M");
 
 unset($_SESSION['BO']['CACHE']);
 
@@ -138,10 +138,13 @@ if (($eStatut != -1) && ($eStatut != '') && ($statusGetter != 'none')) {
 else{
 	$sql= 'SELECT * FROM '.$classeName.';';
 } 
-//pre_dump($filters);
-//pre_dump($_SESSION);
 
 
+//$sql = $_SESSION['sqlpag'] ; 
+
+
+
+ 
 
 // Cas over mega pas typique du tout
 // Cloisonnement sur administrateur loggué
@@ -168,18 +171,13 @@ while (isset($_GET['champ'.$k])&& $_GET['champ'.$k]!=""){
 }
 
 if (!is_null($oRes->XML_inherited)){
-	//$aListe_res = dbGetObjects($classeName);
-	$rs = $db->Execute('SELECT * FROM '.$classeName);
+	$aListe_res = dbGetObjects($classeName);
 }
 else{
-	//$aListe_res = dbGetObjectsFromRequeteCache($classeName, $sql,100);
-	$rs = $db->Execute($sql);
+	$aListe_res = dbGetObjectsFromRequete($classeName, $sql);
 }
-
-
-
-
 //echo $sql;
+
 
 //die($sql);
  
@@ -191,7 +189,7 @@ else{
 date_default_timezone_set('Europe/Paris');
 
 /** PHPExcel */
-require_once 'include/cms-inc/lib/PHPExcel/PHPExcel.php';
+require_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/PHPExcel/PHPExcel.php');
 
 // Create new PHPExcel object
 $objPHPExcel = new PHPExcel();
@@ -211,12 +209,6 @@ $objPHPExcel->getProperties()->setCreator("Adequat Website")
         //    ->setCellValue('B2', 'world!')
          //   ->setCellValue('C1', 'Hello')
          //   ->setCellValue('D2', 'world!');
-		 
-// Redirect output to a client’s web browser (Excel2007)
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="export_'.$classeName.'.xlsx"');
-header('Cache-Control: max-age=0');
-
 		 
 		 
 $j = 0; 
@@ -280,41 +272,35 @@ if (sizeof($aTempClasse) > 0) {
 }
 
 if ($_GET["Type"]  == '') { 
-
-	if($rs) {
-		
-		$k=0;
-		
-		while(!$rs->EOF) {
-			
-			
-	//if(sizeof($aListe_res)>0) {
+	if(sizeof($aListe_res)>0) {
 		// liste
-		//for($k=0; $k<sizeof($aListe_res); $k++) {
-	
-			//$oRes = $aListe_res[$k];
-			$aRes=$rs->fields;
+		for($k=0; $k<sizeof($aListe_res); $k++) {
+		//for($k=0; $k<5; $k++) {
+			$oRes = $aListe_res[$k];
 			$l = 0;
-			for ($i=0;$i<count($aNodeToSort);$i++){		
+			for ($i=0;$i<count($aNodeToSort);$i++){	
 				if ($aNodeToSort[$i]['name'] == 'ITEM' && (!isset($aNodeToSort[$i]['attrs']['NOEXPORT']) || $aNodeToSort[$i]['attrs']['NOEXPORT'] != 'true')){
 					if (!isset($aNodeToSort[$i]["attrs"]["SKIP"]) || $aNodeToSort[$i]["attrs"]["SKIP"] != "true" ) {
-						//$eKeyValue = trim(call_user_func(array($oRes, 'get_'.$aNodeToSort[$i]['attrs']['NAME'])));
-						
-						$eKeyValue = trim($aRes[$classePrefixe.'_'.$aNodeToSort[$i]['attrs']['NAME']]);
-						
-						if (isset($aNodeToSort[$i]['attrs']['FKEY'])){ // cas de foregin key
-							if ($eKeyValue == '')  $eKeyValue = -1 ; 
+						$eKeyValue = ''; 
+						$eKeyValue =  trim(call_user_func(array($oRes, 'get_'.$aNodeToSort[$i]['attrs']['NAME']))); 
+						 
+						if (isset($aNodeToSort[$i]['attrs']['FKEY'])){ // cas de foregin key 
+							if ($eKeyValue == '' )  $eKeyValue = -1 ; 
+							$eKeyValue = intval($eKeyValue) ;
 							$sTempClasse = $aNodeToSort[$i]['attrs']['FKEY'];
-							if ($eKeyValue > -1){ 
+							if ($eKeyValue > -1){
 								$oTemp = cacheObject($sTempClasse, $eKeyValue); 
+								//if (isObjectById($sTempClasse, $eKeyValue)) {
 								if ($oTemp!=false){
-									$eKeyValue = trim(call_user_func(array($oTemp, 'get_'.$oTemp->getDisplay())));									
+									$eKeyValue = trim(call_user_func(array($oTemp, 'get_'.$oTemp->getDisplay()))); 
+									//if (  $oTemp->getDisplay() <>  $oTemp->getAbstract() ) $eKeyValue.= " - ".trim(call_user_func(array($oTemp, 'get_'.$oTemp->getAbstract())));
 									
 									// traduction ????
 									if(!is_null($oTemp->XML_inherited))
 										$sXML = $oTemp->XML_inherited;
 									else
 										$sXML = $oTemp->XML;
+									//$sXML = $oTemp->XML;
 									 
 									unset($stack);
 									$stack = array();
@@ -325,7 +311,7 @@ if ($_GET["Type"]  == '') {
 									$tempForeignAbstract = "";
 									$tempIsDisplayForeign = false;
 									$tempForeignDisplay = "";
-			
+                                                                        
 									if(is_array($foreignNodeToSort)){ 
 										foreach ($foreignNodeToSort as $nodeId => $nodeValue) {		
 											if ($nodeValue["attrs"]["NAME"] == $oTemp->getDisplay()){	
@@ -333,9 +319,52 @@ if ($_GET["Type"]  == '') {
 												$typeDisplay = $nodeValue["attrs"]["TYPE"]; 
 												$translateDisplay = $nodeValue["attrs"]["TRANSLATE"]; 	
 												$fkeyDisplay = $nodeValue["attrs"]["FKEY"];
-											}									 
+                                                                                                
+                                                                                                if( $fkeyDisplay ){
+                                                                                                    /* si on est sur un display en fkey */
+                                                                                                    $oFkeyDisplay = new $fkeyDisplay( $eKeyValue );
+
+                                                                                                    $xmlDisplay = new SimpleXMLElement( $oFkeyDisplay->XML );
+                                                                                                    $sAttrs = (string)$xmlDisplay->attributes()->display;
+                                                                                                    $getterDisplay = 'get_' . $sAttrs;
+                                                                                                    //var_dump($oFkeyDisplay->$getterDisplay());
+
+                                                                                                    $eKeyValue = $oFkeyDisplay->$getterDisplay();
+                                                                                                }
+											} 
+                                                                                        
+                                                                                        if( $nodeValue["attrs"]["NAME"] == $oTemp->getAbstract() ){
+                                                                                            /* pareil que display => abstract */
+                                                                                            $valueAbstract = $nodeValue["attrs"]["NAME"];
+                                                                                            $typeAbstract = $nodeValue["attrs"]["TYPE"]; 
+                                                                                            $translateAbstract = $nodeValue["attrs"]["TRANSLATE"]; 	
+                                                                                            $fkeyAbstract = $nodeValue["attrs"]["FKEY"];
+
+                                                                                            //var_dump( $nodeValue["attrs"] );
+
+                                                                                            if( $fkeyAbstract ){
+                                                                                                /* si on est sur un display en fkey */
+                                                                                                $oFkeyAbstract = new $fkeyAbstract( $eKeyValue );
+																								if($oFkeyDisplay->XML!=NULL){
+																									$xmlAbstract = new SimpleXMLElement( $oFkeyDisplay->XML );
+																									$sAttrsAbstract = (string)$xmlAbstract->attributes()->display;
+																									$getterAbstract = 'get_' . $sAttrsAbstract;
+																									//var_dump($oFkeyDisplay->$getterDisplay());
+	
+																									$eKeyValue .= ' - ' . $oFkeyAbstract->$getterAbstract();
+																								}
+																								else{
+																									$eKeyValue .= ' - n/a';
+																								}
+                                                                                            } else if( $typeAbstract == 'int' ){
+                                                                                                
+                                                                                                $getterAbstract = 'get_' . $valueAbstract;
+                                                                                                $eKeyValue .= ' - ' . $oTemp->$getterAbstract();
+                                                                                            }                                                                                                                                     
 										}
 									} 
+                                                                        
+                                                                        
 									if (DEF_APP_USE_TRANSLATIONS && $translateDisplay!='') {	 		
 										if ($typeDisplay == "int") {
 											if ($translateDisplay == 'reference')
@@ -344,7 +373,10 @@ if ($_GET["Type"]  == '') {
 											if ($translateDisplay == "value")
 												$eKeyValue =  $translator->getText($eKeyValue);
 										} else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";
-									} 
+									}
+                                                                        }
+                                                                        
+                                                                        
 								}
 								else {
 									$eKeyValue= "n/a";
@@ -375,7 +407,7 @@ if ($_GET["Type"]  == '') {
 								}
 							}
 							// si on ne trouve rien $eKeyValue reste inchangé
-						}			
+						}		 
 						
 						
 						if (DEF_APP_USE_TRANSLATIONS && $aNodeToSort[$i]["attrs"]["TRANSLATE"]!='') {		
@@ -384,9 +416,9 @@ if ($_GET["Type"]  == '') {
 							if ($typeDisplay == "int") {
 								if ($translateDisplay == 'reference')
 									$eKeyValue = $translator->getByID($eKeyValue);
-							} elseif ($typeDisplay == "enum") {
-								if ($translateDisplay == "value")
-									$eKeyValue =  $translator->getText($eKeyValue);
+							} elseif ($typeDisplay == "enum") { 
+								if ($translateDisplay == "value" && $eKeyValue != '')
+									$eKeyValue =  $translator->getText($eKeyValue); 
 							}/* else	echo "Error - Translation engine can not be applied to <b><i>".$typeDisplay."</i></b> type fields !!";*/
 						} 	
 									
@@ -397,17 +429,14 @@ if ($_GET["Type"]  == '') {
 						$objPHPExcel->setActiveSheetIndex(0)		
 									->setCellValue($case, utf8_encode(stripslashes($eKeyValue)));
 									
-						$l++;			
+						$l++;		
 					
 					} //fin if	 
-								
-				}// fin if
+							
+				}// fin if 
 			}// fin for cols	
 			 
-			include("xlsx.association.php");  
-			
-			$rs->MoveNext();
-			$k++;
+			include("xlsx.association.php"); 
 			 
 		} // fin for rows
 	} // fin if
@@ -438,7 +467,7 @@ else {
 							->setCellValue($case, utf8_encode(stripslashes(date("d/m/Y"))));
 				$l++;
 			}
-			else if (isset($aNodeToSort[$i]["attrs"]["FKEY"])) {
+			elseif (isset($aNodeToSort[$i]["attrs"]["FKEY"])	&&	$aNodeToSort[$i]["attrs"]["FKEY"]!='') {
 				if (isset($aNodeToSort[$i]["attrs"]["DEFAULT"])) { 
 					$chaine = $aNodeToSort[$i]["attrs"]["DEFAULT"];
 				}
@@ -490,9 +519,20 @@ $objPHPExcel->getActiveSheet()->setTitle($classeName);
 // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 $objPHPExcel->setActiveSheetIndex(0);
 
+// Redirect output to a client’s web browser (Excel2007)
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Disposition: attachment;filename="export_'.$classeName.'.xlsx"');
+header('Cache-Control: max-age=0');
+function SaveViaTempFile($objWriter){
+    $filePath = '/tmp/' . rand(0, getrandmax()) . rand(0, getrandmax()) . ".tmp";
+    $objWriter->save($filePath);
+    readfile($filePath);
+    unlink($filePath);
+}
 
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-$objWriter->save('php://output');
+//$objWriter->save('php://output');
+SaveViaTempFile($objWriter);
 
 // restore de la ram
 @ini_set('memory_limit',$localRAM.'M');

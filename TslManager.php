@@ -39,7 +39,7 @@ class TslManager {
 		$this->translated = new cms_chaine_traduite();
 
 		//Verify language in session
-		if (($_SESSION['BO']['id_langue'] > 0)&&(preg_match('/[0-9]+/si', $_SESSION['BO']['id_langue'])==1)	&& 	preg_match('/backoffice/', $_SERVER['PHP_SELF'])) {
+		if (isset($_SESSION['BO'])  &&  ($_SESSION['BO']['id_langue'] > 0)&&(preg_match('/[0-9]+/si', $_SESSION['BO']['id_langue'])==1)	&& 	preg_match('/backoffice/', $_SERVER['PHP_SELF'])) {
 			// session OK
 			$_SESSION['tsl_langue']=$_SESSION['BO']['id_langue'];
 			if (!defined('DEF_APP_LANGUE')){
@@ -83,7 +83,7 @@ class TslManager {
 	 */
 	function getLanguages ($active=false, $localized=false) {
 		$res=false;
-		
+	
 		//1 test langue asso au site
 		if (class_exists('cms_assolanguesite')&&isTable('cms_assolanguesite')&&isset($_SESSION['idSite'])){			
 			$sql = "	SELECT	l.*
@@ -98,13 +98,13 @@ class TslManager {
 		
 		//2 test all langues
 		if ($res==false){
-			$sql = "	SELECT	*
-				FROM	`cms_langue`
-				".($active ? " WHERE lan_statut=4" : '')."
-				ORDER BY lan_id;";
+		$sql = "	SELECT	*
+			FROM	`cms_langue`
+			".($active ? " WHERE lan_statut=4" : '')."
+			ORDER BY lan_id;";
 			$res = dbGetObjectsFromRequete('cms_langue', $sql);
 		}
-		
+
 		$pile = Array();
 		foreach ($res as $language) {
 			if ($localized)
@@ -402,7 +402,7 @@ class TslManager {
 			if (count($res) == 1){
 				return (Int) $res[0]->get_id();
 			}
-		    elseif (count($res) > 1) {
+		    	elseif (count($res) > 1) {
 		    		//echo 'Error - MD5 hash for translation is not unique in DB records ('.$MD5.')';
 		    		return -1;
 			}
@@ -435,7 +435,7 @@ class TslManager {
                     if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
                         $ref_id = $this->getReferenceID ($md5);
                     else
-                        $ref_id = $this->getTextID($text);
+			$ref_id = $this->getTextID($text);
                     
                     
 			if ($ref_id > 0){
@@ -453,7 +453,7 @@ class TslManager {
 		$this->reference->set_MD5($md5);
 		$ref_id = (Int) dbInsertWithAutoKey($this->reference);
 		//echo 'inset '.$ref_id;
-                    return $ref_id;
+		return $ref_id;
 	}
 
 
@@ -472,12 +472,12 @@ class TslManager {
             if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
 		$ref_id = $this->getReferenceID($md5);
             else
-                $ref_id = $this->getTextID($ref_text);
+		$ref_id = $this->getTextID($ref_text);
 		//echo "<br />addTranslation<br />".$ref_id." ".$ref_text."<br />";		
 		
 		if ($ref_id == 0)
 			$ref_id = $this->getTextID($ref_text, true);
-                 
+
 		if (!empty($units)) { 
 			foreach ($units as $lang => $trad_text) {
 	    		if ($lang != DEF_APP_LANGUE)
@@ -509,7 +509,7 @@ class TslManager {
                 if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL === 'MD5' )
                     return $md5;
                 else
-                    return (Int) $ref_id;
+		return (Int) $ref_id;
 	}
 
 
@@ -669,8 +669,8 @@ class TslManager {
 	function downloadLangPacks($verbose=true){
 		
 		if ($verbose)
-			echo 'downloadLangPacks';	
-			
+			echo 'downloadLangPacks';		
+	
 		if ($_SERVER['HTTP_HOST']=='aws.couleur-citron.com'){
 			//dont sybc the repo on itself
 			return true;	
@@ -708,17 +708,20 @@ class TslManager {
 				if ($verbose)
 				echo '<br />';
 				
-				$text = utf8_decode($aTexts[$i]["children"][0]["cdata"]);
+				foreach($aTexts[$i]["children"] as $k => $childNode){
+					if(strtolower($childNode['name'])==($this->getLangCodeById(DEF_APP_LANGUE))){						
+						$text = utf8_decode($childNode["cdata"]);						
+					}
+					else{				
+						$trad = utf8_decode($childNode["cdata"]);		
+					}
+				}
 				
 				if ($verbose)
-				echo $text;
+					echo '<br />text='.$text;
 				
 				if ($verbose)
-				echo '<br />';
-				$trad = utf8_decode($aTexts[$i]["children"][1]["cdata"]);
-				
-				if ($verbose)
-				echo $trad;			
+					echo '<br />trad='.$trad;					
 				
 				$id = $this->addReference ($text);
 				$this->addTranslation ($text, array(2 => $trad));
@@ -727,8 +730,9 @@ class TslManager {
 		
 				$oText->set_code($code);
 				$oText->set_chaine($id);
+
 				$oText->set_statut(DEF_ID_STATUT_LIGNE);
-				dbSauve($oText);
+				dbSauve($oText);				
 				
 				if ($verbose)
 				echo '<hr />';	
@@ -737,8 +741,7 @@ class TslManager {
 				//echo 'dejà<hr />';
 				//pre_dump($aCache[$code]);
 			}	
-		}
+		}	
 	}
 }
-
 ?>

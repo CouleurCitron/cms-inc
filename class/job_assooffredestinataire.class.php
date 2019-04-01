@@ -50,7 +50,7 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 </class>";
 
 // constructeur
-function job_assooffredestinataire($id=null)
+function __construct($id=null)
 {
 	if($id!=null) {
 		$tempThis = dbGetObjectFromPK(get_class($this), $id);

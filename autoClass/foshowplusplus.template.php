@@ -75,13 +75,13 @@ if($oRes) {
 		
 		for ($i=0;$i<count($aDisplays);$i++){
 			$itemName = $aDisplays[$i];
-			if (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){//local.foreign
+			if (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
 				$sBodyHTML = str_replace("<autoclass display=\"".$itemName."\">", displayItemForeign($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
-			else if (ereg("^[^\.]+$",$itemName) == true){//local.foreign
+			else if (preg_match("/^[^\.]+$/msi",$itemName) == true){//local.foreign
 				$sBodyHTML = str_replace("<autoclass display=\"".$itemName."\">", displayItem($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
-			elseif(ereg("^[^\.]+\.asso\.[^\.]+$", $itemName) == true){
+			elseif(preg_match("/^[^\.]+\.asso\.[^\.]+$/msi", $itemName) == true){
 				$sBodyHTML = str_replace("<autoclass display=\"".$itemName."\">", displayItemList($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
 			else{
@@ -98,8 +98,8 @@ if($oRes) {
 			$itemName = $aDisplaysIf2[$i];
 			$itemValue = $aValues[$i];
 			
-			if (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){//local.foreign
-				$compoItems = split ("[.]", $itemName);
+			if (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
+				$compoItems = explode ("[.]", $itemName);
 				if ($compoItems[1] == "pagination") {
 					eval("$"."paginationDisplay_".$compoItems[0]." = $"."itemValue;");
 					//eval("echo $"."paginationDisplay_".$compoItems[0].";");
@@ -120,14 +120,14 @@ if($oRes) {
 				}
 			}
 			 
-			elseif (ereg("^[^\.]+$",$itemName) == true){
+			elseif (preg_match("/^[^\.]+$/msi",$itemName) == true){
 				$sBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", displayItemIf($oRes, $itemName, $itemValue, $aNodeToSort), $sBodyHTML);
 			}
 			/*elseif(ereg("^[^\.]+\.asso\.[^\.]+$", $itemName) == true){
 				$sBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", displayItemAssoIf($oRes, $itemName, $itemValue, $aNodeToSort), $sBodyHTML);
 			} */
 			/* // A FAIRE
-			elseif(ereg("^[^\.]+$",$itemName) == true){//local
+			elseif(preg_match("/^[^\.]+$/msi",$itemName) == true){//local
 				$sBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItem($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
 			elseif(ereg("^[^\.]+\.in\.[^\.]+$", $itemName) == true){// local.in.foreign
@@ -135,9 +135,9 @@ if($oRes) {
 				$aItemsToList[][0] = $itemName; 
 				$aItemsToList[][1] = "in"; 
 			}*/
-			elseif(ereg("^[^\.]+\.asso\.[^\.]+\.[^\.]+$", $itemName) == true){// local.asso.foreign
+			elseif(preg_match("/^[^\.]+\.asso\.[^\.]+\.[^\.]+$/msi", $itemName) == true){// local.asso.foreign
 			
-				$compoItems = split ("[.]", $itemName);
+				$compoItems = explode ("[.]", $itemName);
 				if ($compoItems[3] == "pagination") {
 					$_SESSION['paginationDisplay_'.$compoItems[2].''] = $itemValue;
 					$sBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", "", $sBodyHTML);
@@ -164,7 +164,7 @@ if($oRes) {
 			$itemName = $aDisplaysNoneIf2[$i];
 			$itemValue = $aNoneValues[$i];
 			 
-			if (ereg("^[^\.]+$",$itemName) == true){
+			if (preg_match("/^[^\.]+$/msi",$itemName) == true){
 				$sBodyHTML = str_replace("<autoclass displaynoneif=\"".$itemName."\" value=\"".$itemValue."\">", displayNoneItemIf($oRes, $itemName, $itemValue, $aNodeToSort), $sBodyHTML);
 			}
 			else{
@@ -179,21 +179,21 @@ if($oRes) {
 		// traite les item 
 		for ($i=0;$i<count($aItems);$i++){
 			$itemName = $aItems[$i];
-			if(ereg("^[^\.]+\.in\.[^\.]+\.[^\.]+$",$itemName) == true){ // local.in.foreign.champs
+			if(preg_match("/^[^\.]+\.in\.[^\.]+\.[^\.]+$/msi",$itemName) == true){ // local.in.foreign.champs
 				$sBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItemIn($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
-			elseif (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){//local.foreign
+			elseif (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
 				$sBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItemForeign($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
-			elseif(ereg("^[^\.]+$",$itemName) == true){//local
+			elseif(preg_match("/^[^\.]+$/msi",$itemName) == true){//local
 				$sBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItem($oRes, $itemName, $aNodeToSort), $sBodyHTML);
 			}
-			elseif(ereg("^[^\.]+\.in\.[^\.]+$", $itemName) == true){// local.in.foreign
+			elseif(preg_match("/^[^\.]+\.in\.[^\.]+$/msi", $itemName) == true){// local.in.foreign
 			// stocke le nom des items listes
 				$aItemsToList[][0] = $itemName; 
 				$aItemsToList[][1] = "in"; 
 			}
-			elseif(ereg("^[^\.]+\.asso\.[^\.]+$", $itemName) == true){// local.asso.foreign
+			elseif(preg_match("/^[^\.]+\.asso\.[^\.]+$/msi", $itemName) == true){// local.asso.foreign
 			// stocke le nom des items listes
 				$aItemsToList[][0] = $itemName; 
 				$aItemsToList[][1] = "asso"; 
@@ -207,7 +207,7 @@ if($oRes) {
 		//traite les includes
 		for ($i=0;$i<count($aIncludes);$i++){
 			  $itemName = $aIncludes[$i];
-			if(ereg("^[^\.]+$",$itemName) == true){//local
+			if(preg_match("/^[^\.]+$/msi",$itemName) == true){//local
 				eval("$"."_SESSION['include_".$classeName."_id'] =".$id.";"); 
 				$sBodyHTML = str_replace("<autoclass include=\"".$itemName."\">", getInclude($oRes, $itemName, $aNodeToSort) , $sBodyHTML);
 				
@@ -225,7 +225,7 @@ if($oRes) {
 				$j++;
 				$typeAssoToList = $aItemsToList[$j][1];
 				if ($j%2 == 1) {
-					$sBodyHTMLSplit = split("<autoclass item=\"".$nameItemToList."\">", $sBodyHTML);
+					$sBodyHTMLSplit = explode("<autoclass item=\"".$nameItemToList."\">", $sBodyHTML);
 					echo $sBodyHTMLSplit[0];
 					formatItemList($oRes, $nameItemToList, $aNodeToSort, $db, $typeAssoToList);
 					$sBodyHTML = $sBodyHTMLSplit[1];

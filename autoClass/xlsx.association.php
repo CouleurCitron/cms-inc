@@ -1,8 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  
-//$id = getItemValue($oRes, "id"); 
-$id = trim($aRes[$classePrefixe.'_id']);
+$id = getItemValue($oRes, "id"); 
 
 
 $aAssoInfos = array();
@@ -11,8 +10,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 	if ($aNodeToSort[$j]["name"] == "ITEM") {
 		 
 		if ($aNodeToSort[$j]["attrs"]["ASSO"] || $aNodeToSort[$j]["attrs"]["ASSO_VIEW"] || $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]) { // cas d'asso 
-			//$eKeyValue = getItemValue($oRes, $aNodeToSort[$j]["attrs"]["NAME"]);	
-			$eKeyValue = trim($aRes[$classePrefixe.'_'.$aNodeToSort[$j]["attrs"]["NAME"]]);		
+			$eKeyValue = getItemValue($oRes, $aNodeToSort[$j]["attrs"]["NAME"]);			
 			
 			$aTempClasse = array();
 			if ($aNodeToSort[$j]["attrs"]["ASSO"])
@@ -142,7 +140,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					if ($_GET["Type"]  == '') {  
 						$sql = "select ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." "; 
 						
-						if ((preg_match("/^rau_/si", $tempAssoIn) || preg_match("/^shp_/si", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme"  &&  preg_match("/^shp_/si", $myAssoClasse) ) { 
+						if ((preg_match("/rau_/msi", $tempAssoIn) || preg_match("/shp_/msi", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme"  &&  preg_match("/shp_/msi", $myAssoClasse) ) { 
 							 $sql.= " where ".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoIn))." = ".$id." ";
 							 $sql.= " and ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id ";  
 						}
@@ -153,7 +151,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					}
 					else {
 						$sql = "select DISTINCT ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." "; 
-						if ((preg_match("/^rau_/si", $tempAssoIn) || preg_match("/^shp_/si", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme" &&  preg_match("/^shp_/si", $myAssoClasse) ) { 
+						if ((preg_match("/rau_/msi", $tempAssoIn) || preg_match("/shp_/msi", $tempAssoIn)) && $myAssoClasse != "shp_asso_produitgamme" &&  preg_match("/shp_/msi", $myAssoClasse) ) { 
 							$sql.= " where   ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id ";  
 						}
 						else {
@@ -168,7 +166,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					//print $sql;
 					
 					//echo $sTempClasse."<br />";
-					$aForeign = dbGetObjectsFromRequeteCache ($sTempClasse, $sql,100);
+					$aForeign = dbGetObjectsFromRequete ($sTempClasse, $sql);
 					//$aForeign = dbGetObjects($sTempClasse);
 					  
 					$aValues = array (); 
@@ -252,7 +250,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 							if ($classeName == "cms_tag") {
 								$sql = "select * from ".$tempAsso." where ".$tempAssoPrefixe."_".$tempAssoIn." = ".$id." and ".$tempAssoPrefixe."_".$tempAssoOut." = ".$tempId.""; 
 	 
-								$aClasseId = dbGetObjectsFromRequeteCache ($tempAsso, $sql, 100);
+								$aClasseId = dbGetObjectsFromRequete ($tempAsso, $sql);
 								if (sizeof($aClasseId) > 0) {
 									for ($l=0; $l<sizeof($aClasseId); $l++) {
 										$oClasseId = $aClasseId[$l]; 
@@ -267,7 +265,8 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 											//echo " - ";
 											//abstract
 											//eval ("echo $"."oClasse->get_".strval($oClasse->getAbstract())."();");
-											//echo "<br />\n";											
+											//echo "<br />\n";
+											
 										}
 										else {
 											//echo "** pour tous les enregistrements";

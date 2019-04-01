@@ -21,7 +21,7 @@ var $id_user;
 var $nom;
 
 // constructeur
-function Cms_affich_droitcontenu() 
+function __construct() 
 {
 	global $db;
 

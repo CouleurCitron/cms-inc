@@ -12,8 +12,8 @@ flvThumb($file,$width=50,$height=50,$hour=00,$min=00,$sec=01,$append="") {
   return false;
  }
 
- $width = eregi_replace("[^0-9]","",$width);
- $height = eregi_replace("[^0-9]","",$height);
+ $width = preg_replace("/[^0-9]/msi","",$width);
+ $height = preg_replace("/[^0-9]/msi","",$height);
 
  if ($width == "") {
   $width = 50;
@@ -22,9 +22,9 @@ flvThumb($file,$width=50,$height=50,$hour=00,$min=00,$sec=01,$append="") {
   $height = 50;
  }
 
- $hour = eregi_replace("[^0-9]","",$hour);
- $min = eregi_replace("[^0-9]","",$min);
- $sec = eregi_replace("[^0-9]","",$sec);
+ $hour = preg_replace("/[^0-9]/msi","",$hour);
+ $min = preg_replace("/[^0-9]/msi","",$min);
+ $sec = preg_replace("/[^0-9]/msi","",$sec);
 
  if (strlen($hour) == 1) {
   $hour = "0" . $hour;

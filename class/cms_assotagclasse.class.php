@@ -73,7 +73,7 @@ var $sMySql = "CREATE TABLE cms_assotagclasse
 ";
 
 // constructeur
-function cms_assotagclasse($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

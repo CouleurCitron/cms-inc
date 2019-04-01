@@ -30,7 +30,7 @@ var $umaj_avis;
 var $id_site;
 
 // constructeur
-function Cms_avis($id=null) 
+function __construct($id=null) 
 {
 	if($id!=null) {
 		$this = dbGetObjectFromPK("Cms_avis", $id);

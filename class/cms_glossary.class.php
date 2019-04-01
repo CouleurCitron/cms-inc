@@ -119,7 +119,7 @@ var $sMySql = "CREATE TABLE cms_glossary
 ";
 
 // constructeur
-function cms_glossary($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_glossary") == false){
 		dbExecuteQuery($this->sMySql);

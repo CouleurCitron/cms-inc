@@ -1,5 +1,5 @@
 This is the Unicode coverage file for DejaVu fonts
-($Id: unicover.txt,v 1.1 2012-01-26 10:15:50 pierre Exp $)
+($Id: unicover.txt,v 1.1 2013-09-30 09:35:50 raphael Exp $)
 
 Control and similar characters are discounted from totals.
 

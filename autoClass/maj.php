@@ -4,7 +4,8 @@ if (!isset($classeName)){
 	$classeName = preg_replace('/[^_]*_(.*)\.php/', '$1', basename($_SERVER['PHP_SELF']));
 }
 //------------------------------------------------------------------------------------------------------
-// Formulaire de saisie  
+// Formulaire de saisie 
+
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 unset($_SESSION['BO']['CACHE']);
@@ -24,7 +25,6 @@ require_once('cms-inc/lib/fileUpload/upload.class.php');
 $_SESSION['listParam']= http_build_query($_GET);
 
 $listParam = $_SERVER['QUERY_STRING'];
-
 
 $listParam = str_replace('id=&', '', $listParam); // parce que ce serait inepte
 // second controle, si id=X dans l'url on vira l'occurence eventuelle en session
@@ -160,7 +160,7 @@ if ($classeName=='cms_diapo'){
 		else {
 			$oDiaporamaTypeRef = false; 
 		}
-	}	
+	}		
 	if($oDiaporamaTypeRef){
 		$eWidthRef = $oDiaporamaTypeRef->get_width();
 		$eHeightRef = $oDiaporamaTypeRef->get_height();
@@ -213,23 +213,78 @@ if (isset ($stack[0]["attrs"]["STATUT"]) ) {
 	$other_statut = $stack[0]["attrs"]["STATUT"];
 }
 if (defined("DEF_FCK_VERSION") && DEF_FCK_VERSION == "ckeditor" ) {
-	echo "<script type=\"text/javascript\">
-		function SetUrl(fileUrl, w , h, field){ 
+	echo "<script type=\"text/javascript\">\n
+		function SetUrl(fileUrl, w , h, field){\n 
 		
 			//alert (fileUrl +' '+ w +' '+ h+' '+field);
-			
-			if (field==undefined){
-				alert(\"erreur : mauvaise configuration	du File Manager\");
-			}
-			
 			var field_conteneur = field+\"_conteneur\";
 			var fileName = basename(fileUrl);
-			document.getElementById(field).value=fileUrl;
+			var monHtml = '';
+			//alert(document.getElementById(field).value);
 			
-			document.getElementById(field_conteneur).innerHTML = \"<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'>\"+fileName+\"</a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='/backoffice/cms/img/telecharger.gif' width='14' height='16' border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>\";			
+			// test si champ multiple
+			var isMultiple ;
+			var field_multiple = field+\"_multiple\";
+			isMultiple = document.getElementById(field_multiple).value;	
 			
-		}
-		</script>";
+			if (isMultiple == 'true') {
+				if (document.getElementById(field).value != '') {
+					if (document.getElementById(field).value.indexOf('{') > -1 ) 
+						document.getElementById(field).value = document.getElementById(field).value+'{'+fileUrl+'}';
+					else
+						document.getElementById(field).value = '{'+document.getElementById(field).value+'}{'+fileUrl+'}';
+				}
+				else {
+					document.getElementById(field).value='{'+fileUrl+'}';\n
+				}
+			}
+			else {
+				document.getElementById(field).value=fileUrl;\n
+			}
+			 
+			 
+			var regex = new RegExp( \"fDia_image_([0-9]*)\"  ); 
+			var id = 0 ;
+			
+			$.each( $(\"div[id^='fDia_image_']\"), function () {  
+			  var aId = $(this).attr('id').match(regex);
+			  id = aId[1];
+			});
+			//console.log( 'id trouvé : ' + id );
+			id = parseInt(id) + 1 ; ";
+			
+			
+		 
+			echo " if (isMultiple == 'true') {  monHtml+= document.getElementById(field_conteneur).innerHTML; } ";
+			
+			echo " if (isMultiple == 'true') { var count = 0; $('#' + field_conteneur + ' li').each(function(){ count++; });  id = count; console.log( id ) } ";
+			
+			/*echo "monHtml+= \"<div id='\"+field+\"_\"+id+\"'><a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='\"+fileUrl+\"' width='75'   border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'>\"+fileName+\"</a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='/backoffice/cms/img/telecharger.gif' width='14' height='16' border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>&nbsp;-&nbsp;";*/
+			
+                        
+                        echo 'monHtml+= \'<li id="\'+field+\'_\'+id+\'"><div><a rel="scle_produit_diaporama" href="\'+fileUrl+\'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').' \'+fileUrl+\'" class="visuel"><img src="\'+fileUrl+\'" width="70"></a><a href="/backoffice/cms/utils/viewer.php?file=\'+fileUrl+\'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').' \'+fileUrl+\'" class="name_img_diapo">\'+fileName+\'</a><a href="/backoffice/cms/utils/telecharger.php?file=\'+fileUrl+\'" title="'.$translator->getTransByCode('telechargerlefichier').' \'+fileUrl+\'" class="picto_download" "=""><img src="/backoffice/cms/img/2013/icone/right.png" alt="'.$translator->getTransByCode('telechargerlefichier').' \'+fileUrl+\'" border="0"></a><input type="hidden" id="\'+field+\'_delrecipient_\'+id+\'_name" name="\'+field+\'_delrecipient_\'+id+\'_name" value="\'+id+\'_\'+fileUrl+\'"><a id="\'+field+\'_delrecipient_\'+id+\'" href="#_" class="picto_del" title="delete recipient"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0" alt="Suppression de l\\\'enregistrement"></a><a id="\'+field+\'_edit_\'+id+\'" href="#_" title="edit" class="picto_edit"><img src="/backoffice/cms/img/2013/icone/modifier.png" border="0" alt="Modifier"></a><input type="hidden" id="\'+field+\'_listfile_\'+id+\'" name="\'+field+\'_listfile_\'+id+\'" value="\'+fileUrl+\'"></div></li>\'; ';
+                        
+			
+			//echo "<input type='hidden' id='\"+field+\"_listfile_\"+id+\"' name='\"+field+\"_listfile_\"+id+\"'  value='\"+fileName+\"' />";
+			//echo "<input type='hidden' id='\"+field+\"_delrecipient_\"+id+\"_name' name='\"+field+\"_delrecipient_\"+id+\"_name'  value='\"+id+\"_\"+fileName+\"' />";
+			 
+			//echo "<a id='\"+field+\"_delrecipient_\"+id+\"' href='#' onClick='javascript:\"+field+\"_delrecipient(\"+id+\");' title='delete recipient'>[del]</a>&nbsp;</div>\";  
+			//echo "<a id='\"+field+\"_delrecipient_\"+id+\"' href='#' title='delete recipient'>[del]</a>&nbsp;";
+			//echo "&nbsp;-&nbsp;<a id='\"+field+\"_edit_\"+id+\"' href='#' title='edit'>[edit]</a>&nbsp;";
+			
+			//echo "</div>\";  ";
+			
+			echo "document.getElementById(field_conteneur).innerHTML = monHtml ;";
+			 
+		
+		echo "	
+		}\n
+		
+		 
+		
+		
+		
+		</script>\n";
 }
 else {
 	echo "<script type=\"text/javascript\">\n
@@ -361,6 +416,25 @@ else{
 	}
 
 </script>
+
+<p class="choiceLang">
+    <?php $aListLang = dbGetObjects('cms_langue'); //pre_dump($aListLang);
+    $aLangCourt = array();
+    foreach($aListLang as $oLang){
+        $aLangCourt[] = $oLang->libellecourt;
+        ?>
+    <a href="javascript:chooseLang('<?php echo $oLang->libellecourt; ?>');" class="chooseLang" id="<?php echo $oLang->libellecourt; ?>"><?php echo $oLang->libelle; ?></a>
+    <?php
+    }
+    if(count($aListLang) > 1){
+        ?>
+        <a href="javascript:chooseLang('ALL');" class="chooseLang actif" id="ALL">Tous</a>
+       <?php
+    }
+    
+    ?>
+</p>
+
 <form name="add_<?php echo $classePrefixe; ?>_form" id="add_<?php echo $classePrefixe; ?>_form" enctype="multipart/form-data" method="post">
 <input type="hidden" name="classeName" id="classeName"  value="<?php echo $classeName; ?>" />
 <input type="hidden" name="postnumberone" id="postnumberone" value="XXXX" />
@@ -440,7 +514,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 				//echo "test : ".$_POST[strval('fUpload'.$aUploadIndexes[$i])]." : ".$Upload->Infos[$aUploadIndexes[$i]]['nom']."<br/>";
 				//echo "test : ".$Upload->Infos[$aUploadIndexes[$i]]['chemin']." : ".$DIR_MEDIA.$Upload->Infos[$aUploadIndexes[$i]]['nom']."<br/>";
 				$file = $Upload->Infos[$aUploadIndexes[$i]]['nom']; 
-				 
+				
 				$cpt_file = 0;
 				while (is_file ($DIR_MEDIA.$file) && $cpt_file < 10) {  
 					$file=preg_replace('/^(.+)\.([png|jpeg|jpg|gif]+)$/', '$1-copie.$2', $file);
@@ -470,14 +544,13 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 	for ($iDel=1; $iDel <= $numUploadFields; $iDel++) {	 
 		if (strval($_POST['fDeleteFile'.$iDel]) == "true") {		 
 			$_POST[strval($_POST['fUpload'.$iDel])] = ""; 
-			//$tempGetter = "$"."tempFile = $"."oRes->get_".ereg_replace("[^_]+_(.*)", "\\1", strval($_POST['fUpload'.$iDel]))."();";
-			$tempGetter = "$"."tempFile = $"."oRes->get_".eregi_replace(".+".$classePrefixe."_(.*)", "\\1", strval($_POST['fUpload'.$iDel]))."();";
+			$tempGetter = "$"."tempFile = $"."oRes->get_".preg_replace("/.+".$classePrefixe."_(.*)/msi", "$1", strval($_POST['fUpload'.$iDel]))."();";
 
 			$tempGetter = str_replace("get_".$classePrefixe."_", "get", $tempGetter);
 			eval($tempGetter);
 			 
-			if (ereg(";", $tempFile)) {
-				$aTempFile = split (";", $tempFile);
+			if (preg_match("/;/msi", $tempFile)) {
+				$aTempFile = explode (";", $tempFile);
 				foreach ($aTempFile as $tempFile) {
 					$tempFile = $DIR_MEDIA.$tempFile; 
 					@unlink($tempFile);	
@@ -736,12 +809,12 @@ if(isset($newid)	&&	($newid == -1)){
 	///////////////////////////////////////////////////
 	
 	function validerForm(){	
-		if (validate_form(0) && validerPattern() && validerChampsOblig()){ 
+		if (validate_form("add_<?php echo $classePrefixe; ?>_form") && validerPattern() && validerChampsOblig()){ 
 			document.add_<?php echo $classePrefixe; ?>_form.operation.value = "<?php echo $operation; ?>";
 			<?php if(is_get('noMenu')){?>
-				document.add_<?php echo $classePrefixe; ?>_form.action = "/"+window.location.pathname.substring(1)+"?noMenu=true<?php if($listParam!="") echo "&".$listParam; ?>"; 
+				document.add_<?php echo $classePrefixe; ?>_form.action = "maj_<?php echo $classeName; ?>.php?noMenu=true<?php if($listParam!="") echo "&".$listParam; ?>"; 
 			<?php }else{ ?>
-				document.add_<?php echo $classePrefixe; ?>_form.action = "/"+window.location.pathname.substring(1)+"<?php if($listParam!="") echo "?".$listParam;?>"; 
+				document.add_<?php echo $classePrefixe; ?>_form.action = "maj_<?php echo $classeName; ?>.php<?php if($listParam!="") echo "?".$listParam;?>"; 
 			<?php } ?>
 			document.add_<?php echo $classePrefixe; ?>_form.target = "_self";
 			document.add_<?php echo $classePrefixe; ?>_form.submit(); 
@@ -810,7 +883,7 @@ if(isset($newid)	&&	($newid == -1)){
 <input type="hidden" name="actiontodo" id="actiontodo" value="SAUVE" />
 <input type="hidden" name="sChamp" id="sChamp" value="" />
 
-<table border="1" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo">
+<table class="arbo form_edit">
 <?php
 $indexUpload = 0;
 // Affichage du champ MAX_FILE_SIZE
@@ -913,15 +986,15 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$_SESSION["idSite"]."\" />\n";
 		} else {	
 			echo "<tr>\n";
-			echo "<td width=\"141\" align=\"right\" bgcolor=\"#E6E6E6\" class=\"arbo\">";
+			echo "<td class=\"arbo left_cell\">";
 			if (isset($aNodeToSort[$i]["attrs"]["LIBELLE"]) && ($aNodeToSort[$i]["attrs"]["LIBELLE"] != "")) 
-				echo "&nbsp;<u><b>".$translator->getText(stripslashes($aNodeToSort[$i]["attrs"]["LIBELLE"]))."</b></u>";	
-			else	echo "&nbsp;<u><b>".$translator->getText(stripslashes($aNodeToSort[$i]["attrs"]["NAME"]))."</b></u>";
+				echo $translator->getText(stripslashes($aNodeToSort[$i]["attrs"]["LIBELLE"]));	
+			else	echo $translator->getText(stripslashes($aNodeToSort[$i]["attrs"]["NAME"]));
 
 			if (isset($aNodeToSort[$i]["attrs"]["OBLIG"]) && $aNodeToSort[$i]["attrs"]["OBLIG"]!="false")
-				echo "&nbsp;*";
+				echo " *";
 			echo "</td>\n";
-			echo "<td width=\"535\" align=\"left\" bgcolor=\"#EEEEEE\" class=\"arbo\">";
+			echo "<td class=\"arbo right_cell\">";
 		} 
 
 		// tableau contenant les champs et pattern à vérifier
@@ -971,6 +1044,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		// fin tst de condition - maitre
 		
 		if (($aNodeToSort[$i]["attrs"]["FKEY"] && ($aNodeToSort[$i]["attrs"]["FKEY"]!='null') && ($aNodeToSort[$i]["attrs"]["FKEY"]!='')) || $aNodeToSort[$i]["attrs"]["FKEY_SWITCH"]) { // cas de foreign key
+
 			// AJAX delayed call for fkey select display
 			// first define fields not applying to AJAX display
 			$excluded = Array('cms_site');
@@ -985,28 +1059,35 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				else {
 					$forceId = '';
 				}
-				 
 				
-				// AJAX delayed process
-				echo "\n".'<div id="delayed_'.$classePrefixe.'_'.$aNodeToSort[$i]["attrs"]["NAME"].'" style="display: inline;"></div>';
-				if ($aNodeToSort[$i]["attrs"]["NAME"]==$displayField){
-					$call = '/backoffice/cms/call_maj_fkey.php?class='.$classeName.'&display='.$display.'&field='.$aNodeToSort[$i]["attrs"]["NAME"].'&id='.$id.'&forceValue=';
+				if (is_get('refClass')	&& ($_GET['refClass']==$aNodeToSort[$i]["attrs"]["FKEY"])){ // appel en add item depuis assos
+					echo '<input type="hidden" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" class="arbo" value="'.$_GET['refId'].'">';
+          
+          $sTempClasse = $_GET['refClass'];
+          
+					include('show.fkey.php');
 				}
-				else{
-					$call = '/backoffice/cms/call_maj_fkey.php?class='.$classeName.'&field='.$aNodeToSort[$i]["attrs"]["NAME"].'&id='.$id.'&forceValue=';
-				}
-				//echo "test : ".$call."<br/>";
-				
-				$tmp_load = 'Chargement de la liste...<input type="hidden" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" class="arbo" value="'.$eKeyValue.'">';
-				echo "\n".'<script type="text/javascript">';
-				echo "\n".'function ajax'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'(forceId){';
-				echo "\n".'callStr="'.$call.'"+forceId;';
-				//echo "\n".'alert(callStr);';
-				echo "\n".'XHRConnector.sendAndLoad(callStr, \'GET\', \''.$tmp_load.'\', \'delayed_'.$classePrefixe.'_'.$aNodeToSort[$i]['attrs']['NAME'].'\');';
-				echo "\n".'}'; 
-				echo "\n".'ajax'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'('.$forceId.');';
-				echo "\n".'</script>';
-				
+				 else{	// appel normal dans maj items			
+					// AJAX delayed process
+					echo "\n".'<div id="delayed_'.$classePrefixe.'_'.$aNodeToSort[$i]["attrs"]["NAME"].'" style="display: inline;"><input type="hidden" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" class="arbo" value="'.$eKeyValue.'"></div>';
+					if ($aNodeToSort[$i]["attrs"]["NAME"]==$displayField){
+						$call = '/backoffice/cms/call_maj_fkey.php?class='.$classeName.'&display='.$display.'&field='.$aNodeToSort[$i]["attrs"]["NAME"].'&id='.$id.'&forceValue=';
+					}
+					else{
+						$call = '/backoffice/cms/call_maj_fkey.php?class='.$classeName.'&field='.$aNodeToSort[$i]["attrs"]["NAME"].'&id='.$id.'&forceValue=';
+					}
+					//echo "test : ".$call."<br/>";
+					
+					$tmp_load = 'Chargement de la liste...<input type="hidden" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'" class="arbo" value="'.$eKeyValue.'">';
+					echo "\n".'<script type="text/javascript">';
+					echo "\n".'function ajax'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'(forceId){';
+					echo "\n".'callStr="'.$call.'"+forceId;';
+					//echo "\n".'alert(callStr);';
+					echo "\n".'XHRConnector.sendAndLoad(callStr, \'GET\', \''.$tmp_load.'\', \'delayed_'.$classePrefixe.'_'.$aNodeToSort[$i]['attrs']['NAME'].'\');';
+					echo "\n".'}'; 
+					echo "\n".'ajax'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]['attrs']['NAME'].'('.$forceId.');';
+					echo "\n".'</script>';
+				 }
 				
 			} else {
 				// inline process
@@ -1025,11 +1106,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 
 		// time tracking fields
 		// Added by Luc - 6 oct. 2009
-		elseif ($aNodeToSort[$i]["attrs"]["NAME"] == 'cdate' || $aNodeToSort[$i]["attrs"]["NAME"] == 'datec' || $aNodeToSort[$i]["attrs"]["NAME"] == 'mdate' || $aNodeToSort[$i]["attrs"]["NAME"] == 'datem'){ // cas de date à mettre à jour
+		elseif ($aNodeToSort[$i]["attrs"]["NAME"] == 'cdate' || $aNodeToSort[$i]["attrs"]["NAME"] == 'datec' || $aNodeToSort[$i]["attrs"]["NAME"] == 'mdate' || $aNodeToSort[$i]["attrs"]["NAME"] == 'datem' || $aNodeToSort[$i]["attrs"]["NAME"] == 'dtmod'){ // cas de date à mettre à jour
 
 			//echo "[non editable]&nbsp;";
 			if ($operation == 'UPDATE') {
-				if ($aNodeToSort[$i]["attrs"]["NAME"] == 'mdate' || $aNodeToSort[$i]["attrs"]["NAME"] == 'datem'){
+				if ($aNodeToSort[$i]["attrs"]["NAME"] == 'mdate' || $aNodeToSort[$i]["attrs"]["NAME"] == 'datem'|| $aNodeToSort[$i]["attrs"]["NAME"] == 'dtmod'){
 				    $eKeyValue = from_dbdate_TIMESTAMP(date('Y-m-d H:i:s'));
 				    echo $eKeyValue;
 				}
@@ -1164,8 +1245,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 			 
 			
 			(isset($aNodeToSort[$i]["attrs"]["NODEVALUE"]) && $aNodeToSort[$i]["attrs"]["NODEVALUE"] != "") ? $nodevalue = "&v_comp_path=".$aNodeToSort[$i]["attrs"]["NODEVALUE"] : $nodevalue = ""; 
-			echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue_libelle."\" disabled />\n";
-			echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue."\" ".$disabled." />\n";
+			echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" class=\"arbo inputEdit\" value=\"".$eKeyValue_libelle."\" disabled />\n";
+			echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".$eKeyValue."\" ".$disabled." />\n";
 			echo "<input type=\"button\"  class=\"arbo\" value=\"parcourir l'arborescence\" onclick=\"javascript:openBrWindow('/backoffice/cms/popup_arbo_browse_node.php?idSite=".$idSiteToBrowse."&idField=f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."&idForm=add_".$classePrefixe."_form".$nodevalue."', '', 600, 400, 'scrollbars=yes', 'true')\" class=\"arbo\">";
 			
 			echo "&nbsp;<input type=\"button\" class=\"arbo\" value=\"effacer\" onclick=\"javascript:resetField('f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."')\" class=\"arbo\">";
@@ -1182,116 +1263,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				if ($eKeyValue != -1){ // cas typique typique  
 					if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file" || $aNodeToSort[$i]["attrs"]["OPTION"] == "geomapfile") { // cas file ou geomapfile
 					
-						//echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
-						$indexUpload++;
-						echo "<div id=\"div".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\">\n";
-						echo "<!-- upload field # ".$indexUpload."/".$numUploadFields." -->\n";
-						echo "<input type=\"hidden\" id=\"fUpload".$indexUpload."\" name=\"fUpload".$indexUpload."\" value=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" />\n";
-						
-						// Affichage du champ de type FILE						
-						print $Upload-> Field[$indexUpload];
-						
-						
-						
-						if (defined("DEF_FCK_VERSION") && DEF_FCK_VERSION == "ckeditor" ) {
-							echo "&nbsp;ou&nbsp;<input type=\"button\" onClick=\"openWYSYWYGWindow('/backoffice/cms/lib/ckeditor/Filemanager-master/index.php?dir=/custom/img/".$_SESSION['rep_travail']."/&langCode=".$_SESSION["site_langue"]."', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\" value=\"Parcourir le serveur\" />\n"; 
-						}
-						else {
-							echo "&nbsp;ou&nbsp;<input type=\"button\" onClick=\"openWYSYWYGWindow('/backoffice/cms/lib/FCKeditor/editor/filemanager/browser/default/browser.html?Connector=connectors/php/connector.php', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\" value=\"Parcourir le serveur\" />\n"; 
-						}
-						
-						 echo '&nbsp;taille max: '.$MaxFilesize.' Mo ';
-						echo "<input  class=\"arbo\" size=\"80\"  type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
-						
-						if ($eKeyValue != ""){
-							echo '<br />&nbsp;(actuellement ';							
-							$aFiles = explode(';', $eKeyValue); 
-							$img = 0;	
-							
-							echo "<span id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" >";
-							for($if=0;$if<count($aFiles);$if++){
-								if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$aFiles[$if])){
-									echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$aFiles[$if]."\" target=\"_blank\" title=\"".$translator->getTransByCode('visualiserlefichier')." '".$aFiles[$if]."'\">".$aFiles[$if]."</a>\n";
-									echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$aFiles[$if]."\" title=\"".$translator->getTransByCode('telechargerlefichier')." '".$aFiles[$if]."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"".$translator->getTransByCode('telechargerlefichier')." '".$aFiles[$if]."\" /></a>\n";
-									
-									$img++;
-									
-									
-								}
-							}
-						 
-							
-							if ($img == 0) {
-								if (is_file($_SERVER['DOCUMENT_ROOT'].''.$eKeyValue)){
-									$namefile = basename($eKeyValue);
-									
-									echo "<a href=\"/backoffice/cms/utils/viewer.php?file=".$eKeyValue."\" target=\"_blank\" title=\"".$translator->getTransByCode('visualiserlefichier')." '".$namefile."'\">".$namefile."</a>\n";
-									echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=".$eKeyValue."\" title=\"".$translator->getTransByCode('telechargerlefichier')." '".$namefile."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"".$translator->getTransByCode('telechargerlefichier')." '".$namefile."\" /></a>\n"; 
-									
-									
-								}
-								
-							}
-							 echo "</span>\n";		
-							echo ")<br />\n";
-							echo "<input type=\"checkbox\" id=\"fDeleteFile".$indexUpload."\" name=\"fDeleteFile".$indexUpload."\" value=\"true\" />&nbsp;supprimer le(s) fichier(s) \n";
-						}
-						else{
-						
-							echo "<br /><span id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" >";
-							echo "&nbsp;(pas de fichier)";
-							echo "</span><br />"; 
-							
-						}
-
-						if ($aNodeToSort[$i]["attrs"]["OPTION"] == "geomapfile") {
-							echo "\n<script type=\"text/javascript\">";
-							echo "\nfunction check_{$aNodeToSort[$i]["attrs"]["NAME"]}_Coordinates() {";
-							echo "\n\tvar frm = document.forms['add_{$classePrefixe}_form'];";
-							echo "\n\tvar available = true;";
-							echo "\n\tvar fields = Array();";
-							foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
-								if ($childNode["name"] == "OPTION" && $childNode["attrs"]["TYPE"] == "if") { // on a un node d'option conditionnant l'affichage du checkbox
-									echo "\n\t if (frm['f".ucfirst($classePrefixe)."_".$childNode["attrs"]["ITEM"]."'].value == '' || frm['f".ucfirst($classePrefixe)."_".$childNode["attrs"]["ITEM"]."'].value == -1) {";
-									echo "\n\t\tfields[fields.length] = '{$childNode["attrs"]["ITEM"]}';";
-									echo "\n\t\tavailable = false;";
-									echo "\n\t}";
-								}
-							}
-							echo "\n\t if (!available) {";
-							echo "\n\t\t if (fields.length == 1)";
-							echo "\n\t\talert('Vous devez renseigner auparavant le champ '+fields[0]);";
-							echo "\n\t\telse\talert('Vous devez renseigner auparavant les champs '+fields.join(' et '));";
-							echo "\n\t\tfrm['fGenerateFile".$indexUpload."'].checked = false;";
-							echo "\n\t}";
-							echo "\n}";
-							echo "\n</script>";
-							echo "<input type=\"checkbox\" id=\"fGenerateFile".$indexUpload."\" name=\"fGenerateFile".$indexUpload."\" value=\"true\" onclick=\"if (this.checked) check_{$aNodeToSort[$i]["attrs"]["NAME"]}_Coordinates()\" />&nbsp;générer le fichier depuis GoogleMaps\n";
-							
-						} elseif (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)) {
-							foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode) {
-								if($childNode["name"] == "OPTION"){ // on a un node d'option	
-									echo "<br />\n";
-								
-									if (($childNode["attrs"]["TYPE"] != "") && ($childNode["attrs"]["TYPE"] != "if")){
-										echo "Type de fichier&nbsp;: ".$childNode["attrs"]["TYPE"]."<br />\n";
-									}
-									if ($childNode["attrs"]["WIDTH"] != ""){
-										echo "Largeur nominale de l'image&nbsp;: ".$childNode["attrs"]["WIDTH"]." pixels<br />\n";
-									}
-									elseif ($childNode["attrs"]["MAXWIDTH"] != ""){
-										echo "Largeur maximale de l'image&nbsp;: ".$childNode["attrs"]["MAXWIDTH"]." pixels<br />\n";
-									}
-									if ($childNode["attrs"]["HEIGHT"] != ""){
-										echo "Hauteur nominale de l'image&nbsp;: ".$childNode["attrs"]["HEIGHT"]." pixels<br />\n";
-									}
-									elseif ($childNode["attrs"]["MAXHEIGHT"] != ""){
-										echo "Hauteur maximale de l'image&nbsp;: ".$childNode["attrs"]["MAXHEIGHT"]." pixels<br />\n";
-									}									
-								}
-							}
-						}
-						echo "</div>\n";
+						include ("maj.file.php");	
 					}
 					elseif (($aNodeToSort[$i]["attrs"]["OPTION"] == "textarea")||($aNodeToSort[$i]["attrs"]["OPTION"] == "xml")) { // cas textarea	
 						// non editable field
@@ -1321,10 +1293,10 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 							if 	(isset($aNodeToSort[$i]["attrs"]["MAXLENGTH"]) && $aNodeToSort[$i]["attrs"]["MAXLENGTH"]!="") {
 								$maxlength="onkeyup=\"this.value = this.value.slice(0, ".$aNodeToSort[$i]["attrs"]["MAXLENGTH"].")\" onchange=\"this.value = this.value.slice(0, ".$aNodeToSort[$i]["attrs"]["MAXLENGTH"].")\"";
 							}
-							echo "<textarea name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" cols=\"50\" rows=\"6\" ".$maxlength.">".$eKeyValue."</textarea>\n";
+							echo "<textarea name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo textareaEdit\" ".$maxlength.">".$eKeyValue."</textarea>\n";
 							// gestion popup wysiwyg
 							if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupWysiwyg == true) && (($aNodeToSort[$i]["attrs"]["NOHTML"] != "true")||(!isset($aNodeToSort[$i]["attrs"]["NOHTML"])))){ // cas wysiwyg
-								echo "<a href=\"javascript:openWYSYWYGWindow('//".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"HTML editor\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+								echo "<a href=\"javascript:openWYSYWYGWindow('http://".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"".$translator->getTransByCode('Editeur_html')."\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Editeur_html')."\" /></a>\n";
 							} // wysiwyg
 						}
 					}
@@ -1336,14 +1308,14 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 
 						} // end non editable field
 						else {
-							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
+							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
 							// gestion popup link
 							if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupMaps == true)){ // cas link						
 								if ($aNodeToSort[$i]["attrs"]["GEOMAPSIZE"] == 'DEF_GMAP_SIZE' && DEF_GMAP_SIZE != '')
 									$msize = explode('x', DEF_GMAP_SIZE);
 								else	$msize = Array(804, 658);
 								$msize[1] += 46;	// add edit fields margin in popup dimensions
-								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_gmaps.php', 'links', {$msize[0]}, {$msize[1]}, 'scrollbars=yes', 'true','".$classeName."','".$aNodeToSort[$i]["attrs"]["NAME"]."');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_geo.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Maps picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_gmaps.php', 'links', {$msize[0]}, {$msize[1]}, 'scrollbars=yes', 'true','".$classeName."','".$aNodeToSort[$i]["attrs"]["NAME"]."');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_geo.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Selectionner_une_carte')."\" /></a>\n";
 							} // link
 						}
 					}
@@ -1355,10 +1327,10 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 
 						} // end non editable field
 						else {
-							echo "<textarea name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" cols=\"50\" rows=\"6\" ".$maxlength.">".$eKeyValue."</textarea>\n";
+							echo "<textarea name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo textareaEdit\" ".$maxlength.">".$eKeyValue."</textarea>\n";
 							// gestion popup link
 							if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupMaps == true)){ // cas link						
-								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_gpaths.php', 'links', 920, 572, 'scrollbars=yes', 'true','".$classeName."','".$aNodeToSort[$i]["attrs"]["NAME"]."');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_geo.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Maps picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_gpaths.php', 'links', 920, 572, 'scrollbars=yes', 'true','".$classeName."','".$aNodeToSort[$i]["attrs"]["NAME"]."');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_geo.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Selectionner_une_carte')."\" /></a>\n";
 							} // link
 						}
 					}
@@ -1370,7 +1342,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 
 						} // end non editable field
 						else {
-							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
+							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
 							// gestion popup link
 							//echo "test : ".$aNodeToSort[$i]["attrs"]["GEOMAPSIZE"]." : ".DEF_GMAP_SIZE."<br/>";
 							if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupMaps == true)){ // cas link						
@@ -1378,7 +1350,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									$msize = explode('x', DEF_GMAP_SIZE);
 								else	$msize = Array(804, 658);
 								$msize[1] += 46;	// add edit fields margin in popup dimensions
-								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_gmaps.php', 'links', {$msize[0]}, {$msize[1]}, 'scrollbars=yes', 'true','".$classeName."','".$aNodeToSort[$i]["attrs"]["NAME"]."');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_geo.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Maps picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_gmaps.php', 'links', {$msize[0]}, {$msize[1]}, 'scrollbars=yes', 'true','".$classeName."','".$aNodeToSort[$i]["attrs"]["NAME"]."');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_geo.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Selectionner_une_carte')."\" /></a>\n";
 							} // link
 						}
 					}
@@ -1390,18 +1362,18 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 	
 						} // end non editable field
 						else {
-							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
+							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
 							// gestion popup 
 							if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupObjectset == true)){ 
 								if (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)){
 									foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
 										if($childNode["name"] == "OBJECT"){ // on a un node d'objet	
-											echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_object\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_object\" class=\"arbo\" size=\"80\" value=\"".$childNode["cdata"]."\" disabled />\n";
+											echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_object\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_object\" class=\"arbo inputEdit\" value=\"".$childNode["cdata"]."\" disabled />\n";
 											//pre_dump($childNode);
 										}
 									}
 								}				
-								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_objectset.php', 'links', 800, 625, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"Maps picker\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Object picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+								echo "<a href=\"javascript:openMapsWindow('/backoffice/cms/utils/popup_objectset.php', 'links', 800, 625, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"".$translator->getTransByCode('Selectionner_une_carte')."\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"Object picker\" /></a>\n";
 							} // link
 						}
 					}
@@ -1413,18 +1385,18 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 	
 						} // end non editable field
 						else {
-							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
+							echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
 							// gestion popup link
 							if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupLinks == true)){ // cas link						
-								echo "<a href=\"javascript:openLinkWindow('/backoffice/cms/utils/popup/dir.php', 'links', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"Link picker\"><img src=\"/backoffice/cms/img/bt_popup_url.png\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Link picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+								echo "<a href=\"javascript:openLinkWindow('/backoffice/cms/utils/popup/dir.php', 'links', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"Link picker\"><img src=\"/backoffice/cms/img/bt_popup_url.png\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Selectionner_un_lien')."\" /></a>\n";
 							} // link
 						}
 					}
 					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "filedir"){ // cas filedir						
-						echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
+						echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
 						// gestion popup link
 						if (($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){ // cas filedir						
-							echo "<a href=\"javascript:openLinkWindow('/backoffice/cms/utils/popup/dir.php', 'links', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"Link picker\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"Link picker\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+							echo "<a href=\"javascript:openLinkWindow('/backoffice/cms/utils/popup/dir.php', 'links', 600, 600, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"Link picker\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Selectionner_un_lien')."\" /></a>\n";
 						} // link
 					}
 					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "password"){ // cas password	
@@ -1441,8 +1413,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 							else {
 								echo "réinitialiser le mot de passe<br />(laisser les champs vide pour conserver le mot de passe actuel)<br />";
 							}
-							echo "<input type=\"password\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"20\" value=\"\" ".$disabled." /><br />\n";
-							echo "<input type=\"password\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."conf\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."conf\" class=\"arbo\" size=\"20\" value=\"\" ".$disabled." onblur=\"checkPwd('f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."')\" /> (confirmer le mot de passe)\n";
+							echo "<input type=\"password\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"\" ".$disabled." /><br />\n";
+							echo "<input type=\"password\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."conf\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."conf\" class=\"arbo inputEdit\" value=\"\" ".$disabled." onblur=\"checkPwd('f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."')\" /> (confirmer le mot de passe)\n";
 						}
 					}
 					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "module"){ // cas password	
@@ -1478,8 +1450,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						else {
 							$eKeyValue_libelle = "n/a";
 						}
-						echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue_libelle."\" disabled />\n";
-						echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue."\" ".$disabled." />\n";
+						echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_libelle\" class=\"arbo inputEdit\" value=\"".$eKeyValue_libelle."\" disabled />\n";
+						echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".$eKeyValue."\" ".$disabled." />\n";
 						echo "<input type=\"button\"  class=\"arbo\" value=\"réutiliser brique existante\" onClick=\"javascript:openBrWindow('/backoffice/cms/popup_arbo_browse_node.php?idSite=".$_SESSION["idSite"]."&idField=f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."&idForm=add_".$classePrefixe."_form', '', 600, 400, 'scrollbars=yes', 'true')\" class=\"arbo\">";
 
 					}
@@ -1491,7 +1463,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 								</script>";				  
 						
 						($eKeyValue !="") ?  $style = 'style="background-color:'.$eKeyValue.'"' : $style = '' ;
-						echo "<input type=\"text\" ".$style." name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo myColorPicker\" size=\"7\" value=\"".$eKeyValue."\"  />\n";
+						echo "<input type=\"text\" ".$style." name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo myColorPicker inputEdit\" value=\"".$eKeyValue."\"  />\n";
 						 
 						
 					}
@@ -1535,7 +1507,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 							if ($aNodeToSort[$i]["attrs"]["NAME"] == "id"){
 								echo $eKeyValue;
 								
-								echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue."\" ".$disabled." />\n";
+								echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".$eKeyValue."\" ".$disabled." />\n";
 							}
 							elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime"){ // cas timestamp
 								// non editable field
@@ -1546,7 +1518,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									else	
 										$eKeyValue =  timestampFormat($eKeyValue);
 									echo $eKeyValue;
-									//echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue."\" ".$disabled." />\n";
+									//echo "<input type=\"hidden\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".$eKeyValue."\" ".$disabled." />\n";
 						
 								} // end non editable field
 								else {
@@ -1562,9 +1534,9 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 										}
 										
 										//$eKeyValue = date('Y-m-d H:i:s');
-										echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".$eKeyValue."\" ".$disabled." />\n";
+										echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".$eKeyValue."\" ".$disabled." />\n";
 									} 
-									else	echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".($eKeyValue)."\" ".$disabled." />\n";
+									else	echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".($eKeyValue)."\" ".$disabled." />\n";
 								}
 
 							}
@@ -1590,13 +1562,13 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									//echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
 
 								} // end non editable field
-								else	echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
+								else	echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".str_replace('"', '&quot;', $eKeyValue)."\" ".$disabled." />\n";
 							}
 
 							if ($aNodeToSort[$i]["attrs"]["NOEDIT"] != "true") {
 								// JScalendar
 								if (($aNodeToSort[$i]["attrs"]["TYPE"] == "date") && ($bJScalendar == true)){ // cas date
-									echo "<img src=\"/backoffice/cms/lib/jscalendar/img.gif\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_trigger\" style=\"cursor: pointer; border: 1px solid red;\" title=\"Date selector\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" />\n";
+									echo "<img src=\"/backoffice/cms/lib/jscalendar/img.gif\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_trigger\" style=\"cursor: pointer;\" title=\"".$translator->getTransByCode('Selectionner_la_date')."\" />\n";
 									?>
 									<script type="text/javascript" language="javascript">
 									Calendar.setup({
@@ -1611,7 +1583,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 								} // JScalendar
 								// Handle datetime data type
 								else if (($aNodeToSort[$i]["attrs"]["TYPE"] == "datetime") && ($bJScalendar == true)){ // cas datetime
-									echo "<img src=\"/backoffice/cms/lib/jscalendar/img.gif\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_trigger\" style=\"cursor: pointer; border: 1px solid red;\" title=\"Date selector\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" />\n";
+									echo "<img src=\"/backoffice/cms/lib/jscalendar/img.gif\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_trigger\" style=\"cursor: pointer;\" title=\"".$translator->getTransByCode('Selectionner_la_date')."\" />\n";
 									?>
 									<script type="text/javascript" language="javascript">
 									Calendar.setup({
@@ -1648,7 +1620,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 								// gestion popup wysiwyg
 								elseif ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupWysiwyg == true) && (($aNodeToSort[$i]["attrs"]["NOHTML"] != "true")||(!isset($aNodeToSort[$i]["attrs"]["NOHTML"])))){ // cas wysiwyg
 								//elseif ($bPopupWysiwyg == true){ // cas wysiwyg
-									echo "<a href=\"javascript:openWYSYWYGWindow('//".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"HTML editor\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+									echo "<a href=\"javascript:openWYSYWYGWindow('http://".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"".$translator->getTransByCode('Editeur_html')."\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Editeur_html')."\" /></a>\n";
 								} // wysiwyg
 							}
 
@@ -1729,11 +1701,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									//echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
 								} // end non editable field
 								else {
-									echo "<textarea name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" cols=\"50\" rows=\"6\" >".$eKeyValue."</textarea>\n";
+									echo "<textarea name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo textareaEdit\">".$eKeyValue."</textarea>\n";
 									// gestion popup wysiwyg
 									if ((($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")) && ($bPopupWysiwyg == true) && (($aNodeToSort[$i]["attrs"]["NOHTML"] != "true")||(!isset($aNodeToSort[$i]["attrs"]["NOHTML"])))){ // cas wysiwyg
 									//elseif ($bPopupWysiwyg == true){ // cas wysiwyg
-										echo "<a href=\"javascript:openWYSYWYGWindow('//".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer; border: 1px solid red;\" alt=\"HTML editor\" onmouseover=\"this.style.background='red';\" onmouseout=\"this.style.background=''\" /></a>\n";
+										echo "<a href=\"javascript:openWYSYWYGWindow('http://".$_SERVER['HTTP_HOST']."/backoffice/cms/utils/popup_wysiwyg.php', 'wysiwyg', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\"><img src=\"/backoffice/cms/img/bt_popup_wysiwyg.gif\" id=\"wysiwyg\" style=\"cursor: pointer;\" alt=\"".$translator->getTransByCode('Editeur_html')."\" /></a>\n";
 									} // wysiwyg
 								}
 
@@ -1767,7 +1739,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									} else { 
 										($aNodeToSort[$i]["attrs"]["TYPE"] == "int" || $aNodeToSort[$i]["attrs"]["TYPE"] == "float") ? $default = -1 : $default ="";
 									}
-									echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\" size=\"80\" value=\"".$default."\" />\n";
+									echo "<input type=\"text\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo inputEdit\" value=\"".$default."\" />\n";
 								}
 							}
 						} else { // option="bool"
@@ -1924,15 +1896,15 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 	if ($aNodeToSort[$i]["name"] == "ITEM") {
 		if ($aNodeToSort[$i]["attrs"]["ASSO"] || $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]) { // cas d'asso 
 			echo "<tr>\n";
-			echo "<td bgcolor=\"#E6E6E6\" class=\"arbo\">&nbsp;</td>\n";
-			echo "<td bgcolor=\"#EEEEEE\" class=\"arbo\">&nbsp;</td>\n";
+			echo "<td class=\"arbo left_cell\">&nbsp;</td>\n";
+			echo "<td class=\"arbo right_cell\">&nbsp;</td>\n";
 			echo "</tr>\n";
 			echo "<!-- debut des champs d'association -->\n";
 			echo "<tr>\n";
-			echo "<td width=\"141\" align=\"right\" bgcolor=\"#E6E6E6\" class=\"arbo\" style=\"padding-top: 8px;\">";
+			echo "<td class=\"arbo left_cell cell_asso\">";
 			echo "<b>".$translator->getTransByCode('Associations')."</b>";
 			echo "</td>\n";
-			echo "<td width=\"535\" align=\"left\" bgcolor=\"#EEEEEE\" class=\"arbo\">";
+			echo "<td class=\"arbo right_cell\">";
 			
 
 			// AJAX delayed call for association list display
@@ -1959,28 +1931,30 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 		}	
 	}
 }
-
+//E6E6E6
+//EEEEEE
+//D2D2D2
 ?>
 <tr>
-   <td bgcolor="#E6E6E6"  align="right" class="arbo">&nbsp;</td>
-   <td bgcolor="#EEEEEE"  align="left" class="arbo">&nbsp;</td>
+   <td class="arbo left_cell">&nbsp;</td>
+   <td class="arbo right_cell">&nbsp;</td>
 </tr>
 
 <?php include_once ( "maj.statut.php" ); ?>
  <tr>
-   <td bgcolor="#E6E6E6"  align="right" class="arbo">&nbsp;</td>
-   <td bgcolor="#EEEEEE"  align="left" class="arbo">&nbsp;</td>
+   <td class="arbo left_cell">&nbsp;</td>
+   <td class="arbo right_cell">&nbsp;</td>
  </tr>
   <tr>
-   <td bgcolor="#E6E6E6"  align="right" class="arbo">&nbsp;</td>
-   <td bgcolor="#EEEEEE"  align="left" class="arbo">(* <?php $translator->echoTransByCode('champs_obligatoires'); ?>)</td>
+   <td class="arbo left_cell">&nbsp;</td>
+   <td class="arbo right_cell">(* <?php $translator->echoTransByCode('champs_obligatoires'); ?>)</td>
  </tr>
  <tr>
-   <td bgcolor="#E6E6E6"  align="right" class="arbo">&nbsp;</td>
-   <td bgcolor="#EEEEEE"  align="left" class="arbo">&nbsp;</td>
+   <td class="arbo left_cell">&nbsp;</td>
+   <td class="arbo right_cell">&nbsp;</td>
  </tr>
  <tr>
-  <td bgcolor="#D2D2D2" colspan="2"  align="center" class="arbo">
+  <td colspan="2" class="arbo bottom_valid">
   <input name="button" type="button" class="arbo" onclick="annulerForm();" value="<< <?php $translator->echoTransByCode('Retour'); ?>">&nbsp;
   <input class="arbo" type="button" name="Ajouter" value="<?php   
    if(isset($newid)	&&	($newid == -1)){
@@ -1992,7 +1966,6 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
    ?> >>" onclick="validerForm()"></td>
  </tr>
 </table>
-<br /><br />
 <?php
 if (isset($aCustom["JS"]) && ($aCustom["JS"] != "")){
 	echo "<script type=\"text/javascript\">\n";
@@ -2009,3 +1982,34 @@ if (isset($aCustom["JS"]) && ($aCustom["JS"] != "")){
 } // FIN MODE EDITION
 ?>
 </form>
+
+<script>
+    
+    function chooseLang(lang){
+        //alert(lang);
+        if(lang == '')
+            var lang = 'ALL';
+        
+        
+        if(lang != 'ALL'){
+            <?php foreach($aLangCourt as $lang) { ?>
+                        if(lang != '<?php echo $lang; ?>'){
+                            $('.<?php echo $lang; ?>').hide();
+                        }
+           <?php } ?>
+           
+           $('.'+lang).show();
+           $('.chooseLang').removeClass('actif');
+           $('#'+lang).addClass('actif');
+        } else {
+            <?php foreach($aLangCourt as $lang) { ?>
+               $('.<?php echo $lang; ?>').show();
+           <?php } ?>
+               
+           $('.chooseLang').removeClass('actif');
+           $('#'+lang).addClass('actif');
+        }
+        
+    }
+    
+</script>

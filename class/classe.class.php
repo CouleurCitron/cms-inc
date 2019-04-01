@@ -1,7 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // patch de migration
-if ($db!=NULL	&&	!ispatched('classe')){
+if (!ispatched('classe')){
 	$rs = $db->Execute('DESCRIBE `classe`');
 	if (isset($rs->_numOfRows)){
 		if ($rs->_numOfRows == 4){
@@ -92,7 +92,7 @@ var $sMySql = "CREATE TABLE classe
 ";
 
 // constructeur
-function classe($id=null)
+function __construct($id=null)
 {
 	if (istable("classe") == false){
 		dbExecuteQuery($this->sMySql);

@@ -217,7 +217,7 @@ var $sMySql = "CREATE TABLE cms_avis
 ";
 
 // constructeur
-function cms_avis($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_avis") == false){
 		dbExecuteQuery($this->sMySql);

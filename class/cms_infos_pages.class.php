@@ -38,7 +38,7 @@ var $page_description;
 var $page_thumb;
 
 // constructeur
-function Cms_infos_page() 
+function __construct() 
 {
 	$this->id = -1;
 	$this->page_id = -1;

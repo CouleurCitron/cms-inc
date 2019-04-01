@@ -44,7 +44,6 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/cms_rss.class.php
 
 // utilisateurs
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/bo_users.class.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/user.class.php'); // deprecated
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/bo_groupes.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/bo_rank.class.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/cms_statut_content.class.php');
@@ -238,16 +237,23 @@ if(isset($_SESSION['fonct'])){
 		include_once('backoffice/adss/slideshow3/includes/aws-slideshow.functions.php');
 	}
 	
-	// SS3
+	// SS4
 	if (preg_match('/SS4/',$_SESSION['fonct'])){
 		if (preg_match('/\/adss\//', $_SERVER['PHP_SELF'])	||	preg_match('/\/content\//', $_SERVER['PHP_SELF'])		||	preg_match('/^\/index\.php/', $_SERVER['PHP_SELF'])	){
-			
-	//if (preg_match('/SS4/',$_SESSION['fonct'])	&&	!preg_match('/ancre\.js\.php/', $_SERVER['PHP_SELF'])	&&	!preg_match('/telecharger\.php/', $_SERVER['PHP_SELF'])){
-		//error_log('SS4');
 			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow4/includes/aws-slideshow.functions.php');
 		}
 		else{
 			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow4/includes/aws-slideshow.classes.php');
+		}
+	}
+	
+	// SS5
+	if (preg_match('/SS5/',$_SESSION['fonct'])){
+		if (preg_match('/\/adss\//', $_SERVER['PHP_SELF'])	||	preg_match('/\/content\//', $_SERVER['PHP_SELF'])		||	preg_match('/^\/index\.php/', $_SERVER['PHP_SELF'])	){
+			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow5/includes/aws-slideshow.functions.php');
+		}
+		else{
+			include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/adss/slideshow5/includes/aws-slideshow.classes.php');
 		}
 	}
 
@@ -265,9 +271,6 @@ if(isset($_SESSION['fonct'])){
 		if (in_array("news_assonewspdf", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assonewspdf.class.php');
 		if (in_array("news_assonewscron", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assonewscron.class.php');
 		if (in_array("news_queue", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_queue.class.php');
-		if (in_array("news_assoinscritnewsletter", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assoinscritnewsletter.class.php');
-		if (in_array("news_stats", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_stats.class.php');
-		if (in_array("news_links", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_links.class.php');
  	}
 	else {
 		if (in_array("newsletter", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/newsletter.class.php');
@@ -281,8 +284,6 @@ if(isset($_SESSION['fonct'])){
 		if (in_array("news_assonewspdf", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assonewspdf.class.php');
 		if (in_array("news_assonewscron", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_assonewscron.class.php');
 		if (in_array("news_queue", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_queue.class.php');
-		if (in_array("news_stats", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_stats.class.php');
-		if (in_array("news_links", $_SESSION['cms_classes'])) include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/class/news_links.class.php');
 	} 
 
 	// news

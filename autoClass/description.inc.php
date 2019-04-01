@@ -15,7 +15,7 @@ if (!isset($idSite)){
 } //---------------------------------------------------------
   
 
-$aChemin = split('/',$referUrl);
+$aChemin = explode('/',$referUrl);
 $nomPage = $aChemin[sizeof($aChemin)-1];
 $nomPage = str_replace (".php", "", $nomPage);
 if($nomPage==''){
@@ -27,7 +27,7 @@ if (isset ($_GET["id"]) && $_GET["id"]!="") {
 		$idPage = $maPage["id"]; 
 		$oPage = new Cms_page ($idPage); 
 	}
-	if (ereg ("TAG_", $oPage->getOptions_page())) {
+	if (preg_match ("/TAG_/msi", $oPage->getOptions_page())) {
 		$classe_a_tag = str_replace ("TAG_", "", $oPage->getOptions_page());
 		if (getCount_where("classe", array("cms_nom"), array(strtolower($classe_a_tag)), array("TEXT")) >0) {	
 			$sql = "select * from classe where cms_nom = '".$classe_a_tag."'";

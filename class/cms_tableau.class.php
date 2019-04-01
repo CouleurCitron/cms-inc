@@ -107,7 +107,7 @@ var $sMySql = "CREATE TABLE cms_tableau
 ";
 
 // constructeur
-function cms_tableau($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_tableau") == false){
 		dbExecuteQuery($this->sMySql);

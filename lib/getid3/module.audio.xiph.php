@@ -21,7 +21,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | dependencies: module.lib.image_size.php (optional)                   |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.audio.xiph.php,v 1.2 2013-03-01 10:34:18 pierre Exp $
+// $Id: module.audio.xiph.php,v 1.1 2013-09-30 09:31:09 raphael Exp $
 
         
         

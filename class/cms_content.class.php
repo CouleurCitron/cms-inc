@@ -57,7 +57,7 @@ var $statut_content;
 var $isbriquedit_content;
 
 // constructeur
-function Cms_content($id=null) 
+function __construct($id=null) 
 {
 	global $db;
 	if($id!=null) {
@@ -927,7 +927,7 @@ function getContentForUser($idUser, $sTri="")
 function getFolderContents($idSite, $nodeId) {
 
 	if(strlen($nodeId)>0)
-			$nodeId=array_pop(split(',',$nodeId));
+			$nodeId=array_pop(explode(',',$nodeId));
 	else
 			return false;
 	global $db;
@@ -977,7 +977,7 @@ function getFolderContents($idSite, $nodeId) {
 function getFolderEditContents($idSite, $nodeId) {
 
 	if(strlen($nodeId)>0)
-			$nodeId=array_pop(split(',',$nodeId));
+			$nodeId=array_pop(explode(',',$nodeId));
 	else
 			return false;
 	global $db;

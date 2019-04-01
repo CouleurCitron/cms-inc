@@ -65,7 +65,7 @@ var $sMySql = "CREATE TABLE news_ar
 ";
 
 // constructeur
-function news_ar($id=null)
+function __construct($id=null)
 {
 	if (istable("news_ar") == false){
 		dbExecuteQuery($this->sMySql);

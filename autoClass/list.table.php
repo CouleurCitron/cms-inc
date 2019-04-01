@@ -159,7 +159,7 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	
 		if ($_SERVER['QUERY_STRING']!="") 
 			echo "&".str_replace("id=", "idprev=",preg_replace('/idprev=[^&]*&/msi', '', $_SERVER['QUERY_STRING']));
-		echo '" title="'.$translator->getTransByCode('Visualiser').'" id="actionVisu"><img src="/backoffice/cms/img/visualiser.gif" border="0" alt="'.$translator->getTransByCode('Visualiser').'" align="top" /></a>&nbsp;';
+		echo '" title="'.$translator->getTransByCode('Visualiser').'" id="actionVisu"><img src="/backoffice/cms/img/2013/icone/visualiser.png" border="0" alt="'.$translator->getTransByCode('Visualiser').'" align="top" /></a>&nbsp;';
 	}
 
 	//edit link
@@ -173,9 +173,12 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 			echo '<a href="#_" onclick="fancy_reuse(\''.$editLink.'?id='. $oRes->get_id().'\')"' ;
 		else	echo '<a href="'.$editLink.'?id='. $oRes->get_id();
 	
-		if ($_SERVER['QUERY_STRING']!="")
-			echo "&".str_replace("id=", "idprev=",preg_replace('/idprev=[^&]*&/msi', '', $_SERVER['QUERY_STRING']));
-		echo '" title="'.$translator->getTransByCode('Modifier').'" id="actionModif"><img src="/backoffice/cms/img/modifier.gif" border="0" alt="'.$translator->getTransByCode('Modifier').'" align="top" /></a>&nbsp;';
+		if ($_SERVER['QUERY_STRING']!=""){
+			if (isset($_GET['id']) && ($_GET['id']!=-1)){
+				echo "&".str_replace("id=", "idprev=",preg_replace('/idprev=[^&]*&/msi', '', $_SERVER['QUERY_STRING']));
+			}
+		}
+		echo '" title="'.$translator->getTransByCode('Modifier').'" id="actionModif"><img src="/backoffice/cms/img/2013/icone/modifier.png" border="0" alt="'.$translator->getTransByCode('Modifier').'" align="top" /></a>&nbsp;';
 	}
 	// edit as new
 	if($editLink && ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/c/', $customActionControl[$_SESSION['rank']]))){
@@ -185,16 +188,16 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	
 		if($_SERVER['QUERY_STRING']!="")
 			echo "&".str_replace("id=", "idprev=",preg_replace('/idprev=[^&]*&/msi', '', $_SERVER['QUERY_STRING']));
-		echo '" title="'.$translator->getTransByCode('Dupliquer').'" id="actionDupli"><img src="/backoffice/cms/img/dupliquer.gif" border="0" alt="'.$translator->getTransByCode('Dupliquer').'" align="top" /></a>&nbsp;';
+		echo '" title="'.$translator->getTransByCode('Dupliquer').'" id="actionDupli"><img src="/backoffice/cms/img/2013/icone/dupliquer.png" border="0" alt="'.$translator->getTransByCode('Dupliquer').'" align="top" /></a>&nbsp;';
 	}
 	
 	if (isset($aAssoObjets[0]) && is_a($aAssoObjets[0],'cms_assoclassepage')){
 		//bouton permettant de "délier" l'association
-		echo '<a href="javascript:unlinkEmp('.$aAssoObjets[$k]->get_id().')" title="'.$translator->getTransByCode('delier_l_enregistrement').'" id="actionDelier"><img src="/backoffice/cms/img/supprimer.gif" border="0" alt="'.$translator->getTransByCode('delier_l_enregistrement').'" align="top" /></a>&nbsp;';
+		echo '<a href="javascript:unlinkEmp('.$aAssoObjets[$k]->get_id().')" title="'.$translator->getTransByCode('delier_l_enregistrement').'" id="actionDelier"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0" alt="'.$translator->getTransByCode('delier_l_enregistrement').'" align="top" /></a>&nbsp;';
 	}
 	//delete link
 	if ($bDeleteButtonControl || (!empty($customActionControl) && preg_match('/d/', $customActionControl[$_SESSION['rank']]))) {	
-		echo '<a href="javascript:deleteEmp('.$oRes->get_id().')" title="'.$translator->getTransByCode('Suppression_de_l_enregistrement').'" id="actionDel"><img src="/backoffice/cms/img/supprimer.gif" border="0" alt="'.$translator->getTransByCode('Suppression_de_l_enregistrement').'" align="top" /></a>&nbsp;';
+		echo '<a href="javascript:deleteEmp('.$oRes->get_id().')" title="'.$translator->getTransByCode('Suppression_de_l_enregistrement').'" id="actionDel"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0" alt="'.$translator->getTransByCode('Suppression_de_l_enregistrement').'" align="top" /></a>&nbsp;';
 	}
 	if ($bSelectControl) {
 ?>
@@ -208,7 +211,7 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	//Bouton custom permettant de lier un objet métier existant à la page
 	if(isset($aAssoObjets[0]) && is_a($aAssoObjets[0],'cms_assoclassepage')){
 		$linkReuse = '/backoffice/cms/page_infos_reuse.php?className='.$xClassName.'&idPage='.$oPage->get_id().'&nodeId='.$oPage->get_nodeid_page().'&classId='.$xClassId.'&usedId='.$aAssoObjets[$k]->get_id();
-		$aCustom["Action"] = '&nbsp;<a href="#_" onclick="javascript:fancy_reuse(\''.$linkReuse.'\');" title="Utiliser existant"><img src="/backoffice/cms/img/propriete.gif" width="16" height="16" alt="Utiliser existant" border="0" /></a>';
+		$aCustom["Action"] = '&nbsp;<a href="#_" onclick="javascript:fancy_reuse(\''.$linkReuse.'\');" title="Utiliser existant"><img src="/backoffice/cms/img/2013/icone/propriete.png"  alt="Utiliser existant" border="0" /></a>';
 	}	
 						
 	

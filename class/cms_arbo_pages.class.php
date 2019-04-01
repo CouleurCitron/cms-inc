@@ -72,7 +72,7 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 </class>";*/
 
 // constructeur
-function cms_arbo_pages($id=null) 
+function __construct($id=null) 
 {
 	global $db;
 	$this->dbConn = &$db;

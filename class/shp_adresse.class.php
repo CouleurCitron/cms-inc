@@ -164,7 +164,7 @@ var $sMySql = "CREATE TABLE shp_adresse
 ";
 
 // constructeur
-function shp_adresse($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_adresse") == false){
 		dbExecuteQuery($this->sMySql);

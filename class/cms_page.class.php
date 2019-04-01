@@ -1212,13 +1212,7 @@ $sUrlPageLigne = str_replace("%25E9", "%E9", $sUrlPageLigne);
 		print(" ?>");*/
 		
 		print("<a href=\"".$sUrlPageLigne."\" target=\"_blank\" title=\"Voir la page en ligne\"><img ");
-		
-		if (is_file($_SERVER["DOCUMENT_ROOT"]."/backoffice/cms/img/2013/icone/visualiser.png")) {
-			print("src=\"/backoffice/cms/img/2013/icone/visualiser.png\" border=\"0\"></a>&nbsp;");
-		}
-		else {
-			print("src=\"/backoffice/cms/img/page_ligne.gif\" border=\"0\"></a>&nbsp;");
-		}
+		print("src=\"/backoffice/cms/img/2013/icone/visualiser.png\" border=\"0\"></a>&nbsp;");
 	} 
 	
 }
@@ -1272,7 +1266,7 @@ function getPagesFromXGabarits($aIdGab, $idSite) {
 	
 	if (DEF_BDD != "ORACLE") $sql.= ";";
 
-	//print("<br>$sql");
+//print("<br>$sql");
 
 	$rs = $db->Execute($sql);
 	if($rs) {

@@ -171,33 +171,33 @@ function dbGetArrayOneFieldFromRequete($sql)
 function dbGetObjectsFromRequete($sObjet, $sql)
 {
 	if ($sql!=''	&&	$sql != NULL){
-		global $db;
-		$aResultat = array();
-		//var_dump($sql);
-		$rs = $db->Execute($sql);
-		if($rs) {
-			while(!$rs->EOF) {
-				array_push($aResultat, dbMakeObjet($sObjet, $rs));
-	
-				$rs->MoveNext();
-			}
-		} else {
-			if(DEF_MODE_DEBUG==true) {
-				echo "<br />dbGetObjectsFromRequete($sObjet, $sql)";
-				echo "<br /><strong>$sql</strong>";
-			}
-			echo "<br />Erreur interne de programme";
-			error_log("----- DEBUT ERREUR ------------------------");
-			error_log(__FUNCTION__."(".$sObjet.", ".$sql.")");
-			error_log("Erreur dans ".__FILE__." Ligne ".__LINE__." Fonction ".__FUNCTION__);
-			error_log('erreur lors de l\'execution de la requete');
-			error_log($sql);
-			error_log($db->ErrorMsg());
-			error_log("----- FIN ERREUR ------------------------");
-			return false;
+	global $db;
+	$aResultat = array();
+	//var_dump($sql);
+	$rs = $db->Execute($sql);
+	if($rs) {
+		while(!$rs->EOF) {
+			array_push($aResultat, dbMakeObjet($sObjet, $rs));
+
+			$rs->MoveNext();
 		}
-		$rs->Close();
-		return $aResultat;
+	} else {
+		if(DEF_MODE_DEBUG==true) {
+			echo "<br />dbGetObjectsFromRequete($sObjet, $sql)";
+			echo "<br /><strong>$sql</strong>";
+		}
+		echo "<br />Erreur interne de programme";
+		error_log("----- DEBUT ERREUR ------------------------");
+			error_log(__FUNCTION__."(".$sObjet.", ".$sql.")");
+		error_log("Erreur dans ".__FILE__." Ligne ".__LINE__." Fonction ".__FUNCTION__);
+		error_log('erreur lors de l\'execution de la requete');
+		error_log($sql);
+		error_log($db->ErrorMsg());
+		error_log("----- FIN ERREUR ------------------------");
+		return false;
+	}
+	$rs->Close();
+	return $aResultat;
 	}
 	else{
 		error_log("----- DEBUT ERREUR ------------------------");
@@ -254,10 +254,10 @@ function dbGetObjectsFromRequeteID($sObjet, $sql)
 function dbGetObjectsFromRequeteCache($sObjet, $sql, $ttl=100){
 	//error_reporting(E_ALL);
 	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/phpfastcache/php_fast_cache.php'); 
-	phpFastCache::setup("storage","auto");
+        phpFastCache::setup("storage","auto");
 	//phpFastCache::$storage = "auto";
 	$cache = phpFastCache();
-	
+        
 	$aObjet = $cache->get(md5($sql));
 
 	if ($aObjet!=NULL){
@@ -426,7 +426,7 @@ function dbGetCountIdListRech($sObjet, $aRecherche, $sOrderBy)
 	// construction de la requete (clause FROM et WHERE)
 	$sRequete.= dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy);
 	if (!isset($aRecherche)){
-		$sRequete = eregi_replace("(where.*)", "", $sRequete); 
+		$sRequete = preg_replace("/(where.*)/msi", "", $sRequete); 
 	}
 
 	
@@ -517,14 +517,14 @@ function dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy="")
 		if (($oRech->getValeurRecherche() != "") && ($oRech->getValeurRecherche() != "-1")) {
 
 			// composition de la clause FROM (tables de jointure)
-			$aFromThis = split(";", $oRech->getTableBD());
+			$aFromThis = explode(";", $oRech->getTableBD());
 			
 			for($m=0; $m<sizeof($aFromThis); $m++) {
 				if ($aFromThis[$m] != "") array_push($aFromTemp, $aFromThis[$m]);
 			}
 			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = split(";", $oRech->getJointureBD());
+			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
 			for($m=0; $m<sizeof($aJointure); $m++) {
 				if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
 			}
@@ -755,14 +755,14 @@ function dbMakeRequeteWithCriteres2_OR($sObjet, $aRecherche, $aOrderBy,  $aSensO
 		if (($oRech->getValeurRecherche() != "") && ($oRech->getValeurRecherche() != "-1")) {
 
 			// composition de la clause FROM (tables de jointure)
-			$aFromThis = split(";", $oRech->getTableBD());
+			$aFromThis = explode(";", $oRech->getTableBD());
 			
 			for($m=0; $m<sizeof($aFromThis); $m++) {
 				if ($aFromThis[$m] != "") array_push($aFromTemp, $aFromThis[$m]);
 			}
 			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = split(";", $oRech->getJointureBD());
+			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
 			for($m=0; $m<sizeof($aJointure); $m++) {
 				if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
 			}

@@ -20,7 +20,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | dependencies: NONE                                                   |
 // +----------------------------------------------------------------------+
 //
-// $Id: module.audio.aac_adif.php,v 1.2 2013-03-01 10:34:17 pierre Exp $
+// $Id: module.audio.aac_adif.php,v 1.1 2013-09-30 09:30:52 raphael Exp $
 
         
         

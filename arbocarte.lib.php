@@ -93,7 +93,7 @@ function deleteNodeCarte($idSite, $db,$virtualPath){
 	global $CMS_ROOT_CLASSEUR_UPLOADIMG;
 	if(strpos($virtualPath,",")==false) // Si racine => fait rien
 		return false;
-	$array_path = split(',',$virtualPath);
+	$array_path = explode(',',$virtualPath);
 	$node_id = array_pop($array_path);
 	$result = false;
 	$parentVirtualPath = join(',',$array_path);
@@ -152,7 +152,7 @@ function addNodeCarte($idSite, $db,$virtualPath,$libelle){
 // $libelle = nom du noeud à ajouter
 // Renvoi le nouvel id créé par la base de données si ok, sinon false
 	global $CMS_ROOT_CLASSEUR;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$libelle = str_replace('"',"'\\'", $libelle); // On remplace les guillemets par des doubles quotes
 	$libelle = str_replace('`',"'", $libelle); // On remplace les quotes zarbi
@@ -212,7 +212,7 @@ function renameNodeCarte($db,$virtualPath,$libelle){
 // $libelle = nom du noeud à ajouter
 // Renvoi true si ok, sinon false
 	global $CMS_ROOT_CLASSEUR;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$libelle = str_replace('"',"'\\'", $libelle); // On remplace les guillemets par des doubles quotes
 	$libelle = str_replace('`',"'", $libelle); // On remplace les quotes zarbi
@@ -269,7 +269,7 @@ function saveNodeDescriptionCarte($folderdescription,$db,$virtualPath){
 // $db = base en cours
 // $virtualpath = arbo numérique $node_parent_parent_id,$node_parent_id,$current_node_id
 // Renvoi "true" si ok, "false" sinon
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$sql = "select node_id, node_parent_id, node_libelle, node_absolute_path_name from cms_arbo_classeur where node_id=$node_id;";
 	$rs = $db->Execute($sql);
@@ -298,7 +298,7 @@ function getNodeInfosCarte($idSite, $db,$virtualPath){
 // $virtualpath = arbo numérique $node_parent_parent_id,$node_parent_id,$current_node_id
 // Renvoi un tableau avec les champs 'id', 'libelle', 'parent', 'path' si l'enregistrement est trouvé
 // retourne "false" sinon
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = null;
 	$sql = "select node_id, node_parent_id, node_libelle, node_absolute_path_name, node_description from cms_arbo_classeur where node_id=$node_id and id_site=$idSite;";
 
@@ -377,7 +377,7 @@ function path2nodesReverseCarte($db, $virtualPath) {
 // Retourne l'absolutePath
 
 	$strPath = '/';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$sql = "select node_libelle from cms_arbo_classeur where node_id=$id;";
 			$rs = $db->Execute($sql);
@@ -416,21 +416,21 @@ function drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id=null,
 			if(!isset($_GET['v_comp_path']) && !isset($_POST['v_comp_path'])){
 				$full_path_to_curr_id='0,13';
 			}			
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=14\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine carte</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=14\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine carte</b></a><br/></td></tr><tr><td>\n";
 		}
 		elseif($_SESSION['provenance']=="publication"){
 			if(!isset($_GET['v_comp_path']) && !isset($_POST['v_comp_path'])){
 				$full_path_to_curr_id='0,14';
 			}		
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=13\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine publication</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=13\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine publication</b></a><br/></td></tr><tr><td>\n";
 		}
 		else{
 			$full_path_to_curr_id="0";
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=".$full_path_to_curr_id."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."v_comp_path=".$full_path_to_curr_id."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 		}	
 	}
 	else{
-		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
+		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
 	}
 	$children = getNodeChildrenCarte($idSite,$db,$full_path_to_curr_id);
 	
@@ -448,15 +448,15 @@ function drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id=null,
 		//debut de ligne...
 		$OP = (preg_match('/\?/',$destination)) ? '&' : '?' ; // Si la page a déjà des arguments => on ajoute
 
-		if (!in_array($id,split(',',$virtualPath))) {
+		if (!in_array($id,explode(',',$virtualPath))) {
 			//dossier ferme
-			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
+			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(split(',',$virtualPath))==$id)
-				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small><span class=\"arbo\">".strip_tags(str_replace(' ','&nbsp;',$libelle))."</span></small></a></span><br/>\n";
+			if(array_pop(explode(',',$virtualPath))==$id)
+				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small><span class=\"arbo\">".strip_tags(str_replace(' ','&nbsp;',$libelle))."</span></small></a></span><br/>\n";
 			else
-				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
+				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a></span><br/>\n";
 			//echo $full_path_to_curr_id.','.$id;
 			$strHTML.=drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id.','.$id,$destination);
 		}
@@ -476,7 +476,7 @@ function getAbsolutePathStringCarte($db, $virtualPath, $destination=null) {
 	$OP = (preg_match('/\?/',$destination))?'&':'?'; // Si la page a déjà des arguments => on ajoute
 	$strPath = '<a href="'.$destination.$OP.'v_comp_path=0" class="arbo"><b>Racine</b></a>';
 	$localPath='0';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$localPath.=",$id";
 			$sql = "select node_libelle from cms_arbo_classeur where node_id=$id;";
@@ -502,7 +502,7 @@ function getNodeChildrenCarte($idSite,$db,$virtualPath) {
 // chaque noeud enfant est un tableau qui contient les champs 'id', 'libelle', 'path', 'order', 'description' si au moins un enfant est trouvé
 // retourne "false" sinon
 	if(isset($virtualPath)){
-		$node_id = array_pop(split(',',$virtualPath));
+		$node_id = array_pop(explode(',',$virtualPath));
 	}
 
 
@@ -548,7 +548,7 @@ function getNodeChildrenCarteAndClassArbo($idSite,$db,$virtualPath) {
 // chaque noeud enfant est un tableau qui contient les champs 'id', 'libelle', 'path', 'order', 'description' si au moins un enfant est trouvé
 // retourne "false" sinon
 	if(isset($virtualPath)){
-		$node_id = array_pop(split(',',$virtualPath));
+		$node_id = array_pop(explode(',',$virtualPath));
 	}
 
 
@@ -615,7 +615,7 @@ function moveNodeCarte($idSite, $db, $virtualPath, $new_virtualPath) {
 // $new_virtualPath = path destination
 // Renvoi "true" si ok, "false" sinon
 	global $CMS_ROOT_CLASSEUR;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$nodeInfos=getNodeInfosCarte($idSite, $db,$virtualPath);
 	$new_nodeInfos=getNodeInfosCarte($idSite, $db,$new_virtualPath);
@@ -625,9 +625,8 @@ function moveNodeCarte($idSite, $db, $virtualPath, $new_virtualPath) {
 	$sql="update cms_arbo_classeur set node_parent_id=".$new_nodeInfos['id'].",
 					node_absolute_path_name='".addslashes($new_nodeInfos['path']).addslashes($nodeInfos['libelle'])."/' where node_id=$node_id;\n";
 	$rs = $db->Execute($sql);
-//	$oldpath = $CMS_ROOT_CLASSEUR.utf8_encode(ereg_replace("[/]?$","",$nodeInfos['path']));
-//	$newpath = $CMS_ROOT_CLASSEUR.utf8_encode($new_nodeInfos['path']).utf8_encode($nodeInfos['libelle']);
-	$oldpath = $CMS_ROOT_CLASSEUR.ereg_replace("[/]?$","",$nodeInfos['path']);
+
+	$oldpath = $CMS_ROOT_CLASSEUR.preg_replace("/[\/]?$/msi","",$nodeInfos['path']);
 	$newpath = $CMS_ROOT_CLASSEUR.$new_nodeInfos['path'].$nodeInfos['libelle'];
 	dirExists($oldpath);
 	dirExists($newpath);
@@ -650,7 +649,7 @@ function moveNodeCarte($idSite, $db, $virtualPath, $new_virtualPath) {
 
 function getFolderComposantsCarte($virtualPath) {
         if(strlen($virtualPath)>0)
-                $nodeId=array_pop(split(',',$virtualPath));
+                $nodeId=array_pop(explode(',',$virtualPath));
         else
                 return false;
         global $db;
@@ -815,7 +814,7 @@ function getCarteById($idCarte, $idNode){
 // retourne "false" sinon
 	global $db;
 	$result=null;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$sql = "select id_classeur, nom_classeur, motsclefs_classeur, description_classeur, chemin_absolu_classeur, nodeid_classeur, date_etude_classeur , date_publication_classeur, lieu_classeur , poids_classeur , pages_classeur, poids_classeur, ca_arbo
 			from cms_classeur , cms_classarbo
 			where ca_arbo = ".$idNode."
@@ -855,7 +854,7 @@ function getCarteById2($idCarte){
 // retourne "false" sinon
 	global $db;
 	$result=null;
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$sql = "select id_classeur, nom_classeur, motsclefs_classeur, description_classeur, chemin_absolu_classeur, nodeid_classeur, date_etude_classeur , date_publication_classeur, lieu_classeur , poids_classeur , pages_classeur, poids_classeur
 			from cms_classeur
 			where id_classeur=".$idCarte.";";
@@ -913,7 +912,7 @@ function searchCarte($db,$tofind){
 // retourne "false" sinon
 	global $db;
 	$result = array();
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$tofind = addslashes($tofind);
 	// Tous les mots sont individuellement recherchés
 	// c'est un ou logique!
@@ -978,7 +977,7 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 		// cas particulier de la racine où il faut dessiner le père en plus des fils
 		$full_path_to_curr_id=0;
 	} else {
-		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
+		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
 	}
 	$children = getNodeChildrenCarte($idSite, $db,$full_path_to_curr_id);
 
@@ -989,7 +988,7 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 		$path = $v['path'];
 		$description = $v['description'];
 		$pathReverse = path2nodesCarte($idSite, $db, $path);
-		if (!in_array($debutArbo,split(',',$pathReverse)) || $debutArbo == $id) {
+		if (!in_array($debutArbo,explode(',',$pathReverse)) || $debutArbo == $id) {
 			$display=" style=\"display:none;\"";
 		}
 		else {
@@ -1003,7 +1002,7 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 		}else{
 		
 		$OP = (preg_match('/\?/',$destination)) ? '&' : '?' ; // Si la page a déjà des arguments => on ajoute
-		if (!in_array($id,split(',',$virtualPath))) {
+		if (!in_array($id,explode(',',$virtualPath))) {
 			$boolLastNode = getBoolLastNode($id, $idSite, $db);
 			$boolEnregistrementAssocie = getBoolEnregistrementAssocie($id, $idSite, $db);
 			//dossier ferme
@@ -1032,10 +1031,10 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 						$oClasse = $aClasse[$i];
 						if ($oClasse->get_id() == $idEnregistrement) {
 							$imgEnregistrement = $oClasse->get_img();
-							$arrayImage = split(' ', $imgEnregistrement);
+							$arrayImage = explode(' ', $imgEnregistrement);
 							
 							for ($m=0; $m<sizeof($arrayImage); $m++) {
-								if (ereg("src", $arrayImage[$m])) {
+								if (preg_match("/src/msi", $arrayImage[$m])) {
 									$srcStr = $arrayImage[$m];
 									$srcStr = str_replace('"', '', $srcStr);
 									$srcStr = str_replace('src=', '', $srcStr);
@@ -1070,7 +1069,7 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 			
 		} else {
 			//dossier ouvert
-			if(array_pop(split(',',$virtualPath))==$id) { // Dossier courant
+			if(array_pop(explode(',',$virtualPath))==$id) { // Dossier courant
 				$strHTML .= "<div class=\"accoblock\"><div class=\"titleacco\"><div class=\"listcarte".($tree_depth-1)."\" ".$display."><a href=\"".$destination.$OP."idSite=".$idSite."&v_comp_path=$full_path_to_curr_id,$id\" title=\"".str_replace('"', "''", $description)."\"  ><h".($tree_depth-1)." >";
 				$strHTML .= (getArbopictoCarte($id)) ? '<img src="'.$cms_classeur_UPLOADIMG.'/'.getArbopictoCarte($id).'" hspace="3" alt=""  border=\"0\"/>':'';
 				$strHTML .= "".$libelle."</h".($tree_depth-1)."></a></div></div>\n";
@@ -1191,8 +1190,8 @@ function drawCompTreeCarteHTMLComponent($idSite, $db,$virtualPath,$full_path_to_
 	if($destination==null) $destination=$_SERVER['PHP_SELF'];
 	$OP = (preg_match('/\?/',$destination)) ? '&' : '?' ;
 
-	$tree_depth = sizeof(split(',',$virtualPath));
-	$nodeId=array_pop(split(',',$virtualPath)); 
+	$tree_depth = sizeof(explode(',',$virtualPath));
+	$nodeId=array_pop(explode(',',$virtualPath)); 
 	//echo "<br />tree_depth".$tree_depth;
 	if ($tree_depth > 3) {
 		
@@ -1240,10 +1239,10 @@ function drawCompTreeCarteHTMLComponent($idSite, $db,$virtualPath,$full_path_to_
 					$srcStr = str_replace('alt=""', '', $srcStr);
 					$srcStr = str_replace('/>', '', $srcStr);
 					$srcStr = str_replace('"', '', $srcStr);*/
-					$arrayImage = split(' ', $imgEnregistrement);
+					$arrayImage = explode(' ', $imgEnregistrement);
 					
 					for ($m=0; $m<sizeof($arrayImage); $m++) {
-						if (ereg("src", $arrayImage[$m])) {
+						if (preg_match("/src/msi", $arrayImage[$m])) {
 							$srcStr = $arrayImage[$m];
 							$srcStr = str_replace('"', '', $srcStr);
 							$srcStr = str_replace('src=', '', $srcStr);
@@ -1309,7 +1308,7 @@ function storeEnregistrement( $nodeIdCarte, $nodeIdCarteold, $idCarte=null, $idC
 
 function getEnregistrement($virtualPath) {
         if(strlen($virtualPath)>0)
-                $nodeId=array_pop(split(',',$virtualPath));
+                $nodeId=array_pop(explode(',',$virtualPath));
         else  
                 return false;
         global $db;
@@ -1367,7 +1366,7 @@ function getEnregistrement($virtualPath) {
 }
 
 function afficheEnregistrement($idSite, $db,$virtualPath,$full_path_to_curr_id,$destination) {
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$sql= "select * from cms_classarbo where ca_arbo = ".$node_id. "";
 	$aClassearbo =  dbGetObjectsFromRequete("cms_classarbo", $sql);
 	$str="";
@@ -1383,7 +1382,7 @@ function afficheEnregistrement($idSite, $db,$virtualPath,$full_path_to_curr_id,$
 }
 
 function getChemindeFer($idSite, $db, $path, $debutArbo,$url) {
-	$arrayChemin = split('/',$path);
+	$arrayChemin = explode('/',$path);
 	$cheminToFind = "/";
 	$cheminDeFer = "";
 	for ($i=0;$i<sizeof($arrayChemin);$i++) {
@@ -1391,7 +1390,7 @@ function getChemindeFer($idSite, $db, $path, $debutArbo,$url) {
 			$cheminToFind.= $arrayChemin[$i]."/";
 			
 			$pathReverse = path2nodesCarte($idSite, $db, $cheminToFind);
-			if (in_array($debutArbo,split(',',$pathReverse))) {
+			if (in_array($debutArbo,explode(',',$pathReverse))) {
 				$cheminDeFer.= "><h2><a href=\"".$url.".php?idSite=".$idSite."&v_comp_path=".$pathReverse."\">".$arrayChemin[$i]."</a></h2>";
 			}
 		}
@@ -1401,7 +1400,7 @@ function getChemindeFer($idSite, $db, $path, $debutArbo,$url) {
 }
 
 function getChemindeFer2($idSite, $db, $path, $debutArbo) {
-	$arrayChemin = split('/',$path);
+	$arrayChemin = explode('/',$path);
 	$cheminToFind = "/";
 	$cheminDeFer = "";
 
@@ -1420,8 +1419,8 @@ function getChemindeFer2($idSite, $db, $path, $debutArbo) {
 
 
 function getChemindeFer3($idSite, $db, $path, $virtualPath, $debutArbo, $finArbo, $url, $charReplace) {
-	$arrayChemin = split('/',$path); 
-	$arrayIdChemin = split(',',$virtualPath); 
+	$arrayChemin = explode('/',$path); 
+	$arrayIdChemin = explode(',',$virtualPath); 
 	$cheminDeFer = ""; 
 	$arrayChemin_ = array();
 	$virtualPath="";
@@ -1518,7 +1517,7 @@ function getIdByLibelle($idSite, $db, $libelle, $virtualPath, $categorie) {
 
 		if ($categorie=="") 
 			array_push($result, $tmparray);
-		elseif (in_array($categorie, split(',',$pathreverse)) && $categorie!="")
+		elseif (in_array($categorie, explode(',',$pathreverse)) && $categorie!="")
 			array_push($result, $tmparray);
 
 		$rs->MoveNext(); 
@@ -1583,7 +1582,7 @@ function getBoolEnregistrementAssocie ($node_id, $idSite, $db) {
 
 		if ($categorie=="") 
 			array_push($result, $tmparray);
-		elseif (in_array($categorie, split(',',$pathreverse)) && $categorie!="")
+		elseif (in_array($categorie, explode(',',$pathreverse)) && $categorie!="")
 			array_push($result, $tmparray);
 
 		$rs->MoveNext(); 
@@ -1612,14 +1611,14 @@ function getBoolEnregistrementAssocie ($node_id, $idSite, $db) {
 
 
 function getLienRecherche($idSite, $db, $path, $debutArbo,$url, $classe, $idComposant) {
-	$arrayChemin = split('/',$path);
+	$arrayChemin = explode('/',$path);
 	$cheminToFind = "/";
 	$cheminDeFer = "";
 	for ($i=0;$i<sizeof($arrayChemin);$i++) {
 		if ($arrayChemin[$i]!="") {
 			$cheminToFind.= $arrayChemin[$i]."/";
 			$pathReverse = path2nodesCarte($idSite, $db, $cheminToFind);
-			if (in_array($debutArbo,split(',',$pathReverse))) {
+			if (in_array($debutArbo,explode(',',$pathReverse))) {
 				$cheminDeFer.= "><h2>".$arrayChemin[$i]."</h2>";
 				
 			}

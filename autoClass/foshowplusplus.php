@@ -7,7 +7,7 @@ if (!isset($templateName)){
 	$template = $_SERVER['DOCUMENT_ROOT']."/frontoffice/".$classeName."/foshow_".$classeName.".html";
 }
 else{
-	if (ereg($_SERVER['DOCUMENT_ROOT'],$templateName)) 
+	if (strpos($templateName, $_SERVER['DOCUMENT_ROOT'])===0) 
 		$template = $templateName;
 	else 
 		$template = $_SERVER['DOCUMENT_ROOT']."/frontoffice/".$classeName."/".$templateName;

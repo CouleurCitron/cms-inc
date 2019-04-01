@@ -71,7 +71,7 @@ var $sMySql = "CREATE TABLE news_expediteur
 ";
 
 // constructeur
-function news_expediteur($id=null)
+function __construct($id=null)
 {
 	if (istable("news_expediteur") == false){
 		dbExecuteQuery($this->sMySql);

@@ -20,7 +20,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | dependencies: metaflac binary.                                       |
 // +----------------------------------------------------------------------+
 //
-// $Id: write.flac.php,v 1.2 2013-03-01 10:34:18 pierre Exp $
+// $Id: write.flac.php,v 1.1 2013-09-30 09:31:21 raphael Exp $
 
 
 class getid3_write_flac extends getid3_handler_write
@@ -39,7 +39,7 @@ class getid3_write_flac extends getid3_handler_write
         if (!$initialized) {
             
             // check existance and version of metaflac
-            if (!ereg('^metaflac ([0-9]+\.[0-9]+\.[0-9]+)', `metaflac --version`, $r)) {
+            if (!preg_match('/^metaflac ([0-9]+\.[0-9]+\.[0-9]+)/msi', `metaflac --version`, $r)) {
                 throw new getid3_exception('Fatal: metaflac binary not available.');
             }
             if (strnatcmp($r[1], '1.1.1') == -1) {

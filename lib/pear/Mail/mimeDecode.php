@@ -65,7 +65,7 @@ require_once 'cms-inc/lib/pear/PEAR.php';
 *    perhaps even message/partial.
 *
 * @author  Richard Heyes <richard@phpguru.org>
-* @version $Revision: 1.2 $
+* @version $Revision: 1.1 $
 * @package Mail
 */
 

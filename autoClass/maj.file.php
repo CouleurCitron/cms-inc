@@ -8,8 +8,15 @@ $indexUpload++;
 
 $tempMultiple = (isset($aNodeToSort[$i]["attrs"]["MULTIPLE"])	&& $aNodeToSort[$i]["attrs"]["MULTIPLE"] == 'true') ? "true" : "false"; 
 
+$classMultiple= "";
+if($tempMultiple == "true"){
+    $classMultiple = "multiple";
+} else {
+    $classMultiple = "single";
+}
 
-echo "<div id=\"div".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\">\n";
+
+echo "<div id=\"div".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"file_show $classMultiple'\">\n";
 echo "<!-- upload field # ".$indexUpload."/".$numUploadFields." -->\n";
 echo "<input type=\"hidden\" id=\"fUpload".$indexUpload."\" name=\"fUpload".$indexUpload."\" value=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" />\n";
 
@@ -19,75 +26,31 @@ echo "<input type=\"hidden\" id=\"fUpload".$indexUpload."\" name=\"fUpload".$ind
 
 
 if (defined("DEF_FCK_VERSION") && DEF_FCK_VERSION == "ckeditor" ) {
-	echo "<input type=\"button\" onClick=\"openWYSYWYGWindow('/backoffice/cms/lib/ckeditor/Filemanager-master/index.php?dir=/custom/upload/".$classeName."/&langCode=".$_SESSION["site_langue"]."&', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\" value=\"Parcourir le serveur\" />\n"; 
+    if( !defined( 'DEF_FILEMANAGER' ) || DEF_FILEMANAGER == 'filemanager-master' ){
+        $url_filemanager = "/backoffice/cms/lib/ckeditor/Filemanager-master/index.php?dir=/custom/upload/".$classeName."/&langCode=".$_SESSION["site_langue"]."&";
+    } else {
+    	$param = '';
+    	if($classMultiple = "multiple") {
+    		$param = 'multiple=multiple&';
+    	}
+        $url_filemanager = "/backoffice/cms/lib/ckeditor/fileman/index.html?dir=/custom/upload/".$classeName."/&langCode=".$_SESSION["site_langue"]."&integration=field&".$param;
+    }
+    
+    
+	echo "<input type=\"button\" onClick=\"openWYSYWYGWindow('$url_filemanager', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\" value=\"".$translator->getTransByCode('Parcourir_le_serveur')."\" />\n"; 
 }
 else {
-	echo "&nbsp;ou&nbsp;<input type=\"button\" onClick=\"openWYSYWYGWindow('/backoffice/cms/lib/FCKeditor/editor/filemanager/browser/default/browser.html?Connector=connectors/php/connector.php', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\" value=\"Parcourir le serveur\" />\n"; 
+	echo "&nbsp;ou&nbsp;<input type=\"button\" onClick=\"openWYSYWYGWindow('/backoffice/cms/lib/FCKeditor/editor/filemanager/browser/default/browser.html?Connector=connectors/php/connector.php', 'f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', null, null, 'scrollbars=yes', 'true','f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."', 'add_".$classePrefixe."_form');\" title=\"HTML editor\" value=\"".$translator->getTransByCode('Parcourir_le_serveur')."\" />\n"; 
 }
 
-echo '&nbsp;taille max: '.$MaxFilesize.' Mo ';
-if ($tempMultiple == "true") echo "&nbsp;-&nbsp;Vous pouvez télécharger plusieurs images"; 
+echo '&nbsp;'.$translator->echoTransByCode('taille_max').' '.$MaxFilesize.' Mo ';
+if ($tempMultiple == "true") echo "- ".$translator->getTransByCode('Vous_pouvez_telecharger_plusieurs_images'); 
 echo "<input  class=\"arbo\" size=\"80\"  type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
 
 // permet de stocker l'info multiple ou non  
 	echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_multiple\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_multiple\" value=\"".$tempMultiple."\">"; 
 	
-
-if ($eKeyValue != ""){
-	echo '<br />&nbsp;(actuellement) <br /> ';	
-	
-	preg_match_all("/{([^{}].*?)}/", $eKeyValue, $matches);
-	  
-	$allFiles = array();
-	
-	if (sizeof($matches[1]) == 0) {
-		$allFiles[] = $eKeyValue;
-	}
-	else {
-		$allFiles = $matches[1];
-	}
-	
-	/*
-	$(function() {
-		$( "#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_conteneur" ).sortable({
-		
-		start: function(e, ui) {
-			// puts the old positions into array before sorting
-			var old_position = $(this).sortable(\'toArray\'); 
-		},
-		update: function(event, ui) {
-			// grabs the new positions now that we\'ve finished sorting
-			var new_position = $(this).sortable(\'toArray\'); 
-			
-			for (var i = 0; i < new_position.length; i++) {
-				alert(new_position[i]);
-				if (new_position[i] != '') {
-				
-				//alert(fDia_image_delrecipient_1_name) ; 
-				 
-				
-				//
-				//var id = 0 ;
-				
-			//	$.each( $(\"div[id^=\'fDia_image_\']\"), function () {  
-			//	  var aId = $(this).attr(\'id\').match(regex);
-			//	  id = aId[1];
-			//	});
-				
-			//	id = parseInt(id) + 1 ; 
-				
-			 
-				
-				}
-			}
-		}
-		
-		
-		//});
-		$( "#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_conteneur" ).disableSelection();
-		});
-	*/ 
-	echo '
+echo '
 	
 	
 	<script type="text/javascript">
@@ -102,17 +65,20 @@ if ($eKeyValue != ""){
 			},
 			
 			update: function(event, ui) {
+                                
+                                var old_meta_data = $("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").val();
+                                console.log( "old data : " + old_meta_data );
 				// grabs the new positions now that we\'ve finished sorting
 				var new_position = $(this).sortable(\'toArray\'); 
-				var regex = new RegExp( "fDia_image_([0-9]*)"  );  
+				var regex = new RegExp( "f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_([0-9]*)"  );  
 				var new_string; 
 				new_string = "";
-				
+				//console.log(new_position);
 				for (var i = 0; i < new_position.length; i++) {
 					
 					if ( new_position[i] != \'\') {
 
-						
+						//console.log(new_position[i]);
 						var aId = new_position[i].match(regex);
 			   			id = aId[1];
 						
@@ -125,7 +91,7 @@ if ($eKeyValue != ""){
 						
 					}
 				}
-				 
+				 console.log( "new data : " + new_string );
 				$("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").val(new_string); 
 				
 			}  
@@ -179,7 +145,7 @@ if ($eKeyValue != ""){
 		else {
 			var new_string; 
 			new_string = \'\';
-			alert("aList_image.length "+ aList_image.length) ; 
+			//alert("aList_image.length "+ aList_image.length) ; 
 			for (var i = 0; i < aList_image.length ; i++ ) {
 				if (i != idimg)  {
 					new_string+=aList_image[i];	
@@ -209,14 +175,16 @@ if ($eKeyValue != ""){
 	 	idimg = aId[1];  
 		//alert(idimg);
 		var id_requete; 
-		
+		//console.log(mon_label);
+                //console.log(idimg);
 		var reg=new RegExp(".", "gm");
-		var mes_fichiers = $("#f'.ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"].'").val();  
+		//var mes_fichiers = $("#f'.ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"].'").val(); 
+                var mes_fichiers = $("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_"+idimg ).val(); 
 		mes_fichiers = mes_fichiers.split(".").join("**");
 		//alert(mes_fichiers);
 		
 		
-		
+		//console.log( " Valeurs envoyés " + mes_fichiers );
 		$.fancybox({ 
 			href: \'/include/cms-inc/autoClass/maj.file.edit.php?id=\'+idimg+\'&source=\'+mes_fichiers+\'\',  
 			type:\'iframe\',
@@ -224,8 +192,32 @@ if ($eKeyValue != ""){
             height	: 800,
 			overlayShow: true,
 			onClosed: function() { 
-				if ($_returnvalue != false) 
-					$("#f'.ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"].'").val($_returnvalue);
+                                //console.log( "return value = " + $_returnvalue);
+				if ($_returnvalue != false){
+                                        $("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_"+idimg ).val( $_returnvalue );
+                                        console.log( "insert val into : #f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_"+idimg  );
+                                        var regex = new RegExp( "f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_([0-9]*)"  );  
+                                        var new_fusion; 
+                                        new_fusion = "";
+                                        var new_position10 = $( "#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_conteneur" ).sortable(\'toArray\')
+                                        //console.log( "Positions = " + new_position10);
+                                        for (var i = 0; i < new_position10.length; i++) {
+
+                                                if ( new_position10[i] != \'\') {
+
+                                                        var aId = new_position10[i].match(regex);
+                                                        id = aId[1];
+
+                                                        var mon_fichier = $("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_"+id ).val(); 
+
+                                                        new_fusion += "{"+mon_fichier+"}";
+
+
+                                                }
+                                        }
+                                        //console.log( "fusion = " + new_fusion);
+                                        $("#f'.ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"].'").val(new_fusion);
+                                }
 			}
 		}); 
 		
@@ -297,39 +289,72 @@ if ($eKeyValue != ""){
 	'; 
 	
 	
+if ($eKeyValue != ""){
+	echo '<br /> ('.$translator->getTransByCode('actuellement').') <br /> ';	
 	
-	echo "<span id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" >"; 
+	preg_match_all("/{([^{}].*?)}/", $eKeyValue, $matches);
+	  
+	$allFiles = array();
+	
+	if (sizeof($matches[1]) == 0) {
+		$allFiles[] = $eKeyValue;
+	}
+	else {
+		$allFiles = $matches[1];
+	}
+	 
+	
+	
+	
+	echo "<ol id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" ";
+        if ($tempMultiple == "true") echo "class=\"new_diapo\" ";
+        else echo "class=\"one_img\"";
+        echo ">"; 
 	foreach ($allFiles as $nbimg => $eKeyValue) {	
 	 
 							
 		$aFiles = explode(';', $eKeyValue); 
 		$img = 0;	
 		
-		 
 		
-		for($if=0;$if<1;$if++){
+		//echo "eKeyValue : ".$eKeyValue."<br />"; 
+		
+		//pre_dump($aFiles); 
+		
+		for($if=0;$if<sizeof($aFiles) ;$if++){
 		
 			$sFile = $aFiles[$if];
+			//echo "sFile ".$sFile."<br />";
 			$sFile = preg_replace ("/\[.*\]/", "", $sFile) ;  // on supprime la zone commentaires entre crochets
 			
-			if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$sFile)){
-			
-			
-				echo "<div id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$nbimg."\">"; 
-				if ($if == 0)  echo "&nbsp;<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$sFile."\" target=\"_blank\" title=\"".$translator->getTransByCode('visualiserlefichier')." '".$sFile."'\"><img src='/custom/upload/".$classeName."/".$sFile."' width='70' /></a>&nbsp; ";
-				echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$sFile."\" target=\"_blank\" title=\"".$translator->getTransByCode('visualiserlefichier')." '".$sFile."'\">".$sFile."</a>\n";
+			if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$sFile) && $if < 1){
+			 
+				echo "<li id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$nbimg."\">"; 
+                                
+                echo "<div>";
+
+				if (($if == 0)&&(preg_match('/^.*\.(jpg|jpeg|png|gif)$/i', $sFile)	)){
+					echo '<a rel="'.$classeName.'_'.$aNodeToSort[$i]["attrs"]["NAME"].'" href="/custom/upload/'.$classeName.'"/"'.$sFile.'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').'" "'.$sFile.'" class="visuel"><img src="/custom/upload/'.$classeName.'/'.$sFile.'" width="70" /></a>';
+				}
+				elseif ($if == 0){
+					echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$sFile."\" target=\"_blank\" title=\"".$translator->getTransByCode('telechargerlefichier')." '".$sFile."'\">".$sFile."</a>\n";
+				}
+				echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$sFile."\" target=\"_blank\" title=\"".$translator->getTransByCode('visualiserlefichier')." '".$sFile."'\" class='name_img_diapo'>".$sFile."</a>\n";
 				
-				echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$sFile."\" title=\"".$translator->getTransByCode('telechargerlefichier')." '".$sFile."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"".$translator->getTransByCode('telechargerlefichier')." '".$sFile."\" /></a>\n";
+				echo "<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$sFile."\" title=\"".$translator->getTransByCode('telechargerlefichier')." '".$sFile."'\" class='picto_download' \"><img src=\"/backoffice/cms/img/2013/icone/right.png\" alt=\"".$translator->getTransByCode('telechargerlefichier')." '".$sFile."\" border=\"0\"></a>\n";
 				echo '<input type="hidden" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_'.$nbimg.'_name" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_'.$nbimg.'_name"  value="'.$nbimg."_".$sFile.'" />';
 				
 				
-				if ($if == 0)  echo '&nbsp;-&nbsp;<a id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_'.$nbimg.'" href="#"  title="delete recipient">[del]</a>&nbsp;'; 
+				if ($if == 0)  echo '<a id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_'.$nbimg.'" href="#_" class="picto_del"  title="delete recipient"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0" alt="Suppression de l\'enregistrement"></a>'; 
 				
-				if ($if == 0)  echo '&nbsp;-&nbsp;<a id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_edit_'.$nbimg.'" href="#"  title="edit">[edit]</a>&nbsp;'; 
+				if ($if == 0)  echo '<a id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_edit_'.$nbimg.'" href="#_"  title="edit" class="picto_edit"><img src="/backoffice/cms/img/2013/icone/modifier.png" border="0" alt="Modifier"></a>'; 
 				
 				if ($if == 0)   echo '<input type="hidden" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_'.$nbimg.'" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_'.$nbimg.'"  value="'.$eKeyValue.'" />';
 				$img++;
-				echo "</div>"; 
+                                
+                                echo "</div>";
+                                
+				echo "</li>"; 
 				
 				
 			}
@@ -347,16 +372,16 @@ if ($eKeyValue != ""){
 			
 		}
 		 	
-		echo "<br />\n";
+		//echo "<br />\n";
 	}	 
-	echo "</span>\n";	
-	echo "<input type=\"checkbox\" id=\"fDeleteFile".$indexUpload."\" name=\"fDeleteFile".$indexUpload."\" value=\"true\" />&nbsp;supprimer le(s) fichier(s) \n";
+	echo "</ol>\n";	
+	echo "<div class='data_files'><div class='delete_file'><input type=\"checkbox\" id=\"fDeleteFile".$indexUpload."\" name=\"fDeleteFile".$indexUpload."\" value=\"true\" /><label for='fDeleteFile".$indexUpload."'>".$translator->getTransByCode('supprimer_le_les_fichiers')."</label></div>\n";
 }
 else{
 
-	echo "<br /><span id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" >";
-	echo "&nbsp;(pas de fichier)";
-	echo "</span><br />"; 
+	echo "<div id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" >";
+	echo "<div class='no_file'>(".$translator->getTransByCode('pas_de_fichier').")</div>";
+	echo "</div><br />"; 
 	
 }
 
@@ -387,25 +412,26 @@ if ($aNodeToSort[$i]["attrs"]["OPTION"] == "geomapfile") {
 } elseif (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)) {
 	foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode) {
 		if($childNode["name"] == "OPTION"){ // on a un node d'option	
-			echo "<br />\n";
+			echo "<div class='file_informations'>\n";
 		
 			if (($childNode["attrs"]["TYPE"] != "") && ($childNode["attrs"]["TYPE"] != "if")){
-				echo "Type de fichier&nbsp;: ".$childNode["attrs"]["TYPE"]."<br />\n";
+				echo "<p><span class='label'>".$translator->getTransByCode('_Type_de_fichier')."</span> : ".$childNode["attrs"]["TYPE"]."</p>\n";
 			}
 			if ($childNode["attrs"]["WIDTH"] != ""){
-				echo "Largeur nominale de l'image&nbsp;: ".$childNode["attrs"]["WIDTH"]." pixels<br />\n";
+				echo "<p><span class='label'>".$translator->getTransByCode('Largeur_nominale_de_limage')."</span> : ".$childNode["attrs"]["WIDTH"]." pixels</p>\n";
 			}
 			elseif ($childNode["attrs"]["MAXWIDTH"] != ""){
-				echo "Largeur maximale de l'image&nbsp;: ".$childNode["attrs"]["MAXWIDTH"]." pixels<br />\n";
+				echo "<p><span class='label'>".$translator->getTransByCode('Largeur_maximale_de_limage')."</span> : ".$childNode["attrs"]["MAXWIDTH"]." pixels</p>\n";
 			}
 			if ($childNode["attrs"]["HEIGHT"] != ""){
-				echo "Hauteur nominale de l'image&nbsp;: ".$childNode["attrs"]["HEIGHT"]." pixels<br />\n";
+				echo "<p><span class='label'>".$translator->getTransByCode('Hauteur_nominale_de_limage')."</span> : ".$childNode["attrs"]["HEIGHT"]." pixels</p>\n";
 			}
 			elseif ($childNode["attrs"]["MAXHEIGHT"] != ""){
-				echo "Hauteur maximale de l'image&nbsp;: ".$childNode["attrs"]["MAXHEIGHT"]." pixels<br />\n";
-			}									
+				echo "<p><span class='label'>".$translator->getTransByCode('Hauteur_maximale_de_limage')."</span> : ".$childNode["attrs"]["MAXHEIGHT"]." pixels</p>\n";
+			}
+                        echo "</div>";
 		}
 	}
 }
-echo "</div>\n";
+echo "</div><div class='spacer'>&nbsp;</div></div>\n";
 ?>

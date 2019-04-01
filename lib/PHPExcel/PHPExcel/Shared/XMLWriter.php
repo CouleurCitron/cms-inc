@@ -1,9 +1,8 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2011 PHPExcel
+ * Copyright (c) 2006 - 2014 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,9 +20,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package	PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.7.6, 2011-02-27
+ * @version	1.8.0, 2014-03-02
  */
 
 if (!defined('DATE_W3C')) {
@@ -40,7 +39,7 @@ if (!defined('DEBUGMODE_ENABLED')) {
  *
  * @category   PHPExcel
  * @package	PHPExcel_Shared
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Shared_XMLWriter extends XMLWriter {
 	/** Temporary storage method */
@@ -60,12 +59,14 @@ class PHPExcel_Shared_XMLWriter extends XMLWriter {
 	 * @param int		$pTemporaryStorage			Temporary storage location
 	 * @param string	$pTemporaryStorageFolder	Temporary storage folder
 	 */
-	public function __construct($pTemporaryStorage = self::STORAGE_MEMORY, $pTemporaryStorageFolder = './') {
+	public function __construct($pTemporaryStorage = self::STORAGE_MEMORY, $pTemporaryStorageFolder = NULL) {
 		// Open temporary storage
 		if ($pTemporaryStorage == self::STORAGE_MEMORY) {
 			$this->openMemory();
 		} else {
 			// Create temporary filename
+			if ($pTemporaryStorageFolder === NULL)
+				$pTemporaryStorageFolder = PHPExcel_Shared_File::sys_get_temp_dir();
 			$this->_tempFileName = @tempnam($pTemporaryStorageFolder, 'xml');
 
 			// Open storage
@@ -113,6 +114,10 @@ class PHPExcel_Shared_XMLWriter extends XMLWriter {
 	 */
 	public function writeRawData($text)
 	{
+		if (is_array($text)) {
+			$text = implode("\n",$text);
+		}
+
 		if (method_exists($this, 'writeRaw')) {
 			return $this->writeRaw(htmlspecialchars($text));
 		}

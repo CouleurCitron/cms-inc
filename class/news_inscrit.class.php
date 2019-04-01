@@ -174,7 +174,7 @@ var $sMySql = "CREATE TABLE news_inscrit
 ";
 
 // constructeur
-function news_inscrit($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

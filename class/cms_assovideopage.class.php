@@ -68,7 +68,7 @@ var $sMySql = "CREATE TABLE cms_assovideopage
 ";
 
 // constructeur
-function cms_assovideopage($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

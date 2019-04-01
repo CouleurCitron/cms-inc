@@ -134,7 +134,7 @@ function dbGetAssocProps($oObjet, $sClasseAssoc) {
 	 
 	if ($tempAssoIn != '') {
 		eval("$"."oTemp = new ".$tempAssoIn."();"); 
-		if (!is_null($oTemp->XML_inherited))
+		if (isset($oTemp->XML_inherited)  &&  !is_null($oTemp->XML_inherited))
 			$sXML = $oTemp->XML_inherited;
 		else	$sXML = $oTemp->XML;
 		$stack = xmlClassParse($sXML); 
@@ -184,12 +184,12 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 	//eval("$"."oTemp = new ".$sClasseAssoc."();");
 	//eval("$"."oTemp2 = new ".$sClasseAssoc."();");
 	//eval("$"."oMyAsso = new ".$sClasseAssoc."();"); 
-	
+
 	$asso_list['asso'] = dbGetAssocProps($oObjet, $sClasseAssoc);
 	// Ass asociation class XML to props array (not required anymore)
 	//$asso_list['asso'] = array_merge($asso_list['asso'], $stackAssoc[0]);
 	//viewArray($asso_list['asso']);
-        
+
 	$tempAsso = $asso_list['asso']['class'];
 	$tempAssoPrefixe = $asso_list['asso']['prefix'];
 	$tempAssoFull = $asso_list['asso']['full'];
@@ -492,11 +492,11 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 							";*/
 			} else {
 				// Translated element
-				$sql .= "cms_chaine_reference tsl, cms_chaine_traduite tsltd,
-						";
-				if (isset($oForeignDisplayAttributes["TRANSLATE"]) && isset($oForeignAbstractAttributes["TRANSLATE"]))
-					$sql .= "cms_chaine_reference tsl2, cms_chaine_traduite tsltd2,
-						";
+//				$sql .= "cms_chaine_reference tsl, cms_chaine_traduite tsltd,
+//						";
+//				if (isset($oForeignDisplayAttributes["TRANSLATE"]) && isset($oForeignAbstractAttributes["TRANSLATE"]))
+//					$sql .= "cms_chaine_reference tsl2, cms_chaine_traduite tsltd2,
+//						";
 			}
 		}
 		$sql .= $aForeignXMLAttrs['NAME']." ref
@@ -528,14 +528,17 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 					// Translated element
 					$whereTSL[] = "tsltd.cms_ctd_id_reference = tsl.cms_crf_id ";
 					$whereTSL[] = "tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}";
-					$whereTSL[] = "tsltd.cms_ctd_chaine != ''";
+					//$whereTSL[] = "tsltd.cms_ctd_chaine != ''";
 				}
 			}
 		} elseif (DEF_APP_USE_TRANSLATIONS && isset($oForeignDisplayAttributes["TRANSLATE"])) {
 			// Translation of local value
 			if ($oForeignDisplayAttributes["TYPE"] == "int") {
-				if ($oForeignDisplayAttributes["TRANSLATE"] == 'reference')
-					$whereTSL[] = "tsl.cms_crf_id = ref.".$champ_display;
+				if ($oForeignDisplayAttributes["TRANSLATE"] == 'reference'){
+                                    $whereTSL[] = $whereTSL_WHERE = "tsl.cms_crf_id = ref.".$champ_display;
+                                    //$whereTSL[] = "tsl.cms_crf_id = ref.".$champ_display;
+                                }
+                                        
 			} elseif ($oForeignDisplayAttributes["TYPE"] == "enum") {
 				if ($oForeignDisplayAttributes["TRANSLATE"] == "value")
 					$whereTSL[] = "tsl.cms_crf_md5 = MD5(ref.".$champ_display.")";
@@ -547,6 +550,7 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 				$whereTSL[] = "tsltd.cms_ctd_chaine != ''";
 			}
 		}
+
 		if ($tempIsAbstractForeign) {
 			// Declared abstract is a foreign key
 			$whereTSL[] = "afn.".$foreignAbstractPrefixe."_id = ref.".$champ_temp_abstract;
@@ -583,8 +587,9 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 			if ($oForeignAbstractAttributes["TYPE"] == "int") {
 				if ($oForeignAbstractAttributes["TRANSLATE"] == 'reference'){
 					if ($oForeignDisplayAttributes["TRANSLATE"]){
-						$whereTSL[] = "tsl2.cms_crf_id = ref.".$champ_abstract;
-					}
+                        $whereTSL[] = $whereTSL2_WHERE = "tsl2.cms_crf_id = ref.".$champ_abstract;
+                        //$whereTSL[] = "tsl2.cms_crf_id = ref.".$champ_abstract;
+                    }
 					else	$whereTSL[] = "tsl.cms_crf_id = ref.".$champ_abstract;
                                 }
 			} elseif ($oForeignAbstractAttributes["TYPE"] == "enum") {
@@ -593,10 +598,6 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 						$whereTSL[] = "tsl2.cms_crf_md5 = MD5(ref.".$champ_abstract.")";
 					else	$whereTSL[] = "tsl.cms_crf_md5 = MD5(ref.".$champ_abstract.")";
 			}
-                        if(defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL == 'MD5'){
-                            $whereTSL[] = "tsl2.cms_crf_md5 = ref.".$champ_abstract."";
-                        }
-                        
 			if (DEF_APP_LANGUE != $_SESSION['id_langue']){
 				// Translated element
 				if (isset($oForeignDisplayAttributes["TRANSLATE"])) {
@@ -607,10 +608,6 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 					$whereTSL[] = "tsltd.cms_ctd_id_reference = tsl.cms_crf_id ";
 					$whereTSL[] = "tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}";
 					$whereTSL[] = "tsltd.cms_ctd_chaine != ''";
-                                        //pre_dump($champ_temp_abstract);
-                                        if (DEF_APP_USE_TRANSLATIONS && isset($oForeignAbstractAttributes["TRANSLATE"])){
-                                            $whereTSL[] = "tsltd.cms_ctd_id_reference = ref.".$champ_temp_abstract."";
-                                        }
 				}
 			}
 		}
@@ -649,7 +646,7 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 			$where_temp = array();
 			$where_tsl1=NULL;
 			$where_tsl2=NULL;
-			foreach ($whereTSL as $where_tsl) {					
+			foreach ($whereTSL as $where_tsl) {
 				if (preg_match ("/tsl2\./msi", $where_tsl)	&&	($where_tsl2==NULL)){
 					 $where_tsl2 = $where_tsl;
 					// echo 'where_tsl2 is '.$where_tsl2.'<br>';
@@ -660,7 +657,7 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 				}
 				else   $where_temp[] = $where_tsl;
 			} 
-		 
+                                
 			if (DEF_APP_USE_TRANSLATIONS && (isset($oForeignDisplayAttributes["TRANSLATE"]) || isset($oForeignAbstractAttributes["TRANSLATE"]))){
 				if (DEF_APP_LANGUE == $_SESSION['id_langue']){
 					// Default language
@@ -668,12 +665,16 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 					if (isset($oForeignDisplayAttributes["TRANSLATE"]) && isset($oForeignAbstractAttributes["TRANSLATE"]))
 						$sql .= "LEFT JOIN  cms_chaine_reference tsl2 ON ".$where_tsl2." ";
 				} else {
+                                    
+                                    $sql .= "LEFT JOIN cms_chaine_reference tsl ON ".$whereTSL_WHERE." ";
+                                    $sql .= "LEFT JOIN cms_chaine_traduite tsltd ON ".$where_tsl1." ";
+                                    
 					// Translated element
-					$where_temp[] = $where_tsl1; // <<< 2014-03-21 - mais comment ça a pu marcher sans ça ??
-					
 					//$sql .= "cms_chaine_reference tsl, cms_chaine_traduite tsltd,";
-					//if (isset($oForeignDisplayAttributes["TRANSLATE"]) && isset($oForeignAbstractAttributes["TRANSLATE"]))
-						//$sql .= "cms_chaine_reference tsl2, cms_chaine_traduite tsltd2,";
+					if (isset($oForeignDisplayAttributes["TRANSLATE"]) && isset($oForeignAbstractAttributes["TRANSLATE"])){
+                                            $sql .= "LEFT JOIN cms_chaine_reference tsl2 ON ".$whereTSL2_WHERE." ";
+                                            $sql .= "LEFT JOIN cms_chaine_traduite tsltd2 ON ".$where_tsl2." ";
+                                        }
 				}
 			}
 			
@@ -685,10 +686,10 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 			
 		if (!empty($where) && sizeof($where) > 0  )
 			$sql .= "WHERE	".implode("\nAND\t", $where)." ";
-		
+			
 		
 		// group by 
-		//$sql .= "	GROUP BY  ref_id  ";  
+		//$sql .= "	GROUP BY  ref_id  "; 
 			
 		// order clause
 		if ($valueAbstract!="" || $valueDisplay!="") {
@@ -790,7 +791,7 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 					}
 				}
 			}
-						
+
 			$sql .= " FROM		";
 			if ($tempIsDisplayForeign)
 				$sql .= $tempForeignDisplay." dfn,
@@ -827,7 +828,13 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 			else	$where[] = "ref.".$aForeignXMLAttrs['PREFIX']."_".$tempAssoInName." = ".$oObjet->get_id();
 
 			if ($tempIsDisplayForeign) {
-				$where[] = "dfn.".$foreignDisplayPrefixe."_id = ref.".$aForeignXMLAttrs['PREFIX']."_".strval($oTemp->getDisplay());
+				if ($edit	&&	$oObjet->get_id()==-1){
+					// pas de where sur le les items associés matchant l'item édité.					
+				}
+				else{
+					$where[] = "dfn.".$foreignDisplayPrefixe."_id = ref.".$aForeignXMLAttrs['PREFIX']."_".strval($oTemp->getDisplay());	
+				}
+				
 				if (DEF_APP_USE_TRANSLATIONS && $oForeignDisplayAttributes["TRANSLATE"]) {
 					// translation of foreign reference
 					if ($oForeignDisplayAttributes["TYPE"] == "int") {
@@ -859,7 +866,7 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 					$where[] = "tsltd.cms_ctd_id_langue = {$_SESSION['id_langue']}";
 					$where[] = "tsltd.cms_ctd_chaine != ''";
 				}
-			}      	
+			}
 			if ($tempIsAbstractForeign) {
 				$where[] = "afn.".$foreignAbstractPrefixe."_id = ref.".$champ_temp_abstract;
 				if (DEF_APP_USE_TRANSLATIONS && $oForeignAbstractAttributes["TRANSLATE"]) {
@@ -951,13 +958,6 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 	
 	//echo $sql;
 	
-        if( defined('DEF_APP_REF_TSL') && DEF_APP_REF_TSL == 'MD5' ){
-            //pre_dump($where);
-            /* on surcharge une partie de la requ괥 li饠ࠬa liaison des r馩rence (dans le cas o? on stocke le MD5 au lieu de l'id */
-            $sql = str_replace( array('cms_crf_id = ref.'), array('cms_crf_md5 = ref.'), $sql );
-        }
-        //pre_dump( $sql ); die();
-        
 	$res = $db->Execute($sql);
 	//$asso_list['XML'] = $stackAssoc[0];
 	$asso_list['XML'] = $stackAssoOut[0];

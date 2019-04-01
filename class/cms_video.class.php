@@ -200,7 +200,7 @@ var $sMySql = "CREATE TABLE cms_video
 ";
 
 // constructeur
-function cms_video($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

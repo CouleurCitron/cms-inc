@@ -2,6 +2,260 @@
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 /*
+$Id: pages.lib.php,v 1.1 2013-09-30 09:28:31 raphael Exp $
+$Author: raphael $
+
+$Log: pages.lib.php,v $
+Revision 1.1  2013-09-30 09:28:31  raphael
+*** empty log message ***
+
+Revision 1.34  2013-03-01 10:33:58  pierre
+*** empty log message ***
+
+Revision 1.33  2012-05-07 10:16:29  pierre
+*** empty log message ***
+
+Revision 1.32  2012-03-30 13:21:34  pierre
+*** empty log message ***
+
+Revision 1.31  2011-12-22 18:13:24  pierre
+*** empty log message ***
+
+Revision 1.30  2011-07-06 13:16:04  pierre
+*** empty log message ***
+
+Revision 1.29  2011-07-04 15:52:31  pierre
+*** empty log message ***
+
+Revision 1.28  2011-07-04 13:53:59  pierre
+*** empty log message ***
+
+Revision 1.27  2011-07-04 13:40:32  pierre
+*** empty log message ***
+
+Revision 1.26  2011-06-30 14:28:47  pierre
+*** empty log message ***
+
+Revision 1.25  2011-04-01 15:32:56  pierre
+*** empty log message ***
+
+Revision 1.24  2011-03-15 15:14:57  pierre
+*** empty log message ***
+
+Revision 1.23  2011-03-15 15:00:10  pierre
+*** empty log message ***
+
+Revision 1.22  2011-02-08 17:24:44  pierre
+patch url hephaistos dans les sites de prod
+
+Revision 1.21  2011-01-06 15:22:31  pierre
+on n'écrit plus la div des hachures dans les pages
+
+Revision 1.20  2010-11-24 14:12:10  pierre
+syntaxe php5
+
+Revision 1.19  2010-09-01 13:26:34  pierre
+correction des node_id des contenus quand les pages sont déplacées
+
+Revision 1.18  2010-08-26 15:40:01  pierre
+cms_theme
+
+Revision 1.17  2010-01-08 11:30:22  pierre
+*** empty log message ***
+
+Revision 1.16  2009-09-16 10:16:43  pierre
+*** empty log message ***
+
+Revision 1.15  2009-09-01 16:12:45  pierre
+*** empty log message ***
+
+Revision 1.14  2009-04-28 08:34:33  pierre
+*** empty log message ***
+
+Revision 1.13  2008-11-28 15:34:21  pierre
+*** empty log message ***
+
+Revision 1.12  2008-10-21 09:20:46  pierre
+*** empty log message ***
+
+Revision 1.10  2008-07-30 17:01:40  thao
+*** empty log message ***
+
+Revision 1.9  2008-07-30 16:39:18  thao
+*** empty log message ***
+
+Revision 1.8  2008-04-21 12:21:13  pierre
+*** empty log message ***
+
+Revision 1.6  2008/04/21 09:07:31  pierre
+*** empty log message ***
+
+Revision 1.5  2008/01/29 15:57:17  pierre
+*** empty log message ***
+
+Revision 1.4  2008/01/25 14:24:04  pierre
+*** empty log message ***
+
+Revision 1.3  2007/12/03 14:47:41  thao
+*** empty log message ***
+
+Revision 1.2  2007/11/29 16:48:50  pierre
+*** empty log message ***
+
+Revision 1.1  2007/08/08 13:07:18  thao
+*** empty log message ***
+
+Revision 1.5  2007/07/02 10:44:16  pierre
+*** empty log message ***
+
+Revision 1.4  2006/12/19 11:17:41  pierre
+*** empty log message ***
+
+Revision 1.3  2006/07/27 10:16:13  pierre
+*** empty log message ***
+
+Revision 1.2  2006/07/24 09:23:53  pierre
+*** empty log message ***
+
+Revision 1.1.1.1  2006/01/25 15:14:27  pierre
+projet CCitron AWS 2006 Nouveau Website
+
+Revision 1.18  2005/12/06 15:26:37  sylvie
+*** empty log message ***
+
+Revision 1.17  2005/12/02 15:09:33  sylvie
+*** empty log message ***
+
+Revision 1.16  2005/11/28 09:52:52  sylvie
+*** empty log message ***
+
+Revision 1.15  2005/11/08 14:04:02  sylvie
+*** empty log message ***
+
+Revision 1.14  2005/11/04 15:04:09  sylvie
+*** empty log message ***
+
+Revision 1.13  2005/11/04 13:55:09  sylvie
+*** empty log message ***
+
+Revision 1.12  2005/11/04 08:37:02  sylvie
+*** empty log message ***
+
+Revision 1.11  2005/11/02 10:44:51  sylvie
+*** empty log message ***
+
+Revision 1.10  2005/10/28 13:47:10  sylvie
+*** empty log message ***
+
+Revision 1.9  2005/10/27 14:42:17  sylvie
+*** empty log message ***
+
+Revision 1.7  2005/10/27 12:33:44  sylvie
+*** empty log message ***
+
+Revision 1.6  2005/10/27 10:04:44  sylvie
+*** empty log message ***
+
+Revision 1.5  2005/10/27 09:18:52  sylvie
+*** empty log message ***
+
+Revision 1.4  2005/10/27 09:02:04  sylvie
+*** empty log message ***
+
+Revision 1.1.1.1  2005/10/24 13:37:05  pierre
+re import fusion espace v2 et ADW v2
+
+Revision 1.2  2005/10/21 10:24:56  sylvie
+*** empty log message ***
+
+Revision 1.1.1.1  2005/10/20 13:10:54  pierre
+Espace V2
+
+Revision 1.6  2005/06/06 16:23:08  michael
+Modif du z-index (car zIndex Ã§a marche que sous IE - et on se demande pourquoi -)
+
+Revision 1.5  2005/06/02 16:18:52  michael
+correction message d'erreur
+
+Revision 1.3  2005/04/28 09:43:12  melanie
+ecriture des styles des briques dans le header de la page
+
+Revision 1.2  2005/04/27 08:44:30  melanie
+corrections en-tetes html
+
+Revision 1.1.1.1  2005/04/18 13:53:29  pierre
+again
+
+Revision 1.1.1.1  2005/04/18 09:04:21  pierre
+oremip new
+
+Revision 1.3  2004/11/15 15:31:20  ddinside
+maj total
+
+Revision 1.2  2004/11/12 08:59:20  ddinside
+gabarit interieur + moteur de recherche
+
+Revision 1.1.1.1  2004/11/03 13:49:54  ddinside
+lancement du projet - import de adequat
+
+Revision 1.3  2004/09/29 15:46:51  ddinside
+modifs
+
+Revision 1.2  2004/06/18 14:10:21  ddinside
+corrections diverses en vu de la demo prevention routiere
+
+Revision 1.1.1.1  2004/04/01 09:20:29  ddinside
+Cration du projet CMS Couleur Citron nom de code : tipunch
+
+Revision 1.7  2004/02/12 15:56:16  ddinside
+mise   jour plein de choses en fait, mais je sais plus quoi parce que a fait longtemps que je l'avais pas fait.
+Mea Culpa...
+
+Revision 1.6  2004/02/05 15:56:26  ddinside
+ajout fonctionnalite de suppression de pages
+ajout des styles dans spaw
+debuggauge prob du nom de fichier limite   30 caracteres
+
+Revision 1.5  2004/01/27 12:12:51  ddinside
+application de dos2unix sur les scripts SQL
+modification des scripts d'ajout pour correction bug lors d'une modif de page
+ajout foncitonnalit de modification de page
+ajout visu d'une page si cr e
+
+Revision 1.4  2004/01/21 12:33:51  ddinside
+integration de la DTD XHTML Transitionnelle
+int gration des titresd, description et mots clefs des pages
+
+Revision 1.3  2004/01/20 15:16:38  ddinside
+mise  jour de plein de choses
+ajout de gabarit vie des quartiers
+eclatement gabarits par des includes pour contourner prob des flashs non finalis s
+
+Revision 1.2  2004/01/12 09:40:38  ddinside
+ajout config auto selon gabarit dans la creation de page
+ajout flashs home
+ajout calendrier
+ajout doc class fileupload
+
+Revision 1.1  2004/01/07 18:29:22  ddinside
+jout derniers fonctionnalites
+
+Revision 1.1.1.1  2003/10/24 09:08:08  ddinside
+nouvel import projet Boulogne apres migration machine
+
+Revision 1.2  2003/10/16 21:19:46  ddinside
+suite dev gestio ndes composants
+ajout librairies d'images
+suppressions fichiers vi
+ajout gabarit
+
+Revision 1.1  2003/10/13 16:08:42  ddinside
+activation fonction enregistrement composant
+
+*/
+
+
+/*
 function stripTitre($str)
 function divOverflow(){
 function saveDatePeremption($id_page, $datePeremption=null) {
@@ -197,7 +451,7 @@ function generatePage($divArray, $oPage, $oIinfos_page, $sMode="LIGNE", $eIdTrav
 					if ($sMode == "LIGNE") {
 						$oArchi = getArchiWithIdContent($oContent->getId_content());
 						$contenuHTML = $oArchi->getHtml_archi();
-						// correction d'un BUG encore inexpliquÃ©
+						// correction d'un BUG encore inexpliqué
 						if ($contenuHTML == ''){
 							// on n'est pas dans la marde
 							$contenuHTML = $oContent->getHtml_content();
@@ -1141,55 +1395,4 @@ function controlNewPagePath($finalfilepathacontroler){
 		}
 	}
 }
-
-/**
- * Rï¿½cupï¿½ration des pages du site
- *
- * @param int $idSite id du site en cours
- * @param int $idParent id du noeud parent
- * @param str $comment filtre optionnel description
- * @return array Tableau d'arborescence
- */
-function getAllPages($idSite, $idParent = 0, $comment = ""){
-	include_once ($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/lib/phpfastcache/php_fast_cache.php");
-	$globalvar = array();
-	$globalvar = recursiveGetPages($idSite, $idParent, $comment, $globalvar);
-	return $globalvar;
-}
-
-function recursiveGetPages($idSite, $idParent=0, $comment = "", &$glob) {
- 	$sSql ="SELECT * FROM cms_arbo_pages WHERE node_parent_id = '".$idParent."' AND node_id_site = '".$idSite."'";
- 	if($comment != "") {
-		 if(is_array($comment)){
-	        $sSql .= " AND (";
-	        foreach($comment as $k => $com){
-	            if($k){ $sSql.= " OR"; }
-	            $sSql .= " node_description='".$com."'";
-	        }
-	        $sSql .= " )";
-	    } else {
-	        $sSql .= " AND node_description = '".$comment."'";
-	    }
- 	}
-
-    $sSql .= " ORDER BY node_order ASC";
-
-    $glob[] = $aArboNew = dbGetObjectsFromRequete("cms_arbo_pages", $sSql);
-    foreach($aArboNew as $oArbo){
-    	$r = recursiveGetPages($idSite, $oArbo->get_id(), $comment, $glob);
-    }
-
-    return $glob;
-}
-
-function getAllPagesNotRecursive($idSite){
-    $sSql ="SELECT * FROM cms_arbo_pages WHERE node_id_site = '".$idSite."'";
-
-    $sSql .= " ORDER BY node_order ASC";
-
-    $glob[] = $aArboNew = dbGetObjectsFromRequete("cms_arbo_pages", $sSql);
-
-    return $glob;
-}
-
 ?>

@@ -17,7 +17,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // | Authors: Jesus M. Castagnetto <jmcastagnetto@php.net>                |
 // +----------------------------------------------------------------------+
 //
-// $Id: Stats.php,v 1.2 2013-03-01 10:34:08 pierre Exp $
+// $Id: Stats.php,v 1.1 2013-09-30 09:33:42 raphael Exp $
 //
 
 include_once 'PEAR.php';

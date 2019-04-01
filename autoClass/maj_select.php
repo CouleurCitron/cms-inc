@@ -3,8 +3,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 header('Content-type: text/html; charset=iso-8859-1'); 
 
 
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");
+include_once("cms-inc/include_cms.php");
+include_once("cms-inc/include_class.php");
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 $classeMain = $_POST['classeMain'];
@@ -42,7 +42,7 @@ if ($action == "add") {
 	echo "div_".$iForeign.".name = \"fAsso".ucfirst($classeMain)."_".ucfirst($foreignName)."_".$tempId."_div\";"; 
 	echo "div_".$iForeign.".id = \"fAsso".ucfirst($classeMain)."_".ucfirst($foreignName)."_".$tempId."_div\";";
 	
-	if (eregi('msie', $_SERVER['HTTP_USER_AGENT']) && !eregi('opera', $_SERVER['HTTP_USER_AGENT'])) {     // Internet Explorer  
+	if (preg_match('/msie/msi', $_SERVER['HTTP_USER_AGENT']) && !preg_match('/opera/msi', $_SERVER['HTTP_USER_AGENT'])) {     // Internet Explorer  
 		$navigateur="IE"; 
 	}
 	if ($tempStatus == DEF_ID_STATUT_LIGNE){

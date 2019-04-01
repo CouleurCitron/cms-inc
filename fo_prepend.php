@@ -64,7 +64,7 @@ if ((preg_match('/\/content\//', $_SERVER['PHP_SELF'])==1)||($_SERVER['PHP_SELF'
 			$aTempPathToList = explode('/', $pathToList);
 			if (count($aTempPathToList) > 2)
 				$aTempPathToList = array_slice(explode("/", $pathToList),0,4);
-			$basePathToList = implode($aTempPathToList, "/")."/";
+			$basePathToList = join($aTempPathToList, "/")."/";
 			
 			//error_log("fopp ".stripslashes($pathToList));			
 			$courant = getNodeInfosReverse($idSite,$db,stripslashes($pathToList));	 

@@ -1,6 +1,6 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
-/* $Id: zip.lib.php,v 1.4 2013-03-01 10:33:59 pierre Exp $ */
+/* $Id: zip.lib.php,v 1.1 2013-09-30 09:28:35 raphael Exp $ */
 // vim: expandtab sw=4 ts=4 sts=4:
 
 

@@ -12,7 +12,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php')
 // Fiche visu
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_cms.php');
- include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/include_class.php');
 
 
 if ($id == "") {
@@ -53,7 +53,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		}
 		
 			
-		if (!ereg("statut|ordre|id", $aNodeToSort[$i]["attrs"]["NAME"])){ // cas pas statut|ordre|id	
+		if (!preg_match("/statut|ordre|id/msi", $aNodeToSort[$i]["attrs"]["NAME"])){ // cas pas statut|ordre|id	
 			$eKeyValue = getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]);
 
 			if (critereIfdisplay($aNodeToSort[$i], $oRes, $eKeyValue) == true){	// displayif	
@@ -99,7 +99,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					if ($eKeyValue > -1){ // cas typique typique
 						if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
 							if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)){ // le fichier existe
-								if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+								if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 									echo "<img src=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$eKeyValue."\" border=\"0\" alt=\"".$eKeyValue."\" />";
 									echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$classeName."/".$eKeyValue."\" title=\"Télécharger le fichier : '".$eKeyValue."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$eKeyValue."\" /></a>\n";
 								}
@@ -133,16 +133,16 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						}
 						else if ($aNodeToSort[$i]["attrs"]["TYPE"] == "date"){ // date
 							// expected : jj/mm/aaaa
-							if (ereg("([0-9]{2})/[0-9]{2}/[0-9]{4}", $eKeyValue)){	
-								$jj = ereg_replace("([0-9]{2})/[0-9]{2}/[0-9]{4}", "\\1", $eKeyValue);	
-								$mm = ereg_replace("[0-9]{2}/([0-9]{2})/[0-9]{4}", "\\1", $eKeyValue);
-								$aaaa = ereg_replace("[0-9]{2}/[0-9]{2}/([0-9]{4})", "\\1", $eKeyValue);						
+							if (preg_match("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", $eKeyValue)){	
+								$jj = preg_replace("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", "$1", $eKeyValue);	
+								$mm = preg_replace("/[0-9]{2}\/([0-9]{2})\/[0-9]{4}/msi", "$1", $eKeyValue);
+								$aaaa = preg_replace("/[0-9]{2}\/[0-9]{2}\/([0-9]{4})/msi", "$1", $eKeyValue);						
 							
 							}
-							else if (ereg("([0-9]{4})/[0-9]{2}/[0-9]{2}", $eKeyValue)){// expected : aaaa/mm/jj
-								$aaaa = ereg_replace("([0-9]{4})/[0-9]{2}/[0-9]{2}", "\\1", $eKeyValue);	
-								$mm = ereg_replace("[0-9]{4}/([0-9]{2})/[0-9]{2}", "\\1", $eKeyValue);
-								$jj = ereg_replace("[0-9]{4}/[0-9]{2}/([0-9]{2})", "\\1", $eKeyValue);							
+							else if (preg_match("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", $eKeyValue)){// expected : aaaa/mm/jj
+								$aaaa = preg_replace("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", "$1", $eKeyValue);	
+								$mm = preg_replace("/[0-9]{4}\/([0-9]{2})\/[0-9]{2}/msi", "$1", $eKeyValue);
+								$jj = preg_replace("/[0-9]{4}\/[0-9]{2}\/([0-9]{2})/msi", "$1", $eKeyValue);							
 							
 							}
 							if ($mm != "00"){	//00/00/1999 devient 1999 - 00/02/1998 devient 02/1998						
@@ -173,7 +173,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						else if ($aNodeToSort[$i]["attrs"]["OPTION"] == "filedir"){ // cas link
 							if ($eKeyValue != ""){
 								if (is_file($_SERVER['DOCUMENT_ROOT'].$eKeyValue)){ // le fichier existe
-									if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+									if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 										if (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)){									
 											foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
 												echo "<img src=\"".$eKeyValue."\" width=\"".$childNode["attrs"]["WIDTH"]."\" height=\"".$childNode["attrs"]["HEIGHT"]."\" title=\"Image édité\"><br>\n";			
@@ -227,7 +227,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 for ($i=0;$i<count($aNodeToSort);$i++){
 						
 	if ($aNodeToSort[$i]["name"] == "ITEM"){
-		if (ereg("id", $aNodeToSort[$i]["attrs"]["NAME"])){ 
+		if (preg_match("/id/msi", $aNodeToSort[$i]["attrs"]["NAME"])){ 
 			
 			if ($aNodeToSort[$i]["attrs"]["OPTION"] == "asso"){ // cas file
 				foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
@@ -494,7 +494,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 						if(is_array($foreignNodeToSort)){
 							foreach ($foreignNodeToSort as $nodeId => $nodeValue) {	
 								
-								if ((isset($nodeValue["attrs"]["NAME"])) && !ereg("statut|ordre|id|".$classeName."", $nodeValue["attrs"]["NAME"])){ // cas pas statut|ordre|id
+								if ((isset($nodeValue["attrs"]["NAME"])) && !preg_match("/statut|ordre|id|".$classeName."/msi", $nodeValue["attrs"]["NAME"])){ // cas pas statut|ordre|id
 									$eKeyValue = getItemValue($oTemp, $nodeValue["attrs"]["NAME"]);
 									
 									if (critereIfdisplay($nodeValue, $aTempClasse, $eKeyValue) == true){	// displayif	
@@ -553,7 +553,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 												else if ($nodeValue["attrs"]["OPTION"] == "file"){ // cas file
 													if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue)){ // le fichier existe
 														
-														if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+														if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 															//echo $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue."<br>";
 															ResizeImg($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue, 400,100, $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue);
 															if(!unlink($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue)) {
@@ -595,16 +595,16 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 												} // fin boolean
 												else if ($nodeValue["attrs"]["TYPE"] == "date"){ // date
 													// expected : jj/mm/aaaa
-													if (ereg("([0-9]{2})/[0-9]{2}/[0-9]{4}", $eKeyValue)){	
-														$jj = ereg_replace("([0-9]{2})/[0-9]{2}/[0-9]{4}", "\\1", $eKeyValue);	
-														$mm = ereg_replace("[0-9]{2}/([0-9]{2})/[0-9]{4}", "\\1", $eKeyValue);
-														$aaaa = ereg_replace("[0-9]{2}/[0-9]{2}/([0-9]{4})", "\\1", $eKeyValue);						
+													if (preg_match("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", $eKeyValue)){	
+														$jj = preg_replace("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", "$1", $eKeyValue);	
+														$mm = preg_replace("/[0-9]{2}\/([0-9]{2})\/[0-9]{4}/msi", "$1", $eKeyValue);
+														$aaaa = preg_replace("/[0-9]{2}\/[0-9]{2}\/([0-9]{4})/msi", "$1", $eKeyValue);						
 													
 													}
-													else if (ereg("([0-9]{4})/[0-9]{2}/[0-9]{2}", $eKeyValue)){// expected : aaaa/mm/jj
-														$aaaa = ereg_replace("([0-9]{4})/[0-9]{2}/[0-9]{2}", "\\1", $eKeyValue);	
-														$mm = ereg_replace("[0-9]{4}/([0-9]{2})/[0-9]{2}", "\\1", $eKeyValue);
-														$jj = ereg_replace("[0-9]{4}/[0-9]{2}/([0-9]{2})", "\\1", $eKeyValue);							
+													else if (preg_match("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", $eKeyValue)){// expected : aaaa/mm/jj
+														$aaaa = preg_replace("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", "$1", $eKeyValue);	
+														$mm = preg_replace("/[0-9]{4}\/([0-9]{2})\/[0-9]{2}/msi", "$1", $eKeyValue);
+														$jj = preg_replace("/[0-9]{4}\/[0-9]{2}\/([0-9]{2})/msi", "$1", $eKeyValue);							
 													
 													}
 													if ($mm != "00"){	//00/00/1999 devient 1999 - 00/02/1998 devient 02/1998						
@@ -637,7 +637,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 													
 													if ($eKeyValue != ""){
 														if (is_file($_SERVER['DOCUMENT_ROOT'].$eKeyValue)){ // le fichier existe
-															if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+															if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 																if (isset($nodeValue["children"]) && (count($nodeValue["children"]) > 0)){									
 																	foreach ($nodeValue["children"] as $childKey => $childNode){
 																		if($childNode["name"] == "OPTION"){ // on a un node d'option	
@@ -824,7 +824,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 												eval("$"."oTempasso = new ".$sAssoClasse."(".$idAssoTemp.");");
 												if(is_array($assoNodeToSort)){
 													foreach ($assoNodeToSort as $nodeId => $assoNodeValue) {	
-														if (!ereg("statut|ordre|id|".$sTempClasse."", $assoNodeValue["attrs"]["NAME"])){ // cas pas statut|ordre|id	
+														if (!preg_match("/statut|ordre|id|".$sTempClasse."/msi", $assoNodeValue["attrs"]["NAME"])){ // cas pas statut|ordre|id	
 															/*echo $sAssoClasse."<br>";*/
 															//echo $assoNodeValue["attrs"]["NAME"];
 															$eKeyValue = getItemValue($oTempasso, $assoNodeValue["attrs"]["NAME"]);
@@ -893,7 +893,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 																		else if ($assoNodeValue["attrs"]["OPTION"] == "file"){ // cas file
 																			if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$sAssoClasse."/".$eKeyValue)){ // le fichier existe
 																				
-																				if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+																				if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 																					//echo $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue."<br>";
 																					ResizeImg($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$sAssoClasse."/".$eKeyValue, 400,100, $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$sAssoClasse."/".$eKeyValue);
 																					if(!unlink($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$sAssoClasse."/".$eKeyValue)) {
@@ -936,16 +936,16 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 																		} // fin boolean
 																		else if ($assoNodeValue["attrs"]["TYPE"] == "date"){ // date
 																			// expected : jj/mm/aaaa
-																			if (ereg("([0-9]{2})/[0-9]{2}/[0-9]{4}", $eKeyValue)){	
-																				$jj = ereg_replace("([0-9]{2})/[0-9]{2}/[0-9]{4}", "\\1", $eKeyValue);	
-																				$mm = ereg_replace("[0-9]{2}/([0-9]{2})/[0-9]{4}", "\\1", $eKeyValue);
-																				$aaaa = ereg_replace("[0-9]{2}/[0-9]{2}/([0-9]{4})", "\\1", $eKeyValue);						
+																			if (preg_match("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", $eKeyValue)){	
+																				$jj = preg_replace("/([0-9]{2})\/[0-9]{2}\/[0-9]{4}/msi", "$1", $eKeyValue);	
+																				$mm = preg_replace("/[0-9]{2}\/([0-9]{2})\/[0-9]{4}/msi", "$1", $eKeyValue);
+																				$aaaa = preg_replace("/[0-9]{2}\/[0-9]{2}\/([0-9]{4})/msi", "$1", $eKeyValue);						
 																			
 																			}
-																			else if (ereg("([0-9]{4})/[0-9]{2}/[0-9]{2}", $eKeyValue)){// expected : aaaa/mm/jj
-																				$aaaa = ereg_replace("([0-9]{4})/[0-9]{2}/[0-9]{2}", "\\1", $eKeyValue);	
-																				$mm = ereg_replace("[0-9]{4}/([0-9]{2})/[0-9]{2}", "\\1", $eKeyValue);
-																				$jj = ereg_replace("[0-9]{4}/[0-9]{2}/([0-9]{2})", "\\1", $eKeyValue);							
+																			else if (preg_match("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", $eKeyValue)){// expected : aaaa/mm/jj
+																				$aaaa = preg_replace("/([0-9]{4})\/[0-9]{2}\/[0-9]{2}/msi", "$1", $eKeyValue);	
+																				$mm = preg_replace("/[0-9]{4}\/([0-9]{2})\/[0-9]{2}/msi", "$1", $eKeyValue);
+																				$jj = preg_replace("/[0-9]{4}\/[0-9]{2}\/([0-9]{2})/msi", "$1", $eKeyValue);							
 																			
 																			}
 																			if ($mm != "00"){	//00/00/1999 devient 1999 - 00/02/1998 devient 02/1998						
@@ -995,7 +995,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 																			
 																			if ($eKeyValue != ""){
 																				if (is_file($_SERVER['DOCUMENT_ROOT'].$eKeyValue)){ // le fichier existe
-																					if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+																					if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 																						if (isset($assoNodeValue["children"]) && (count($assoNodeValue["children"]) > 0)){									
 																							foreach ($assoNodeValue["children"] as $childKey => $childNode){
 																								if($childNode["name"] == "OPTION"){ // on a un node d'option	

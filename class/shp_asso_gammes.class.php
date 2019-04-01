@@ -71,7 +71,7 @@ var $sMySql = "CREATE TABLE shp_asso_gammes
 ";
 
 // constructeur
-function shp_asso_gammes($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_asso_gammes") == false){
 		dbExecuteQuery($this->sMySql);

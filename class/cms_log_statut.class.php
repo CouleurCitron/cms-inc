@@ -92,7 +92,7 @@ var $sMySql = "CREATE TABLE cms_log_statut
 ";
 
 // constructeur
-function cms_log_statut($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

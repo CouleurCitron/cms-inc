@@ -6,19 +6,14 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 if (!ispatched('newsletter')){
 	$rs = $db->Execute('SHOW COLUMNS FROM `newsletter`');
 	if ($rs) {
-		$names = Array();
 		while(!$rs->EOF) {
-			$names[] = $rs->fields["Field"];	
 			if($rs->fields["Field"]=='news_html'){
 			 	if (preg_match('/varchar/', $rs->fields["Type"])==1){
 					$db->Execute('ALTER TABLE `newsletter` CHANGE `news_html` `news_html` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL');
 				}
+				break;
 			}
 			$rs->MoveNext();
-		}
-		
-		if (!in_array('news_nbrecu', $names)) {
-			$rs = $db->Execute("ALTER TABLE `newsletter` ADD `news_nbrecu` INT( 11 ) NOT NULL DEFAULT '0'  AFTER `news_nbmail` ;");
 		}
 	}
 }
@@ -44,7 +39,6 @@ CREATE TABLE newsletter
 	news_libelle			varchar (255),
 	news_html			text (1024),
 	news_nbmail			int (11) not null,
-	news_nbrecu			int (11) not null,
 	news_test			int (4) not null,
 	news_expediteur			int (11),
 	news_statut			int (11) not null
@@ -62,7 +56,6 @@ CREATE TABLE newsletter
 	news_libelle			varchar2 (255),
 	news_html			text (1024),
 	news_nbmail			number (11) not null,
-	news_nbrecu			number (11) not null,
 	news_test			number (4) not null,
 	news_expediteur			number (11),
 	news_statut			number (11) not null
@@ -77,14 +70,12 @@ CREATE TABLE newsletter
 <item name="theme" libelle="Thème" type="int" length="11" list="true" order="true" fkey="news_theme"/>
 <item name="libelle" libelle="Titre" type="varchar" length="255" list="true" order="true" />
 <item name="html" libelle="HTML" type="text" length="1024" list="false" order="false" />
-<item name="nbmail" libelle="Nombre de mails envoyés" type="int" length="11" notnull="true" default="0" list="true" order="true" />
-<item name="nbrecu" libelle="Nombre de mails reçus" type="int" length="11" notnull="true" default="0" list="true" order="true" />
+<item name="nbmail" libelle="Nombre de mails envoyés" type="int" length="11" notnull="true" default="0" />
 <item name="test" libelle="En phase de test" type="int" length="4" notnull="true" default="0" option="bool"/>
 <item name="expediteur" libelle="Expéditeur" type="int" length="11" list="true" order="true" fkey="news_expediteur"/>
 <item name="statut" libelle="Statut" type="int" length="11" notnull="true" default="DEF_CODE_STATUT_NEWS_DEFAUT" list="true" order="true">
 <option type="value" value="1" libelle="En création" />
 <option type="value" value="4" libelle="Validée" />
-<option type="value" value="6" libelle="En cours d'envoi" />
 <option type="value" value="5" libelle="Envoyée" />
 </item>
 <langpack lang="fr">
@@ -106,28 +97,25 @@ var $theme;
 var $libelle;
 var $html;
 var $nbmail;
-var $nbrecu;
 var $test;
 var $expediteur;
 var $statut;
 
 
 var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
-<class name=\"newsletter\" prefix=\"news\" display=\"theme\" abstract=\"libelle\" def_order_field=\"datecrea\" def_order_direction=\"DESC\">
+<class name=\"newsletter\" prefix=\"news\" display=\"theme\" abstract=\"libelle\" def_order_field=\"datecrea\" def_order_direction=\"DESC\" >
 <item name=\"id\" type=\"int\" length=\"11\" isprimary=\"true\" notnull=\"true\" default=\"-1\" list=\"true\" order=\"true\" asso=\"news_assonewspdf,news_assonewscron\" />
 <item name=\"datecrea\" libelle=\"Date de création\" type=\"datetime\" list=\"true\" order=\"true\" />
 <item name=\"dateenvoi\" libelle=\"Date d'envoi\" type=\"datetime\" list=\"true\" order=\"true\" />
 <item name=\"theme\" libelle=\"Thème\" type=\"int\" length=\"11\" list=\"true\" order=\"true\" fkey=\"news_theme\"/>
 <item name=\"libelle\" libelle=\"Titre\" type=\"varchar\" length=\"255\" list=\"true\" order=\"true\" />
 <item name=\"html\" libelle=\"HTML\" type=\"text\" length=\"1024\" list=\"false\" order=\"false\" />
-<item name=\"nbmail\" libelle=\"Nombre de mails envoyés\" type=\"int\" length=\"11\" notnull=\"true\" default=\"0\" list=\"true\" order=\"true\" />
-<item name=\"nbrecu\" libelle=\"Nombre de mails reçus\" type=\"int\" length=\"11\" notnull=\"true\" default=\"0\" list=\"true\" order=\"true\" />
+<item name=\"nbmail\" libelle=\"Nombre de mails envoyés\" type=\"int\" length=\"11\" notnull=\"true\" default=\"0\" />
 <item name=\"test\" libelle=\"En phase de test\" type=\"int\" length=\"4\" notnull=\"true\" default=\"0\"  option=\"bool\"/>
 <item name=\"expediteur\" libelle=\"Expéditeur\" type=\"int\" length=\"11\" list=\"true\" order=\"true\" fkey=\"news_expediteur\"/>
 <item name=\"statut\" libelle=\"Statut\" type=\"int\" length=\"11\" notnull=\"true\" default=\"DEF_CODE_STATUT_NEWS_DEFAUT\" list=\"true\" order=\"true\">
 <option type=\"value\" value=\"1\" libelle=\"En création\" />
 <option type=\"value\" value=\"4\" libelle=\"Validée\" />
-<option type=\"value\" value=\"6\" libelle=\"En cours d'envoi\" />
 <option type=\"value\" value=\"5\" libelle=\"Envoyée\" />
 </item>
 <langpack lang=\"fr\">
@@ -146,7 +134,6 @@ var $sMySql = "CREATE TABLE newsletter
 	news_libelle			varchar (255),
 	news_html			text (1024),
 	news_nbmail			int (11) not null,
-	news_nbrecu			int (11) not null,
 	news_test			int (4) not null,
 	news_expediteur			int (11),
 	news_statut			int (11) not null
@@ -155,13 +142,13 @@ var $sMySql = "CREATE TABLE newsletter
 ";
 
 // constructeur
-function newsletter($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);
 	}
 
-	if($id!==null) {
+	if($id!=null) {
 		$tempThis = dbGetObjectFromPK(get_class($this), $id);
 		foreach ($tempThis as $tempKey => $tempValue){
 			$this->$tempKey = $tempValue;
@@ -181,7 +168,6 @@ function newsletter($id=null)
 		$this->libelle = "";
 		$this->html = "";
 		$this->nbmail = -1;
-		$this->nbrecu = -1;
 		$this->test = -1;
 		$this->expediteur = -1;
 		$this->statut = DEF_CODE_STATUT_NEWS_DEFAUT;
@@ -206,7 +192,6 @@ function getListeChamps()
 	$laListeChamps[]=new dbChamp("News_libelle", "text", "get_libelle", "set_libelle");
 	$laListeChamps[]=new dbChamp("News_html", "text", "get_html", "set_html");
 	$laListeChamps[]=new dbChamp("News_nbmail", "entier", "get_nbmail", "set_nbmail");
-	$laListeChamps[]=new dbChamp("News_nbrecu", "entier", "get_nbrecu", "set_nbrecu");
 	$laListeChamps[]=new dbChamp("News_test", "entier", "get_test", "set_test");
 	$laListeChamps[]=new dbChamp("News_expediteur", "entier", "get_expediteur", "set_expediteur");
 	$laListeChamps[]=new dbChamp("News_statut", "entier", "get_statut", "set_statut");
@@ -222,7 +207,6 @@ function get_theme() { return($this->theme); }
 function get_libelle() { return($this->libelle); }
 function get_html() { return($this->html); }
 function get_nbmail() { return($this->nbmail); }
-function get_nbrecu() { return($this->nbrecu); }
 function get_test() { return($this->test); }
 function get_expediteur() { return($this->expediteur); }
 function get_statut() { return($this->statut); }
@@ -236,7 +220,6 @@ function set_theme($c_news_theme) { return($this->theme=$c_news_theme); }
 function set_libelle($c_news_libelle) { return($this->libelle=$c_news_libelle); }
 function set_html($c_news_html) { return($this->html=$c_news_html); }
 function set_nbmail($c_news_nbmail) { return($this->nbmail=$c_news_nbmail); }
-function set_nbrecu($c_news_nbrecu) { return($this->nbrecu=$c_news_nbrecu); }
 function set_test($c_news_test) { return($this->test=$c_news_test); }
 function set_expediteur($c_news_expediteur) { return($this->expediteur=$c_news_expediteur); }
 function set_statut($c_news_statut) { return($this->statut=$c_news_statut); }
@@ -252,7 +235,6 @@ function getFieldStatut() {return("news_statut"); }
 //
 function getTable() { return("newsletter"); }
 function getClasse() { return("newsletter"); }
-function getPrefix() { return(""); }
 function getDisplay() { return("theme"); }
 function getAbstract() { return("libelle"); }
 
@@ -265,7 +247,7 @@ if (!is_dir($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/newsletter")){
 	mkdir($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/newsletter");
 	$list = fopen($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/newsletter/list_newsletter.php", "w");
 	$listContent = "<"."?php
-include_once(\$_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php'); 
+
 \$"."script = explode('/',\$"."_SERVER['PHP_SELF']);
 \$"."script = \$"."script[sizeof(\$"."script)-1];
 

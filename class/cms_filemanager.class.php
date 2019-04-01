@@ -105,7 +105,7 @@ var $sMySql = "CREATE TABLE cms_filemanager
 ";
 
 // constructeur
-function cms_filemanager($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_filemanager") == false){
 		dbExecuteQuery($this->sMySql);

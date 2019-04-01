@@ -1,13 +1,37 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']. PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'].'/include');
 
+if(!isset($_SERVER['HTTP_HOST'])){	
+	$_SERVER['HTTP_HOST']='cli';
+	$sessionOptions = array('cookie_domain' => '', 'cookie_secure' => false, 'cookie_httponly' => true);
+}
+else{
+	if (isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!='off'){
+		$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => true, 'cookie_httponly' => true);
+	}
+	else{
+		$sessionOptions = array('cookie_domain' => $_SERVER['HTTP_HOST'], 'cookie_secure' => false, 'cookie_httponly' => true);
+	}
+}
+
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/utility_define.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/config.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/aodb/adodb.inc.php');	// gère la couche d'abstraction bdd
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
 
+session_start($sessionOptions);
+
+if (!isset($_SESSION['initiated'])){
+    session_regenerate_id();
+    $_SESSION['initiated'] = true;
+	$_SESSION['confirmed'] = false;
+}
+
 //--  control des GET ----------------------------------------------------
-if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){		
+if (preg_match('/\/backoffice\//msi', $_SERVER['PHP_SELF'])==1	&&	isset($_SESSION['BO']) 	&&	is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])){	
+	// user loggé en BO, ok pas de filtrage
+}
+else{	
 	if (isset($getVars) == true){	
 		foreach ($_GET as $gKey => $gValue){
 			if (!isset($getVars[$gKey])){ //pas autorisé
@@ -18,18 +42,18 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 					if (($gValue<(time()+3600))	&&	($gValue>(time()-3600))){
 						$tempBlock = false;
 						break;
-					}			
+					}
 				}
 				// tester les wildcards
 				foreach ($getVars as $authKey => $authValue){
 					$tempBlock = true;
 					if (preg_match("/\*/msi", $authKey)==1){
-						if (ereg('/'.$authKey.'/msi', $gKey)==1){							
+						if (preg_match('/'.$authKey.'/msi', $gKey)==1){							
 							if ($authValue == 'int'){ // integer strict
 								$_GET[$gKey] = intval($_GET[$gKey]);
 							}
 							else{ //varchar
-								$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);	
+								$_GET[$gKey] = inputFilter($_GET[$gKey]);
 							}
 							$tempBlock = false;
 							break;
@@ -46,16 +70,27 @@ if (preg_match('/\/backoffice\//', $_SERVER['PHP_SELF'])==0){
 					$_GET[$gKey] = intval($_GET[$gKey]);
 				}
 				else{ //varchar
-					$_GET[$gKey] = preg_replace('/<script.*<\/script>/msi', '', $_GET[$gKey]);
-                                        
-					/* on enlève les injections HTML
-					 * + vérification du typage
-					 * MAJ 12/09/2014 @ Raphael
-					 */
-					$_GET[$gKey] = strval( htmlspecialchars( strip_tags( $_GET[$gKey] ) ) );
+					$_GET[$gKey] = inputFilter($_GET[$gKey]);
 				}
 			}
-			//pre_dump($_GET[$gKey]);
+		}
+	}
+	else{ // pas de liste, on filtre tout en mode varchar
+		foreach ($_GET as $gKey => $gValue){
+			$_GET[$gKey] = inputFilter($_GET[$gKey]);
+		}
+	}
+	
+	// filtrage systématique des posts
+	foreach ($_POST as $gKey => $gValue){
+		if ($gKey=='id'){ // id forcés au type int
+			$_POST[$gKey]=trim($_POST[$gKey]);
+			if($_POST[$gKey]!=''){
+				$_POST[$gKey] = intval($_POST[$gKey]);				
+			}			
+		}
+		else{
+			$_POST[$gKey] = inputFilter($_POST[$gKey]);
 		}
 	}
 }			
@@ -65,6 +100,7 @@ ini_set('register_globals', false);
 ini_set('session.bug_compat_warn', false);
 ini_set('allow_call_time_pass_reference', true);
 ini_set('allow_url_include', false);
+
 
 $prevMask=umask(0022);
 //error_log($prevMask);
@@ -118,41 +154,6 @@ $URL_ROOT = ''; // config pour dev
 $CMS_ROOT = $_SERVER['DOCUMENT_ROOT'].'/'.DEF_PAGE_ROOT;
 //$URL_ROOT = '';		     // config pour prod
 
-
-session_start();
-
-
-if (!isset($_SESSION['initiated'])){
-    session_regenerate_id();
-    $_SESSION['initiated'] = true;
-	$_SESSION['confirmed'] = false;
-}
-
-if (isset($_SERVER['HTTP_USER_AGENT'])){
-	if (isset($_SESSION['HTTP_USER_AGENT'])){
-		//pas ce test si flash - Shockwave Flash
-		if (($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash')&&($_SESSION['HTTP_USER_AGENT_MD5'] != md5($_SERVER['HTTP_USER_AGENT']))){
-			// Prompt for password 
-			// session_destroy(); // SID désactivé cause of IE10
-			/*	error_log('---------------------------------------------------');
-			error_log('session_destroy >> USER AGENT '.$_SERVER['HTTP_USER_AGENT']);
-			error_log('session_destroy >> PREV. WAS '.$_SESSION['HTTP_USER_AGENT']);
-			error_log('---------------------------------------------------');*/
-		}
-	}
-	else{
-		//pas ce test si flash - Shockwave Flash
-		if ($_SERVER['HTTP_USER_AGENT'] != 'Shockwave Flash'){
-			$_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
-			$_SESSION['HTTP_USER_AGENT_MD5'] = md5($_SERVER['HTTP_USER_AGENT']);
-		}
-	}
-}
-
-if (!isset($_SERVER['HTTP_HOST'])){
-	$_SERVER['HTTP_HOST'] = 'cli';	
-}
-
 // langage switch and storage
 if (isset($_SESSION['id_langue'])){
 	// nada
@@ -195,21 +196,31 @@ else{
 
 //error_reporting :
 // 3 cas :
-if (preg_match('/zout|emulgator/', $_SERVER['HTTP_HOST'])==1){// - dev
-	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-}
+if (preg_match('/pierre\..+\..+/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
+		//error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+    error_reporting(E_ALL);
+	}
+elseif (preg_match('/php7/', $_SERVER['HTTP_HOST'])==1){// - dev
+		error_reporting(E_ALL);
+	}
+elseif (preg_match('/emulgator|zout|ccbr/', $_SERVER['HTTP_HOST'])==1){// - dev
+		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	}
 elseif (preg_match('/preprod/', $_SERVER['HTTP_HOST'])==1){// - dev
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-}
+		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
+	}
 else{// - prod
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
-}
+		error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_WARNING & ~E_DEPRECATED);
+	}
 
 $aCcIps = array('82.243.117.135', '82.228.89.184', '82.234.79.170');
 
 if (!ini_get('display_errors')) {
 	if (in_array($_SERVER['REMOTE_ADDR'], $aCcIps)){
-   		ini_set('display_errors', 1);
+   		ini_set('display_errors', 'On');
+	}
+	else{
+		ini_set('display_errors', 'Off');
 	}
 }
 
@@ -229,7 +240,14 @@ if ($resCon==false){
 		echo '<!-- <p>'.$db->_errorMsg.'</p> -->';
 	}
 }
-
+else{
+	if (defined("DEF_BDD_CHARSET")){
+		$db->SetCharSet(DEF_BDD_CHARSET);
+	}
+	else{
+		$db->SetCharSet('latin1');
+	}
+}
 
 // redir auto de homepage
 include_once('homepage.inc.php');
@@ -427,8 +445,7 @@ $exclude_list = array(
 	'/backoffice/purchaseorder/importmovex_purchaseorder.php', 
 	'/backoffice/repairorder/importquantum_repairorder.php', 
 	'/backoffice/repairorder/importmovex_repairorder.php', 	
-	'/backoffice/cms/lib/ckeditor/Filemanager-master/index.php',
-	'/backoffice/cms/js/ancre.js.php'
+	'/backoffice/cms/lib/ckeditor/Filemanager-master/index.php' 
 );
 
 // liste des urls où il ne faut pas mettre de append/prepend
@@ -445,9 +462,7 @@ $exclude_patterns = array(
 	'/sonde_',
 	'/feed_',
 	'/lib/',
-	'/js/',
-	'/flashDetection',
-	'/cookiebanner'
+	'/js/'
 );
 
 $excludePattern = '/'.str_replace(array('/', '.'), array('\/', '\.'), implode('|', $exclude_patterns)).'/si';

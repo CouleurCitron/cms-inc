@@ -1,9 +1,8 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2011 PHPExcel
+ * Copyright (c) 2006 - 2014 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,9 +20,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Calculation
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license	http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version	1.7.6, 2011-02-27
+ * @version	1.8.0, 2014-03-02
  */
 
 
@@ -32,9 +31,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Calculation
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-class PHPExcel_Calculation_Exception extends Exception {
+class PHPExcel_Calculation_Exception extends PHPExcel_Exception {
 	/**
 	 * Error handler callback
 	 *
@@ -49,5 +48,5 @@ class PHPExcel_Calculation_Exception extends Exception {
 		$e->line = $line;
 		$e->file = $file;
 		throw $e;
-	}	
+	}
 }

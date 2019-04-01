@@ -40,7 +40,6 @@ define("RECAPTCHA_API_SERVER", "http://www.google.com/recaptcha/api");
 define("RECAPTCHA_API_SECURE_SERVER", "https://www.google.com/recaptcha/api");
 define("RECAPTCHA_VERIFY_SERVER", "www.google.com");
 
-
 /**
  * Encodes the given data into a query string format
  * @param $data - array of string elements to be encoded
@@ -67,7 +66,7 @@ function _recaptcha_qsencode ($data) {
  * @return array response
  */
 function _recaptcha_http_post($host, $path, $data, $port = 80) {
-	
+
 	if($port==80){
 		$protocol='http://';
 	}
@@ -82,10 +81,10 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE); 
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, TRUE); 
 	$curlData = curl_exec($curl);
-	//error_log($curlData);
+
 	curl_close($curl);
 
 	return $curlData;
@@ -164,20 +163,20 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	if ($remoteip == null || $remoteip == '') {
 		die ("For security reasons, you must pass the remote ip to reCAPTCHA");
 	}
-	
-	//discard spam submissions
+
+        //discard spam submissions
 	if ($response == null || strlen($response) == 0) {
-			$recaptcha_response = new ReCaptchaResponse();
-			$recaptcha_response->is_valid = false;
-			$recaptcha_response->error = 'incorrect-captcha-sol';
-			return $recaptcha_response;
-	}
+                $recaptcha_response = new ReCaptchaResponse();
+                $recaptcha_response->is_valid = false;
+                $recaptcha_response->error = 'incorrect-captcha-sol';
+                return $recaptcha_response;
+        }
 
 	if($version==1){
 		$url = '/recaptcha/api/verify';
 		$params = array (
-					'privatekey' => $privkey,
-					'remoteip' => $remoteip,
+                                                 'privatekey' => $privkey,
+                                                 'remoteip' => $remoteip,
 					'response' => $response,
 					'challenge' => $challenge
 					);
@@ -188,8 +187,8 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 		$params = array (
 					'secret' => $privkey,
 					'remoteip' => $remoteip,
-					'response' => $response
-					);
+                                                 'response' => $response
+                                          );
 		$port = 443;
 	}
 
@@ -200,7 +199,7 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	
 	$res = json_decode($response, TRUE);
 
-	$recaptcha_response = new ReCaptchaResponse();
+        $recaptcha_response = new ReCaptchaResponse();
 
 	if($res['success'] == 'true'	||	$res['success'] == 1){
 		 $recaptcha_response->is_valid = true;
@@ -211,13 +210,13 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 	}
 
    /* if (trim ($answers [0]) == 'true') {
-			$recaptcha_response->is_valid = true;
-	}
-	else {
-			$recaptcha_response->is_valid = false;
-			$recaptcha_response->error = $answers [1];
+                $recaptcha_response->is_valid = true;
+        }
+        else {
+                $recaptcha_response->is_valid = false;
+                $recaptcha_response->error = $answers [1];
 	}*/
-	return $recaptcha_response;
+        return $recaptcha_response;
 
 }
 
@@ -301,4 +300,5 @@ function recaptcha_mailhide_html($pubkey, $privkey, $email) {
 		"' onclick=\"window.open('" . htmlentities ($url) . "', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;\" title=\"Reveal this e-mail address\">...</a>@" . htmlentities ($emailparts [1]);
 
 }
+
 

@@ -1,4 +1,4 @@
--- $CVSHeader: cms-inc/lib/aodb/session/adodb-sessions.mysql.sql,v 1.1 2014-03-27 13:11:56 pierre Exp $
+-- $CVSHeader: cms-inc-2014/lib/aodb/session/adodb-sessions.mysql.sql,v 1.1 2014-03-27 13:14:45 pierre Exp $
 
 CREATE DATABASE /*! IF NOT EXISTS */ adodb_sessions;
 

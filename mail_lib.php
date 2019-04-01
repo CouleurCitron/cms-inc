@@ -3,19 +3,13 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/newsletter/functions.lib.php');
 
-$bPear = @include('Mail.php');
+if(!@include_once('PEAR.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/PEAR.php');}
+if(!@include_once('Mail.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail.php');}
+if(!@include_once('mime.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mime.php');}
+if(!@include_once('Mail/mimePart.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/mimePart.php');}
 
-if ($bPear===false){
-	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mime.php');
-	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mail.php');
-	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/mail.php');
-	include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/smtp.php');
-}
-else{
-	include_once('Mail/mime.php');
-	include_once('Mail/mail.php');
-	include_once('Mail/smtp.php');
-}
+if(!@include_once('Net/Socket.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Net/Socket.php');}
+if(!@include_once('Net/SMTP.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Net/SMTP.php');}
 
 /*
 function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1){	
@@ -66,19 +60,20 @@ if (!defined('DEF_MAIL_PASS')){
 }
 
 
-function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlter){
-	
+function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1){	
 	if($bUseCriteres==1){
-		// si traitement par critères, donc custom, report sur objet metier			
-		$_SESSION['id_langue']=$lang;
-		$translator =& TslManager::getInstance();			
-		
-		//$oCriNlter = new critereNewsletter();
-		
-		$oCriNlter->bUseCriteres=$bUseCriteres;
-		$oCriNlter->lang=$lang;
-		
-		if (method_exists($oCriNlter, 'getSubject')){
+		// si traitement par critères, donc custom, report sur objet metier
+		if (defined('DEF_CRITERE_LIB') && is_file(DEF_CRITERE_LIB)) {
+			include_once(DEF_CRITERE_LIB);
+			
+			$_SESSION['id_langue']=$lang;
+			$translator =& TslManager::getInstance();			
+			
+			$oCriNlter = new critereNewsletter();
+			
+			$oCriNlter->bUseCriteres=$bUseCriteres;
+			$oCriNlter->lang=$lang;
+			
 			$sSubject = $oCriNlter->getSubject($sSubject, $aOs, $translator);			
 		}
 	}
@@ -88,10 +83,8 @@ function rewriteNewsletterSubject($sSubject, $bUseCriteres=0, $lang=1, $oCriNlte
 	return $sSubject;
 }
 
-function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL, $oCriNlter=NULL){	
-	global $db;
-	error_log('rewriteNewsletterBody('.$eNews.')');
-	//error_reporting(A_LL);
+function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCriteres=0, $bUseMultiple=0, $lang=1, $sSubject=NULL){
+	//error_log('rewriteNewsletterBody('.$eNews.')');
 
 	if($bUseCriteres==1){
 		// newsletter inscrit	
@@ -119,11 +112,23 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 				$aCriteres['date_published']=date('Y-m-d');
 
 				if(is_array($aCriteres)){					
-					$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
-
-					foreach($aRes as $kRes => $oRes){// dedoublonnage
-						$aOs[$oRes["id"]]=$oRes;
+					/*
+					if ($aCriteres['type'] != "-1" || $aCriteres['place'] != "-1" || $aCriteres['function'] != "-1" || $aCriteres['experience'] != "-1" || $aCriteres['text'] != "" || $aCriteres['reference'] != "") {// on interdit la rech ALL *					
+						
+						$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
+						
+						foreach($aRes as $kRes => $oRes){// dedoublonnage
+							$aOs[$oRes["id"]]=$oRes;
+						}
 					}
+					*/
+					//else {
+						$aRes = $jm->getOffers ($aCriteres['type'], $aCriteres['place'], $aCriteres['function'], $aCriteres['experience'], $aCriteres['text'], $aCriteres['reference'], $aCriteres['date_published'], $aCriteres['date_start']);
+						
+						foreach($aRes as $kRes => $oRes){// dedoublonnage
+							$aOs[$oRes["id"]]=$oRes;
+						}
+					//}
 				}
 				else{
 					$aRes = $jm->getOffers (-1, $aCriteres['place'], -1, -1, '', '', $aCriteres['date_published'], '');
@@ -146,10 +151,8 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 				$_SESSION['id_langue']=$lang;
 				$translator =& TslManager::getInstance();
 			}
-				
-			if ($oCriNlter==NULL){ // si n'est pas passé en param
-				$oCriNlter = new critereNewsletter();
-			}			
+						
+			$oCriNlter = new critereNewsletter();
 			
 			$oCriNlter->eIns=$eIns;
 			$oCriNlter->eNews=$eNews;
@@ -158,9 +161,7 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 			$oCriNlter->bUseMultiple=$bUseMultiple;
 			$oCriNlter->lang=$lang;
 			
-			if (method_exists($oCriNlter, 'getBody')){
-				$sBodyHTML = $oCriNlter->getBody($sBodyHTML, $aOs, $translator, $sSubject);
-			}
+			$sBodyHTML = $oCriNlter->getBody($sBodyHTML, $aOs, $translator, $sSubject);
 			
 			if ($sBodyHTML==false){
 				return false; // pas de body, on sort
@@ -173,52 +174,12 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 	}
 
 	$sBodyHTML = preg_replace('/http:\/\/[^\/]+\.interne\//msi', '/', $sBodyHTML);	
-	$sBodyHTML = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '/', $sBodyHTML);
+	$sBodyHTML = str_replace('http://'.$_SERVER['HTTP_HOST'].'/', '/', $sBodyHTML);	
 
-	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == true)){	
-		// ici rewirte pour taggage ins=300-6805-MD5
-		
-		//$sBodyHTML = str_replace('href="http://'.$_SERVER['HTTP_HOST'].'/', 'href="/', $sBodyHTML);	
-		//$sBodyHTML = str_replace('href="/', 'href="http://'.$_SERVER['HTTP_HOST'].'/newsletter/'.$eNews.'/'.$eIns.'/', $sBodyHTML);
-		
-		preg_match_all('/href="([^"]+)"/msi', $sBodyHTML, $aAllLinks);
-		
-		if(isset($aAllLinks[1])){
-			
-			$aAllLinks = $aAllLinks[1];
-			
-			foreach($aAllLinks as $k => $link){
-				
-				if(!preg_match('/google/msi', $link)){
-				
-					$sql='SELECT count(*) FROM news_links WHERE news_md5 = "'.md5($link).'"';
-					$rs = $db->Execute($sql);
-					$linkDejaMD5=0;
-					if($rs){
-						while(!$rs->EOF) {
-							$linkDejaMD5 = $rs->fields[0];
-							break;
-						}					
-					}
-					if($linkDejaMD5==0){
-						$oO = new news_links();
-						$oO->set_url($link);
-						$oO->set_md5(md5($link));
-						dbSauve($oO);					
-					}
-
-					if ($link!=''	&&	!preg_match('/^mailto/msi', $link)	&&	!preg_match('/^tel/msi', $link)	&&	$link!='#'	&&	!preg_match('/^#/msi', $link)){
-						$sBodyHTML = str_replace('href="'.$link, 'href="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'-'.md5($link).'"', $sBodyHTML);
-					}	
-
-				}
-				
-			}
-			
-			
-		}
-		
-		
+	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == 'ON')){	
+		// ici rewirte pour taggage /newsletter/[$eNews]/[$eIns]/link		
+		$sBodyHTML = str_replace('href="http://'.$_SERVER['HTTP_HOST'].'/', 'href="/', $sBodyHTML);	
+		$sBodyHTML = str_replace('href="/', 'href="http://'.$_SERVER['HTTP_HOST'].'/newsletter/'.$eNews.'/'.$eIns.'/', $sBodyHTML);	
 	}
 	else{
 		$sBodyHTML = str_replace('href="/', 'href="http://'.$_SERVER['HTTP_HOST'].'/', $sBodyHTML);
@@ -278,10 +239,10 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 		 
 		$dateFY = ucfirst(str_replace ($mois_EN, $mois_FR, strtolower($dateFY))) ; 
 	}
-
+	
 	$sBodyHTML = str_replace("XX-MAIL-DATE-FY-XX", $dateFY, $sBodyHTML);
 	if($eIns>0){
-		$sBodyHTML = str_replace("XX-ID-INSCRIT-XX", md5($eIns), $sBodyHTML);
+	$sBodyHTML = str_replace("XX-ID-INSCRIT-XX", md5($eIns), $sBodyHTML);
 	}
 	$sBodyHTML = str_replace("XX-IDNEW-XX", $eNews, $sBodyHTML); 
 	$sBodyHTML = str_replace("XX-RN-XX", "\r\n", $sBodyHTML); 
@@ -291,23 +252,17 @@ function rewriteNewsletterBody($sBodyHTML, $eIns=0, $eNews=0, $theme=0, $bUseCri
 	if ($sSubject!=NULL){
 		$sBodyHTML = str_replace("XX-SUJET-XX", $sSubject, $sBodyHTML); 
 	}
-
-	wordwrap($text, 20, "<br />\n");
-	// taggage ouverture de la letter	
-	if(preg_match('/<\/body>/msi', $sBodyHTML)){
-		$sBodyHTML= str_replace('</body>', '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" /></body>', $sBodyHTML);
+	
+	 wordwrap($text, 20, "<br />\n");
+	// taggage ouverture de la letter
+	if (defined('DEF_REWRITE_NEWSLETTER')	&&	(DEF_REWRITE_NEWSLETTER == 'ON')){	
+		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/newsletter/'.$eNews.'/'.$eIns.'/index.php" style="display:none" width="1" height="1" alt="" />';
 	}
 	else{
 		$sBodyHTML.= '<img src="http://'.$_SERVER['HTTP_HOST'].'/frontoffice/newsletter/?ins='.$eNews.'-'.$eIns.'" style="display:none" width="1" height="1" alt="" />';
 	}
 	
-	$sBodyHTML = preg_replace('/[ ]{2,}/msi' , ' ', $sBodyHTML);
-	$aBodyHTML = explode("\n", $sBodyHTML);
-	foreach($aBodyHTML as $k => $sBodyHTMLline){
-		$aBodyHTML[$k] = wordwrap($sBodyHTMLline, 78, "\r\n");		
-	}
-	$sBodyHTML = implode("\n", $aBodyHTML);
-	//$sBodyHTML = wordwrap($sBodyHTML, 78, "\r\n");
+	$sBodyHTML =  wordwrap($sBodyHTML, 78, "\r\n");
 	return $sBodyHTML;
 }
 
@@ -317,14 +272,12 @@ function mailAdmin($sujet , $text, $from=DEF_USERMAIL){
 	//SID
 }
 
-
 if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
     /* gestion des mails par defaut */
     
     
     function multiPartMail($to , $sujet , $html , $text, $from, $attach='', $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
-			$sujetRaw = $sujet;
-            $sujet = '=?iso8859-1?B?'.base64_encode($sujetRaw).'?=';
+            $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
 
 
             if (DEF_MAIL_ENGINE=='sendmail'){
@@ -371,12 +324,12 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                     $message = $email->encode(); 
 
                     $destinataire = $to;
-                    error_log('to = '.$destinataire.' | sujet = '.$sujetRaw.' | from = '.$from.' | '.DEF_MAIL_ENGINE.': '.$host.':'.DEF_MAIL_PORT);
+                    error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
 
                     $entetes = $message['headers'];
 
                     $entetes["From"]= $from; 
-                    $entetes["Return-Path"] = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
+                    $entetes["Return-Path"] = $from;
                     $entetes["To"] = $to;
                     $entetes["Subject"] = $sujet;
                     $entetes["MIME-Version"] = "1.0";
@@ -407,26 +360,16 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                             $params['auth'] = false;
                     }
 
-					if (DEF_MAIL_ENGINE=='smtp'){
-						$mailObj = new Mail_smtp($params);					
-					}
-					else{
                     $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
-						//$mailObj = new Mail_mail(DEF_MAIL_ENGINE.' '.implode(' ', $params));
-					}
                     $result = $mailObj->send($destinataire,$entetes,$message['body']);
                     if($result===true) {
-                      error_log('sent OK');
                             return true;			
                     }
                     else {
-                      error_log('sent FAILED');
-						if(method_exists($result, 'getMessage')){
                             error_log($result->getMessage());
                             if (preg_match('/email\.php$/msi', $_SERVER['PHP_SELF'])){
                                     echo $result->message;
                             }
-						}
                             return false;
                     }	 
             }
@@ -448,13 +391,11 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                     return (htmlmail($from,$to,$sujet,$html));
             }
             else {
-                    if(is_array($to)) $to = implode(', ', $to);
+                    if(is_array($to)) $to = join(', ', $to);
 
                     $parammulti['content_type'] = 'multipart/alternative';
 
-
                     $email = new Mail_mimePart('',$parammulti);
-
 
                     $parammulti['content_type'] = 'text/plain';
                     $parammulti['encoding'] = '8bit';
@@ -472,9 +413,9 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                     if(strlen($attach)) {
                             $paramattach=array(
                                     'content_type' => $typeAttach,
-                                            'encoding' => '8bit',
-                                     'disposition' => 'attachment',
-                                       'dfilename' => $attach
+                                    'encoding' => '8bit',
+                                    'disposition' => 'attachment',
+                                    'dfilename' => $attach
                             );
                             $piecejointe = & $email->addSubPart($attach, $paramattach);
                     }
@@ -524,7 +465,6 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
     }
 
     function multiPartMail_file($to , $sujet , $html , $text, $from, $attach, $aName_file, $typeAttach='text/plain', $host=DEF_MAIL_HOST, $replyto=''){
-			$sujetRaw = $sujet;
             $sujet = '=?iso8859-1?B?'.base64_encode($sujet).'?=';
             $//$from = mb_convert_encoding($from, "UTF-8");
             $from = mb_encode_mimeheader($from);
@@ -566,7 +506,11 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
                             {
                                $typeAttach="image/gif";
                             }
-                            else if($extension == "xls")
+                            else if($extension == "xlsx")
+                            {
+                               $typeAttach="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                            }
+							else if($extension == "xls")
                             {
                                $typeAttach="text/vnd.ms-excel";
                             }
@@ -595,12 +539,14 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
             $message = $email->encode(); 
 
             $destinataire = $to;
-			error_log('to = '.$destinataire.' | sujet = '.$sujetRaw.' | from = '.$from.' | '.DEF_MAIL_ENGINE.': '.$host.':'.DEF_MAIL_PORT);
+            error_log('to = '.$destinataire.' | sujet = '.$sujet.' | from = '.$from);
 
             $entetes = $message['headers'];
 
-            $entetes["From"]= $from; 
-            $entetes["Return-Path"] = preg_replace('/.*<([\-\._a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+\.[a-zA-Z]+)>.*/msi', '$1', $from);
+        //$aFrom = explode("<", $from);
+        //$from = '=?iso8859-1?B?'.base64_encode($aFrom[0]).'?= '."<".$aFrom[1]."";
+            $entetes["From"]= $from;
+            $entetes["Return-Path"] = $from;
             $entetes["To"] = $to;
             $entetes["Subject"] = $sujet;
             $entetes["MIME-Version"] = "1.0";
@@ -630,30 +576,15 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
             else {
                     $params['auth'] = false;
             }
-			
-			if (DEF_MAIL_ENGINE=='smtp'){
-				$mailObj = new Mail_smtp($params);					
-			}
-			else{			
-				$mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params); 
-				//$mailObj = new Mail_mail(DEF_MAIL_ENGINE.' '.implode(' ', $params));
-			}
-      $result = $mailObj->send($destinataire, $entetes, $message['body']);
 
-      if($result===true) {
-        error_log('sent OK');
-              return true;			
-      }
-      else {
-        error_log('sent FAILED');
-        if(method_exists($result, 'getMessage')){
-                        error_log($result->getMessage());
-                        if (preg_match('/email\.php$/msi', $_SERVER['PHP_SELF'])){
-                                echo $result->message;
-                        }
-        }
-        return false;
-      }
+            $mailObj = &Mail::factory(DEF_MAIL_ENGINE, $params);
+            $result = $mailObj->send($destinataire, $entetes, $message['body']);
+            if($result!=true) {
+                    error_log($result->getMessage());
+                    return false;
+            } else {
+                    return true;
+            }	
 
     }
 } else if(MAIL_LIB_PHP == 'swift') {
@@ -819,7 +750,6 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
    }
 }
 
-
 function get_extension($filename)
 {
    $parts = explode('.',$filename);
@@ -869,6 +799,10 @@ for ($i=0; $i<sizeof($aName_file); $i++)
 		else if($extension == "xls")
 		{
 		   $typeAttach="text/vnd.ms-excel";
+		}
+		else if($extension == "xlsx")
+		{
+		   $typeAttach="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 		}
 		else if($extension == "pdf")
 		{
@@ -1029,7 +963,7 @@ function multiPartMail_image($to , $sujet , $html , $text, $from, $attachPath, $
 	error_log("to = $destinataire");
 	
 	$entetes = $message['headers'];
-	$from = ereg_replace("(.*) <(.*)>", "\"\\1\" <\\2>", $from);
+	$from = preg_replace("/(.*) <(.*)>/msi", "\"$1\" <$2>", $from);
 
 	$entetes["From"]= $from;
 	

@@ -1,31 +1,31 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
+/**
+ * Class auto-loader
+ *
+ * PHP versions 4
+
+ *
+ * @category   pear
+ * @package    PEAR
+ * @author     Stig Bakken <ssb@php.net>
+ * @copyright  1997-2009 The Authors
+ * @license    http://opensource.org/licenses/bsd-license.php New BSD License
+ * @link       http://pear.php.net/manual/en/core.ppm.php#core.ppm.pear-autoloader
+ * @since      File available since Release 0.1
+ * @deprecated File deprecated in Release 1.4.0a1
+ */
+
 // /* vim: set expandtab tabstop=4 shiftwidth=4: */
-// +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 1997-2003 The PHP Group                                |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 3.0 of the PHP license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available through the world-wide-web at the following url:           |
-// | http://www.php.net/license/3_0.txt.                                  |
-// | If you did not receive a copy of the PHP license and are unable to   |
-// | obtain it through the world-wide-web, please send a note to          |
-// | license@php.net so we can mail you a copy immediately.               |
-// +----------------------------------------------------------------------+
-// | Author: Stig Bakken <ssb@php.net>                                    |
-// |                                                                      |
-// +----------------------------------------------------------------------+
-//
-// $Id: Autoloader.php,v 1.2 2013-03-01 10:34:24 pierre Exp $
 
 if (!extension_loaded("overload")) {
     // die hard without ext/overload
     die("Rebuild PHP with the `overload' extension to use PEAR_Autoloader");
 }
 
-require_once "cms-inc/lib/pear/PEAR.php";
+/**
+ * Include for PEAR_Error and PEAR classes
+ */
+require_once "PEAR.php";
 
 /**
  * This class is for objects where you want to separate the code for
@@ -39,10 +39,20 @@ require_once "cms-inc/lib/pear/PEAR.php";
  * methods, an instance of each class providing separated methods is
  * stored and called every time the aggregated method is called.
  *
- * @author Stig Sæther Bakken <ssb@php.net>
+ * @category   pear
+ * @package    PEAR
+ * @author Stig Bakken <ssb@php.net>
+ * @copyright  1997-2009 The Authors
+ * @license    http://opensource.org/licenses/bsd-license.php New BSD License
+ * @version    Release: 1.10.1
+ * @link       http://pear.php.net/manual/en/core.ppm.php#core.ppm.pear-autoloader
+ * @since      File available since Release 0.1
+ * @deprecated File deprecated in Release 1.4.0a1
  */
 class PEAR_Autoloader extends PEAR
 {
+    // {{{ properties
+
     /**
      * Map of methods and classes where they are defined
      *
@@ -60,6 +70,9 @@ class PEAR_Autoloader extends PEAR
      * @access private
      */
     var $_method_map = array();
+
+    // }}}
+    // {{{ addAutoload()
 
     /**
      * Add one or more autoload entries.
@@ -80,11 +93,15 @@ class PEAR_Autoloader extends PEAR
     function addAutoload($method, $classname = null)
     {
         if (is_array($method)) {
+            array_walk($method, create_function('$a,&$b', '$b = strtolower($b);'));
             $this->_autoload_map = array_merge($this->_autoload_map, $method);
         } else {
-            $this->_autoload_map[$method] = $classname;
+            $this->_autoload_map[strtolower($method)] = $classname;
         }
     }
+
+    // }}}
+    // {{{ removeAutoload()
 
     /**
      * Remove an autoload entry.
@@ -97,10 +114,14 @@ class PEAR_Autoloader extends PEAR
      */
     function removeAutoload($method)
     {
+        $method = strtolower($method);
         $ok = isset($this->_autoload_map[$method]);
         unset($this->_autoload_map[$method]);
         return $ok;
     }
+
+    // }}}
+    // {{{ addAggregateObject()
 
     /**
      * Add an aggregate object to this object.  If the specified class
@@ -122,7 +143,7 @@ class PEAR_Autoloader extends PEAR
             $include_file = preg_replace('/[^a-z0-9]/i', '_', $classname);
             include_once $include_file;
         }
-        $obj =& new $classname;
+        $obj = new $classname;
         $methods = get_class_methods($classname);
         foreach ($methods as $method) {
             // don't import priviate methods and constructors
@@ -131,6 +152,9 @@ class PEAR_Autoloader extends PEAR
             }
         }
     }
+
+    // }}}
+    // {{{ removeAggregateObject()
 
     /**
      * Remove an aggregate object.
@@ -147,13 +171,16 @@ class PEAR_Autoloader extends PEAR
         $classname = strtolower($classname);
         reset($this->_method_map);
         while (list($method, $obj) = each($this->_method_map)) {
-            if (get_class($obj) == $classname) {
+            if (is_a($obj, $classname)) {
                 unset($this->_method_map[$method]);
                 $ok = true;
             }
         }
         return $ok;
     }
+
+    // }}}
+    // {{{ __call()
 
     /**
      * Overloaded object call handler, called each time an
@@ -171,6 +198,7 @@ class PEAR_Autoloader extends PEAR
      */
     function __call($method, $args, &$retval)
     {
+        $method = strtolower($method);
         if (empty($this->_method_map[$method]) && isset($this->_autoload_map[$method])) {
             $this->addAggregateObject($this->_autoload_map[$method]);
         }
@@ -180,6 +208,8 @@ class PEAR_Autoloader extends PEAR
         }
         return false;
     }
+
+    // }}}
 }
 
 overload("PEAR_Autoloader");

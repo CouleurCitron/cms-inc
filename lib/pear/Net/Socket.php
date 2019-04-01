@@ -18,10 +18,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // |          Chuck Hagenbuch <chuck@horde.org>                           |
 // +----------------------------------------------------------------------+
 //
-// $Id: Socket.php,v 1.2 2013-03-01 10:34:24 pierre Exp $
+// $Id: Socket.php,v 1.1 2013-09-30 09:46:07 raphael Exp $
 //
 
-require_once 'cms-inc/lib/pear/PEAR.php';
 
 /**
  * Generalized Socket class. More docs to be written.

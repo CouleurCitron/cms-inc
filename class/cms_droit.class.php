@@ -15,7 +15,7 @@ var $id_content;
 var $user_id;
 
 // constructeur
-function Droit($id=null)
+function __construct($id=null)
 {
 	if($id!=null) {
 		$tempThis = dbGetObjectFromPK(get_class($this), $id);

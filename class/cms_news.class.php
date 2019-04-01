@@ -162,7 +162,7 @@ var $sMySql = "CREATE TABLE cms_news
 ";
 
 // constructeur
-function cms_news($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_news") == false){
 		dbExecuteQuery($this->sMySql);

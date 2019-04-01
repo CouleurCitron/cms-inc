@@ -69,7 +69,7 @@ var $sMySql = "CREATE TABLE news_assonewscron
 ";
 
 // constructeur
-function news_assonewscron($id=null)
+function __construct($id=null)
 {
 	if (istable("news_assonewscron") == false){
 		dbExecuteQuery($this->sMySql);

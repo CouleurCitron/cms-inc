@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_assojsarbopages
 ";
 
 // constructeur
-function cms_assojsarbopages($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assojsarbopages") == false){
 		dbExecuteQuery($this->sMySql);

@@ -69,10 +69,10 @@ if ($_POST['sensTri'] != "") $_SESSION['sensTri_res'] = $_POST['sensTri'];
 // TRIS
 
 // le tri utilisateur est fait en premier
-// les autres tris sont faits même si c non visible dans l'interface
-// l'odre des tris est défini ici
+// les autres tris sont faits mÃªme si c non visible dans l'interface
+// l'odre des tris est dÃ©fini ici
 
-// le premier tri est ôté de la liste pour être placé en premier par la suite
+// le premier tri est Ã´tÃ© de la liste pour Ãªtre placÃ© en premier par la suite
 for ($i=0;$i<count($aNodeToSort);$i++){
 	if ($aNodeToSort[$i]["name"] == "ITEM"){
 		if ($aNodeToSort[$i]["attrs"]["NAME"] == "ordre"){
@@ -98,14 +98,14 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 	}
 }
 
-// tri numéro 1 => celui demandé dans l'interface
+// tri numÃ©ro 1 => celui demandÃ© dans l'interface
 if (strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SELF']) !== false) {
 
 	//if ($_SESSION['champTri_res'] != "") $aGetterOrderBy[] = $_SESSION['champTri_res'];
 	//if ($_SESSION['sensTri_res']  != "") $aGetterSensOrderBy[] = $_SESSION['sensTri_res'];
 }
 else{
-	// on récupere rien
+	// on rÃ©cupere rien
 }
 
 // autres tris
@@ -151,7 +151,7 @@ $aRecherche = array();
 $oRech = new dbRecherche();
 
 //////////////////////////
-// recherche par mot clé
+// recherche par mot clÃ©
 //////////////////////////
 if($sTexte==""){
 $sTexte=trim($_POST['sTexte']);
@@ -239,14 +239,14 @@ print("<br>///////////////////////<br>");
 }
 //////// DEBUGAGE ////////
 
-// tableau d'id renvoyé par la fonction de pagination
+// tableau d'id renvoyÃ© par la fonction de pagination
 $aId = $pager->aResult;
 
 // A VOIR sponthus
 // la fonction de pagination devrait renvoyer un tableau d'objet
 // pour l'instant je n'exploite qu'un tableau d'id
-// ce ui m'oblige à re sélectionner mes objets
-// à perfectionner
+// ce ui m'oblige Ã  re sÃ©lectionner mes objets
+// Ã  perfectionner
 
 // liste des objets
 $aListe_res = array();
@@ -259,9 +259,23 @@ if ($classeLibelle == ""){
 	$classeLibelle = $classeName;
 }
 
-if (!defined("DEF_CONTACT_FROM_NAME")){
-	define("DEF_CONTACT_FROM_NAME", $classeLibelle);
+if(!defined("DEF_TITLE_RSS")){
+    if (!defined("DEF_CONTACT_FROM_NAME")){
+            define("DEF_CONTACT_FROM_NAME", $classeLibelle);
+            //$title = DEF_CONTACT_FROM_NAME;
+            $title = DEF_CONTACT_FROM_NAME;
+    }
+} else {
+    $title = DEF_TITLE_RSS;
 }
+
+
+if(!defined("DEF_CONTACT_RSS")){
+    $contact = DEF_CONTACT_FROM_NAME;
+} else {
+    $contact = DEF_CONTACT_RSS;
+}
+
 
 if (!defined("DEF_RSS_GUID")){
 	define("DEF_RSS_GUID", 'http://'.$_SERVER['HTTP_HOST'].'/frontoffice/'.$classeName.'/foshow_'.$classeName.'.php?id=');
@@ -275,21 +289,21 @@ echo "	<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
  
 echo "	<channel>\n";
 echo "	<atom:link href=\"http://".$_SERVER['HTTP_HOST']."/backoffice/".$classeName."/rss_".$classeName.".php\" rel=\"self\" type=\"application/rss+xml\" />";
-echo "		<title>".utf8_encode(DEF_CONTACT_FROM_NAME)."</title>\n"; 
+echo "		<title>".utf8_encode($title)."</title>\n"; 
 echo "		<description>".apos(html_to_rss($classeLibelle." - en provenance de ".$_SERVER['HTTP_HOST']))."</description>\n";
 echo "		<link>".DEF_RSS_GUID."</link>\n";
 echo "		<language>fr-FR</language>\n";
-echo "		<managingEditor>".makeEmailAddyXMLfriendly(DEF_CONTACT_FROM)." (".utf8_encode(DEF_CONTACT_FROM_NAME).") </managingEditor>\n";
-echo "		<webMaster>".makeEmailAddyXMLfriendly(DEF_CONTACT_FROM)." (".utf8_encode(DEF_CONTACT_FROM_NAME).") </webMaster>\n";
+echo "		<managingEditor>".makeEmailAddyXMLfriendly($contact)." (".utf8_encode($contact).") </managingEditor>\n";
+echo "		<webMaster>".makeEmailAddyXMLfriendly($contact)." (".utf8_encode($contact).") </webMaster>\n";
 echo "		<image>\n"; 
-echo "		<title><![CDATA[".apos(utf8_encode(DEF_CONTACT_FROM_NAME))."]]></title>\n"; 
+echo "		<title><![CDATA[".apos(utf8_encode($title))."]]></title>\n"; 
 echo "		<url>".DEF_RSS_GUID."</url>\n"; 
 echo "		<link>".DEF_RSS_GUID."</link>\n"; 
 echo "		</image>\n"; 
 $URL_MEDIA = "http://".$_SERVER['HTTP_HOST']."/custom/upload/".$classeName."/";
 
 
-// s'il y a des enregistrements à afficher
+// s'il y a des enregistrements Ã  afficher
 if(sizeof($aListe_res)>0) {
 	// liste
 	for($k=0; $k<sizeof($aListe_res); $k++) {
@@ -313,10 +327,10 @@ if(sizeof($aListe_res)>0) {
                 if(isset($link_base)) $links_items = $link_base;
 		
 	   for ($i=0;$i<count($aNodeToSort);$i++){
-		if ($aNodeToSort[$i]["name"] == "ITEM"){			
+		if ($aNodeToSort[$i]["name"] == "ITEM"){
                     
                     //pre_dump($aNodeToSort[$i]['attrs']['NAME']);
-                    /* gestion des champs � mettre dans l'url des feeds */
+                    /* gestion des champs à mettre dans l'url des feeds */
                     if(isset($links_items)){
                         $value_link = noAccent(getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]));
                         if(isset($aNodeToSort[$i]["attrs"]['TRANSLATE']) && $aNodeToSort[$i]["attrs"]['TRANSLATE'] == 'reference'){
@@ -354,7 +368,7 @@ if(sizeof($aListe_res)>0) {
 						foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
 							if($childNode["name"] == "OPTION"){ // on a un node d'option				
 								if ($childNode["attrs"]["TYPE"] == "value"){
-									if (intval($eKeyValue) == intval($childNode["attrs"]["VALUE"])){							
+									if (intval($eKeyValue) == intval($childNode["attrs"]["VALUE"])){
 										$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = $childNode["attrs"]["LIBELLE"];
 										break;
 									}
@@ -380,12 +394,11 @@ if(sizeof($aListe_res)>0) {
 								$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = date("r", $eKeyValue);
 							}
 							else{// cas typique typique typique
-								// on converti br en \n et on remove les tags 
-								//$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = utf8_encode(html_entity_decode(ereg_replace("<[^<>]+>", "", eregi_replace("<br[^<>]*>", "\n", $eKeyValue))));
+								// on converti br en \n et on remove les tags 								
                                                                 
-                                                                /* ajout de la traduction */
-                                                            //pre_dump($aNodeToSort[$i]["attrs"]);
-                                                                if(isset($aNodeToSort[$i]["attrs"]['TRANSLATE']) && $aNodeToSort[$i]["attrs"]['TRANSLATE'] == 'reference'){ $eKeyValue = $translator->getByID($eKeyValue); }
+								/* ajout de la traduction */
+								//pre_dump($aNodeToSort[$i]["attrs"]);
+								if(isset($aNodeToSort[$i]["attrs"]['TRANSLATE']) && $aNodeToSort[$i]["attrs"]['TRANSLATE'] == 'reference'){ $eKeyValue = $translator->getByID($eKeyValue); }
                                                                 
 								$RSS[$aNodeToSort[$i]["attrs"]["RSS"]] = html_to_rss($eKeyValue);
 								if ($aNodeToSort[$i]["attrs"]["RSS"] == "description" && isset ($aNodeToSort[$i]["attrs"]["RSSHTML"]) &&  $aNodeToSort[$i]["attrs"]["RSSHTML"] == true) {
@@ -408,7 +421,7 @@ if(sizeof($aListe_res)>0) {
 	if(isset($links_items)){
             $RSS['link'] = $links_items;
         }
-	
+        
         
         
 	// s'il existe une date de fin de publication, on n'affiche pas l'info
@@ -418,7 +431,7 @@ if(sizeof($aListe_res)>0) {
 	if ($RSS['pubDate'] == "0000/00/00" ) $RSS['pubDate'] =""; 
 
 	if ($RSS['pubendDate'] !="" &&  $RSS['pubDate'] =="" && $RSS['pubendDate'] < date("Y/m/d")  ) {   
-		echo '<!-- périmée -->';
+		echo '<!-- pÃ©rimÃ©e -->';
 	}
 	//else if ($RSS['pubDate'] !="" && $RSS['pubendDate'] =="" && $RSS['pubDate'] > date("Y/m/d")) {   
 	//	echo '<!-- cas 2 -->';
@@ -529,8 +542,8 @@ if(sizeof($aListe_res)>0) {
 			//if ($RSS['type']!="")echo "				<type>".rawurlencode(($RSS['type']))."</type>\n";
 			//if ($RSS['site']!="")echo "				<site>".rawurlencode(($RSS['site']))."</site>\n";
 			//echo "				<texte>".rawurlencode(($RSS['texte']))."</texte>\n";
-			//echo "				<texte><![CDATA[".ereg_replace("&([^q]{1})", "&amp;\\1", $RSS['texte'])."]]></texte>\n";
-			//echo "				<description><![CDATA[".ereg_replace("&([^q]{1})", "&amp;\\1", $RSS['description'])."]]></description>\n";
+			//echo "				<texte><![CDATA[".preg_replace("/&([^q]{1})/msi", "&amp;$1", $RSS['texte'])."]]></texte>\n";
+			//echo "				<description><![CDATA[".preg_replace("/&([^q]{1})/msi", "&amp;$1", $RSS['description'])."]]></description>\n";
 			echo "			</item>\n";	
 		
 		

@@ -1,10 +1,3 @@
-<?php 
-
-if(isset($prepend_file_result) && file_exists($prepend_file_result)){
-    require $prepend_file_result;
-}
-
-?>
 <div class="arbo"><u><b><?php if($status!="") echo $status; ?></b></u></div><br>
 	<table border="0" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo"><?php
 	if($bRetour) {		
@@ -52,14 +45,20 @@ if(isset($prepend_file_result) && file_exists($prepend_file_result)){
 	if (window.name.indexOf("if")==0){	// ifframe fancybox	
 		callingItem = window.name.substr(2);
 		ajaxReloadFunc = eval("window.parent.ajax"+callingItem+"");
-		//alert("window.parent.ajax"+callingItem+" "+<?php echo $id; ?>);
+		
 		if (ajaxReloadFunc!=undefined){ 
+			console.log("window.parent.ajax"+callingItem+"("+<?php echo $id; ?>+")");
 			ajaxReloadFunc.call(null, <?php echo $id; ?>);
 		}
 		else{
-			ajaxReloadFunc = eval("window.parent.ajaxDelayed_associations(<?php echo $id; ?>, '<?php echo $classeName; ?>')"); 
+			ajaxReloadFunc = eval("window.parent.ajaxDelayed_associations"); 
+			
 			if (ajaxReloadFunc!=undefined){
-				ajaxReloadFunc.call();
+				console.log("window.parent.ajaxDelayed_associations(<?php echo $id; ?>, '<?php echo $classeName; ?>')");
+				ajaxReloadFunc.call(null, <?php echo $id; ?>, '<?php echo $classeName; ?>');
+			}
+			else{
+				console.log("no callback available");
 			}
 		}
 		//alert("L'enregistrement a bien été pris en compte, vous pouvez désormais le piocher dans le menu déroulant");

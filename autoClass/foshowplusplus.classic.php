@@ -81,7 +81,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 for ($i=0;$i<count($aNodeToSort);$i++){
 						
 	if ($aNodeToSort[$i]["name"] == "ITEM"){
-		if (ereg("id", $aNodeToSort[$i]["attrs"]["NAME"])){ 
+		if (preg_match("/id/msi", $aNodeToSort[$i]["attrs"]["NAME"])){ 
 			
 			
 			// asso
@@ -245,7 +245,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 														foreach ($assoPlusNodeToSort as $nodeId => $assoPlusNodeValue) {
 															
 															
-															if (isset($assoPlusNodeValue["attrs"]["NAME"]) && !ereg("statut|ordre|id|".$assoName."", $assoPlusNodeValue["attrs"]["NAME"])){ 
+															if (isset($assoPlusNodeValue["attrs"]["NAME"]) && !preg_match("/statut|ordre|id|".$assoName."/msi", $assoPlusNodeValue["attrs"]["NAME"])){ 
 																$eKeyValue = getItemValue($oTempasso, $assoPlusNodeValue["attrs"]["NAME"]);
 																if (critereIfdisplay($assoPlusNodeValue, $aAssoPlusClasse, $eKeyValue) == true){	// displayif	
 										

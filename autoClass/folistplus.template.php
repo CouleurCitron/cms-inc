@@ -120,8 +120,8 @@ for ($i=0;$i<count($aDisplaysIf2);$i++){
 
 	$itemName = $aDisplaysIf2[$i];
 	$itemValue = $aValues[$i];
-	if (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){//local.foreign
-		$compoItems = split ("[.]", $itemName);
+	if (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
+		$compoItems = explode ("[.]", $itemName);
 		if ($compoItems[1] == "pagination") {
 			$_SESSION['paginationDisplay_'.$compoItems[0].''] = $itemValue;
 			$sFilledBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", "", $sFilledBodyHTML);
@@ -140,9 +140,9 @@ for ($i=0;$i<count($aDisplaysIf2);$i++){
 		else {
 		}
 	}
-	elseif(ereg("^[^\.]+\.asso\.[^\.]+\.[^\.]+$", $itemName) == true){// local.asso.foreign
+	elseif(preg_match("/^[^\.]+\.asso\.[^\.]+\.[^\.]+$/msi", $itemName) == true){// local.asso.foreign
 		
-		$compoItems = split ("[.]", $itemName);
+		$compoItems = explode ("[.]", $itemName);
 		if ($compoItems[3] == "pagination") {
 			$_SESSION['paginationDisplay_'.$compoItems[2].''] = $itemValue;
 			$sFilledBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", "", $sFilledBodyHTML);
@@ -215,10 +215,10 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	
 	for ($i=0;$i<count($aDisplays);$i++){
 		$itemName = $aDisplays[$i];
-		if (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){//local.foreign
+		if (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
 			$sFilledBodyHTML = str_replace("<autoclass displayList=\"".$itemName."\">", displayItemForeign($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
-		elseif (ereg("^[^\.]+$",$itemName) == true){//local.foreign
+		elseif (preg_match("/^[^\.]+$/msi",$itemName) == true){//local.foreign
 			$sFilledBodyHTML = str_replace("<autoclass displayList=\"".$itemName."\">", displayItem($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
 		else{
@@ -229,11 +229,11 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	
 	for ($i=0;$i<count($aDisplayItems);$i++){
 		$itemName = $aDisplayItems[$i];
-		if (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){//local.foreign
+		if (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){//local.foreign
 			$sFilledBodyHTML = str_replace("<autoclass display=\"".$itemName."\">", displayItemForeign($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
 		
-		elseif (ereg("^[^\.]+$",$itemName) == true){//local.foreign
+		elseif (preg_match("/^[^\.]+$/msi",$itemName) == true){//local.foreign
 			$sFilledBodyHTML = str_replace("<autoclass display=\"".$itemName."\">", displayItem($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
 		else{
@@ -245,34 +245,34 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	for ($i=0;$i<count($aDisplaysIf2);$i++){
 		$itemName = $aDisplaysIf2[$i];
 		$itemValue = $aValues[$i];
-		if (ereg("^[^\.]+$",$itemName) == true){
+		if (preg_match("/^[^\.]+$/msi",$itemName) == true){
 			$sFilledBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", displayItemIf($oRes, $itemName, $itemValue, $aNodeToSort), $sFilledBodyHTML);
 		}
-		elseif(ereg("^[^\.]+\.asso\.[^\.]+$", $itemName) == true){
+		elseif(preg_match("/^[^\.]+\.asso\.[^\.]+$/msi", $itemName) == true){
 			$sFilledBodyHTML = str_replace("<autoclass displayif=\"".$itemName."\" value=\"".$itemValue."\">", displayItemAssoIf($oRes, $itemName, $itemValue, $aNodeToSort), $sFilledBodyHTML);
 		}
 	}
 	
 	for ($i=0;$i<count($aItems);$i++){
 		$itemName = $aItems[$i]; 
-		if(ereg("^[^\.]+\.in\.[^\.]+\.[^\.]+$",$itemName) == true){
+		if(preg_match("/^[^\.]+\.in\.[^\.]+\.[^\.]+$/msi",$itemName) == true){
 			$sFilledBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItemIn($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
-		elseif(ereg("^[^\.]+\.raw$",$itemName) == true){
+		elseif(preg_match("/^[^\.]+\.raw$/msi",$itemName) == true){
 			$sFilledBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItemRaw($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
-		elseif (ereg("^[^\.]+\.[^\.]+$",$itemName) == true){			
+		elseif (preg_match("/^[^\.]+\.[^\.]+$/msi",$itemName) == true){			
 			$sFilledBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItemForeign($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
-		elseif(ereg("^[^\.]+$",$itemName) == true){ 
+		elseif(preg_match("/^[^\.]+$/msi",$itemName) == true){ 
 			$sFilledBodyHTML = str_replace("<autoclass item=\"".$itemName."\">", formatItem($oRes, $itemName, $aNodeToSort), $sFilledBodyHTML);
 		}
-		elseif(ereg("^[^\.]+\.in\.[^\.]+$", $itemName) == true){// local.in.foreign
+		elseif(preg_match("/^[^\.]+\.in\.[^\.]+$/msi", $itemName) == true){// local.in.foreign
 			// stocke le nom des items listes
 				$aItemsToList[][0] = $itemName; 
 				$aItemsToList[][1] = "in"; 
 		}
-		elseif(ereg("^[^\.]+\.asso\.[^\.]+$", $itemName) == true){// local.asso.foreign
+		elseif(preg_match("/^[^\.]+\.asso\.[^\.]+$/msi", $itemName) == true){// local.asso.foreign
 		// stocke le nom des items listes
 			$aItemsToList[][0] = $itemName; 
 			$aItemsToList[][1] = "asso"; 
@@ -287,7 +287,7 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 		$itemName = $aDisplaysNoneIf2[$i];
 		$itemValue = $aNoneValues[$i];
 		 
-		if (ereg("^[^\.]+$",$itemName) == true){
+		if (preg_match("/^[^\.]+$/msi",$itemName) == true){
 			$sFilledBodyHTML = str_replace("<autoclass displaynoneif=\"".$itemName."\" value=\"".$itemValue."\">", displayNoneItemIf($oRes, $itemName, $itemValue, $aNodeToSort), $sFilledBodyHTML);
 		}
 		else{
@@ -302,7 +302,7 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 			$j++;
 			$typeAssoToList = $aItemsToList[$j][1];
 			if ($j%2 == 1) {
-				$sBodyHTMLSplit = split("<autoclass item=\"".$nameItemToList."\">", $sFilledBodyHTML);
+				$sBodyHTMLSplit = explode("<autoclass item=\"".$nameItemToList."\">", $sFilledBodyHTML);
 				echo $sBodyHTMLSplit[0];
 				formatItemList($oRes, $nameItemToList, $aNodeToSort, $db, $typeAssoToList);
 				$sFilledBodyHTML = $sBodyHTMLSplit[1];
@@ -318,100 +318,8 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 	
 	
 
-/*
-for ($i=0;$i<count($aNodeToSort);$i++){
-	if ($aNodeToSort[$i]["name"] == "ITEM"){			
-		if ($aNodeToSort[$i]["attrs"]["LIST"] == "true"){
-			echo "<div class=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."\" id=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."\">\n";			
-			echo "<div class=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."Value\" id=\"".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."Value\">\n";			
-			$eKeyValue = getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]);
-			$stylcherch=strpos($tempStyles,($aNodeToSort[$i]["attrs"]["NAME"])."Value");
-				if($stylcherch===false){
-				$tempStyles .= ".".replaceBadCarsInStr($aNodeToSort[$i]["attrs"]["NAME"])."Value"."{\n";
-				$tempStyles .= "}\n";
-				}
-			if ($aNodeToSort[$i]["attrs"]["FKEY"]){ // cas de foregin key
-				$sTempClasse = $aNodeToSort[$i]["attrs"]["FKEY"];
-				if ($eKeyValue > -1){
-					$oTemp = cacheObject($sTempClasse, $eKeyValue);
-					echo "<a href=\"../".$oTemp->getClasse()."/show_".$oTemp->getClasse().".php?id=".$oTemp->get_id()."\">";
-					echo getItemValue($oTemp, $oTemp->getDisplay());
-					echo "</a>";
-				}
-				else{
-					echo "n/a";
-				}
-			}// fin fkey
-			elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "enum"){ // cas enum		
-				if (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)){
-					foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
-						if($childNode["name"] == "OPTION"){ // on a un node d'option				
-							if ($childNode["attrs"]["TYPE"] == "value"){
-								if (intval($eKeyValue) == intval($childNode["attrs"]["VALUE"])){							
-									echo $childNode["attrs"]["LIBELLE"];
-									break;
-								}
-							} //fin type  == value				
-						}
-					}
-				}		
-			} // fin cas enum
-			else{ // cas typique
-				if ($aNodeToSort[$i]["attrs"]["NAME"] == "statut"){ // cas statut	
-					if (isset($aNodeToSort[$i]["children"]) && (count($aNodeToSort[$i]["children"]) > 0)){
-						foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode){
-							if($childNode["name"] == "OPTION"){ // on a un node d'option				
-								if ($childNode["attrs"]["TYPE"] == "value"){
-									if (intval($eKeyValue) == intval($childNode["attrs"]["VALUE"])){							
-										echo $childNode["attrs"]["LIBELLE"];
-										break;
-									}
-								} //fin type  == value				
-							}
-						}
-					} // if nodes children
-					else{	
-						echo lib($eKeyValue);
-					}
-				}
-				else{
-					if ($eKeyValue > -1){ // cas typique typique
-						if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
-							echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$classeName."/".$eKeyValue."\" target=\"_blank\" title=\"Visualiser le fichier : '".$eKeyValue."'\">".$eKeyValue."</a>\n";
-						}
-						else if ($aNodeToSort[$i]["attrs"]["OPTION"] == "bool"){ // boolean
-							if (intval($eKeyValue) == 1){
-								echo "oui";
-							}
-							else{
-								echo "non";
-							}						
-						}
-						elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "link"){ // cas link			
-							echo "<a href=\"".$eKeyValue."\" target=\"_blank\" title=\"Lien édité\">".$eKeyValue."</a><br />\n";					
-						}	
-						else{// cas typique typique typique
-							echo $eKeyValue;
-						}	
-					}
-					else{
-						echo "n/a";
-					}
-				}
-			}
-			echo "</div></div>\n";
-		}
+
 	}
-}
-*/
-/*
-	echo "<div class='lienvisu'>\n";
-	echo "<a href=javascript:visupopup(".$oRes->get_id().") title='Visualiser'>Visualiser</a>\n";
-	$tempStyles .= ".lienvisu"."{\n";
-	$tempStyles .= "}\n";
-	echo "</div>\n";
-*/
-}
 } else {
 	
  

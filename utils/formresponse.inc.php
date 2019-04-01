@@ -29,7 +29,7 @@ $sNomFormulaire = $oForm->getName_form();
 
  $DIR_FILE = $_SERVER['DOCUMENT_ROOT']."/".DEF_CSV;  
 if (!is_dir($DIR_FILE)) mkdir($DIR_FILE); 
-$sNomFile = $DIR_FILE."data_".noAccent($sNomFormulaire).".csv";
+$sNomFile = $DIR_FILE."data_".$sNomFormulaire.".csv";
 // a_voir sponthus
 // liste des fichiers dispo à downloader ou ouvrir
 
@@ -239,12 +239,12 @@ if ($oForm->getComm_form() != ""){
 		//}
 	}
 
-	$bodyHTML.= "<br><br><a href='http://".$_SERVER['HTTP_HOST']."/modules/utils/telecharger.php?file=data_".noAccent($sNomFormulaire).".csv&chemin=".$DIR_FILE."&'>Télécharger le fichier csv</a><br>"; 
-	$bodyHTML.= "<a href='http://".$_SERVER['HTTP_HOST']."/modules/utils/telecharger.php?file=data_".noAccent($sNomFormulaire).".csv&chemin=".$DIR_FILE."&'>http://".$_SERVER['HTTP_HOST']."/modules/utils/telecharger.php?file=data_". noAccent($sNomFormulaire).".csv&chemin=".$DIR_FILE."&</a><br>"; 
+	$bodyHTML.= "<br><br><a href='http://".$_SERVER['HTTP_HOST']."/modules/utils/telecharger.php?file=data_".$sNomFormulaire.".csv&chemin=".$DIR_FILE."&'>Télécharger le fichier csv</a><br>"; 
+	$bodyHTML.= "<a href='http://".$_SERVER['HTTP_HOST']."/modules/utils/telecharger.php?file=data_".$sNomFormulaire.".csv&chemin=".$DIR_FILE."&'>http://".$_SERVER['HTTP_HOST']."/modules/utils/telecharger.php?file=data_".	$sNomFormulaire.".csv&chemin=".$DIR_FILE."&</a><br>"; 
 	 
 	foreach ($addies as $key => $addy) {
 		$addy = trim(strtolower($addy));
-		if (ereg('^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]+$', $addy)){
+		if (preg_match('/^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]+$/msi', $addy)){
 		 	//echo "---".$addy;
 			 $bResult = multiPartMail($addy, $subject, $bodyHTML, '', $from_mail, '','','localhost'); 
 			 //if ($bResult) echo "ok $addy";

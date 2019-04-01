@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_assosectiongroupe
 ";
 
 // constructeur
-function cms_assosectiongroupe($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assosectiongroupe") == false){
 		dbExecuteQuery($this->sMySql);

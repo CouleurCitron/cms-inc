@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_mapskey
 ";
 
 // constructeur
-function cms_mapskey($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_mapskey") == false){
 		dbExecuteQuery($this->sMySql);

@@ -191,7 +191,7 @@ var $sMySql = "CREATE TABLE shp_client
 ";
 
 // constructeur
-function shp_client($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

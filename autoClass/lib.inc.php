@@ -112,14 +112,12 @@ function getObjetChildren($aO, $id=0){
 	}
 }
 
-if (!function_exists('NumToLetter')){
-	function NumToLetter($Col){
-		if ($Col <= 26) return chr($Col + 64);
-		
-		//puts us on Zero Bound Index… tis where my math is 1337.
-		$Col–;
-		return NumToLetter($Col / 26) . NumToLetter(($Col % 26) + 1);
-	}
+function NumToLetter($Col){
+	if ($Col <= 26) return chr($Col + 64);
+	
+	//puts us on Zero Bound Index… tis where my math is 1337.
+	$Col–;
+	return NumToLetter($Col / 26) . NumToLetter(($Col % 26) + 1);
 }
 
 function getUILink($classeName, $sAction){
@@ -338,14 +336,13 @@ function rewriteIfNeeded($str){
 // $oTemp = cacheObject($sTempClasse, $eKeyValue);
 
 function cacheObject($sObject, $eId){
-	//echo 'cacheObject('.$sObject.', '.$eId.')';
+	if ($sObject==''){
+		return false;	
+	}
+	
 	$bFound=NULL;
 
-	if (preg_match('/\/backoffice\/cms\//msi', $_SERVER['REQUEST_URI'])){
-		// pas de cache dans /backoffice/cms/
-		$bFound=false;
-	}
-	elseif (!isset($_SESSION['BO']['CACHE'])){
+	if (!isset($_SESSION['BO']['CACHE'])){
 		$_SESSION['BO']['CACHE'] = array();
 		$bFound=false;
 	}
@@ -356,13 +353,9 @@ function cacheObject($sObject, $eId){
 	elseif (!isset($_SESSION['BO']['CACHE'][$sObject][$eId])){
 		$bFound=false;
 	}
-	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])	&&	($_SESSION['BO']['CACHE'][$sObject][$eId]!=NULL)	){ // FOUND !!		
-		if (is_object($_SESSION['BO']['CACHE'][$sObject][$eId])	&& method_exists($_SESSION['BO']['CACHE'][$sObject][$eId], 'get_id')	&&	$_SESSION['BO']['CACHE'][$sObject][$eId]->get_id()==$eId){
-			$bFound=true;
-		}
-		else{
-			$bFound=false;
-		}
+	elseif (isset($_SESSION['BO']['CACHE'][$sObject][$eId])){ // FOUND !!
+		$bFound=true;
+		
 	}
 	else{ // ne devrait jamais se produire
 		$bFound=false;
@@ -371,12 +364,10 @@ function cacheObject($sObject, $eId){
 	// retour
 	if ($bFound==false){
 		eval('$'.'oCache = new '.$sObject.'('.$eId.');');
-		//echo('$'.'oCache = new '.$sObject.'('.$eId.');');
 		$_SESSION['BO']['CACHE'][$sObject][$eId] = $oCache;
 	}
 	else{
 		eval('$'.'oCache = new '.$sObject.'();');
-		//echo('$'.'oCache = new '.$sObject.'();');
 		$oTemp = $_SESSION['BO']['CACHE'][$sObject][$eId];
 		foreach ($oTemp as $tempKey => $tempValue){
 			$oCache->$tempKey = $tempValue;
@@ -510,7 +501,7 @@ function displayItem($oRes, $itemName, $aNodeToSort){
 
 function displayItemIf($oRes, $itemName, $itemValue, $aNodeToSort){
 	$aValue = array();
-	if (ereg (",", $itemValue)) {
+	if (preg_match ("/,/msi", $itemValue)) {
 		$aValue = explode(",", $itemValue);
 	}
 	else {
@@ -536,7 +527,7 @@ function displayItemIf($oRes, $itemName, $itemValue, $aNodeToSort){
 
 function displayNoneItemIf($oRes, $itemName, $itemValue, $aNodeToSort){ 
 	$aValue = array();
-	if (ereg (",", $itemValue)) {
+	if (preg_match ("/,/msi", $itemValue)) {
 		$aValue = explode(",", $itemValue);
 	}
 	else {
@@ -750,7 +741,7 @@ function formatItem($oRes, $itemName, $aNodeToSort){
 				}
 				
 				if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)){ // le fichier existe
-					if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image	
+					if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image	
 						if (isset ($aItem["attrs"]["CLASS"]) && $aItem["attrs"]["CLASS"]) {
 							$sClasse=" class=\"".$aItem["attrs"]["CLASS"]."\"";
 						}
@@ -806,7 +797,7 @@ function formatItem($oRes, $itemName, $aNodeToSort){
 							$echoStr .= "<img src=\"/custom/upload/".$classeName."/".$eKeyValue."\" border=\"0\" alt=\"".$eKeyValue."\" ".$sClasse." />";
 						}
 					}
-					elseif (eregi("\.flv$",$eKeyValue)){ // video
+					elseif (preg_match("/\.flv$/msi",$eKeyValue)){ // video
 						/*						
 						$file = $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue;									
 						require_once('flv4php/FLV.php'); // Path to flv.php / (flv4php)									
@@ -980,7 +971,7 @@ function formatItem($oRes, $itemName, $aNodeToSort){
 							$libelle = substr( $libelle, 0, $aItem["attrs"]["MAXLENGTH"])." ...";
 						}
 					}
-					(ereg("content", $href)) ? $target='' : $target='target=\"_blank\"' ;
+					(preg_match("/content/si", $href)) ? $target='' : $target='target=\"_blank\"' ;
 					$echoStr .= "<a href=\"".$href."\" ".$target." title=\"Lien édité\">".$libelle."</a><br />\n";	
 				}	//if ($eKeyValue != ""){		
 			}
@@ -1045,7 +1036,7 @@ function formatItemRaw($oRes, $itemName, $aNodeToSort){
 					}
 				}
 				if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)){ // le fichier existe
-					if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+					if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 						if (isset($aItem["children"]) && (count($aItem["children"]) > 0)){
 							foreach ($aItem["children"] as $childKey => $childNode){
 								$widthMax=$childNode["attrs"]["WIDTH"];
@@ -1257,7 +1248,7 @@ function isItemUTF8($oO, $itemName){
 
 
 function controlLinkValue($sLink, $oClass){
-	if(ereg("http://", $sLink)){
+	if(preg_match("/http:\/\//msi", $sLink)){
 		// nada, c'est une irl
 		$sLink = trim($sLink);
 	}
@@ -1345,25 +1336,10 @@ function getItemByName($aNodes, $sName){
 	return false;
 }
 
-function getItemsByType($aNodes, $sOption){
-	$aReturn = array();
-	foreach ($aNodes as $key => $node){
-		if ($node["attrs"]["TYPE"] == $sOption){
-			$aReturn[] = $node;
-		}
-	}
-	if (count($aReturn) == 0){
-		return false;
-	}
-	else{
-		return $aReturn;
-	}
-}
-
 function getItemsByOption($aNodes, $sOption){
 	$aReturn = array();
 	foreach ($aNodes as $key => $node){
-		if ($node["attrs"]["OPTION"] == $sOption){
+		if (isset($node["attrs"]["OPTION"])	&&	$node["attrs"]["OPTION"] == $sOption){
 			$aReturn[] = $node;
 		}
 	}
@@ -1394,7 +1370,7 @@ function getItemsByAsso($aNodes, $oObjet){
 	$aReturn = array();
 	$aClasseAssoc = array();
 	foreach ($aNodes as $key => $node){
-		if ($node["attrs"]["ASSO"] && (!isset($node["attrs"]["NOSEARCH"]) || $node["attrs"]["NOSEARCH"] == false)) { 
+		if (isset($node["attrs"]["ASSO"])	&&	$node["attrs"]["ASSO"] && (!isset($node["attrs"]["NOSEARCH"]) || $node["attrs"]["NOSEARCH"] == false)) { 
 			$sClasseAssoc =  $node["attrs"]["ASSO"]; 
 		}
 		
@@ -1435,33 +1411,30 @@ function getFilterPosts($needle="filter"){
 	$aReturn = array();
 	$aName = array();
 	foreach ($_POST as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true){
+		if (strpos($key, $needle) === 0){
 			$aKeyVar = array();
 			$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
 			$aReturn[] = $aKeyVar;
 			$aName[] = strtolower(str_replace("filter", "", $key)); 
-			//if (ereg("backoffice", $_SERVER['PHP_SELF']))
 			if (!preg_match ("/assoFiltre/", $key) )$_SESSION["filter".ucfirst(str_replace("filter", "", $key))] = $postedvar;
-			//else 
-				//initFilterSession();
 				
 		}
 	} 
-	//if (ereg("backoffice", $_SERVER['PHP_SELF'])) {
-		// session qui permet de récupérer la recherche quand on revient à la page
-		// de liste suite à une modification de fiche
-		foreach ($_SESSION as $key => $postedvar){ 
-			if (preg_match('/'.$needle.'/si', $key) == true){
-				$aKeyVar = array();
-				$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
-				
-				if (!in_array(strtolower(str_replace("filter", "", $key)), $aName)) {
-					$aReturn[] = $aKeyVar;
-				}
-				
+
+	// session qui permet de récupérer la recherche quand on revient à la page
+	// de liste suite à une modification de fiche
+	foreach ($_SESSION as $key => $postedvar){ 
+		if (strpos($key, $needle) === 0){
+			$aKeyVar = array();
+			$aKeyVar[strtolower(str_replace("filter", "", $key))] = $postedvar;
+			
+			if (!in_array(strtolower(str_replace("filter", "", $key)), $aName)) {
+				$aReturn[] = $aKeyVar;
 			}
-		} 
-//	}
+			
+		}
+	} 
+
  
 	if (count($aReturn) == 0){
 		return false;
@@ -1477,15 +1450,11 @@ function getFilterPostsAsso(){
 	$aReturn = array();
 	$aName = array();
 	foreach ($_POST as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true && $postedvar != -1){
+		if (strpos($key, $needle) === 0 && $postedvar != -1){
 			$aKeyVar = array();
 			$aKeyVar[strtolower($key)] = $postedvar;
 			$aReturn[] = $aKeyVar;
 			$aName[] = strtolower($key); 
-			//if (ereg("backoffice", $_SERVER['PHP_SELF']))
-			/*$_SESSION["filter".ucfirst(str_replace("filter", "", $key))] = $postedvar;*/
-			//else 
-				//initFilterSession();
 				
 		}
 	}  
@@ -1502,14 +1471,14 @@ function initFilterSession($needle="filter"){
 	// session qui permet de récupérer la recherche quand on revient à la page
 	// de liste suite à une modification de fiche
 	foreach ($_POST as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true){
+		if (strpos($key, $needle) === 0){
 			unset ($_POST[$key]); 
 			unset ($_POST[strtolower(str_replace("filter", "", $key))]); 
 		}
 	} 
 	
 	foreach ($_SESSION as $key => $postedvar){
-		if (preg_match('/'.$needle.'/si', $key) == true){ 
+		if (strpos($key, $needle) === 0){ 
 			unset ($_SESSION[$key]); 
 			unset ($_SESSION[strtolower(str_replace("filter", "", $key))]); 
 		}
@@ -1685,7 +1654,7 @@ function ScanDirs($Directory, $classeName){
 
 
 function scanNode($nodeValue, $stack, $oClasse, $classeName, $divName) {
-	if (isset($nodeValue["attrs"]["NAME"]) && !ereg("statut|ordre|id|".$classeName."", $nodeValue["attrs"]["NAME"])){ // cas pas statut|ordre|id	
+	if (isset($nodeValue["attrs"]["NAME"]) && !preg_match("/statut|ordre|id|".$classeName."/msi", $nodeValue["attrs"]["NAME"])){ // cas pas statut|ordre|id	
 		
 		$eKeyValue = getItemValue($oClasse, $nodeValue["attrs"]["NAME"]);
 		
@@ -1780,7 +1749,7 @@ function isFilename ($eKeyValue, $nodeValue) {
 function isFilePlus ($eKeyValue, $nodeValue, $classeName) {
 	
 	if (is_file($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)){ // le fichier existe
-		if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+		if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 			//echo $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$tempAsso."/".$eKeyValue."<br>";
 			ResizeImg($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue, 400,100, $_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue);
 			if(!unlink($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)) {
@@ -1877,7 +1846,7 @@ function isLink ($eKeyValue, $nodeValue) {
 function isFiledir ($eKeyValue, $nodeValue) {
 	if ($eKeyValue != ""){
 		if (is_file($_SERVER['DOCUMENT_ROOT'].$eKeyValue)){ // le fichier existe
-			if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image					
+			if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image					
 				if (isset($nodeValue["children"]) && (count($nodeValue["children"]) > 0)){									
 					foreach ($nodeValue["children"] as $childKey => $childNode){
 						if($childNode["name"] == "OPTION"){ // on a un node d'option	
@@ -2344,7 +2313,7 @@ function ScanForFilemanager($Directory){
 	if (is_dir($Directory) && is_readable($Directory)) { 
 		if($MyDirectory = opendir($Directory)) { 
 			 while (false !== ($file = readdir($MyDirectory))) {
-				if ($file != "." && $file != ".." && !ereg("CVS", $file)) { 
+				if ($file != "." && $file != ".." && !preg_match("/CVS/ms", $file)) { 
 					array_push($aTempFile, "$file");
 				}
 			}
@@ -2530,31 +2499,37 @@ function getListeChampsForObject($o0){
 	$classePrefixe = $stack[0]["attrs"]["PREFIX"];
 	
 	for ($i=0;$i<count($aNodeToSort);$i++){
-		if (($aNodeToSort[$i]["attrs"]["TYPE"] == "int")){
-			$sType = 'entier';			
+		if (isset($aNodeToSort[$i]["attrs"]["TYPE"])){
+			if (($aNodeToSort[$i]["attrs"]["TYPE"] == "int")){
+				$sType = 'entier';			
+			}
+			elseif (($aNodeToSort[$i]["attrs"]["TYPE"] == "decimal") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "float")) {
+				$sType = 'decimal';
+			}
+			elseif(($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
+				$sType = 'text';
+			}
+			elseif($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime"){ // timestamp
+				$sType = 'date_formatee_timestamp';
+			}
+			elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "enum") {
+				$sType = 'text';
+			}
+			else{ // date
+				$sType = 'date_formatee';
+			}
+			
+			$sNom = trim($aNodeToSort[$i]["attrs"]["NAME"]);
+
+			if ($sNom!=''){		
+				$oDbChamp = new dbChamp(ucfirst($classePrefixe).'_'.$sNom, $sType, 'get_'.$sNom, 'set_'.$sNom);
+				$laListeChamps[] = $oDbChamp;
+			}
 		}
-		elseif (($aNodeToSort[$i]["attrs"]["TYPE"] == "decimal") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "float")) {
-			$sType = 'decimal';
-		}
-		elseif(($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
-			$sType = 'text';
-		}
-		elseif($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime"){ // timestamp
-			$sType = 'date_formatee_timestamp';
-		}
-		elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "enum") {
-			$sType = 'text';
-		}
-		else{ // date
-			$sType = 'date_formatee';
+		else{
+			// pas un item
 		}
 		
-		$sNom = trim($aNodeToSort[$i]["attrs"]["NAME"]);
-		
-		if ($sNom!=''){		
-			$oDbChamp = new dbChamp(ucfirst($classePrefixe).'_'.$sNom, $sType, 'get_'.$sNom, 'set_'.$sNom);
-			$laListeChamps[] = $oDbChamp;
-		}
 	}		
 	
 	// en cas de fail de la méthode XML, on prend l'ancien getter
@@ -2606,7 +2581,7 @@ function xmlClassParse($sXML){
 						}
 						// noeuds options
 						// <option type="link" 
-						if(is_array($stackBack[0]['children'][$bakChildKey]['children'])){// le back a des options nodes
+						if(isset($stackBack[0]['children'][$bakChildKey]['children'])  &&  is_array($stackBack[0]['children'][$bakChildKey]['children'])){// le back a des options nodes
 							if(is_array($childNode['children'])){// la surcharge a des options nodes
 								foreach($childNode['children'] as $opKey => $opNode){
 									$bMatched=false;
@@ -2626,7 +2601,7 @@ function xmlClassParse($sXML){
 							}
 						}
 						// le back n'a pas d'options nodes
-						else{
+						elseif(isset($childNode['children'])){
 							//echo ' pas de options nodes ';
 							$stackBack[0]['children'][$bakChildKey]['children'] = $childNode['children'];
 						}
@@ -2767,29 +2742,18 @@ function getCorrectTable ($oTemp) {
 }
 
 
-function getValidHref ($link , $text, $target=false ) {
+function getValidHref ($link , $text) {
 	if ($link != '') {
-	 
-	 	if ($link != "#_" && $link != "#") {
-	 
-			if (!ereg("^http|ftp|https]://.*", $link) && !preg_match ( "/content/", $link)) { 
-				$link = "http://".$link ; 
-				
-			}
-			  
-			if (!preg_match ( "/content/", $link) ) {
-					$href = ' href="'.$link.'" target="_blank" ';
-			}
-			else if ( $target ) {
-					$href = ' href="'.$link.'" target="_blank" ';
-			}
-			else {
-				$href = ' href="'.$link.'" ';
-			} 
-			
+		if (!preg_match("/^http|ftp|https]:\/\/.*/msi", $link) ) $link = "http://".$link ; 
+	
+		if (!preg_match ( "/content/", $link) ) {
+				$href = ' href="'.$link.'" target="blank" ';
 		}
+		else {
+			$href = 'href="'.$link.'"';
+		} 
 		 
-		$href =  '<a '.$href.'>'.$text.'</a>';
+		$href =  '<a "'.$href.'">'.$text.'</a>';
 	}
 	else {
 		$href = '';
@@ -2798,5 +2762,4 @@ function getValidHref ($link , $text, $target=false ) {
 	return $href;
 	
 }
-
 ?>

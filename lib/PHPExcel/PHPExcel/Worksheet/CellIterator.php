@@ -1,9 +1,8 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2011 PHPExcel
+ * Copyright (c) 2006 - 2014 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,9 +20,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Worksheet
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.6, 2011-02-27
+ * @version    1.8.0, 2014-03-02
  */
 
 
@@ -34,9 +33,9 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  *
  * @category   PHPExcel
  * @package    PHPExcel_Worksheet
- * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2014 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-class PHPExcel_Worksheet_CellIterator extends CachingIterator
+class PHPExcel_Worksheet_CellIterator implements Iterator
 {
 	/**
 	 * PHPExcel_Worksheet to iterate
@@ -118,7 +117,7 @@ class PHPExcel_Worksheet_CellIterator extends CachingIterator
     }
 
     /**
-     * More PHPExcel_Cell instances available?
+     * Are there any more PHPExcel_Cell instances available?
      *
      * @return boolean
      */
@@ -152,9 +151,9 @@ class PHPExcel_Worksheet_CellIterator extends CachingIterator
     }
 
 	/**
-	 * Set loop only existing cells
+	 * Set the iterator to loop only existing cells
 	 *
-	 * @return boolean
+	 * @param	boolean		$value
 	 */
     public function setIterateOnlyExistingCells($value = true) {
     	$this->_onlyExistingCells = $value;

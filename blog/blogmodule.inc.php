@@ -91,11 +91,11 @@ if ((strpos($_SERVER['PHP_SELF'], "backoffice/") === false)&&(strpos($_SERVER['P
 				
 				// oeuvre 
 				if ($oM->getObj_table_content()!="") {
-					if (ereg("mp3", $oM->getObj_table_content())) {
+					if (preg_match("/mp3/msi", $oM->getObj_table_content())) {
 						echo "<p class='telecharge_mp3'><a href=\"javascript:openBrWindow('/modules/player/index.php?id=".$oM->getId_content()."','Ecoute_mon_oeuvre',300,100,'scrollbars=no','true')\" title=\"Ecoute mon oeuvre\"><img src='/custom/img/picto_casque.gif' /></a></p>";
 						echo "<p class='telecharge_mp3'><a href=\"javascript:openBrWindow('/modules/player/index.php?id=".$oM->getId_content()."','Ecoute_mon_oeuvre',300,100,'scrollbars=no','true')\" title=\"Ecoute mon oeuvre\">Ecoute mon oeuvre</a></p>";
 					} 				
-					else if (ereg("flv", $oM->getObj_table_content())) { 
+					else if (preg_match("/flv/msi", $oM->getObj_table_content())) { 
 						echo "<div align='center'>";
 						$_GET['file'] = "/custom/upload/blog/".$oM->getId_content()."/".$oM->getObj_table_content();
 						$_GET['autostart'] = 0; 
@@ -103,7 +103,7 @@ if ((strpos($_SERVER['PHP_SELF'], "backoffice/") === false)&&(strpos($_SERVER['P
 						echo "</div>";
 						
 					}
-					else if (ereg("jpg", strtolower($oM->getObj_table_content())) || ereg("png", strtolower($oM->getObj_table_content())) || ereg("gif", strtolower($oM->getObj_table_content())) || ereg("bmp", strtolower($oM->getObj_table_content())) ) { 
+					else if (preg_match("/jpg/msi", strtolower($oM->getObj_table_content())) || preg_match("/png/msi", strtolower($oM->getObj_table_content())) || preg_match("/gif/msi", strtolower($oM->getObj_table_content())) || preg_match("/bmp/msi", strtolower($oM->getObj_table_content())) ) { 
 						echo "<div align='center'>";
 						echo "<a href=\"/custom/upload/blog/".$oM->getId_content()."/".$oM->getObj_table_content()."\" target=\"_blank\"><img width=\"350px\" src=\"/custom/upload/blog/".$oM->getId_content()."/".$oM->getObj_table_content()."\"></a>";
 						echo "</div>";
@@ -152,7 +152,7 @@ if ((strpos($_SERVER['PHP_SELF'], "backoffice/") === false)&&(strpos($_SERVER['P
 						<p><?php echo $avis->get_texte()?></p>
 						<?php
 						if ($avis->get_nomweb1()!="") {
-							if (!ereg("http://", $avis->get_nomweb1()) && !ereg("https://", $avis->get_nomweb1())) $web = "http://".$avis->get_nomweb1();
+							if (!preg_match("/http:\/\//msi", $avis->get_nomweb1()) && !preg_match("/https:\/\//msi", $avis->get_nomweb1())) $web = "http://".$avis->get_nomweb1();
 							$contact = "<a href='".$web."'>".$avis->get_nomcontact()."</a>";
 						}
 						else $contact =  $avis->get_nomcontact() ;

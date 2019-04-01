@@ -113,7 +113,7 @@ var $sMySql = "CREATE TABLE cms_pdf
 ";
 
 // constructeur
-function cms_pdf($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_pdf") == false){
 		dbExecuteQuery($this->sMySql);

@@ -3,8 +3,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
 set_include_path(get_include_path() . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/PHPExcel');
 
-include $_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/PHPExcel/PHPExcel.php';
-include $_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/PHPExcel/PHPExcel/IOFactory.php';
+include 'PHPExcel.php';
+include 'PHPExcel/IOFactory.php';
 //echo $saveFile;
 $objPHPExcel = PHPExcel_IOFactory::load($saveFile);
 

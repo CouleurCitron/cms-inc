@@ -270,7 +270,7 @@ abstract class BasePhpFastCache {
 
     protected function readfile($file) {
         if(function_exists("file_get_contents")) {
-            return @file_get_contents($file);
+            return file_get_contents($file);
         } else {
             $string = "";
 

@@ -56,7 +56,7 @@ input, textarea, select
         Votre phrase fétiche : <input type="text" name="phrase" value="cette lib est géniale !!!" style="width: 100mm"><br>
         <br>
         Un commentaire ?<br>
-        <textarea name="comment" rows="3" cols="30">rien de particulier</textarea><br>
+        <textarea name="comment" class="textareaEdit">rien de particulier</textarea><br>
         <br>
         <input type="reset" name="btn_reset" value="Initialiser">
         <input type="button" name="btn_print" value="Imprimer" onclick="print(true);">

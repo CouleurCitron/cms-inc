@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_assoprodproduit
 ";
 
 // constructeur
-function cms_assoprodproduit($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assoprodproduit") == false){
 		dbExecuteQuery($this->sMySql);

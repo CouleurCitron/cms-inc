@@ -2,12 +2,21 @@
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /* 
 
-$Author: raphael $
+$Author: pierre $
 
-$Revision: 1.30 $
+$Revision: 1.4 $
 $Log: arbominisite.lib.php,v $
-Revision 1.30  2014-09-08 10:29:43  raphael
-Modification des traductions
+Revision 1.4  2014-09-11 09:20:35  pierre
+*** empty log message ***
+
+Revision 1.3  2013-11-06 14:49:09  raphael
+*** empty log message ***
+
+Revision 1.2  2013-11-06 10:26:27  raphael
+*** empty log message ***
+
+Revision 1.1  2013-09-30 09:28:20  raphael
+*** empty log message ***
 
 Revision 1.29  2013-05-16 13:18:49  raphael
 *** empty log message ***
@@ -314,36 +323,36 @@ function getFolderComposants($idSite, $nodeId) {
 // arbo des mini sites
 // duplication d'une arbo dans cms_arbo_pages 
 if( !function_exists( "removeRecursDir" ) ){
-    function removeRecursDir($directory) {
-            //$directory = preg_replace('/\'/','\\\'',$directory);
-            //$directory = preg_replace('/\ /','\\\ ',$directory);
-            $dossier = @opendir($directory);
-            if ($dossier){
-                    $total = 0;
-                    while($fichier = readdir($dossier)) {
-                            $l = array('.','..');
-                            if (!in_array($fichier, $l)) {
-                                    if(is_dir($directory.'/'.$fichier)){
-                                            $total += removeRecursDir($directory.'/'.$fichier);
-                                    } else {
-                                            if(unlink($directory.'/'.$fichier))
-                                                    $total++;
-                                            else 
-                                                    error_log("Suppression du fichier $directory/$fichier impossible");
-                                    }
-                            }
-                    }
-                    @closedir($dossier);
-                    if (rmdir($directory))
-                            $total++;
-                    else
-                            error_log("Suppression du répertoire $directory impossible");
-                    return $total;
-            }
-            else{
-                    return 1;	// si le dossier n'existe pas, on estime qu'il est détruit, donc retourne 1
-            }
-    }
+function removeRecursDir($directory) {
+	//$directory = preg_replace('/\'/','\\\'',$directory);
+	//$directory = preg_replace('/\ /','\\\ ',$directory);
+	$dossier = @opendir($directory);
+	if ($dossier){
+		$total = 0;
+		while($fichier = readdir($dossier)) {
+			$l = array('.','..');
+			if (!in_array($fichier, $l)) {
+				if(is_dir($directory.'/'.$fichier)){
+					$total += removeRecursDir($directory.'/'.$fichier);
+				} else {
+					if(unlink($directory.'/'.$fichier))
+						$total++;
+					else 
+						error_log("Suppression du fichier $directory/$fichier impossible");
+				}
+			}
+		}
+		@closedir($dossier);
+		if (rmdir($directory))
+			$total++;
+		else
+			error_log("Suppression du répertoire $directory impossible");
+		return $total;
+	}
+	else{
+		return 1;	// si le dossier n'existe pas, on estime qu'il est détruit, donc retourne 1
+	}
+}
 }
 
 // delete node spécifique cms_arbo_pages
@@ -452,7 +461,7 @@ function deleteNode($idSite, $db, $virtualPath){
 
 	if( ($virtualPath=='0') || (strlen($virtualPath)=='0'))
 		return false;
-	$array_path = split(',',$virtualPath);
+	$array_path = explode(',',$virtualPath);
 	$node_id = array_pop($array_path);
 	$result = false;
 	$parentVirtualPath = join(',',$array_path);
@@ -568,7 +577,7 @@ function addNode_cms_arbo_pages($idSite, $db, $virtualPath, $libelle, $node_id, 
 if( !function_exists( "addNode" ) ){
 // ajoute un noeud 
 function addNode($idSite, $db, $virtualPath, $libelle){
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 
 	// créer des noeuds à partir de node_id=1000......
@@ -778,7 +787,7 @@ function renameNode_cms_arbo_pages($idSite, $db, $virtualPath, $libelle, $node_i
 if( !function_exists( "renameNode" ) ){
 // rename un noeud 
 function renameNode($idSite, $db, $virtualPath, $libelle){ 
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	
 	$result = false;
 
@@ -792,8 +801,9 @@ function renameNode($idSite, $db, $virtualPath, $libelle){
 	return $aResult;
 }
 }
- 
+
 if( !function_exists( "saveNodeDescription_cms_arbo_pages" ) ){
+
 // saveNodeDescription pour la table : cms_arbo_pages
 function saveNodeDescription_cms_arbo_pages($idSite, $folderdescription, $db, $virtualPath, $node_id){
 	$sql = " SELECT node_id, node_parent_id, node_libelle, node_absolute_path_name";
@@ -848,9 +858,10 @@ function saveNodeDescription_cms_arbo_pages($idSite, $folderdescription, $db, $v
 }
 
 if( !function_exists( "saveNodeDescription" ) ){
+
 // saveNodeDescription 
 function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
-	$node_id = array_pop(split(',', $virtualPath));
+	$node_id = array_pop(explode(',', $virtualPath));
 	$result = false;
 
 	// arbo pages
@@ -918,9 +929,10 @@ function saveNodeTag_cms_arbo_pages($idSite, $foldertag, $db, $virtualPath, $nod
 }
 
 if( !function_exists( "saveNodeTag" ) ){
+
 // saveNodeTag 
 function saveNodeTag($idSite, $foldertag, $db, $virtualPath){
-	$node_id = array_pop(split(',', $virtualPath));
+	$node_id = array_pop(explode(',', $virtualPath));
 	$result = false;
 
 	// arbo pages
@@ -937,7 +949,7 @@ if( !function_exists( "getNodeInfos" ) ){
 // gestNodeInfos 
 // on travaille par défaut sur la table cms_arbo_pages
 function getNodeInfos($db, $virtualPath){
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	if (trim($node_id)==''){
 		error_log('getNodeInfos('.$virtualPath.') appel incorrect '.__FILE__.':'.__LINE__);
 		return false;
@@ -1050,7 +1062,7 @@ function path2nodesReverse($idSite, $db, $virtualPath) {
 	$oSite = new Cms_site($idSite);
 
 	$strPath = '/'.$oSite->get_name().'/';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$sql = " SELECT node_libelle FROM cms_arbo_pages WHERE node_id=$id";
 			// une seule racine pour tous les arbres
@@ -1095,10 +1107,10 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 	if ($full_path_to_curr_id==null || $full_path_to_curr_id=="0") {
 		// cas particulier de la racine où il faut dessiner le père en plus des fils
 		$full_path_to_curr_id=0;
-			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=0\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
+			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=0\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 
 	} else {
-		$tree_depth = sizeof(split(',',$full_path_to_curr_id));
+		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
 	}
 
 	$children = getNodeChildren($idSite, $db, $full_path_to_curr_id);
@@ -1113,15 +1125,15 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 		$libelle = $v['libelle'];
 		$description = $v['description'];
 		//debut de ligne...
-		if (!in_array($id,split(',',$virtualPath))) {
+		if (!in_array($id,explode(',',$virtualPath))) {
 			//dossier ferme
-			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier.gif\"><small>".str_replace(' ','&nbsp;',$libelle)."</small></a><br/></span>\n";
+			$strHTML .= "<span>$indent<a href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\"><small>".strip_tags($libelle, '<br><sup><ub>')."</small></a><br/></span>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(split(',',$virtualPath))==$id)
-				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a class=\"arbo\" href=\"".$destination."?idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small><span class=\"arbo\">".str_replace(' ','&nbsp;',$libelle)."</span></small></a><br/></span>\n";
+			if(array_pop(explode(',',$virtualPath))==$id)
+				$strHTML .= "<span>$indent<a class=\"arbo\" href=\"".$destination."?idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small><span class=\"arbo\">".strip_tags($libelle, '<br><sup><ub>')."</span></small></a><br/></span>\n";
 			else
-				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination."?idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small>".str_replace(' ','&nbsp;',$libelle)."</small></a><br/></span>\n";
+				$strHTML .= "<span>$indent<a href=\"".$destination."?idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small>".strip_tags($libelle, '<br><sup><ub>')."</small></a><br/></span>\n";
 			$strHTML.=drawCompTree($idSite, $db,$virtualPath,$full_path_to_curr_id.','.$id,$destination, $paramSup);
 		}
 	}
@@ -1130,6 +1142,7 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 }
 
 if( !function_exists( "getAbsolutePathString" ) ){
+
 function getAbsolutePathString($idSite, $db, $virtualPath, $destination=null) {
 	if($destination==null)
 		$destination=$_SERVER['PHP_SELF'];
@@ -1138,7 +1151,7 @@ function getAbsolutePathString($idSite, $db, $virtualPath, $destination=null) {
 		$OP = '&';
 	$strPath = '<a href="'.$destination.$OP.'idSite='.$idSite.'&v_comp_path=0" class="arbo"><b>Racine</b></a>';
 	$localPath='0';
-	foreach(split(',',$virtualPath) as $id){
+	foreach(explode(',',$virtualPath) as $id){
 		if ($id!="0") {
 			$localPath.=",$id";
 
@@ -1179,7 +1192,7 @@ function getNodeChildren($idSite, $db, $path) {
 	if (($idSite == "") || !isset($idSite)){
 		$idSite = 1;
 	}
-	$node_id = array_pop(split(',',$path));
+	$node_id = array_pop(explode(',',$path));
 	$result = array();
 
 	$sql = " SELECT * FROM cms_arbo_pages";
@@ -1270,7 +1283,7 @@ function moveNode_cms_arbo_pages($idSite, $db, $virtualPath, $new_virtualPath)
 // Renvoi "true" si ok, "false" sinon
 	global $CMS_ROOT;
 
-	$node_id = array_pop(split(',',$virtualPath));
+	$node_id = array_pop(explode(',',$virtualPath));
 	$result = false;
 	$nodeInfos = getNodeInfos($db, $virtualPath);
 	$new_nodeInfos = getNodeInfos($db, $new_virtualPath);
@@ -1287,9 +1300,8 @@ function moveNode_cms_arbo_pages($idSite, $db, $virtualPath, $new_virtualPath)
 	if(DEF_MODE_DEBUG==true) error_log("TRACE :: ".$sql);
 
 	$rs = $db->Execute($sql);
-//	$oldpath = $CMS_ROOT.utf8_encode(ereg_replace("[/]?$","",$nodeInfos['path']));
-//	$newpath = $CMS_ROOT.utf8_encode($new_nodeInfos['path']).utf8_encode($nodeInfos['libelle']);
-	$oldpath = $CMS_ROOT.ereg_replace("[/]?$","",$nodeInfos['path']);
+
+	$oldpath = $CMS_ROOT.preg_replace("/[\/]?$/msi","",$nodeInfos['path']);
 	$newpath = $CMS_ROOT.$new_nodeInfos['path'].$nodeInfos['libelle'];
 	if($rs!=false) {
 		if(file_exists($newpath)) // Si le nom existe déjà on fait rien
@@ -1329,7 +1341,7 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 if( !function_exists( "getFolderPages" ) ){
 function getFolderPages($idSite, $path) {
 	global $db;
-	$node_id = array_pop(split(',',$path));
+	$node_id = array_pop(explode(',',$path));
 	$return = array();
 
 	if (DEF_BDD != "ORACLE") {
@@ -1532,7 +1544,7 @@ if( !function_exists( "getFolderComposants" ) ){
 function getFolderComposants($idSite, $nodeId) {
 
 	if(strlen($nodeId)>0)
-			$nodeId=array_pop(split(',',$nodeId));
+			$nodeId=array_pop(explode(',',$nodeId));
 	else
 			return false;
 	global $db;

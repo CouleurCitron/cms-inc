@@ -65,7 +65,7 @@ var $sMySql = "CREATE TABLE cms_tableau_perempt
 ";
 
 // constructeur
-function cms_tableau_perempt($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_tableau_perempt") == false){
 		dbExecuteQuery($this->sMySql);

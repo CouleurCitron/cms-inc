@@ -10,11 +10,11 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 			
 			$aTempClasse = array();
 			if ($aNodeToSort[$j]["attrs"]["ASSO"])
-				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$j]["attrs"]["ASSO"]);		
 			elseif ($aNodeToSort[$j]["attrs"]["ASSO_VIEW"])
-				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO_VIEW"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$j]["attrs"]["ASSO_VIEW"]);		
 			elseif ($aNodeToSort[$j]["attrs"]["ASSO_EDIT"])
-				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]);		
 			
 			for ($m=0; $m<sizeof($aTempClasse);$m++) {
 				
@@ -133,7 +133,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					
 					 
 					$sql = "select ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." ";
-					if (ereg("rau_", $tempAssoIn) || ereg("shp_", $tempAssoIn)) {
+					if (preg_match("/rau_/msi", $tempAssoIn) || preg_match("/shp_/msi", $tempAssoIn)) {
 						 $sql.= " where ".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoIn))." = ".$id." ";
 						 $sql.= " and ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id "; 
 						

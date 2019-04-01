@@ -93,7 +93,7 @@ class AccountController extends BaseModuleController {
 	 * @param	$wrapped		in case a specific render class is given, wrap it or not with HTML
 	 * @return	void
 	 */
-	function build ($view=null, $wrapped=false, $datas = false) {
+	function build ($view=null, $wrapped=false) {
 
 		$translator =& TslManager::getInstance();
 
@@ -104,7 +104,6 @@ class AccountController extends BaseModuleController {
 		if (isset($_POST['action']) && in_array($_POST['action'], $this->actions)) {
 			if ($this->debug)
 				echo "AccountController.build() with action : ".$_POST['action']."<br/>";
-
 			// process action that belongs to preset list
 			switch ($_POST['action']) {
 				// process specific actions and checkings
@@ -569,11 +568,9 @@ class AccountController extends BaseModuleController {
 			$this->wrapped = false;
 		}
 
-		if (!is_null($this->view)) {
+		if (!is_null($this->view))
 			$this->view->render($params);
-		} else {	
-			echo "No View could be found to display <br/>"; 
-		}
+		else	echo "No View could be found to display <br/>";
 		
 	}
 
@@ -729,34 +726,34 @@ class AccountController extends BaseModuleController {
 		$account = Array();
 		
 		if (is_post('nom')){
-			$account['nom'] = $_POST['nom'];
+		$account['nom'] = $_POST['nom'];
 		}
 		if (is_post('prenom')){
-			$account['prenom'] = $_POST['prenom']; 
+		$account['prenom'] = $_POST['prenom']; 
 		}
 		if (is_post('tel')){
-			$account['tel'] = $_POST['tel'];
+		$account['tel'] = $_POST['tel'];
 		}
 		if (is_post('portable')){
-			$account['portable'] = $_POST['portable'];
+		$account['portable'] = $_POST['portable'];
 		}
 		if (is_post('email')){
-			$account['email'] = $_POST['email'];
+		$account['email'] = $_POST['email'];
 		}
 		if (is_post('adresse')){
-			$account['adresse'] = $_POST['adresse'];
+		$account['adresse'] = $_POST['adresse'];
 		}
 		if (is_post('cp')){
-			$account['cp'] = $_POST['cp'];
+		$account['cp'] = $_POST['cp'];
 		}
 		if (is_post('ville')){
-			$account['ville'] = $_POST['ville'];
+		$account['ville'] = $_POST['ville'];
 		}
 		if (is_post('act_key')){
-			$account['act_key'] = $_POST['act_key'];
+		$account['act_key'] = $_POST['act_key'];
 		}
 		if (is_post('civilite')){
-			$account['civilite'] = $_POST['civilite'];
+		$account['civilite'] = $_POST['civilite'];
 		}
 		
 		if (!empty($_POST['password']))

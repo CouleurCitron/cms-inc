@@ -304,9 +304,9 @@ if ($aPostFilters != false){
 			if (isset($classeNameAsso) && $classeNameAsso!="") {
 				 
 				// on récupére le préfixe de l'asso
-				$filterNameTemp = ereg_replace("([^_]+)_(.*)", "\\2", $filterName);
+				$filterNameTemp = preg_replace("/([^_]+)_(.*)/msi", "$2", $filterName);
 				if (in_array($filterNameTemp, $itemToCheckForAsso)) {
-					$filterName = ereg_replace("([^_]+)_(.*)", $classePrefixeAsso."_\\2", $filterName);
+					$filterName = preg_replace("/([^_]+)_(.*)/msi", $classePrefixeAsso."_$2", $filterName);
 				}
 				else {
 					$classeNameAsso = "";
@@ -324,7 +324,7 @@ if ($aPostFilters != false){
 			}
 			if ($filterValue != -1 &&( $filterValue != "" || $filterValue == 0) && $nbSub == 0) {
 				 
-				if(ereg($classePrefixe, $filterName)) {
+				if(preg_match('/'.$classePrefixe.'/msi', $filterName)) {
 					$oRech3 = new dbRecherche();				
 					$oRech3->setValeurRecherche("declencher_recherche");
 					$oRech3->setTableBD($classeNameAsso);
@@ -436,105 +436,18 @@ if(sizeof($aListe_res)>0) {
 		document.<?php echo $classePrefixe; ?>_list_form.id.value = id;
 		document.<?php echo $classePrefixe; ?>_list_form.display.value = null;
 		document.<?php echo $classePrefixe; ?>_list_form.actiontodo.value = "";
-		document.<?php echo $classePrefixe; ?>_list_form.action = "http://oramip.couleur-citron.com/frontoffice/actualite/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
+		document.<?php echo $classePrefixe; ?>_list_form.action = "http://oramip.couleur-citron.com/frontoffice/actualite/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>";
 		document.<?php echo $classePrefixe; ?>_list_form.submit();
 	}
 	
 //visu pop-up
 	function visupopup(id)
 	{
-	window.open("http://<?php echo $_SERVER['SERVER_NAME']; ?>/frontoffice/<?php echo $classeName; ?>/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>","", "width=520, height=500, scrollbars=yes");
+	window.open("http://<?php echo $_SERVER['SERVER_NAME']; ?>/frontoffice/<?php echo $classeName; ?>/foshow_<?php echo $classeName; ?>.php?id="+id+"<?php if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",preg_replace("/idprev=[^&]*&/msi", "", $_SERVER['QUERY_STRING']));?>","", "width=520, height=500, scrollbars=yes");
 	}	
 
 </script>
-<!-- Pour plus tard au cas où
-<div class="arbo" align="center"><strong><?//=$sMessage?></strong></div>
 
-<script>
-	
-	// ajout d'un enregistrement
-	function addEmp()
-	{
-		document.<?//=$classePrefixe?>_list_form.actiontodo.value = "MODIF";
-		document.<?//=$classePrefixe?>_list_form.display.value = null;
-		document.<?//=$classePrefixe?>_list_form.action = "maj_<?//=$classeName?>.php?id=-1<?php //if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
-		document.<?//=$classePrefixe?>_list_form.submit();
-	}
-	
-	// modification de l'enregistrement
-	function modifEmp(id) 
-	{
-		document.<?//=$classePrefixe?>_list_form.id.value = id;
-		document.<?//=$classePrefixe?>_list_form.display.value = null;
-		document.<?//=$classePrefixe?>_list_form.actiontodo.value = "MODIF";
-		document.<?//=$classePrefixe?>_list_form.action = "maj_<?//=$classeName?>.php?id="+id+"<?php //if($_SERVER['QUERY_STRING']!="") echo "&".str_replace("id=", "idprev=",ereg_replace("idprev=[^&]*&", "", $_SERVER['QUERY_STRING']));?>";
-		document.<?//=$classePrefixe?>_list_form.submit();
-	}
-
-	// suppression de l'enregtistrement
-	function deleteEmp(id)
-	{
-		sMessage = "Etes vous sur(e) de vouloir supprimer cet enregistrement ?";
-  		if (confirm(sMessage)) {
-
-			document.<?//=$classePrefixe?>_list_form.action = "list_<?//=$classeName?>.php<?php //if($_SERVER['QUERY_STRING']!="") echo "?".$_SERVER['QUERY_STRING'];?>";
-			document.<?//=$classePrefixe?>_list_form.operation.value = "DELETE";
-			document.<?//=$classePrefixe?>_list_form.id.value = id;
-			document.<?//=$classePrefixe?>_list_form.display.value = null;
-			document.<?//=$classePrefixe?>_list_form.submit();
-		}
-	}
-	
-	// change le statut de plusieurs records
-	function changeStatut(idStatut)
-	{
-		cbToChange = "";
-
-		<?php
-//for ($m=0; $m<sizeof($aListe_res); $m++) {
-	//$oRes = $aListe_res[$m];
-	//$cb = "cb_".ucfirst($classePrefixe)."_".$oRes->get_id();
-	
-?>
-if (document.getElementById("<?//=$cb?>").checked == true) cbToChange+= "<?//=$oRes->get_id();?>";
-<?php
-//}
-?>
-		if (cbToChange != "") {
-			document.<?//=$classePrefixe?>_list_form.cbToChange.value = cbToChange;
-			document.<?//=$classePrefixe?>_list_form.idStatut.value = idStatut;
-			document.<?//=$classePrefixe?>_list_form.action = "list_<?//=$classeName?>.php<?php //if($_SERVER['QUERY_STRING']!="") echo "?".$_SERVER['QUERY_STRING'];?>";
-			document.<?//=$classePrefixe?>_list_form.operation.value = "CHANGE_STATUT";
-			document.<?//=$classePrefixe?>_list_form.submit();
-
-		} else {
-			msg = "Sélectionnez au moins un enregistrement";
-			alert(msg);		
-		}
-	}
-
-
-function sel(nomForm, i, l)
-{
-    if (eval(nomForm+"."+i+".checked"))
-
-    {
-        eval("document.all."+l+".className='EnrSelectionne'");
-    }
-    else
-    {   
-        var noLigne=l.substring(5, l.length);
-
-        var classe="impair";
-        if (noLigne%2==0) classe="pair";   
-   
-        eval("document.all."+l+".className='"+classe+"'");
-    }   
-}
-
-
-</script>
--->
 <?php
 if (isset($aCustom["JS"]) && ($aCustom["JS"] != "")){
 	echo "<script type=\"text/javascript\" language=\"javascript\">\n";
@@ -631,50 +544,8 @@ $tempStyles .= "}\n";
 	$classeName = $stack[0]["attrs"]["NAME"];
 	$classePrefixe = $stack[0]["attrs"]["PREFIX"];
 	$aNodeToSort = $stack[0]["children"]; 
-?>
-<!-- Pour plus tard au cas où
-<table border="0" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo" width="100%">
-	<tr>
-		<td colspan="6">
-		<?php
-		
-		/* for ($i=0;$i<count($aNodeToSort);$i++){
-			if ($aNodeToSort[$i]["name"] == "ITEM"){
-				if ($aNodeToSort[$i]["attrs"]["NAME"] == "statut"){
-					$aStatutNode = $aNodeToSort[$i];
-					break;
-				}
-			}
-		}
 
-		if (isset($aStatutNode["children"]) && (count($aStatutNode["children"]) > 0)){			
-			foreach ($aStatutNode["children"] as $childKey => $childNode){
-				if($childNode["name"] == "OPTION"){ // on a un node d'option			
-					if ($childNode["attrs"]["TYPE"] == "value"){ */
-						?>
-						<input type="button" name="btATTEN" id="btATTEN" value="<?//=$childNode["attrs"]["LIBELLE"]?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=$childNode["attrs"]["VALUE"]?>)" />&nbsp;
-						<?php
-					 //} //fin type  == value				
-				//}
-			//}
-		//} // if nodes children
-		//else{	
-			?>
-			<input type="button" name="btATTEN" id="btATTEN" value="<?//=lib(DEF_ID_STATUT_ATTEN)?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=DEF_ID_STATUT_ATTEN?>)" />&nbsp;
-			<input type="button" name="btLIGNE" id="btLIGNE" value="<?//=lib(DEF_ID_STATUT_LIGNE)?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=DEF_ID_STATUT_LIGNE?>)" />&nbsp;
-			<input type="button" name="btARCHI" id="btARCHI" value="<?//=lib(DEF_ID_STATUT_ARCHI)?>" class="arbo" style="width:100px" onclick="changeStatut(<?//=DEF_ID_STATUT_ARCHI?>)" />&nbsp; 
-			<?php
-		//}
-		?>
-</td>
-	</tr>
-</table> 
 
-<table border="0" align="center" cellpadding="5" cellspacing="0" bordercolor="#FFFFFF" class="arbo" width="100%">
-<tr>
-<td align="center" nowrap>&nbsp;</td>-->
-
-<?php
 echo "<div class='actions'>Actions</div>";
 $tempStyles .= ".actions"."{\n";
 $tempStyles .= "}\n";
@@ -779,11 +650,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					}
 					else{
 						
-						if (ereg($slg, $oTemp->getDisplay())) $myValue = getItemValue($oTemp, $oTemp->getDisplay());
-						else if (ereg($slg, $oTemp->getAbstract())) $myValue = getItemValue($oTemp, $oTemp->getAbstract());
+						if (preg_match('/'.$slg.'/msi', $oTemp->getDisplay())) $myValue = getItemValue($oTemp, $oTemp->getDisplay());
+						else if (preg_match('/'.$slg.'/msi', $oTemp->getAbstract())) $myValue = getItemValue($oTemp, $oTemp->getAbstract());
 						else $myValue = getItemValue($oTemp, $oTemp->getDisplay());
 						
-						if (eregi("\.pdf$",$myValue) ) 
+						if (preg_match("/\.pdf$/msi",$myValue) ) 
 							echo "<a href=\"/modules/utils/telecharger.php?file=".$myValue."&chemin=/custom/upload/".$oTemp->getClasse()."/&\" title=\"".$myValue."\">".$myValue."</a>" ;
 						else 
 							echo $myValue ;
@@ -838,7 +709,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 									}
 								}
 							}							
-							if (eregi("\.gif$",$eKeyValue) || eregi("\.png$",$eKeyValue) || eregi("\.jpg$",$eKeyValue) || eregi("\.jpeg$",$eKeyValue)){ // image	
+							if (preg_match("/\.gif$/msi",$eKeyValue) || preg_match("/\.png$/msi",$eKeyValue) || preg_match("/\.jpg$/msi",$eKeyValue) || preg_match("/\.jpeg$/msi",$eKeyValue)){ // image	
 							
 								if (is_file ($_SERVER['DOCUMENT_ROOT']."/custom/upload/".$classeName."/".$eKeyValue)) {
 									echo "<img border=\"0\" alt=\"".$eKeyValue."\" src=\"/custom/upload/".$classeName."/".$eKeyValue."\" />\n";
@@ -861,8 +732,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						}	
 						elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp" || $aNodeToSort[$i]["attrs"]["TYPE"] == "datetime") {
 							 
-							if (ereg("[0-9]{2}[-/]{1}[0-9]{2}[-/]{1}[0-9]{4}[- ]{1}[0-9]{2}[-:]{1}[0-9]{2}[-:]{1}[0-9]{2}", $eKeyValue)){ // FR 2 US 
-								$eKeyValue = ereg_replace("([0-9]{2}[-/]{1}[0-9]{2}[-/]{1}[0-9]{4})[- ]{1}[0-9]{2}[-:]{1}[0-9]{2}[-:]{1}[0-9]{2}", "\\1", $eKeyValue);
+							if (preg_match("/[0-9]{2}[\-\/]{1}[0-9]{2}[\-\/]{1}[0-9]{4}[\- ]{1}[0-9]{2}[\-:]{1}[0-9]{2}[\-:]{1}[0-9]{2}/msi", $eKeyValue)){ // FR 2 US 
+								$eKeyValue = preg_replace("/([0-9]{2}[\-\/]{1}[0-9]{2}[\-\/]{1}[0-9]{4})[\- ]{1}[0-9]{2}[\-:]{1}[0-9]{2}[\-:]{1}[0-9]{2}/msi", "$1", $eKeyValue);
 								
 							}
 						 
@@ -911,8 +782,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 	$tempStyles .= "}\n";
 	echo "</div>\n";
 // pour plus tard au cas où
-//echo "<a href=\"javascript:modifEmp('".$oRes->get_id()."')\" title='Modifier'><img src='/backoffice/cms/img/modifier.gif' border='0' alt='Modifier' align='top' /></a>&nbsp";
-//echo "<a href=\"javascript:deleteEmp('".$oRes->get_id()."')\" title='Supprimer'><img src='/backoffice/cms/img/supprimer.gif' border='0' alt='Supprimer' align='top' /></a>&nbsp";
+//echo "<a href=\"javascript:modifEmp('".$oRes->get_id()."')\" title='Modifier'><img src='/backoffice/cms/img/2013/icone/modifier.png' border='0' alt='Modifier' align='top' /></a>&nbsp";
+//echo "<a href=\"javascript:deleteEmp('".$oRes->get_id()."')\" title='Supprimer'><img src='/backoffice/cms/img/2013/icone/supprimer.png' border='0' alt='Supprimer' align='top' /></a>&nbsp";
 
 
 echo "<br style=\"clear: both;\"/></div><!-- fin div id=\"".$classeName."_record\" class=\"".$classeName."_record\" > -->\n";

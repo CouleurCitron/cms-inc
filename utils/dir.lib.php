@@ -123,7 +123,7 @@ function removeForbiddenChars($strChars, $bUseDashInsteadOfUnderScore=DEF_DASH_I
 	$strChars = russianToLatin(entitiesToUtf8($strChars)); // pour le russe &#xxxx; => uft8, puis russe utf8 => latin
 	
 	$forbidden = array(" ", "/", "'", "\"", "?", "!", ",", ";", ":", "(", ")", "@", "®", "™", html_entity_decode("&nbsp;"), "«", "»", "¿", "¡", "?", "?");
-	$replaces = array( "_", "-", "_",  "",  ".", ".", ".", ".", ".", "",  "",  "a",  "",  "", "_",                          "",  "",  "",  "",  "",  "");
+	$replaces = array("_", "-", "_", "", ".", ".", ".", ".", ".", "", "", "a", "", "", "_", "", "", "", "", "", "");
 	$strChars = str_replace($forbidden, $replaces, removeAccents($strChars)); 
 	 
 	if ((string)$bUseDashInsteadOfUnderScore==='true'){
@@ -131,7 +131,7 @@ function removeForbiddenChars($strChars, $bUseDashInsteadOfUnderScore=DEF_DASH_I
 	}
 	else{
 		$strChars = str_replace('-', '_', $strChars);
-	}
+	}	
 	return $strChars;
 }
 
@@ -156,7 +156,7 @@ function dotNotOverWrite($sFile){
 		$attempt = 1;
 		$sNewFile = $sFile;
 		while (is_file($sNewFile)){			
-			$sNewFile = ereg_replace("(.*)\.([^\.]{3,4})$", "\\1_".$attempt.".\\2",$sFile);
+			$sNewFile = preg_replace("/(.*)\.([^\.]{3,4})$/msi", "$1_".$attempt.".$2",$sFile);
 			$attempt++;
 		}
 		return $sNewFile;
@@ -242,7 +242,7 @@ function dirIsValid($dirName, $filters) {
 	global $_SERVER;
 	foreach($filters as $ctrl => $type) {
 		if($type=='exact') {
-			if(array_pop(split('/',$dirName))==$ctrl)
+			if(array_pop(explode('/',$dirName))==$ctrl)
 				$result = false;
 		} elseif($type=='pattern') {
 			if(preg_match("/".$ctrl."/",$dirName))
@@ -256,7 +256,7 @@ function fileIsValid($fileName, $filters) {
 	$result = true;
 	foreach($filters as $ctrl => $type) {
 		if($type=='exact') {
-			if(array_pop(split('/',$fileName))==$ctrl)
+			if(array_pop(explode('/',$fileName))==$ctrl)
 				$result = false;
 		} elseif($type=='pattern') {
 			if(preg_match($ctrl,$fileName))

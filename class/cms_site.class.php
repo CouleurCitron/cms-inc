@@ -33,17 +33,11 @@ if (!ispatched('cms_site')){
 		if (!in_array('cms_https', $names)) {
 			$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 		}
-        if (!in_array('cms_viewport', $names)) {
+                if (!in_array('cms_viewport', $names)) {
 			$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_viewport` TEXT AFTER `cms_geoposition` ; ');
 		}//cms_jquery_version
-        if (!in_array('cms_jquery_version', $names)) {
+                if (!in_array('cms_jquery_version', $names)) {
 			$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_jquery_version` INT NOT NULL DEFAULT  \'1\' AFTER  `cms_viewport` ; ');
-		}
-		if (!in_array('cms_codegooana', $names)) {
-			$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_codegooana` TEXT AFTER  `cms_jquery_version` ; ');
-		}
-		if (!in_array('cms_offline', $names)) {
-			$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 		}
                 
 	}
@@ -51,28 +45,20 @@ if (!ispatched('cms_site')){
 	// patch old style
 	$rs = $db->Execute('DESCRIBE `cms_site`');
 	
-	if ($rs->_numOfRows == 22){
-		$rs = $db->Execute(' ALTER TABLE  `cms_site` ADD  `cms_codegooana` TEXT AFTER  `cms_jquery_version` ; ');
-		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
-
-	}
 	if ($rs->_numOfRows == 13){
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_robots` VARCHAR( 255 ) NOT NULL AFTER `cms_langue` , ADD `cms_copyright` VARCHAR( 255 ) NOT NULL AFTER `cms_robots` , ADD `cms_georegion` VARCHAR( 255 ) NOT NULL AFTER `cms_copyright` , ADD `cms_geoplacename` VARCHAR( 255 ) NOT NULL AFTER `cms_georegion` , ADD `cms_geoposition` VARCHAR( 255 ) NOT NULL AFTER `cms_geoplacename` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
-		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 	}
 	elseif ($rs->_numOfRows == 11){
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_doctype` INT( 2 ) NULL DEFAULT \'0\' AFTER `cms_rep`, ADD `cms_encod` INT( 2 ) NULL DEFAULT \'0\' AFTER `cms_doctype` ;');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_robots` VARCHAR( 255 ) NOT NULL AFTER `cms_langue` , ADD `cms_copyright` VARCHAR( 255 ) NOT NULL AFTER `cms_robots` , ADD `cms_georegion` VARCHAR( 255 ) NOT NULL AFTER `cms_copyright` , ADD `cms_geoplacename` VARCHAR( 255 ) NOT NULL AFTER `cms_georegion` , ADD `cms_geoposition` VARCHAR( 255 ) NOT NULL AFTER `cms_geoplacename` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
-		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 	} 
 	elseif ($rs->_numOfRows == 10){
 		$rs = $db->Execute('ALTER TABLE `cms_site` ADD `cms_statut` INT( 11 ) NOT NULL DEFAULT \'4\' AFTER `cms_langue` ;');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_doctype` INT( 2 ) NULL DEFAULT \'0\' AFTER `cms_rep`, ADD `cms_encod` INT( 2 ) NULL DEFAULT \'0\' AFTER `cms_doctype` ;');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_robots` VARCHAR( 255 ) NOT NULL AFTER `cms_langue` , ADD `cms_copyright` VARCHAR( 255 ) NOT NULL AFTER `cms_robots` , ADD `cms_georegion` VARCHAR( 255 ) NOT NULL AFTER `cms_copyright` , ADD `cms_geoplacename` VARCHAR( 255 ) NOT NULL AFTER `cms_georegion` , ADD `cms_geoposition` VARCHAR( 255 ) NOT NULL AFTER `cms_geoplacename` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
-		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 	} 
 	elseif ($rs->_numOfRows == 9){
 		$rs = $db->Execute('ALTER TABLE `cms_site` ADD `cms_langue` INT( 11 ) AFTER `cms_rep` ;');
@@ -80,7 +66,6 @@ if (!ispatched('cms_site')){
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_doctype` INT( 2 ) NULL DEFAULT \'0\' AFTER `cms_rep`, ADD `cms_encod` INT( 2 ) NULL DEFAULT \'0\' AFTER `cms_doctype` ;');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_robots` VARCHAR( 255 ) NOT NULL AFTER `cms_langue` , ADD `cms_copyright` VARCHAR( 255 ) NOT NULL AFTER `cms_robots` , ADD `cms_georegion` VARCHAR( 255 ) NOT NULL AFTER `cms_copyright` , ADD `cms_geoplacename` VARCHAR( 255 ) NOT NULL AFTER `cms_georegion` , ADD `cms_geoposition` VARCHAR( 255 ) NOT NULL AFTER `cms_geoplacename` ; ');
 		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_https` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
-		$rs = $db->Execute(' ALTER TABLE `cms_site` ADD `cms_offline` INT( 2 ) NOT NULL DEFAULT \'0\' AFTER `cms_doctype` ; ');
 	} 
 }
 
@@ -108,7 +93,6 @@ CREATE TABLE cms_site
 	cms_rep			varchar (255),
 	cms_encod			int (2),
 	cms_doctype			int (2),
-	cms_offline			int (2),
 	cms_https			int (2),
 	cms_langue			int (11),
 	cms_robots			varchar (255),
@@ -119,7 +103,6 @@ CREATE TABLE cms_site
 	cms_geoposition			varchar (255),
 	cms_viewport			text,
 	cms_jquery_version			int (11),
-	cms_codegooana			text,
 	cms_statut			int (11) not null
 )
 
@@ -139,7 +122,6 @@ CREATE TABLE cms_site
 	cms_rep			varchar2 (255),
 	cms_encod			number (2),
 	cms_doctype			number (2),
-	cms_offline			number (2),
 	cms_https			number (2),
 	cms_langue			number (11),
 	cms_robots			varchar2 (255),
@@ -150,7 +132,6 @@ CREATE TABLE cms_site
 	cms_geoposition			varchar2 (255),
 	cms_viewport			text,
 	cms_jquery_version			number (11),
-	cms_codegooana			text,
 	cms_statut			number (11) not null
 )
 
@@ -183,7 +164,6 @@ CREATE TABLE cms_site
 <option type="value" value="7" libelle="XHTML 1.0 RDFa" />
 </item>
 
-<item name="offline" libelle="Hors Ligne" type="int" length="2" list="true" order="true" option="bool" default="0" />
 <item name="https" libelle="Sécurisé" type="int" length="2" list="true" order="true" option="bool" default="0" />
 
 <item name="langue" libelle="Langue" type="int" length="11" list="true" order="true" nohtml="true" fkey="cms_langue"/>
@@ -204,7 +184,6 @@ CREATE TABLE cms_site
 
 <item name="jquery_version" type="int" length="11" list="true" order="true" fkey="cms_jquery_version" />
 
-<item name="codegooana" libelle="Code tracking" type="text" list="false" order="false" nohtml="true" default="" option="textarea" />
 
 <item name="statut" libelle="Statut" type="int" length="11" notnull="true" default="DEF_ID_STATUT_LIGNE" list="true" order="true" /> 
 <langpack lang="fr">
@@ -230,7 +209,6 @@ var $heightpage;
 var $rep;
 var $encod;
 var $doctype;
-var $offline;
 var $https;
 var $langue;
 var $robots;
@@ -241,7 +219,6 @@ var $geoplacename;
 var $geoposition;
 var $viewport;
 var $jquery_version;
-var $codegooana;
 var $statut;
 
 
@@ -273,7 +250,6 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 <option type=\"value\" value=\"7\" libelle=\"XHTML 1.0 RDFa\" />
 </item>
 
-<item name=\"offline\" libelle=\"Hors Ligne\" type=\"int\" length=\"2\" list=\"true\" order=\"true\" option=\"bool\" default=\"0\" />
 <item name=\"https\" libelle=\"Sécurisé\" type=\"int\" length=\"2\" list=\"true\" order=\"true\" option=\"bool\" default=\"0\" />
 
 <item name=\"langue\" libelle=\"Langue\" type=\"int\" length=\"11\" list=\"true\" order=\"true\" nohtml=\"true\" fkey=\"cms_langue\"/>
@@ -293,7 +269,6 @@ var $XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 <item name=\"viewport\" libelle=\"Viewport\" type=\"text\" list=\"false\" order=\"false\" nohtml=\"true\" default=\"width=device-width,initial-scale=1\" option=\"textarea\" />
 
 <item name=\"jquery_version\" type=\"int\" length=\"11\" list=\"true\" order=\"true\" fkey=\"cms_jquery_version\" />
-<item name=\"codegooana\" libelle=\"Code tracking\" type=\"text\" list=\"false\" order=\"false\" nohtml=\"true\" default=\"\" option=\"textarea\" />
 
 
 <item name=\"statut\" libelle=\"Statut\" type=\"int\" length=\"11\" notnull=\"true\" default=\"DEF_ID_STATUT_LIGNE\" list=\"true\" order=\"true\" /> 
@@ -317,7 +292,6 @@ var $sMySql = "CREATE TABLE cms_site
 	cms_rep			varchar (255),
 	cms_encod			int (2),
 	cms_doctype			int (2),
-	cms_offline			int (2),
 	cms_https			int (2),
 	cms_langue			int (11),
 	cms_robots			varchar (255),
@@ -328,14 +302,13 @@ var $sMySql = "CREATE TABLE cms_site
 	cms_geoposition			varchar (255),
 	cms_viewport			text,
 	cms_jquery_version			int (11),
-	cms_codegooana			text,
 	cms_statut			int (11) not null
 )
 
 ";
 
 // constructeur
-function cms_site($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);
@@ -365,7 +338,6 @@ function cms_site($id=null)
 		$this->rep = "";
 		$this->encod = -1;
 		$this->doctype = -1;
-		$this->offline = -1;
 		$this->https = -1;
 		$this->langue = -1;
 		$this->robots = "index, follow";
@@ -376,7 +348,6 @@ function cms_site($id=null)
 		$this->geoposition = "43.5522183477, 1.4900636673";
 		$this->viewport = "width=device-width,initial-scale=1";
 		$this->jquery_version = -1;
-		$this->codegooana = "";
 		$this->statut = DEF_ID_STATUT_LIGNE;
 		if(array_key_exists('0',$this->inherited_list)){
 			foreach($this->inherited_list as $class){
@@ -403,7 +374,6 @@ function getListeChamps()
 	$laListeChamps[]=new dbChamp("Cms_rep", "text", "get_rep", "set_rep");
 	$laListeChamps[]=new dbChamp("Cms_encod", "entier", "get_encod", "set_encod");
 	$laListeChamps[]=new dbChamp("Cms_doctype", "entier", "get_doctype", "set_doctype");
-	$laListeChamps[]=new dbChamp("Cms_offline", "entier", "get_offline", "set_offline");
 	$laListeChamps[]=new dbChamp("Cms_https", "entier", "get_https", "set_https");
 	$laListeChamps[]=new dbChamp("Cms_langue", "entier", "get_langue", "set_langue");
 	$laListeChamps[]=new dbChamp("Cms_robots", "text", "get_robots", "set_robots");
@@ -414,7 +384,6 @@ function getListeChamps()
 	$laListeChamps[]=new dbChamp("Cms_geoposition", "text", "get_geoposition", "set_geoposition");
 	$laListeChamps[]=new dbChamp("Cms_viewport", "text", "get_viewport", "set_viewport");
 	$laListeChamps[]=new dbChamp("Cms_jquery_version", "entier", "get_jquery_version", "set_jquery_version");
-	$laListeChamps[]=new dbChamp("Cms_codegooana", "text", "get_codegooana", "set_codegooana");
 	$laListeChamps[]=new dbChamp("Cms_statut", "entier", "get_statut", "set_statut");
 	return($laListeChamps);
 }
@@ -432,7 +401,6 @@ function get_heightpage() { return($this->heightpage); }
 function get_rep() { return($this->rep); }
 function get_encod() { return($this->encod); }
 function get_doctype() { return($this->doctype); }
-function get_offline() { return($this->offline); }
 function get_https() { return($this->https); }
 function get_langue() { return($this->langue); }
 function get_robots() { return($this->robots); }
@@ -443,7 +411,6 @@ function get_geoplacename() { return($this->geoplacename); }
 function get_geoposition() { return($this->geoposition); }
 function get_viewport() { return($this->viewport); }
 function get_jquery_version() { return($this->jquery_version); }
-function get_codegooana() { return($this->codegooana); }
 function get_statut() { return($this->statut); }
 
 function getWidthpage_site() { return($this->widthpage); }
@@ -461,7 +428,6 @@ function set_heightpage($c_cms_heightpage) { return($this->heightpage=$c_cms_hei
 function set_rep($c_cms_rep) { return($this->rep=$c_cms_rep); }
 function set_encod($c_cms_encod) { return($this->encod=$c_cms_encod); }
 function set_doctype($c_cms_doctype) { return($this->doctype=$c_cms_doctype); }
-function set_offline($c_cms_offline) { return($this->offline=$c_cms_offline); }
 function set_https($c_cms_https) { return($this->https=$c_cms_https); }
 function set_langue($c_cms_langue) { return($this->langue=$c_cms_langue); }
 function set_robots($c_cms_robots) { return($this->robots=$c_cms_robots); }
@@ -472,7 +438,6 @@ function set_geoplacename($c_cms_geoplacename) { return($this->geoplacename=$c_c
 function set_geoposition($c_cms_geoposition) { return($this->geoposition=$c_cms_geoposition); }
 function set_viewport($c_cms_viewport) { return($this->viewport=$c_cms_viewport); }
 function set_jquery_version($c_cms_jquery_version) { return($this->jquery_version=$c_cms_jquery_version); }
-function set_codegooana($c_cms_codegooana) { return($this->codegooana=$c_cms_codegooana); }
 function set_statut($c_cms_statut) { return($this->statut=$c_cms_statut); }
 
 
@@ -823,7 +788,6 @@ function sitePropsToSession($oSite){
         }    
     }
         
-	$_SESSION['offline'] = $oSite->get_offline();    
     $_SESSION['https'] = $oSite->get_https();    
     $_SESSION['robots'] = $oSite->get_robots();
     $_SESSION['author'] = $oSite->get_author();

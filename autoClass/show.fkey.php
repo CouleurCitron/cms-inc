@@ -1,7 +1,7 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_cms.php");
-include_once($_SERVER['DOCUMENT_ROOT']."/include/cms-inc/include_class.php");
+include_once("cms-inc/include_cms.php");
+include_once("cms-inc/include_class.php");
 
 if ($eKeyValue > -1) {
 	$oTemp = cacheObject($sTempClasse, $eKeyValue);
@@ -12,6 +12,7 @@ if ($eKeyValue > -1) {
 	unset($stack);
 	$stack = array();
 	xmlClassParse($sXML);
+
 
 	$foreignName = $stack[0]["attrs"]["NAME"];
 	$foreignPrefixe = $stack[0]["attrs"]["PREFIX"];
@@ -220,8 +221,8 @@ if ($eKeyValue > -1) {
 		$itemValueShort = substr($itemValue, 0, 50);
 		if (strlen($itemValue) > 50 ) 
 			$itemValueShort .= " ... ";
-		echo $itemValueShort;
-	
+		echo strip_tags($itemValueShort, '<br><b><i><strong><em>');
+		
 		$itemValue = "";
 		//eval("$"."eKeyValueTemp = $"."oTemp->get_".strval($oTemp->getAbstract())."();");
 			if ($oTemp->getDisplay() != $oTemp->getAbstract() && $oTemp->getAbstract() != 'statut') {
@@ -251,7 +252,6 @@ if ($eKeyValue > -1) {
 				}
 			}
 		}
-		
 		// translation data
 		// Added by Luc - 13 oct. 2009
 		if (DEF_APP_USE_TRANSLATIONS && $translateAbstract) { 
@@ -282,9 +282,10 @@ if ($eKeyValue > -1) {
 		
 		// end translation data
 		$itemValueShort = substr($itemValue, 0, 50);
+                //$itemValueShort = strip_tags(substr($itemValue, 0, 50), '<br><b><i><strong><em>');
 		if (strlen($itemValue) > 50 ) 
 			$itemValueShort .= " ... ";
-		echo $itemValueShort;
+		echo strip_tags($itemValueShort, '<br><b><i><strong><em>');
 
 
 		if ($is_linkable)

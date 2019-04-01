@@ -65,7 +65,7 @@ var $sMySql = "CREATE TABLE cms_assobo_userscms_statut_content
 ";
 
 // constructeur
-function cms_assobo_userscms_statut_content($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assobo_userscms_statut_content") == false){
 		dbExecuteQuery($this->sMySql);
@@ -239,7 +239,7 @@ function sendAlerteModuleToAdmin($oAssoAdminAlerte, $idUser, $idObject, $sClasse
 	$smailHTML .=htmlentities("Utilisateur :")." ".$userLogged."<br/>";
 	$smailHTML .=htmlentities("Module :")." ".$sClassename."<br/><br/>";
 	$smailHTML .=htmlentities("Vous pouvez accéder à ce module depuis le backoffice :")."<BR/>";
-	if (ereg ("cms", $sClassename)) { 
+	if (preg_match ("/cms/msi", $sClassename)) { 
 		$smailHTML .= "<a href='http://".$_SERVER['HTTP_HOST']."/backoffice/cms/".$sClassename."/show_".$sClassename.".php?id=".$idObject."'>http://".$_SERVER['HTTP_HOST']."/backoffice/cms/".$sClassename."/show_".$sClassename.".php?id=".$idObject."</a><BR/><br><br>"; 
 	}
 	else {
@@ -252,7 +252,7 @@ function sendAlerteModuleToAdmin($oAssoAdminAlerte, $idUser, $idObject, $sClasse
 	$smailTEXT .="Utilisateur : ".$userLogged."\r\n";
 	$smailTEXT .="Module : ".$sClassename."\r\n"; 
 	$smailTEXT .="Vous pouvez accéder à ce module depuis le backoffice :\r\n";
-	if (ereg ("cms", $sClassename)) { 
+	if (preg_match ("/cms/msi", $sClassename)) { 
 		$smailTEXT .="http://".$_SERVER['HTTP_HOST']."/backoffice/cms/".$sClassename."/show_".$sClassename.".php?id=".$idObject."\r\n"; 
 	}
 	else {

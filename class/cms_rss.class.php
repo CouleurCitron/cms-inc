@@ -1,19 +1,17 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // patch de migration
-if ($db!=NULL	&&	!ispatched('cms_rss')){
-	$rs = $db->Execute('DESCRIBE `cms_rss`');
-	if (isset($rs->_numOfRows)){
-		if ($rs->_numOfRows == 16){
-			$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_url_objet` VARCHAR( 255 ) NULL AFTER `rss_classe` ;');
-		}
-		elseif ($rs->_numOfRows == 15){
-			$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_num_item` VARCHAR( 255 ) NULL AFTER `rss_order_by` ;');
-		}
-		elseif ($rs->_numOfRows == 14){
-			$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_order_by` VARCHAR( 255 ) NULL AFTER `rss_value_where` ;');
-			$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_num_item` VARCHAR( 255 ) NULL AFTER `rss_order_by` ;');
-		}
+$rs = $db->Execute('DESCRIBE `cms_rss`');
+if (isset($rs->_numOfRows)){
+	if ($rs->_numOfRows == 16){
+		$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_url_objet` VARCHAR( 255 ) NULL AFTER `rss_classe` ;');
+	}
+	elseif ($rs->_numOfRows == 15){
+		$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_num_item` VARCHAR( 255 ) NULL AFTER `rss_order_by` ;');
+	}
+	elseif ($rs->_numOfRows == 14){
+		$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_order_by` VARCHAR( 255 ) NULL AFTER `rss_value_where` ;');
+		$rs = $db->Execute('ALTER TABLE `cms_rss` ADD `rss_num_item` VARCHAR( 255 ) NULL AFTER `rss_order_by` ;');
 	}
 }
 /*======================================
@@ -385,7 +383,7 @@ var $sMySql = "CREATE TABLE cms_rss
 ";
 
 // constructeur
-function cms_rss($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_rss") == false){
 		dbExecuteQuery($this->sMySql);

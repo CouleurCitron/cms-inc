@@ -21,7 +21,7 @@ var $noeud;
 var $aContenu;
 
 // constructeur
-function Cms_affich_droitpage($id=NULL) 
+function __construct($id=NULL) 
 {
 	global $db;
 	if ($id!=NULL){

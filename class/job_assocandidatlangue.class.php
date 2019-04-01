@@ -80,7 +80,7 @@ var $sMySql = "CREATE TABLE job_assocandidatlangue
 ";
 
 // constructeur
-function job_assocandidatlangue($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

@@ -10,7 +10,7 @@ class dbTri {
 	var $Sens;
 						
 	// constructeur
-	function dbTri($sNom, $sSens)
+	function __construct($sNom, $sSens)
 	{
 		$this->Nom = $sNom;
 		$this->Sens = $sSens;

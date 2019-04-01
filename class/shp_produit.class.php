@@ -266,7 +266,7 @@ var $sMySql = "CREATE TABLE shp_produit
 ";
 
 // constructeur
-function shp_produit($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

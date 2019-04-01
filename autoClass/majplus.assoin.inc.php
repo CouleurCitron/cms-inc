@@ -195,7 +195,7 @@ function deleteId (id, classe)
 			if ($tempStatus == DEF_ID_STATUT_LIGNE){
 				if ($bCms_site == true && $classeName != "classe" ) {
 					$temp_cms_site = $oForeign->get_cms_site();
-					if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail']!= "" &&  ereg("backoffice", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || ($temp_cms_site == $idSite)) {
+					if ((isset($_SESSION['idSite_travail']) && $_SESSION['idSite_travail']!= "" &&  preg_match("/backoffice/msi", $_SERVER['PHP_SELF']) && $temp_cms_site == $_SESSION['idSite_travail']) || ($temp_cms_site == $idSite)) {
 									// test sur select. chercher id de la fiche en cours ($id) et id du foreign en cours ($tempId) dans Asso.
 				echo "<div name=\"fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut)."_".$tempId."_div\" id=\"fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut)."_".$tempId."_div\" >";
 				echo "<input type=\"checkbox\" name=\"fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut)."_".$tempId."\" id=\"fAsso".ucfirst($tempAssoIn)."_".ucfirst($tempAssoOut)."_".$tempId."\" value=\"".$tempId."\" ".$checked." ";

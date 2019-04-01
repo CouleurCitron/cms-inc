@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_assoportdepartement
 ";
 
 // constructeur
-function cms_assoportdepartement($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_assoportdepartement") == false){
 		dbExecuteQuery($this->sMySql);

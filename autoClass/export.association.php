@@ -134,7 +134,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 					
 					 
 					$sql = "select ".$sTempClasse.".* from ".$sTempClasse.", ".$myAssoClasse." ";
-					if (ereg("rau_", $tempAssoIn) || ereg("shp_", $tempAssoIn)) {
+					if (preg_match("/rau_/msi", $tempAssoIn) || preg_match("/shp_/msi", $tempAssoIn)) {
 						 $sql.= " where ".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoIn))." = ".$id." ";
 						 $sql.= " and ".$myAssoClasse.".".$tempAssoPrefixe."_".str_replace("shp_", "id_", str_replace("rau_", "id_", $tempAssoOut))." = ".$foreignName.".".$foreignPrefixe."_id "; 
 						

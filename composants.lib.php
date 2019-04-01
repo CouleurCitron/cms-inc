@@ -1,10 +1,17 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 /*
-$Id: composants.lib.php,v 1.11 2013-03-01 10:33:58 pierre Exp $
-$Author: pierre $
+$Id: composants.lib.php,v 1.2 2013-10-02 14:51:06 raphael Exp $
+$Author: raphael $
 
 $Log: composants.lib.php,v $
+Revision 1.2  2013-10-02 14:51:06  raphael
+Modifications de la sauvegarde des traductions pour passer dans la fonction do_rewrite_rules()
+ dans laquelle elle ne passait pas auparavant !
+
+Revision 1.1  2013-09-30 09:28:22  raphael
+*** empty log message ***
+
 Revision 1.11  2013-03-01 10:33:58  pierre
 *** empty log message ***
 
@@ -139,7 +146,7 @@ function storeComposant($idSite, $oCms_content) {
 		$oSite = new cms_site($idSite);
 		$rep = $oSite->get_rep();
 	}
-	
+	pre_dump($oCms_content);
 	if (is_file($_SERVER['DOCUMENT_ROOT'].'/include/modules/'.$rep.'/mod_rewrite.inc.php')){	
 		include_once('modules/'.$rep.'/mod_rewrite.inc.php');		
 		if (function_exists('do_rewrite_rule')){

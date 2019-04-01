@@ -100,7 +100,7 @@ var $sMySql = "CREATE TABLE shr_track
 ";
 
 // constructeur
-function shr_track($id=null)
+function __construct($id=null)
 {
 	if (istable(get_class($this)) == false){
 		dbExecuteQuery($this->sMySql);

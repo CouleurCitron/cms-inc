@@ -1,63 +1,72 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
-// +-----------------------------------------------------------------------+
-// | Copyright (c) 2001-2002, Richard Heyes                                |
-// | All rights reserved.                                                  |
-// |                                                                       |
-// | Redistribution and use in source and binary forms, with or without    |
-// | modification, are permitted provided that the following conditions    |
-// | are met:                                                              |
-// |                                                                       |
-// | o Redistributions of source code must retain the above copyright      |
-// |   notice, this list of conditions and the following disclaimer.       |
-// | o Redistributions in binary form must reproduce the above copyright   |
-// |   notice, this list of conditions and the following disclaimer in the |
-// |   documentation and/or other materials provided with the distribution.| 
-// | o The names of the authors may not be used to endorse or promote      |
-// |   products derived from this software without specific prior written  |
-// |   permission.                                                         |
-// |                                                                       |
-// | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS   |
-// | "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT     |
-// | LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR |
-// | A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT  |
-// | OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, |
-// | SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT      |
-// | LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, |
-// | DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY |
-// | THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT   |
-// | (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE |
-// | OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  |
-// |                                                                       |
-// +-----------------------------------------------------------------------+
-// | Authors: Richard Heyes <richard@phpguru.org>                          |
-// |          Chuck Hagenbuch <chuck@horde.org>                            |
-// +-----------------------------------------------------------------------+
+/**
+ * RFC 822 Email address list validation Utility
+ *
+ * PHP version 5
+ *
+ * LICENSE:
+ *
+ * Copyright (c) 2001-2010, Richard Heyes
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * o Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ * o Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ * o The names of the authors may not be used to endorse or promote
+ *   products derived from this software without specific prior written
+ *   permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @category    Mail
+ * @package     Mail
+ * @author      Richard Heyes <richard@phpguru.org>
+ * @author      Chuck Hagenbuch <chuck@horde.org
+ * @copyright   2001-2010 Richard Heyes
+ * @license     http://opensource.org/licenses/bsd-license.php New BSD License
+ * @version     CVS: $Id$
+ * @link        http://pear.php.net/package/Mail/
+ */
 
 /**
-* RFC 822 Email address list validation Utility
-*
-* What is it?
-*
-* This class will take an address string, and parse it into it's consituent
-* parts, be that either addresses, groups, or combinations. Nested groups
-* are not supported. The structure it returns is pretty straight forward,
-* and is similar to that provided by the imap_rfc822_parse_adrlist(). Use
-* print_r() to view the structure.
-*
-* How do I use it?
-*
-* $address_string = 'My Group: "Richard" <richard@localhost> (A comment), ted@example.com (Ted Bloggs), Barney;';
-* $structure = Mail_RFC822::parseAddressList($address_string, 'example.com', true)
-* print_r($structure);
-*
-* @author  Richard Heyes <richard@phpguru.org>
-* @author  Chuck Hagenbuch <chuck@horde.org>
-* @version $Revision: 1.3 $
-* @license BSD
-* @package Mail
-*/
-
+ * RFC 822 Email address list validation Utility
+ *
+ * What is it?
+ *
+ * This class will take an address string, and parse it into it's consituent
+ * parts, be that either addresses, groups, or combinations. Nested groups
+ * are not supported. The structure it returns is pretty straight forward,
+ * and is similar to that provided by the imap_rfc822_parse_adrlist(). Use
+ * print_r() to view the structure.
+ *
+ * How do I use it?
+ *
+ * $address_string = 'My Group: "Richard" <richard@localhost> (A comment), ted@example.com (Ted Bloggs), Barney;';
+ * $structure = Mail_RFC822::parseAddressList($address_string, 'example.com', true)
+ * print_r($structure);
+ *
+ * @author  Richard Heyes <richard@phpguru.org>
+ * @author  Chuck Hagenbuch <chuck@horde.org>
+ * @version $Revision$
+ * @license BSD
+ * @package Mail
+ */
 class Mail_RFC822 {
 
     /**
@@ -121,27 +130,25 @@ class Mail_RFC822 {
      * @var boolean $mailRFC822
      */
     var $mailRFC822 = true;
-    
+
     /**
     * A limit after which processing stops
     * @var int $limit
     */
     var $limit = null;
 
-
     /**
      * Sets up the object. The address must either be set here or when
      * calling parseAddressList(). One or the other.
      *
-     * @access public
      * @param string  $address         The address(es) to validate.
      * @param string  $default_domain  Default domain/host etc. If not supplied, will be set to localhost.
      * @param boolean $nest_groups     Whether to return the structure with groups nested for easier viewing.
      * @param boolean $validate        Whether to validate atoms. Turn this off if you need to run addresses through before encoding the personal names, for instance.
-     * 
+     *
      * @return object Mail_RFC822 A new Mail_RFC822 object.
      */
-    function Mail_RFC822($address = null, $default_domain = null, $nest_groups = null, $validate = null, $limit = null)
+    public function __construct($address = null, $default_domain = null, $nest_groups = null, $validate = null, $limit = null)
     {
         if (isset($address))        $this->address        = $address;
         if (isset($default_domain)) $this->default_domain = $default_domain;
@@ -150,23 +157,20 @@ class Mail_RFC822 {
         if (isset($limit))          $this->limit          = $limit;
     }
 
-
     /**
      * Starts the whole process. The address must either be set here
      * or when creating the object. One or the other.
      *
-     * @access public
      * @param string  $address         The address(es) to validate.
      * @param string  $default_domain  Default domain/host etc.
      * @param boolean $nest_groups     Whether to return the structure with groups nested for easier viewing.
      * @param boolean $validate        Whether to validate atoms. Turn this off if you need to run addresses through before encoding the personal names, for instance.
-     * 
+     *
      * @return array A structured array of addresses.
      */
-    function parseAddressList($address = null, $default_domain = null, $nest_groups = null, $validate = null, $limit = null)
+    public function parseAddressList($address = null, $default_domain = null, $nest_groups = null, $validate = null, $limit = null)
     {
-
-        if (!isset($this->mailRFC822)) {
+        if (!isset($this) || !isset($this->mailRFC822)) {
             $obj = new Mail_RFC822($address, $default_domain, $nest_groups, $validate, $limit);
             return $obj->parseAddressList();
         }
@@ -182,28 +186,31 @@ class Mail_RFC822 {
         $this->error      = null;
         $this->index      = null;
 
-        while ($this->address = $this->_splitAddresses($this->address)) {
-            continue;
-        }
-        
+        // Unfold any long lines in $this->address.
+        $this->address = preg_replace('/\r?\n/', "\r\n", $this->address);
+        $this->address = preg_replace('/\r\n(\t| )+/', ' ', $this->address);
+
+        while ($this->address = $this->_splitAddresses($this->address));
+
         if ($this->address === false || isset($this->error)) {
-            require_once 'cms-inc/lib/pear/PEAR.php';
+            require_once 'PEAR.php';
             return PEAR::raiseError($this->error);
         }
 
-        // Loop through all the addresses
-        for ($i = 0; $i < count($this->addresses); $i++){
+        // Validate each address individually.  If we encounter an invalid
+        // address, stop iterating and return an error immediately.
+        foreach ($this->addresses as $address) {
+            $valid = $this->_validateAddress($address);
 
-            if (($return = $this->_validateAddress($this->addresses[$i])) === false
-                || isset($this->error)) {
-                require_once 'cms-inc/lib/pear/PEAR.php';
+            if ($valid === false || isset($this->error)) {
+                require_once 'PEAR.php';
                 return PEAR::raiseError($this->error);
             }
-            
+
             if (!$this->nestGroups) {
-                $this->structure = array_merge($this->structure, $return);
+                $this->structure = array_merge($this->structure, $valid);
             } else {
-                $this->structure[] = $return;
+                $this->structure[] = $valid;
             }
         }
 
@@ -211,16 +218,14 @@ class Mail_RFC822 {
     }
 
     /**
-     * Splits an address into seperate addresses.
-     * 
-     * @access private
+     * Splits an address into separate addresses.
+     *
      * @param string $address The addresses to split.
      * @return boolean Success or failure.
      */
-    function _splitAddresses($address)
+    protected function _splitAddresses($address)
     {
-
-        if (!empty($this->limit) AND count($this->addresses) == $this->limit) {
+        if (!empty($this->limit) && count($this->addresses) == $this->limit) {
             return '';
         }
 
@@ -250,8 +255,9 @@ class Mail_RFC822 {
             }
 
             // Now check it's outside of brackets/quotes:
-            if (!$this->_splitCheck(explode(':', $string), ':'))
+            if (!$this->_splitCheck(explode(':', $string), ':')) {
                 return false;
+            }
 
             // We must have a group at this point, so increase the counter:
             $this->num_groups++;
@@ -288,12 +294,11 @@ class Mail_RFC822 {
 
     /**
      * Checks for a group at the start of the string.
-     * 
-     * @access private
+     *
      * @param string $address The address to check.
      * @return boolean Whether or not there is a group at the start of the string.
      */
-    function _isGroup($address)
+    protected function _isGroup($address)
     {
         // First comma not in quotes, angles or escaped:
         $parts  = explode(',', $address);
@@ -312,13 +317,12 @@ class Mail_RFC822 {
 
     /**
      * A common function that will check an exploded string.
-     * 
-     * @access private
+     *
      * @param array $parts The exloded string.
      * @param string $char  The char that was exploded on.
      * @return mixed False if the string contains unclosed quotes/brackets, or the string on success.
      */
-    function _splitCheck($parts, $char)
+    protected function _splitCheck($parts, $char)
     {
         $string = $parts[0];
 
@@ -344,34 +348,49 @@ class Mail_RFC822 {
     }
 
     /**
-     * Checks if a string has an unclosed quotes or not.
-     * 
-     * @access private
-     * @param string $string The string to check.
-     * @return boolean True if there are unclosed quotes inside the string, false otherwise.
+     * Checks if a string has unclosed quotes or not.
+     *
+     * @param string $string  The string to check.
+     * @return boolean  True if there are unclosed quotes inside the string,
+     *                  false otherwise.
      */
-    function _hasUnclosedQuotes($string)
+    protected function _hasUnclosedQuotes($string)
     {
-        $string     = explode('"', $string);
-        $string_cnt = count($string);
+        $string = trim($string);
+        $iMax = strlen($string);
+        $in_quote = false;
+        $i = $slashes = 0;
 
-        for ($i = 0; $i < (count($string) - 1); $i++)
-            if (substr($string[$i], -1) == '\\')
-                $string_cnt--;
+        for (; $i < $iMax; ++$i) {
+            switch ($string[$i]) {
+            case '\\':
+                ++$slashes;
+                break;
 
-        return ($string_cnt % 2 === 0);
+            case '"':
+                if ($slashes % 2 == 0) {
+                    $in_quote = !$in_quote;
+                }
+                // Fall through to default action below.
+
+            default:
+                $slashes = 0;
+                break;
+            }
+        }
+
+        return $in_quote;
     }
 
     /**
      * Checks if a string has an unclosed brackets or not. IMPORTANT:
      * This function handles both angle brackets and square brackets;
-     * 
-     * @access private
+     *
      * @param string $string The string to check.
      * @param string $chars  The characters to check for.
      * @return boolean True if there are unclosed brackets inside the string, false otherwise.
      */
-    function _hasUnclosedBrackets($string, $chars)
+    protected function _hasUnclosedBrackets($string, $chars)
     {
         $num_angle_start = substr_count($string, $chars[0]);
         $num_angle_end   = substr_count($string, $chars[1]);
@@ -389,14 +408,13 @@ class Mail_RFC822 {
 
     /**
      * Sub function that is used only by hasUnclosedBrackets().
-     * 
-     * @access private
+     *
      * @param string $string The string to check.
      * @param integer &$num    The number of occurences.
      * @param string $char   The character to count.
      * @return integer The number of occurences of $char in $string, adjusted for backslashes.
      */
-    function _hasUnclosedBracketsSub($string, &$num, $char)
+    protected function _hasUnclosedBracketsSub($string, &$num, $char)
     {
         $parts = explode($char, $string);
         for ($i = 0; $i < count($parts); $i++){
@@ -405,20 +423,20 @@ class Mail_RFC822 {
             if (isset($parts[$i + 1]))
                 $parts[$i + 1] = $parts[$i] . $char . $parts[$i + 1];
         }
-        
+
         return $num;
     }
 
     /**
      * Function to begin checking the address.
      *
-     * @access private
      * @param string $address The address to validate.
      * @return mixed False on failure, or a structured array of address information on success.
      */
-    function _validateAddress($address)
+    protected function _validateAddress($address)
     {
         $is_group = false;
+        $addresses = array();
 
         if ($address['group']) {
             $is_group = true;
@@ -456,24 +474,22 @@ class Mail_RFC822 {
             $addresses[] = $address['address'];
         }
 
-        // Check that $addresses is set, if address like this:
-        // Groupname:;
-        // Then errors were appearing.
-        if (!isset($addresses)){
-            $this->error = 'Empty group.';
-            return false;
-        }
-
-        for ($i = 0; $i < count($addresses); $i++) {
-            $addresses[$i] = trim($addresses[$i]);
-        }
+        // Trim the whitespace from all of the address strings.
+        array_map('trim', $addresses);
 
         // Validate each mailbox.
         // Format could be one of: name <geezer@domain.com>
         //                         geezer@domain.com
         //                         geezer
         // ... or any other format valid by RFC 822.
-        array_walk($addresses, array($this, 'validateMailbox'));
+        for ($i = 0; $i < count($addresses); $i++) {
+            if (!$this->validateMailbox($addresses[$i])) {
+                if (empty($this->error)) {
+                    $this->error = 'Validation failed for: ' . $addresses[$i];
+                }
+                return false;
+            }
+        }
 
         // Nested format
         if ($this->nestGroups) {
@@ -498,11 +514,10 @@ class Mail_RFC822 {
     /**
      * Function to validate a phrase.
      *
-     * @access private
      * @param string $phrase The phrase to check.
      * @return boolean Success or failure.
      */
-    function _validatePhrase($phrase)
+    protected function _validatePhrase($phrase)
     {
         // Splits on one or more Tab or space.
         $parts = preg_split('/[ \\x09]+/', $phrase, -1, PREG_SPLIT_NO_EMPTY);
@@ -514,16 +529,17 @@ class Mail_RFC822 {
                 array_shift($parts);
         }
 
-        for ($i = 0; $i < count($phrase_parts); $i++) {
+        foreach ($phrase_parts as $part) {
             // If quoted string:
-            if (substr($phrase_parts[$i], 0, 1) == '"') {
-                if (!$this->_validateQuotedString($phrase_parts[$i]))
+            if (substr($part, 0, 1) == '"') {
+                if (!$this->_validateQuotedString($part)) {
                     return false;
+                }
                 continue;
             }
 
             // Otherwise it's an atom:
-            if (!$this->_validateAtom($phrase_parts[$i])) return false;
+            if (!$this->_validateAtom($part)) return false;
         }
 
         return true;
@@ -532,17 +548,16 @@ class Mail_RFC822 {
     /**
      * Function to validate an atom which from rfc822 is:
      * atom = 1*<any CHAR except specials, SPACE and CTLs>
-     * 
+     *
      * If validation ($this->validate) has been turned off, then
      * validateAtom() doesn't actually check anything. This is so that you
      * can split a list of addresses up before encoding personal names
      * (umlauts, etc.), for example.
-     * 
-     * @access private
+     *
      * @param string $atom The string to check.
      * @return boolean Success or failure.
      */
-    function _validateAtom($atom)
+    protected function _validateAtom($atom)
     {
         if (!$this->validate) {
             // Validation has been turned off; assume the atom is okay.
@@ -570,50 +585,48 @@ class Mail_RFC822 {
     /**
      * Function to validate quoted string, which is:
      * quoted-string = <"> *(qtext/quoted-pair) <">
-     * 
-     * @access private
+     *
      * @param string $qstring The string to check
      * @return boolean Success or failure.
      */
-    function _validateQuotedString($qstring)
+    protected function _validateQuotedString($qstring)
     {
         // Leading and trailing "
         $qstring = substr($qstring, 1, -1);
 
-        // Perform check.
-        return !(preg_match('/(.)[\x0D\\\\"]/', $qstring, $matches) && $matches[1] != '\\');
+        // Perform check, removing quoted characters first.
+        return !preg_match('/[\x0D\\\\"]/', preg_replace('/\\\\./', '', $qstring));
     }
 
     /**
      * Function to validate a mailbox, which is:
      * mailbox =   addr-spec         ; simple address
      *           / phrase route-addr ; name and route-addr
-     * 
-     * @access public
+     *
      * @param string &$mailbox The string to check.
      * @return boolean Success or failure.
      */
-    function validateMailbox(&$mailbox)
+    public function validateMailbox(&$mailbox)
     {
         // A couple of defaults.
         $phrase  = '';
         $comment = '';
         $comments = array();
 
-        // Catch any RFC822 comments and store them separately
+        // Catch any RFC822 comments and store them separately.
         $_mailbox = $mailbox;
         while (strlen(trim($_mailbox)) > 0) {
             $parts = explode('(', $_mailbox);
             $before_comment = $this->_splitCheck($parts, '(');
             if ($before_comment != $_mailbox) {
-                // First char should be a (
+                // First char should be a (.
                 $comment    = substr(str_replace($before_comment, '', $_mailbox), 1);
                 $parts      = explode(')', $comment);
                 $comment    = $this->_splitCheck($parts, ')');
                 $comments[] = $comment;
 
-                // +1 is for the trailing )
-                $_mailbox   = substr($_mailbox, strpos($_mailbox, $comment)+strlen($comment)+1);
+                // +2 is for the brackets
+                $_mailbox = substr($_mailbox, strpos($_mailbox, '('.$comment)+strlen($comment)+2);
             } else {
                 break;
             }
@@ -633,19 +646,22 @@ class Mail_RFC822 {
             $phrase     = trim($name);
             $route_addr = trim(substr($mailbox, strlen($name.'<'), -1));
 
-            if ($this->_validatePhrase($phrase) === false || ($route_addr = $this->_validateRouteAddr($route_addr)) === false)
+            if ($this->_validatePhrase($phrase) === false || ($route_addr = $this->_validateRouteAddr($route_addr)) === false) {
                 return false;
+            }
 
         // Only got addr-spec
         } else {
             // First snip angle brackets if present.
-            if (substr($mailbox,0,1) == '<' && substr($mailbox,-1) == '>')
-                $addr_spec = substr($mailbox,1,-1);
-            else
+            if (substr($mailbox, 0, 1) == '<' && substr($mailbox, -1) == '>') {
+                $addr_spec = substr($mailbox, 1, -1);
+            } else {
                 $addr_spec = $mailbox;
+            }
 
-            if (($addr_spec = $this->_validateAddrSpec($addr_spec)) === false)
+            if (($addr_spec = $this->_validateAddrSpec($addr_spec)) === false) {
                 return false;
+            }
         }
 
         // Construct the object that will be returned.
@@ -674,12 +690,11 @@ class Mail_RFC822 {
      *
      * Angle brackets have already been removed at the point of
      * getting to this function.
-     * 
-     * @access private
+     *
      * @param string $route_addr The string to check.
      * @return mixed False on failure, or an array containing validated address/route information on success.
      */
-    function _validateRouteAddr($route_addr)
+    protected function _validateRouteAddr($route_addr)
     {
         // Check for colon.
         if (strpos($route_addr, ':') !== false) {
@@ -724,19 +739,18 @@ class Mail_RFC822 {
     /**
      * Function to validate a route, which is:
      * route = 1#("@" domain) ":"
-     * 
-     * @access private
+     *
      * @param string $route The string to check.
      * @return mixed False on failure, or the validated $route on success.
      */
-    function _validateRoute($route)
+    protected function _validateRoute($route)
     {
         // Split on comma.
         $domains = explode(',', trim($route));
 
-        for ($i = 0; $i < count($domains); $i++) {
-            $domains[$i] = str_replace('@', '', trim($domains[$i]));
-            if (!$this->_validateDomain($domains[$i])) return false;
+        foreach ($domains as $domain) {
+            $domain = str_replace('@', '', trim($domain));
+            if (!$this->_validateDomain($domain)) return false;
         }
 
         return $route;
@@ -747,14 +761,13 @@ class Mail_RFC822 {
      * you expect of a strict internet domain.
      *
      * domain = sub-domain *("." sub-domain)
-     * 
-     * @access private
+     *
      * @param string $domain The string to check.
      * @return mixed False on failure, or the validated domain on success.
      */
-    function _validateDomain($domain)
+    protected function _validateDomain($domain)
     {
-        // Note the different use of $subdomains and $sub_domains                        
+        // Note the different use of $subdomains and $sub_domains
         $subdomains = explode('.', $domain);
 
         while (count($subdomains) > 0) {
@@ -763,8 +776,8 @@ class Mail_RFC822 {
                 array_shift($subdomains);
         }
 
-        for ($i = 0; $i < count($sub_domains); $i++) {
-            if (!$this->_validateSubdomain(trim($sub_domains[$i])))
+        foreach ($sub_domains as $sub_domain) {
+            if (!$this->_validateSubdomain(trim($sub_domain)))
                 return false;
         }
 
@@ -775,12 +788,11 @@ class Mail_RFC822 {
     /**
      * Function to validate a subdomain:
      *   subdomain = domain-ref / domain-literal
-     * 
-     * @access private
+     *
      * @param string $subdomain The string to check.
      * @return boolean Success or failure.
      */
-    function _validateSubdomain($subdomain)
+    protected function _validateSubdomain($subdomain)
     {
         if (preg_match('|^\[(.*)]$|', $subdomain, $arr)){
             if (!$this->_validateDliteral($arr[1])) return false;
@@ -795,12 +807,11 @@ class Mail_RFC822 {
     /**
      * Function to validate a domain literal:
      *   domain-literal =  "[" *(dtext / quoted-pair) "]"
-     * 
-     * @access private
+     *
      * @param string $dliteral The string to check.
      * @return boolean Success or failure.
      */
-    function _validateDliteral($dliteral)
+    protected function _validateDliteral($dliteral)
     {
         return !preg_match('/(.)[][\x0D\\\\]/', $dliteral, $matches) && $matches[1] != '\\';
     }
@@ -809,12 +820,11 @@ class Mail_RFC822 {
      * Function to validate an addr-spec.
      *
      * addr-spec = local-part "@" domain
-     * 
-     * @access private
+     *
      * @param string $addr_spec The string to check.
      * @return mixed False on failure, or the validated addr-spec on success.
      */
-    function _validateAddrSpec($addr_spec)
+    protected function _validateAddrSpec($addr_spec)
     {
         $addr_spec = trim($addr_spec);
 
@@ -832,7 +842,7 @@ class Mail_RFC822 {
 
         if (($local_part = $this->_validateLocalPart($local_part)) === false) return false;
         if (($domain     = $this->_validateDomain($domain)) === false) return false;
-        
+
         // Got here so return successful.
         return array('local_part' => $local_part, 'domain' => $domain);
     }
@@ -840,17 +850,17 @@ class Mail_RFC822 {
     /**
      * Function to validate the local part of an address:
      *   local-part = word *("." word)
-     * 
-     * @access private
+     *
      * @param string $local_part
      * @return mixed False on failure, or the validated local part on success.
      */
-    function _validateLocalPart($local_part)
+    protected function _validateLocalPart($local_part)
     {
         $parts = explode('.', $local_part);
+        $words = array();
 
         // Split the local_part into words.
-        while (count($parts) > 0){
+        while (count($parts) > 0) {
             $words[] = $this->_splitCheck($parts, '.');
             for ($i = 0; $i < $this->index + 1; $i++) {
                 array_shift($parts);
@@ -858,8 +868,18 @@ class Mail_RFC822 {
         }
 
         // Validate each word.
-        for ($i = 0; $i < count($words); $i++) {
-            if ($this->_validatePhrase(trim($words[$i])) === false) return false;
+        foreach ($words as $word) {
+            // word cannot be empty (#17317)
+            if ($word === '') {
+                return false;
+            }
+            // If this word contains an unquoted space, it is invalid. (6.2.4)
+            if (strpos($word, ' ') && $word[0] !== '"')
+            {
+                return false;
+            }
+
+            if ($this->_validatePhrase(trim($word)) === false) return false;
         }
 
         // Managed to get here, so return the input.
@@ -867,41 +887,41 @@ class Mail_RFC822 {
     }
 
     /**
-    * Returns an approximate count of how many addresses are
-    * in the given string. This is APPROXIMATE as it only splits
-    * based on a comma which has no preceding backslash. Could be
-    * useful as large amounts of addresses will end up producing
-    * *large* structures when used with parseAddressList().
-    *
-    * @param  string $data Addresses to count
-    * @return int          Approximate count
-    */
-    function approximateCount($data)
+     * Returns an approximate count of how many addresses are in the
+     * given string. This is APPROXIMATE as it only splits based on a
+     * comma which has no preceding backslash. Could be useful as
+     * large amounts of addresses will end up producing *large*
+     * structures when used with parseAddressList().
+     *
+     * @param  string $data Addresses to count
+     * @return int          Approximate count
+     */
+    public function approximateCount($data)
     {
         return count(preg_split('/(?<!\\\\),/', $data));
     }
-    
+
     /**
-    * This is a email validating function seperate to the rest
-    * of the class. It simply validates whether an email is of
-    * the common internet form: <user>@<domain>. This can be
-    * sufficient for most people. Optional stricter mode can
-    * be utilised which restricts mailbox characters allowed
-    * to alphanumeric, full stop, hyphen and underscore.
-    *
-    * @param  string  $data   Address to check
-    * @param  boolean $strict Optional stricter mode
-    * @return mixed           False if it fails, an indexed array
-    *                         username/domain if it matches
-    */
-    function isValidInetAddress($data, $strict = false)
+     * This is a email validating function separate to the rest of the
+     * class. It simply validates whether an email is of the common
+     * internet form: <user>@<domain>. This can be sufficient for most
+     * people. Optional stricter mode can be utilised which restricts
+     * mailbox characters allowed to alphanumeric, full stop, hyphen
+     * and underscore.
+     *
+     * @param  string  $data   Address to check
+     * @param  boolean $strict Optional stricter mode
+     * @return mixed           False if it fails, an indexed array
+     *                         username/domain if it matches
+     */
+    public function isValidInetAddress($data, $strict = false)
     {
-        $regex = $strict ? '/^([.0-9a-z_-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i' : '/^([*+!.&#$|\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,4})$/i';
+        $regex = $strict ? '/^([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})$/i' : '/^([*+!.&#$|\'\\%\/0-9a-z^_`{}=?~:-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})$/i';
         if (preg_match($regex, trim($data), $matches)) {
             return array($matches[1], $matches[2]);
         } else {
             return false;
         }
     }
+
 }
-?>

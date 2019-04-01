@@ -107,7 +107,7 @@ var $sMySql = "CREATE TABLE shp_produit_type
 ";
 
 // constructeur
-function shp_produit_type($id=null)
+function __construct($id=null)
 {
 	if (istable("shp_produit_type") == false){
 		dbExecuteQuery($this->sMySql);

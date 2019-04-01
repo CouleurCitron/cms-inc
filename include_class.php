@@ -1,5 +1,5 @@
 <?php
-if(!$includesOk){
+if(!isset($includesOk)	||	!$includesOk){
 
     include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
     // sponthus 26/07/2005
@@ -12,7 +12,6 @@ if(!$includesOk){
     dirExists('/include/bo/class/');
 
     $aClasse = dbGetObjectsFromFieldValue3('classe', array('get_statut', 'get_iscms'), array('equals', 'equals'), array(DEF_ID_STATUT_LIGNE, 0), NULL, NULL);
-    //$aClasse = dbGetObjectsFromFieldValue("classe", array('get_statut', 'get_iscms'),  array(DEF_ID_STATUT_LIGNE, 0), NULL);
 
     if ((count($aClasse) > 0)&&($aClasse!=false)){
             foreach($aClasse as $cKey => $oClasse){

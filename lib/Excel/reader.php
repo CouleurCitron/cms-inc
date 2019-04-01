@@ -42,7 +42,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  * @package	Spreadsheet_Excel_Reader
  * @author	 Vadim Tkachenko <vt@apachephp.com>
  * @license	http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version	CVS: $Id: reader.php,v 1.4 2013-03-01 10:34:05 pierre Exp $
+ * @version	CVS: $Id: reader.php,v 1.1 2013-09-30 09:29:47 raphael Exp $
  * @link	   http://pear.php.net/package/Spreadsheet_Excel_Reader
  * @see		OLE, Spreadsheet_Excel_Writer
  * --------------------------------------------------------------------------

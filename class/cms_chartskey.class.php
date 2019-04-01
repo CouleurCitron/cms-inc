@@ -59,7 +59,7 @@ var $sMySql = "CREATE TABLE cms_chartskey
 ";
 
 // constructeur
-function cms_chartskey($id=null)
+function __construct($id=null)
 {
 	if (istable("cms_chartskey") == false){
 		dbExecuteQuery($this->sMySql);

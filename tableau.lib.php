@@ -70,8 +70,8 @@ function getHTMLActionsDroite ($idLigne, $idColonne, $colorTD, $id, $nombreLigne
 	$HTMLActionsDroite = "";
 	//$HTMLActionsDroite.= "<td ".$colorTD."><input type=\"text\" id=\"".$idLigne."/".$idColonne."\" name=\"".$idLigne."/".$idColonne."\" value=\"\" class=\"arbo\" size=\"10\" ></td>";
 	$HTMLActionsDroite.= "<td width=\"200px\"><input type=\"text\" id=\"".$idLigne."/".$idColonne."\" name=\"".$idLigne."/".$idColonne."\" value=\"\" class=\"arbo\" size=\"10\" ></td>";
-	$HTMLActionsDroite.= "<td width=\"500\"><a href=\"http://".$_SERVER["HTTP_HOST"]."/backoffice/cms/cms_tableau/edit_cms_tableau.php?id=".$id."&ligne=".$idLigne."\"><img src=\"/backoffice/cms/img/modifier.gif\"></a>";
-	if ($idLigne !=1) $HTMLActionsDroite.= "<a href=\"#\" onClick=\"javascript:delLigne(".$idLigne.");\"><img src=\"/backoffice/cms/img/supprimer.gif\"></a>";
+	$HTMLActionsDroite.= "<td width=\"500\"><a href=\"http://".$_SERVER["HTTP_HOST"]."/backoffice/cms/cms_tableau/edit_cms_tableau.php?id=".$id."&ligne=".$idLigne."\"><img src=\"/backoffice/cms/img/2013/icone/modifier.png\"></a>";
+	if ($idLigne !=1) $HTMLActionsDroite.= "<a href=\"#\" onClick=\"javascript:delLigne(".$idLigne.");\"><img src=\"/backoffice/cms/img/2013/icone/supprimer.png\"></a>";
 	if ($idLigne != $nombreLignes) $HTMLActionsDroite.= "<a href=\"#\" onClick=\"javascript:moveLigne(".$idLigne.", 'down');\"><img src=\"/backoffice/cms/img/bas.gif\"></a>";
 	else $HTMLActionsDroite.= "<img src=\"/backoffice/cms/img/vide.gif\" width=\"12px\" height=\"9px\">";
 	if ($idLigne != 1) $HTMLActionsDroite.= "<a href=\"#\" onClick=\"javascript:moveLigne(".$idLigne.", 'up');\"><img src=\"/backoffice/cms/img/haut.gif\"></a>";
@@ -95,7 +95,7 @@ function getHTMLActionsHaut ($arrayTR, $colorTD) {
 		//$HTMLActionsHaut.= "<td ".$colorTD."><a href=\"#\" onClick=\"javascript:delColonne(".$idColonne.");\">del</a></td>";
 		$HTMLActionsHaut.= "<td >";
 		if ($idColonne > 2) $HTMLActionsHaut.= "<a href=\"#\" onClick=\"javascript:moveLigne(".$idColonne.", 'left');\"><img src=\"/backoffice/cms/img/gauche.gif\"></a>";
-		$HTMLActionsHaut.= "<a href=\"#\" onClick=\"javascript:delColonne(".$idColonne.");\"><img src=\"/backoffice/cms/img/supprimer.gif\"></a>";
+		$HTMLActionsHaut.= "<a href=\"#\" onClick=\"javascript:delColonne(".$idColonne.");\"><img src=\"/backoffice/cms/img/2013/icone/supprimer.png\"></a>";
 		$HTMLActionsHaut.= "</td>";
 	} 
 	//$HTMLActionsHaut.= "<td colspan=\"2\" ".$colorTD."></td>";
@@ -111,7 +111,7 @@ function getHTMLAjout ($nombreLignes, $nombreColonnes) {
 	/*$nombreLignes = getNombreLignes ($arrayTR);
 	$nombreColonnes = getNombreColonnes ($arrayTR);*/
 	$HTMLAjout="";
-	$HTMLAjout.="<tr ><td>&nbsp;</td><td colspan=\"".$nombreColonnes."\">&nbsp;</td><td ".$colorTD."><input type=\"text\" id=\"colonnetoadd\" name=\"colonnetoadd\" value=\"".($nombreColonnes+1)."\" class=\"arbo\" size=\"1\" ><a href=\"#\" onClick=\"javascript:ajoutColonne();\"><img src=\"/backoffice/cms/img/add.gif\" width=\"14px\" height=\"14px\" border=\"0\"> une colonne</a></td><td>&nbsp;</td></tr>";
+	$HTMLAjout.="<tr ><td>&nbsp;</td><td colspan=\"".$nombreColonnes."\">&nbsp;</td><td ".$colorTD."><input type=\"text\" id=\"colonnetoadd\" name=\"colonnetoadd\" value=\"".($nombreColonnes+1)."\" class=\"arbo\" size=\"1\" ><a href=\"#\" onClick=\"javascript:ajoutColonne();\"><img src=\"/backoffice/cms/img/2013/icone/add.png\"  border=\"0\"> une colonne</a></td><td>&nbsp;</td></tr>";
 	$HTMLAjout.="<tr><td>&nbsp;</td>";
 	$idLigne = $nombreLignes+1;
 	$colorTD = getColorTD ($idLigne);
@@ -121,7 +121,7 @@ function getHTMLAjout ($nombreLignes, $nombreColonnes) {
 		$HTMLAjout.= "<td ".$colorTD."><input type=\"text\" id=\"".$idLigne."/".$idColonne."\" name=\"".$idLigne."/".$idColonne."\" value=\"\" class=\"arbo\" size=\"10\" ></td>";
 	} 
 	$HTMLAjout.= "<td ".$colorTD.">&nbsp;</td>";
-	$HTMLAjout.= "<td ".$colorTD."><input type=\"text\" id=\"lignetoadd\" name=\"lignetoadd\" value=\"".($nombreLignes+1)."\" class=\"arbo\" size=\"1\" >&nbsp;<a href=\"#\" onClick=\"javascript:ajoutLigne();\"><img src=\"/backoffice/cms/img/add.gif\" width=\"14px\" height=\"14px\" border=\"0\"> une ligne</a>&nbsp;</td>";
+	$HTMLAjout.= "<td ".$colorTD."><input type=\"text\" id=\"lignetoadd\" name=\"lignetoadd\" value=\"".($nombreLignes+1)."\" class=\"arbo\" size=\"1\" >&nbsp;<a href=\"#\" onClick=\"javascript:ajoutLigne();\"><img src=\"/backoffice/cms/img/2013/icone/add.png\" border=\"0\"> une ligne</a>&nbsp;</td>";
 	$HTMLAjout.= "</tr>";
 	
 	return $HTMLAjout;
@@ -137,8 +137,8 @@ function getColspan ($ligneTD, $HTML) {
 		$colspan = str_replace($toDel, "", $ligneCOLSPAN);
 		$ligneTEXT = stristr($ligneTD, "id=\"");
 		$ligneTEXT2 = strchr($ligneTEXT, "\"");
-		$ligneTEXT3 = split(" ",$ligneTEXT2);
-		$ligneTEXT4 = split("/",$ligneTEXT3[0]);
+		$ligneTEXT3 = explode(" ",$ligneTEXT2);
+		$ligneTEXT4 = explode("/",$ligneTEXT3[0]);
 		$ref=$ligneTEXT4[0]."/".$ligneTEXT4[1];
 		$ligne = $ligneTEXT4[0];
 		$col = $ligneTEXT4[1];
@@ -165,8 +165,8 @@ function getColspan ($ligneTD, $HTML) {
 		$colspan = str_replace($toDel, "", $ligneCOLSPAN2);
 		$ligneTEXT = stristr($ligneTD, "id=\"");
 		$ligneTEXT2 = strchr($ligneTEXT, "\"");
-		$ligneTEXT3 = split(" ",$ligneTEXT2);
-		$ligneTEXT4 = split("/",$ligneTEXT3[0]);
+		$ligneTEXT3 = explode(" ",$ligneTEXT2);
+		$ligneTEXT4 = explode("/",$ligneTEXT3[0]);
 		$ref=$ligneTEXT4[0]."/".$ligneTEXT4[1];
 		$ligne = $ligneTEXT4[0];
 		$col = $ligneTEXT4[1];
@@ -566,7 +566,7 @@ function initRowspanColspan($html) {
 					$contenuCourantPDF = str_replace ("<B>", "", $contenuCourantPDF);
 					$contenuCourantPDF = str_replace ("</B>", "", $contenuCourantPDF);
 					//echo $contenuCourantPDF."<br>\n";
-					if (ereg("-PDF", $contenuCourantPDF)) {
+					if (preg_match("/-PDF/msi", $contenuCourantPDF)) {
 						$contenuCourantPDF = strchr($contenuCourantPDF, "-PDF");
 						$contenuCourantPDF = str_replace ("-PDF", "", $contenuCourantPDF);
 					}
@@ -668,7 +668,7 @@ function deleteRowspanColspan ($oRes) {
 	
 				$ligneTDcontenu = $aItems[1][$cptArrayTD];
 				if ($l==0) {
-					if (!ereg ("<b>", $ligneTDcontenu) && ltrim($ligneTDcontenu)!="") {
+					if (!preg_match ("/<b>/msi", $ligneTDcontenu) && ltrim($ligneTDcontenu)!="") {
 					//echo "-------------------";
 						$ligneTD = str_replace ($aItems[1][$cptArrayTD], "<b>".$aItems[1][$cptArrayTD]."</b>", $ligneTD);
 					}
