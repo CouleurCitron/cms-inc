@@ -1,299 +1,5 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
-/*
-	$Id: secure.php,v 1.82 2014-09-11 09:20:43 pierre Exp $
-	$Author: pierre $
-
-	$Log: secure.php,v $
-	Revision 1.82  2014-09-11 09:20:43  pierre
-	*** empty log message ***
-
-	Revision 1.81  2014-05-16 13:12:47  pierre
-	*** empty log message ***
-
-	Revision 1.80  2014-04-08 13:17:36  pierre
-	*** empty log message ***
-
-	Revision 1.79  2014-02-19 14:39:13  pierre
-	*** empty log message ***
-
-	Revision 1.78  2014-02-18 14:06:20  pierre
-	*** empty log message ***
-
-	Revision 1.77  2013-09-24 09:20:33  pierre
-	*** empty log message ***
-
-	Revision 1.76  2013-09-24 08:24:37  pierre
-	*** empty log message ***
-
-	Revision 1.75  2013-09-05 11:46:23  pierre
-	*** empty log message ***
-
-	Revision 1.74  2013-08-22 08:56:14  raphael
-	*** empty log message ***
-
-	Revision 1.73  2013-07-09 16:05:30  pierre
-	*** empty log message ***
-
-	Revision 1.72  2013-06-11 07:41:57  pierre
-	*** empty log message ***
-
-	Revision 1.71  2013-05-14 12:22:40  thao
-	*** empty log message ***
-
-	Revision 1.70  2013-03-22 13:41:51  raphael
-	*** empty log message ***
-
-	Revision 1.69  2013-03-01 10:33:59  pierre
-	*** empty log message ***
-
-	Revision 1.68  2013-01-14 16:45:59  pierre
-	*** empty log message ***
-
-	Revision 1.67  2012-12-13 16:03:26  pierre
-	*** empty log message ***
-
-	Revision 1.66  2012-10-01 09:59:42  pierre
-	*** empty log message ***
-
-	Revision 1.65  2012-09-12 16:16:37  pierre
-	*** empty log message ***
-
-	Revision 1.64  2012-07-31 14:24:46  pierre
-	*** empty log message ***
-
-	Revision 1.63  2012-06-27 09:08:54  pierre
-	*** empty log message ***
-
-	Revision 1.62  2012-06-13 14:40:50  pierre
-	*** empty log message ***
-
-	Revision 1.61  2012-05-07 08:24:04  pierre
-	*** empty log message ***
-
-	Revision 1.60  2012-04-05 12:50:53  thao
-	pbl langue sur BO (traduction en session)
-
-	Revision 1.59  2011-11-21 13:27:19  thao
-	ajout d'une condition pour tester l'existence de curl_init()
-
-	Revision 1.58  2011-11-03 11:15:06  pierre
-	*** empty log message ***
-
-	Revision 1.57  2011-11-03 09:35:51  pierre
-	*** empty log message ***
-
-	Revision 1.56  2011-07-25 09:42:27  thao
-	ajout ip sophie
-
-	Revision 1.55  2011-07-07 15:57:37  pierre
-	*** empty log message ***
-
-	Revision 1.54  2011-07-01 13:19:50  pierre
-	*** empty log message ***
-
-	Revision 1.53  2011-06-30 13:22:54  pierre
-	*** empty log message ***
-
-	Revision 1.52  2011-06-30 12:23:02  quentin
-	Ajout nouvelle charte BO
-
-	Revision 1.51  2011-06-29 16:10:34  pierre
-	*** empty log message ***
-
-	Revision 1.50  2011-06-29 13:21:33  pierre
-	*** empty log message ***
-
-	Revision 1.49  2011-06-16 08:40:20  pierre
-	*** empty log message ***
-
-	Revision 1.48  2011-06-07 07:28:54  pierre
-	*** empty log message ***
-
-	Revision 1.47  2011-05-31 08:44:58  pierre
-	*** empty log message ***
-
-	Revision 1.46  2011-05-30 10:38:54  pierre
-	*** empty log message ***
-
-	Revision 1.45  2010-12-15 10:33:40  pierre
-	optimisation usage des sessions idSite en BO
-
-	Revision 1.44  2010-10-04 10:11:34  pierre
-	*** empty log message ***
-
-	Revision 1.43  2010-05-20 12:54:40  pierre
-	*** empty log message ***
-
-	Revision 1.42  2010-03-08 12:15:26  pierre
-	*** empty log message ***
-
-	Revision 1.41  2009-10-16 13:39:07  pierre
-	*** empty log message ***
-
-	Revision 1.40  2009-09-24 08:52:32  pierre
-	*** empty log message ***
-
-	Revision 1.39  2009-06-08 12:52:40  pierre
-	*** empty log message ***
-
-	Revision 1.38  2009-06-08 09:41:06  pierre
-	*** empty log message ***
-
-	Revision 1.37  2009-05-12 14:57:48  pierre
-	*** empty log message ***
-
-	Revision 1.36  2009-04-10 09:15:05  pierre
-	*** empty log message ***
-
-	Revision 1.35  2009-03-03 09:13:19  thao
-	*** empty log message ***
-
-	Revision 1.34  2009-03-02 14:07:27  thao
-	*** empty log message ***
-
-	Revision 1.33  2008-12-05 15:18:25  pierre
-	*** empty log message ***
-
-	Revision 1.32  2008-12-01 10:53:23  thao
-	*** empty log message ***
-
-	Revision 1.31  2008-11-28 15:14:40  pierre
-	*** empty log message ***
-
-	Revision 1.30  2008-11-27 19:37:30  pierre
-	*** empty log message ***
-
-	Revision 1.29  2008-10-21 09:20:46  pierre
-	*** empty log message ***
-
-	Revision 1.27  2008/05/14 09:06:43  thao
-	*** empty log message ***
-	
-	Revision 1.26  2008/04/16 14:07:57  pierre
-	*** empty log message ***
-	
-	Revision 1.25  2008/04/16 09:42:33  pierre
-	*** empty log message ***
-	
-	Revision 1.24  2008/04/15 14:25:37  pierre
-	*** empty log message ***
-	
-	Revision 1.23  2008/03/10 09:32:23  pierre
-	*** empty log message ***
-	
-	Revision 1.22  2008/02/28 17:31:42  pierre
-	*** empty log message ***
-	
-	Revision 1.21  2008/01/22 17:15:06  pierre
-	*** empty log message ***
-	
-	Revision 1.20  2007/11/20 09:43:35  thao
-	*** empty log message ***
-	
-	Revision 1.19  2007/11/20 09:16:04  thao
-	*** empty log message ***
-	
-	Revision 1.18  2007/11/20 08:41:24  thao
-	*** empty log message ***
-	
-	Revision 1.17  2007/11/16 08:57:58  remy
-	*** empty log message ***
-	
-	Revision 1.16  2007/11/15 15:10:36  remy
-	*** empty log message ***
-	
-	Revision 1.15  2007/11/15 14:51:32  remy
-	*** empty log message ***
-	
-	Revision 1.14  2007/11/06 17:25:56  remy
-	*** empty log message ***
-	
-	Revision 1.13  2007/10/11 16:32:57  thao
-	*** empty log message ***
-	
-	Revision 1.12  2007/09/10 10:23:51  pierre
-	*** empty log message ***
-	
-	Revision 1.11  2007/09/03 09:56:04  thao
-	*** empty log message ***
-	
-	Revision 1.10  2007/09/03 09:55:40  thao
-	*** empty log message ***
-	
-	Revision 1.9  2007/08/29 07:51:17  pierre
-	*** empty log message ***
-	
-	Revision 1.8  2007/08/28 15:53:32  pierre
-	*** empty log message ***
-	
-	Revision 1.7  2007/08/28 10:01:22  pierre
-	*** empty log message ***
-	
-	Revision 1.6  2007/08/27 09:59:17  pierre
-	*** empty log message ***
-	
-	Revision 1.5  2007/08/24 15:12:21  pierre
-	*** empty log message ***
-	
-	Revision 1.4  2007/08/08 14:14:23  thao
-	*** empty log message ***
-	
-	Revision 1.3  2007/08/08 13:53:33  thao
-	*** empty log message ***
-	
-	Revision 1.2  2007/08/08 13:43:53  thao
-	*** empty log message ***
-	
-	Revision 1.1  2007/08/08 13:42:54  thao
-	*** empty log message ***
-	
-	Revision 1.6  2007/08/08 13:25:29  thao
-	*** empty log message ***
-	
-	Revision 1.5  2007/07/03 10:52:34  thao
-	*** empty log message ***
-	
-	Revision 1.4  2007/03/02 09:11:31  pierre
-	*** empty log message ***
-	
-	Revision 1.3  2007/02/28 16:38:31  pierre
-	*** empty log message ***
-	
-	Revision 1.2  2006/12/19 13:56:00  pierre
-	*** empty log message ***
-	
-	Revision 1.1.1.1  2006/01/25 15:14:27  pierre
-	projet CCitron AWS 2006 Nouveau Website
-	
-	Revision 1.3  2005/12/19 13:16:36  sylvie
-	*** empty log message ***
-	
-	Revision 1.2  2005/11/02 10:44:51  sylvie
-	*** empty log message ***
-	
-	Revision 1.1.1.1  2005/10/20 13:10:54  pierre
-	Espace V2
-	
-	Revision 1.1.1.1  2005/04/18 13:53:29  pierre
-	again
-	
-	Revision 1.1.1.1  2005/04/18 09:04:21  pierre
-	oremip new
-	
-	Revision 1.2  2004/11/09 09:29:24  ddinside
-	correction menu
-	
-	Revision 1.1.1.1  2004/09/29 15:38:21  ddinside
-	import initial Boite a Pizza
-	
-	Revision 1.2  2004/06/16 15:23:19  ddinside
-	inclusion corrections
-	
-	Revision 1.1  2004/06/01 14:25:19  ddinside
-	ajout petites annonce dont gardes finies
-	newslettrer
-*/
 
 if (strpos($_SERVER['REQUEST_URI'], 'secure.php')!==false){
 	// hack attempt
@@ -312,10 +18,14 @@ if (!isset($_SESSION['BO']['cms_texte'])){
 if (is_post('operation')){
 	if ($_POST['operation'] == "logoff") {
 		include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/session_end.php'); 
+		if (preg_match('/^\/.+$/msi', $_POST['returnurl'])){
+			$_SESSION['BO']=array();
+			$_SESSION['BO']['returnurl']=$_POST['returnurl'];	
+		}
 	}
 }
 
-$user = new User();
+$user = new bo_users();
 
 // utilisateurs par défaut
 $aUserLogin = explode(";", DEF_USERLOGIN);
@@ -360,7 +70,6 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 	if(is_post('login')) {		
 		// controles spéciaux pour le compte ccitron // http://couleurcitron.com/allow.php
 		if (trim($_POST['login'])=='ccitron'){
-			
 			
 			if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])	&&	($_SERVER["HTTP_X_FORWARDED_FOR"] != $_SERVER['REMOTE_ADDR'])	){
 				$_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -430,7 +139,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 			}			
 		}
 		
-		$user = new User();
+		$user = new bo_users();
 		$user->authentificate($_POST['login'], $_POST['password']);
 		if($user->id > 0) {
 			$user = new bo_users($user->id);
@@ -478,7 +187,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 </head>
 <body>
 <script type="text/javascript">
-	document.location = '<?php echo $_SESSION['BO']['URL']; ?>';
+	document.location = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 </script>
 </body>
 </html>
@@ -493,7 +202,7 @@ if(is_array($_SESSION['BO']) && isset($_SESSION['BO']['LOGGED'])) {
 		} // fin if($user->id > 0) {
 	} else {
 		// login non saisi				
-		$_SESSION['BO'] = array();
+		//$_SESSION['BO'] = array();
 		$_SESSION['BO']['URL'] = $_SERVER['REQUEST_URI']; // c be
 		$_SESSION['BO']['QUERY'] = $_SERVER['QUERY_STRING'];
 	} // fin if(strlen($_POST['login'])>0) {
