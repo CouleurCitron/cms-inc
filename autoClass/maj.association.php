@@ -323,7 +323,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					</div>	
 					<?php
 					
-					$idTous = preg_replace('/^(.+)_[0-9]+$/', '$1', array_shift(array_keys($asso_pile)));
+					$idTous = preg_replace('/^(.+)_[0-9]+$/', '$1', array_keys($asso_pile)[0]);
 					$asso_block .= "<input type=\"checkbox\" name=\"".$idTous."\" id=\"".$idTous."\" value=\"\" onchange=\"toggleTous(this);\" /> ".$translator->getTransByCode('tous')." <br />"; 
 					
 					

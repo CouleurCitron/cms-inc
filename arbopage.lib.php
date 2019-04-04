@@ -829,7 +829,8 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 			$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination.$OP."idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a><br/></span>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(explode(',',$virtualPath))==$id)
+			$aPath=explode(',',$virtualPath);
+			if(end($aPath)==$id)
 				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a class=\"arbo\" href=\"".$destination."?idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small><span class=\"arbo\">".strip_tags(str_replace(' ','&nbsp;',$libelle))."</span></small></a><br/></span>\n";
 			else
 				$strHTML .= "<span style=\"white-space:nowrap\">$indent<a href=\"".$destination."?idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_dossier_opened.gif\"><small>".strip_tags(str_replace(' ','&nbsp;',$libelle))."</small></a><br/></span>\n";
@@ -1065,7 +1066,8 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 
 function getFolderPages($idSite, $path) {
 	global $db;
-	$node_id = array_pop(explode(',',$path));
+	$aPath=explode(',',$path);
+	$node_id = end($aPath);
 	$return = array();
 
 	$sql = " SELECT id_page, name_page, gabarit_page, cast(dateadd_page as date) as dateadd_page, ";
