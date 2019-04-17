@@ -130,7 +130,7 @@ function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)
 	
 		return '<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				<div class="g-recaptcha" data-sitekey="'.DEV_RECAPTCHA_SITEKEY.'"></div>                 
-				</div>';
+				';
 }
 
 
