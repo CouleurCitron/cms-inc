@@ -698,26 +698,30 @@ class Form  {
 		 if ($field["display"] == "true") {
 		 	
 			
-			$js =  "if (!formCheckNotEmpty($(\"#".$nameForm." input[name='recaptcha_response_field']\"), validateOK, validateKO)) {\r
+			$js =  "		if (grecaptcha.getResponse()=='') {\r
 			go_submit = false; \r
+      captcha_ok = false; \r
+      window.messages +=  validationMessages[\"invalid_captcha\"]+'<br/>';\r
 		}\r
 		else {\r
 			
 		 
 			if (!captcha_ok) {\r  
 				
-				// $.post(\"/backoffice/cms/formulaire/captcha.php\", { recaptcha_response_field: $(\"#".$nameForm." input#recaptcha_response_field\").val(), recaptcha_challenge_field: $(\"#".$nameForm." input#recaptcha_challenge_field\").val()},  \r
 				$.post(\"/backoffice/cms/formulaire/captcha.php\", { recaptcha_response_field: grecaptcha.getResponse(), recaptcha_version: 2},  \r
 					function success(data){  \r 
 						
 						if(data == 1){  \r
-							 validateOK($(\"#".$nameForm." input[name='recaptcha_response_field']\"));\r
+							 //validateOK($(\"#".$nameForm." input[name='recaptcha_response_field']\"));\r
+               //validateOK(grecaptcha.getResponse());\r
 							 captcha_ok = true ; \r
 						
 						}else{  \r 
-							validateKO($(\"#".$nameForm." input[name='recaptcha_response_field']\"), \"invalid_captcha\"); \r
-							captcha_ok = true ;\r
+							//validateKO($(\"#".$nameForm." input[name='recaptcha_response_field']\"), \"invalid_captcha\"); \r
+              //validateKO(grecaptcha.getResponse(), \"invalid_captcha\"); \r
+							captcha_ok = false ;\r
 							go_submit = false;  \r
+              window.messages +=  validationMessages[\"invalid_captcha\"]+'<br/>';\r
 							 
 						}\r
 						do_validate();\r
@@ -729,7 +733,7 @@ class Form  {
   
 				
 				
-		}";
+		  }";
 		
 		}
 		else {
