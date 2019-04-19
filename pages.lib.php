@@ -416,7 +416,7 @@ function generatePage($divArray, $oPage, $oIinfos_page, $sMode="LIGNE", $eIdTrav
 	//error_log('generatePage(divArray, '.$oPage->get_id().', oIinfos_page, '.$sMode.', '.$eIdTravail.')');
 	// taille du div_array pour cette page
 	// ensemble des briques de cette page
-	if ($divArray[0]['id'] != "") $eIdDivarray = 1;
+	if (isset($divArray[0]['id'])	&&	$divArray[0]['id'] != "") $eIdDivarray = 1;
 	else $eIdDivarray = 0;
 
 	// composants

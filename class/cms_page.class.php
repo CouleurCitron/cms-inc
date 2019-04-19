@@ -862,7 +862,7 @@ function ifTousEnLigne($idPage)
 
 	// taille du div_array pour cette page :: ensemble des briques de cette page
 
-	if ($divArray[0]['id'] != "") $eIdDivarray = 1;
+	if (isset($divArray[0]['id'])	&&	$divArray[0]['id'] != "") $eIdDivarray = 1;
 	else $eIdDivarray = 0;
 
 	// composants
@@ -870,33 +870,35 @@ function ifTousEnLigne($idPage)
 
 	// tous les div_array
 	$bTousEnLigne = 1;
-	foreach($divArray_tosee as $k => $v) {
-		if(is_array($v)){
-	
-			$oContent = new Cms_content();
-			$oArchi = new Cms_archi_content();
-			
-			$oContent->initValues($v['id']);
-			$oArchi = getArchiWithIdContent($oContent->getId_content());
-
-			// si c'est une brique editable
-			if ($oContent->getIsbriquedit_content()) {
-	
-				// s'il existe une version en ligne de CMS_CONTENT
-				// ET que cms_content est en ligne
-				// -> alors tout est en ligne, pas de version de travail en cours
+	if (is_array($divArray_tosee)){
+		foreach($divArray_tosee as $k => $v) {
+			if(is_array($v)){
+		
+				$oContent = new Cms_content();
+				$oArchi = new Cms_archi_content();
 				
-				// teste ici si cms_content != ligne ou archi != cms_archi_ligne
-				
-				$sStatut_archi = $oArchi->getStatut_archi();
-				$sStatut_content = $oContent->getStatut_content();
-
-				if ($sStatut_content != DEF_ID_STATUT_LIGNE || $sStatut_archi != DEF_ID_STATUT_LIGNE) {
-
-					$bTousEnLigne = 0;
+				$oContent->initValues($v['id']);
+				$oArchi = getArchiWithIdContent($oContent->getId_content());
+	
+				// si c'est une brique editable
+				if ($oContent->getIsbriquedit_content()) {
+		
+					// s'il existe une version en ligne de CMS_CONTENT
+					// ET que cms_content est en ligne
+					// -> alors tout est en ligne, pas de version de travail en cours
+					
+					// teste ici si cms_content != ligne ou archi != cms_archi_ligne
+					
+					$sStatut_archi = $oArchi->getStatut_archi();
+					$sStatut_content = $oContent->getStatut_content();
+	
+					if ($sStatut_content != DEF_ID_STATUT_LIGNE || $sStatut_archi != DEF_ID_STATUT_LIGNE) {
+	
+						$bTousEnLigne = 0;
+					}
 				}
+				
 			}
-			
 		}
 	}
 
@@ -933,23 +935,25 @@ function ifExisteligne($idPage)
 
 	// tous les div_array
 	$bExisteLigne = 1;
-	foreach($divArray_tosee as $k => $v) {
-		if(is_array($v)){
+	if (is_array($divArray_tosee)){
+		foreach($divArray_tosee as $k => $v) {
+			if(is_array($v)){
+		
+				$oContent = new Cms_content();
+				$oArchi = new Cms_archi_content();
+				
+				$oContent->initValues($v['id']);
+				$oArchi = getArchiWithIdContent($oContent->getId_content());
 	
-			$oContent = new Cms_content();
-			$oArchi = new Cms_archi_content();
-			
-			$oContent->initValues($v['id']);
-			$oArchi = getArchiWithIdContent($oContent->getId_content());
-
-			// si c'est une brique editable
-			if ($oContent->getIsbriquedit_content()) {
-	
-				// s'il existe une version en ligne de CMS_CONTENT
-				$sStatut = $oArchi->getStatut_archi();
-				if ($sStatut != DEF_ID_STATUT_LIGNE) $bExisteLigne = 0;
+				// si c'est une brique editable
+				if ($oContent->getIsbriquedit_content()) {
+		
+					// s'il existe une version en ligne de CMS_CONTENT
+					$sStatut = $oArchi->getStatut_archi();
+					if ($sStatut != DEF_ID_STATUT_LIGNE) $bExisteLigne = 0;
+				}
+				
 			}
-			
 		}
 	}
 
