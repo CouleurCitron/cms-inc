@@ -1,358 +1,5 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
-/* 
-
-$Author: pierre $
-
-$Revision: 1.4 $
-$Log: arbopage.lib.php,v $
-Revision 1.4  2014-09-11 09:20:35  pierre
-*** empty log message ***
-
-Revision 1.3  2013-11-06 14:49:09  raphael
-*** empty log message ***
-
-Revision 1.2  2013-11-06 10:26:27  raphael
-*** empty log message ***
-
-Revision 1.1  2013-09-30 09:28:20  raphael
-*** empty log message ***
-
-Revision 1.48  2013-04-15 12:05:16  thao
-*** empty log message ***
-
-Revision 1.47  2013-03-01 10:33:58  pierre
-*** empty log message ***
-
-Revision 1.46  2012-07-31 14:24:45  pierre
-*** empty log message ***
-
-Revision 1.45  2012-05-22 15:52:13  pierre
-*** empty log message ***
-
-Revision 1.44  2012-05-15 09:08:43  pierre
-*** empty log message ***
-
-Revision 1.43  2012-05-07 08:24:04  pierre
-*** empty log message ***
-
-Revision 1.42  2012-04-05 13:01:24  thao
-modif picto arbo pour minisite
-
-Revision 1.41  2012-04-03 11:20:55  thao
-*** empty log message ***
-
-Revision 1.40  2012-02-02 13:58:38  pierre
-*** empty log message ***
-
-Revision 1.39  2012-01-31 14:09:23  pierre
-*** empty log message ***
-
-Revision 1.38  2011-12-23 10:48:53  pierre
-*** empty log message ***
-
-Revision 1.37  2011-12-23 10:42:17  pierre
-*** empty log message ***
-
-Revision 1.36  2011-12-22 18:13:23  pierre
-*** empty log message ***
-
-Revision 1.35  2011-12-06 16:19:48  pierre
-*** empty log message ***
-
-Revision 1.34  2011-12-06 14:10:51  pierre
-*** empty log message ***
-
-Revision 1.33  2011-08-17 10:53:09  pierre
-*** empty log message ***
-
-Revision 1.32  2011-07-04 13:42:24  pierre
-*** empty log message ***
-
-Revision 1.31  2011-06-30 14:06:07  pierre
-*** empty log message ***
-
-Revision 1.30  2011-03-08 10:48:50  pierre
-*** empty log message ***
-
-Revision 1.29  2010-11-15 09:45:15  pierre
-addNode : support des tags html dans les noms de dossiers
-
-Revision 1.28  2010-09-22 15:07:29  pierre
-*** empty log message ***
-
-Revision 1.27  2010-01-08 11:30:22  pierre
-*** empty log message ***
-
-Revision 1.26  2009-07-24 14:46:23  pierre
-*** empty log message ***
-
-Revision 1.25  2009-07-24 14:20:04  pierre
-*** empty log message ***
-
-Revision 1.24  2009-07-07 08:12:35  pierre
-*** empty log message ***
-
-Revision 1.23  2009-06-22 07:41:03  pierre
-*** empty log message ***
-
-Revision 1.22  2009-03-11 08:44:14  pierre
-*** empty log message ***
-
-Revision 1.21  2009-02-02 10:29:15  thao
-*** empty log message ***
-
-Revision 1.20  2009-02-02 10:24:13  thao
-*** empty log message ***
-
-Revision 1.19  2009-01-23 13:52:22  pierre
-*** empty log message ***
-
-Revision 1.18  2008-12-18 14:25:06  pierre
-*** empty log message ***
-
-Revision 1.17  2008-12-17 10:54:01  pierre
-*** empty log message ***
-
-Revision 1.16  2008-12-09 11:13:23  pierre
-*** empty log message ***
-
-Revision 1.15  2008-10-21 09:20:46  pierre
-*** empty log message ***
-
-Revision 1.13  2008-08-21 13:31:38  pierre
-*** empty log message ***
-
-Revision 1.12  2008/07/22 10:09:20  pierre
-*** empty log message ***
-
-Revision 1.11  2008/06/26 15:09:11  thao
-*** empty log message ***
-
-Revision 1.10  2008/04/21 09:30:21  pierre
-*** empty log message ***
-
-Revision 1.9  2007/11/29 16:48:50  pierre
-*** empty log message ***
-
-Revision 1.8  2007/11/20 08:41:24  thao
-*** empty log message ***
-
-Revision 1.7  2007/09/06 09:34:46  pierre
-*** empty log message ***
-
-Revision 1.6  2007/08/28 15:53:32  pierre
-*** empty log message ***
-
-Revision 1.5  2007/08/27 10:13:40  pierre
-*** empty log message ***
-
-Revision 1.4  2007/08/08 14:14:23  thao
-*** empty log message ***
-
-Revision 1.3  2007/08/08 13:53:33  thao
-*** empty log message ***
-
-Revision 1.2  2007/08/08 13:23:18  thao
-*** empty log message ***
-
-Revision 1.1  2007/08/08 13:07:18  thao
-*** empty log message ***
-
-Revision 1.8  2007/06/27 15:30:04  pierre
-*** empty log message ***
-
-Revision 1.7  2007/06/27 15:04:28  pierre
-*** empty log message ***
-
-Revision 1.6  2007/06/15 09:09:00  pierre
-*** empty log message ***
-
-Revision 1.8  2007/06/15 09:08:35  pierre
-*** empty log message ***
-
-Revision 1.7  2007/06/05 14:29:40  thao
-*** empty log message ***
-
-Revision 1.6  2007/06/01 06:12:34  thao
-*** empty log message ***
-
-Revision 1.3  2007/05/21 16:52:35  pierre
-*** empty log message ***
-
-Revision 1.3  2007/04/03 07:42:32  remy
-*** empty log message ***
-
-Revision 1.2  2007/02/20 13:30:10  pierre
-*** empty log message ***
-
-Revision 1.1  2006/12/15 12:31:44  pierre
-*** empty log message ***
-
-Revision 1.5  2006/08/01 07:18:33  pierre
-*** empty log message ***
-
-Revision 1.4  2006/07/25 07:33:19  pierre
-*** empty log message ***
-
-Revision 1.3  2006/07/25 07:12:20  pierre
-*** empty log message ***
-
-Revision 1.2  2006/06/06 08:22:26  melanie
-*** empty log message ***
-
-Revision 1.1.1.1  2006/01/25 15:14:27  pierre
-projet CCitron AWS 2006 Nouveau Website
-
-Revision 1.7  2005/11/24 14:49:07  pierre
-connexion de la description des node en urlencodé au parser actionscript
-
-Revision 1.6  2005/11/04 10:29:29  sylvie
-*** empty log message ***
-
-Revision 1.5  2005/11/04 08:37:02  sylvie
-*** empty log message ***
-
-Revision 1.4  2005/11/02 16:02:34  pierre
-*** empty log message ***
-
-Revision 1.3  2005/10/27 13:35:38  sylvie
-*** empty log message ***
-
-Revision 1.2  2005/10/25 09:42:11  pierre
-*** empty log message ***
-
-Revision 1.1.1.1  2005/10/24 13:37:05  pierre
-re import fusion espace v2 et ADW v2
-
-Revision 1.1.1.1  2005/10/20 13:10:54  pierre
-Espace V2
-
-
-Revision 1.20  2005/06/08 10:26:57  michael
-Modif pour Moz
-les liens des dossiers de l'arbo ne sont plus sur plusieurs lignes (ils poussent le tableau)
-
-Revision 1.19  2005/06/07 08:44:46  michael
-Petite Modif de gestion d'erreur
-
-Revision 1.18  2005/06/06 14:47:10  michael
-Vive les espaces!
-
-
-Revision 1.17  2005/06/06 10:20:55  pierre
-retrait retours lignes vides en queue de fichier
-
-Revision 1.16  2005/06/02 16:14:29  michael
-Modif pour répercuter les titres de page / mot clés / Description dans la page contenante
-
-Revision 1.15  2005/05/30 14:53:11  michael
-Correction rename node
-renommage récursif des absolutes path en SQL
-
-Revision 1.14  2005/05/30 13:36:00  pierre
-correction fonction get NodeInfosReverse (utf8)
-
-Revision 1.13  2005/05/30 13:14:11  michael
-Correction utf8
-
-Revision 1.12  2005/05/30 12:17:12  michael
-Réparation de fonctions dans les briques et les pages
-Réordonner des dossiers
-
-Revision 1.9  2005/05/30 08:59:18  michael
-Réparation dans les briques et les pages de
-la possibilité de sélectionner le dossier racine
-
-Revision 1.8  2005/05/24 15:28:55  pierre
-ajout de quelques addslashes sur les requetes manipulant les path
-
-Revision 1.7  2005/05/24 14:39:44  pierre
-ajout de node_description dans plusieurs fonctions
-
-Revision 1.6  2005/05/23 17:09:01  pierre
-encore la description de node, modif getNodeInfos
-
-Revision 1.5  2005/05/23 16:20:38  pierre
-ajout de la gestion description de node
-
-Revision 1.4  2005/05/20 15:46:30  pierre
-modifs fonctions de conversion vpath <F2> path pour echanges avec flash
-
-Revision 1.3  2005/04/25 13:50:09  pierre
-ajout fonction path2nodes
-
-Revision 1.2  2005/04/21 08:52:52  pierre
-ajout fonction "getNodeInfosReverse" qui retourne les infos du node en XML à partir du abs path
-
-Revision 1.1.1.1  2005/04/18 13:53:29  pierre
-again
-
-Revision 1.1.1.1  2005/04/18 09:04:21  pierre
-oremip new
-
-Revision 1.1.1.1  2004/11/03 13:49:54  ddinside
-lancement du projet - import de adequat
-
-Revision 1.4  2004/06/18 14:10:21  ddinside
-corrections diverses en vu de la demo prevention routiere
-
-Revision 1.3  2004/06/16 15:23:19  ddinside
-inclusion corrections
-
-Revision 1.2  2004/04/26 08:07:09  melanie
-*** empty log message ***
-
-Revision 1.1.1.1  2004/04/01 09:20:29  ddinside
-Création du projet CMS Couleur Citron nom de code : tipunch
-
-Revision 1.5  2004/02/12 15:56:16  ddinside
-mise à jour plein de choses en fait, mais je sais plus quoi parce que ça fait longtemps que je l'avais pas fait.
-Mea Culpa...
-
-Revision 1.4  2004/02/05 15:56:26  ddinside
-ajout fonctionnalite de suppression de pages
-ajout des styles dans spaw
-debuggauge prob du nom de fichier limite à 30 caracteres
-
-Revision 1.3  2004/01/27 12:12:50  ddinside
-application de dos2unix sur les scripts SQL
-modification des scripts d'ajout pour correction bug lors d'une modif de page
-ajout foncitonnalité de modification de page
-ajout visu d'une page si créée
-
-Revision 1.2  2004/01/20 15:16:38  ddinside
-mise à jour de plein de choses
-ajout de gabarit vie des quartiers
-eclatement gabarits par des includes pour contourner prob des flashs non finalisés
-
-Revision 1.1  2003/11/27 14:45:56  ddinside
-ajout gestion arbo disque non finie
-
-Revision 1.1.1.1  2003/10/24 09:08:08  ddinside
-nouvel import projet Boulogne apres migration machine
-
-Revision 1.3  2003/10/16 21:19:46  ddinside
-suite dev gestio ndes composants
-ajout librairies d'images
-suppressions fichiers vi
-ajout gabarit
-
-Revision 1.2  2003/10/10 08:01:52  ddinside
-mise à jour modifications
-nettoyage fichiers inutiles
-ajout gabarits
-
-Revision 1.1  2003/09/29 10:21:39  ddinside
-librairies de manipulatio nde l'arbo des composants
-
-*/
-
-/*
-sponthus 2005/05/31 12:00
-oracle : enlever le ; à la fin de la requette
-ajout de la ligne : if (DEF_BDD != "ORACLE") $sql.=";"; à chaque reket
-*/
 
 /*
 function getPageObjectByNameAndNodeId($name='index', $nodeid=0, $bOnlyValid=true){
@@ -664,7 +311,7 @@ function deleteNode($idSite, $db, $virtualPath){
 	if( ($virtualPath=='0') || (strlen($virtualPath)=='0'))
 		return false;
 	$array_path = explode(',',$virtualPath);
-	$node_id = array_pop($array_path);
+	$node_id = end($array_path);;
 	$result = false;
 	$parentVirtualPath = join(',',$array_path);
 	if($parentVirtualPath==0)
@@ -725,7 +372,8 @@ function deleteNode($idSite, $db, $virtualPath){
 function addNode($idSite, $db, $virtualPath, $libelle){
 
 	global $CMS_ROOT;
-	$node_id = array_pop(explode(',',$virtualPath));
+	$aPath=explode(',',$virtualPath);
+	$node_id = end($aPath);
 	$result = false;
 
 	// Les guillements font foirer l'enregistrement du répertoire sur le disque
@@ -915,7 +563,8 @@ function renameNode_cms_arbo_pages($idSite, $db, $virtualPath, $libelle, $node_i
 
 // rename un noeud 
 function renameNode($idSite, $db, $virtualPath, $libelle){
-	$node_id = array_pop(explode(',',$virtualPath));
+	$aPath=explode(',',$virtualPath);
+	$node_id = end($aPath);
 
 	// arbo pages
 	$result_arbopages = renameNode_cms_arbo_pages($idSite, $db, $virtualPath, $libelle, $node_id);
@@ -926,7 +575,7 @@ function renameNode($idSite, $db, $virtualPath, $libelle){
 
 function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
 	$avirtualPath = explode(',', $virtualPath);
-	$node_id = array_pop($avirtualPath);
+	$node_id = end($avirtualPath);
 	$result = false;
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle, node_absolute_path_name";
@@ -974,7 +623,7 @@ function saveNodeDescription($idSite, $folderdescription, $db, $virtualPath){
 
 function getNodeInfos($db, $virtualPath){
 	$avirtualPath = explode(',', $virtualPath);
-	$node_id = array_pop($avirtualPath);
+	$node_id = end($avirtualPath);
 	$result = null;
 	if (trim($node_id)==''){
 		//error_log('getNodeInfos('.$virtualPath.') appel incorrect '.__FILE__.':'.__LINE__);
@@ -1182,7 +831,9 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 			$strHTML .= "<span>$indent<a href=\"".$destination.$OP."idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\"><small>".strip_tags($libelle, '<br><sup><ub>')."</small></a><br/></span>\n";
 		} else {
 			//dossier ouvert
-			if(array_pop(explode(',',$virtualPath))==$id)
+			$aCurrPath=explode(',',$virtualPath);
+			$curr_node_id = end($aCurrPath);
+			if($curr_node_id==$id)
 				$strHTML .= "<span>$indent<a class=\"arbo\" href=\"".$destination."?idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small><span class=\"arbo\">".strip_tags($libelle, '<br><sup><ub>')."</span></small></a><br/></span>\n";
 			else
 				$strHTML .= "<span>$indent<a href=\"".$destination."?idSite=$idSite&v_comp_path=$full_path_to_curr_id,$id\" class=\"arbo\" title=\"".str_replace('"', "''", $description)."\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><small>".strip_tags($libelle, '<br><sup><ub>')."</small></a><br/></span>\n";
@@ -1233,8 +884,10 @@ function drawCompTreeMinisite($idSite, $db, $virtualPath, $full_path_to_curr_id=
 			else $strHTML .= "<img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier.png\">&nbsp;" ;
 			$strHTML .= "<small>".str_replace(' ','&nbsp;',$libelle)."</small></a><br/></span>\n";
 		} else {
+			$aCurrPath=explode(',',$virtualPath);
+			$curr_node_id = end($aCurrPath);
 			//dossier ouvert
-			if(array_pop(explode(',',$virtualPath))== $id && is_cms_minisite ($idSite , $id) ) {
+			if($curr_node_id== $id && is_cms_minisite ($idSite , $id) ) {
 				$strHTML .= "<span>$indent<a class=\"arbo\" href=\"".$destination."?idSite=".$idSite."".$paramSup."&v_comp_path=$full_path_to_curr_id,$id&source=minisite\" title=\"".str_replace('"', "''", $description)."\">";
 				if ($tree_depth == 1) $strHTML .= "<img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/ico_minisite_on_opened.gif\">&nbsp;";
 				else $strHTML .= "<img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\">&nbsp;";
@@ -1302,7 +955,7 @@ function getAbsolutePathString($idSite, $db, $virtualPath,$destination=null) {
 
 function getNodeChildren($idSite, $db, $path) {
 	$avirtualPath = explode(',', $path);
-	$node_id = array_pop($avirtualPath);
+	$node_id = end($avirtualPath);
 	$result = array();
 
 	$sql = " SELECT * FROM cms_arbo_pages";
@@ -1378,7 +1031,8 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 // $new_virtualPath = path destination
 // Renvoi "true" si ok, "false" sinon
 	global $CMS_ROOT;
-	$node_id = array_pop(explode(',',$virtualPath));
+	$aPath=explode(',',$virtualPath);
+	$node_id = end($aPath);
 	$result = false;
 	$nodeInfos = getNodeInfos($db, $virtualPath);
 	$new_nodeInfos = getNodeInfos($db, $new_virtualPath);
@@ -1418,7 +1072,8 @@ function moveNode($idSite, $db, $virtualPath, $new_virtualPath) {
 
 function getFolderPages($idSite, $path) {
 	global $db;
-	$node_id = array_pop(explode(',',$path));
+	$aPath=explode(',',$path);
+	$node_id = end($aPath);
 	$return = array();
 
 	$sql = " SELECT id_page, name_page, gabarit_page, cast(dateadd_page as date) as dateadd_page, ";
@@ -1596,7 +1251,8 @@ function getLangue($idSite) {
 
 
 function getNodesByKeyword($idSite, $db, $keyword) {
-	$node_id = array_pop(explode(',',$path));
+	$aPath=explode(',',$path);
+	$node_id = end($aPath);
 	$result = array();
 
 	$sql = " SELECT node_id, node_parent_id, node_libelle , node_absolute_path_name, node_order, node_description";
