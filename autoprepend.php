@@ -197,8 +197,8 @@ else{
 //error_reporting :
 // 3 cas :
 if (preg_match('/pierre\..+\..+/', $_SERVER['HTTP_HOST'])==1){// - pierre dev
-		//error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-    error_reporting(E_ALL);
+		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+    //error_reporting(E_ALL);
 	}
 elseif (preg_match('/php7/', $_SERVER['HTTP_HOST'])==1){// - dev
 		error_reporting(E_ALL);
