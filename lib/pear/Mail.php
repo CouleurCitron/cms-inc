@@ -45,7 +45,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
  * @link        http://pear.php.net/package/Mail/
  */
 
-require_once 'PEAR.php';
+require_once 'cms-inc/lib/pear/PEAR.php';
 
 /**
  * PEAR's Mail:: interface. Defines the interface for implementing
