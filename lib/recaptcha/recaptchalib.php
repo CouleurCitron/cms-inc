@@ -76,7 +76,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 443) {
 	}
 	
 	$url = $protocol.$host.$path."?secret=".$data['secret']."&response=".$data['response'];
-	error_log($url);
+	//error_log($url);
 
 	$curl = curl_init();
 	curl_setopt($curl, CURLOPT_URL, $url);
@@ -85,7 +85,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 443) {
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE); 
 	$curlData = curl_exec($curl);
-	error_log($curlData);
+	//error_log($curlData);
 	curl_close($curl);
 
 	return $curlData;
