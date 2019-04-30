@@ -66,7 +66,7 @@ function _recaptcha_qsencode ($data) {
  * @param int port
  * @return array response
  */
-function _recaptcha_http_post($host, $path, $data, $port = 80) {
+function _recaptcha_http_post($host, $path, $data, $port = 443) {
 	
 	if($port==80){
 		$protocol='http://';
@@ -76,7 +76,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	}
 	
 	$url = $protocol.$host.$path."?secret=".$data['secret']."&response=".$data['response'];
-	//error_log($url);
+	error_log($url);
 
 	$curl = curl_init();
 	curl_setopt($curl, CURLOPT_URL, $url);
@@ -85,7 +85,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE); 
 	$curlData = curl_exec($curl);
-	//error_log($curlData);
+	error_log($curlData);
 	curl_close($curl);
 
 	return $curlData;
@@ -152,10 +152,10 @@ class ReCaptchaResponse {
   * @param string $challenge
   * @param string $response
   * @param array $extra_params an array of extra variables to post to the server
-  * @param int $version default set to 1 (now obsolete)
+  * @param int $version default set to 2 (now obsolete)
   * @return ReCaptchaResponse
   */
-function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array(), $version=1)
+function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array(), $version=2)
 {
 	if ($privkey == null || $privkey == '') {
 		die ("To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>");
