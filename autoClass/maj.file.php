@@ -1,7 +1,5 @@
 <?php
 
-
-//echo "<input type=\"hidden\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" value=\"".$eKeyValue."\" />\n";
 $indexUpload++;
 
 // champs multiple
@@ -20,9 +18,7 @@ echo "<div id=\"div".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME
 echo "<!-- upload field # ".$indexUpload."/".$numUploadFields." -->\n";
 echo "<input type=\"hidden\" id=\"fUpload".$indexUpload."\" name=\"fUpload".$indexUpload."\" value=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" />\n";
 
-// Affichage du champ de type FILE						
-//print $Upload-> Field[$indexUpload];
-
+// Affichage du champ de type FILE	
 
 
 if (defined("DEF_FCK_VERSION") && DEF_FCK_VERSION == "ckeditor" ) {
@@ -102,27 +98,14 @@ echo '
 	
 	
 	$(document).ready(function(){ 
-	 
-	
-	
-	//$("a[id^=\'f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_\']").click(function(){    
-	
 	
 	$("a[id^=\'f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_\']").live("click", function(){
-	
-		
-		//alert ("del");  
+
 		var list_image;
-		  
-		
-		//alert($(this).prev("input").val());
 		
 		var mon_label = $(this).prev("input").val();
 		
-		//alert(mon_label); 
-		
 		list_image = ($("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").val());
-		//alert(list_image); 
 		getImage = new RegExp( "({.*?})" ,"g"  );
 	
 		var aList_image = list_image.match(getImage);
@@ -130,13 +113,9 @@ echo '
 		var regex = new RegExp( "([0-9]*)_(.*)"  );
 		var idimg = 0 ;
 		 
-	 	var aId = mon_label.match(regex);
+	 	var aId = mon_label.match(regex);			
 		
-		
-		
-	 	idimg = aId[1]; 
-		
-		//alert(idimg); 
+	 	idimg = aId[1];  
 		
 		if (aList_image == null) {
 			var new_string; 
@@ -155,11 +134,8 @@ echo '
 				}
 			}
 		} 
-		//alert(new_string); 
 		$("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_"+idimg).html(\'\');
-		$("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").val(new_string)
-		 
-		
+		$("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").val(new_string);		
 
 		return false; 
 	});
@@ -173,18 +149,11 @@ echo '
 		var idimg = 0 ; 
 	 	var aId = mon_label.match(regex); 
 	 	idimg = aId[1];  
-		//alert(idimg);
 		var id_requete; 
-		//console.log(mon_label);
-                //console.log(idimg);
 		var reg=new RegExp(".", "gm");
-		//var mes_fichiers = $("#f'.ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"].'").val(); 
-                var mes_fichiers = $("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_"+idimg ).val(); 
+    var mes_fichiers = $("#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_"+idimg ).val(); 
 		mes_fichiers = mes_fichiers.split(".").join("**");
-		//alert(mes_fichiers);
 		
-		
-		//console.log( " Valeurs envoyés " + mes_fichiers );
 		$.fancybox({ 
 			href: \'/include/cms-inc/autoClass/maj.file.edit.php?id=\'+idimg+\'&source=\'+mes_fichiers+\'\',  
 			type:\'iframe\',
@@ -200,7 +169,7 @@ echo '
                                         var new_fusion; 
                                         new_fusion = "";
                                         var new_position10 = $( "#f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_conteneur" ).sortable(\'toArray\')
-                                        //console.log( "Positions = " + new_position10);
+                                       
                                         for (var i = 0; i < new_position10.length; i++) {
 
                                                 if ( new_position10[i] != \'\') {
@@ -214,77 +183,18 @@ echo '
 
 
                                                 }
-                                        }
-                                        //console.log( "fusion = " + new_fusion);
+                                        }                                        
                                         $("#f'.ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"].'").val(new_fusion);
                                 }
 			}
 		}); 
 		
 		
-		
-		
-		//location.reload(); 
 		return false; // on desactive le lien
 	});
 	
 	var $_returnvalue = false;
-	/*
-	function f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient (id_enrg) {     
-		
-		//alert ( "del");  
-		var list_image;
-		 
-		
-		//alert("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_"+id_enrg);
-		
-		  
-		//alert(document.getElementById("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_"+id_enrg+"_name").value); 
-		
-		var mon_label = document.getElementById("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_delrecipient_"+id_enrg+"_name").value;
-		
-		list_image = document.getElementById("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").value;
-		
-		getImage = new RegExp( "({[^{}].*?})" ,"g"  );
-	
-		var aList_image = list_image.match(getImage);
-		
-		var regex = new RegExp( "([0-9]*)_(.*)"  );
-		var idimg = 0 ;
-		 
-	 	var aId = mon_label.match(regex);
-	 	idimg = aId[1]; 
-		
-		//alert(idimg); 
-		
-		if (aList_image == null) {
-			var new_string; 
-			new_string = \'\';
-		}
-		else {
-			var new_string; 
-			new_string = \'\'; 
-			for (var i = 0; i < aList_image.length ; i++ ) {
-				
-				if (i != idimg)  {
-					//alert("add"+aList_image[i]);
-					new_string+=aList_image[i];	
-				} 
-				else {
-					new_string+=\'{}\';	
-				}
-			}
-		} 
-		//alert("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_"+id_enrg);
-		
-		document.getElementById("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_"+id_enrg).innerHTML = "";
-		document.getElementById("f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'").value = new_string;
-		 
-		
 
-		return false; 
-	}
-	*/ 
 	</script>
 	'; 
 	
@@ -292,7 +202,7 @@ echo '
 if ($eKeyValue != ""){
 	echo '<br /> ('.$translator->getTransByCode('actuellement').') <br /> ';	
 	
-	preg_match_all("/{([^{}].*?)}/", $eKeyValue, $matches);
+	preg_match_all("/{([^{}].*?)}/ms", $eKeyValue, $matches);
 	  
 	$allFiles = array();
 	
@@ -316,15 +226,9 @@ if ($eKeyValue != ""){
 		$aFiles = explode(';', $eKeyValue); 
 		$img = 0;	
 		
-		
-		//echo "eKeyValue : ".$eKeyValue."<br />"; 
-		
-		//pre_dump($aFiles); 
-		
 		for($if=0;$if<sizeof($aFiles) ;$if++){
 		
 			$sFile = $aFiles[$if];
-			//echo "sFile ".$sFile."<br />";
 			$sFile = preg_replace ("/\[.*\]/", "", $sFile) ;  // on supprime la zone commentaires entre crochets
 			
 			if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$sFile) && $if < 1){
@@ -352,7 +256,7 @@ if ($eKeyValue != ""){
 				if ($if == 0)   echo '<input type="hidden" id="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_'.$nbimg.'" name="f'.ucfirst($classePrefixe).'_'.$aNodeToSort[$i]["attrs"]["NAME"].'_listfile_'.$nbimg.'"  value="'.$eKeyValue.'" />';
 				$img++;
                                 
-                                echo "</div>";
+        echo "</div>";
                                 
 				echo "</li>"; 
 				
@@ -371,8 +275,7 @@ if ($eKeyValue != ""){
 			}
 			
 		}
-		 	
-		//echo "<br />\n";
+
 	}	 
 	echo "</ol>\n";	
 	echo "<div class='data_files'><div class='delete_file'><input type=\"checkbox\" id=\"fDeleteFile".$indexUpload."\" name=\"fDeleteFile".$indexUpload."\" value=\"true\" /><label for='fDeleteFile".$indexUpload."'>".$translator->getTransByCode('supprimer_le_les_fichiers')."</label></div>\n";
@@ -434,4 +337,3 @@ if ($aNodeToSort[$i]["attrs"]["OPTION"] == "geomapfile") {
 	}
 }
 echo "</div><div class='spacer'>&nbsp;</div></div>\n";
-?>

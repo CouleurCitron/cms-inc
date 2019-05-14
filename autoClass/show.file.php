@@ -4,23 +4,11 @@ if ($eKeyValue != "") {
 	$inherited = getCorrectInheritedClass($oRes->inherited_list, $aNodeToSort[$i]["attrs"]["NAME"]);
 	if (!is_null($inherited))
 		$correctName = $inherited->getClasse();
-	else	$correctName = $classeName; 
-	  
-	/*if (is_file($_SERVER['DOCUMENT_ROOT'].'custom/upload/'.$correctName.'/'.$eKeyValue))
-		$aFiles=array($eKeyValue);
-	elseif (count(explode(';',$eKeyValue))>0)
-		$aFiles=explode(';',$eKeyValue);		*/					
+	else	$correctName = $classeName; 				
 	
-	echo '&nbsp;(actuellement)';							
+	echo '&nbsp;(actuellement)';								
 	
-	/*foreach($aFiles as $kFile => $sFile){
-		echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$correctName."/".$sFile."\" title=\"Visualiser le fichier : '".$sFile."'\">".$sFile."</a>";
-		echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$correctName."/".$sFile."\" title=\"Télécharger le fichier : '".$sFile."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$sFile."\" /></a>";
-	}
-	echo ")\n";*/
-	
-	
-	preg_match_all("/{([^{}].*?)}/", $eKeyValue, $matches);
+	preg_match_all("/{([^{}].*?)}/ms", $eKeyValue, $matches);
 	  
 	$allFiles = array();
 	
@@ -85,11 +73,3 @@ if ($eKeyValue != "") {
 	
 } else	echo "&nbsp;(pas de fichier)<br />";
 
-/*
-						echo "<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$correctName."/".$eKeyValue."\" title=\"Visualiser le fichier : '".$eKeyValue."'\">".$eKeyValue."</a>\n";
-						echo "&nbsp;-&nbsp;<a href=\"/backoffice/cms/utils/telecharger.php?file=custom/upload/".$correctName."/".$eKeyValue."\" title=\"Télécharger le fichier : '".$eKeyValue."'\"><img src=\"/backoffice/cms/img/telecharger.gif\" width=\"14\" height=\"16\" border=\"0\" alt=\"Télécharger le fichier : '".$eKeyValue."\" /></a>\n";*/
-
-
-
-
-?>
