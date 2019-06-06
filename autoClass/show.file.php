@@ -1,6 +1,8 @@
 <?php
  
-if ($eKeyValue != "") {
+//if ($eKeyValue != ""){	
+if (preg_match_all("/{([^{]+)}/ms", $eKeyValue, $matches)){
+  
 	$inherited = getCorrectInheritedClass($oRes->inherited_list, $aNodeToSort[$i]["attrs"]["NAME"]);
 	if (!is_null($inherited))
 		$correctName = $inherited->getClasse();
@@ -8,11 +10,11 @@ if ($eKeyValue != "") {
 	
 	echo '&nbsp;(actuellement)';								
 	
-	preg_match_all("/{([^{}].*?)}/ms", $eKeyValue, $matches);
+	//preg_match_all("/{([^{}].*?)}/ms", $eKeyValue, $matches);
 	  
 	$allFiles = array();
 	
-	if (sizeof($matches[1]) == 0) {
+	if (count($matches[1]) == 0) {
 		$allFiles[] = $eKeyValue;
 	}
 	else {
@@ -24,17 +26,13 @@ if ($eKeyValue != "") {
 	 
 							
 		$aFiles = explode(';', $eKeyValue); 
-		$img = 0;	
-		
-		 
+		$img = 0;		 
 		
 		for($if=0;$if<1;$if++){
 		
-			$sFile = $aFiles[$if];
-			$sFile = preg_replace ("/\[.*\]/", "", $sFile) ;  // on supprime la zone commentaires entre crochets
+			$sFile = preg_replace ("/\[.*\]/", "", $aFiles[$if]);  // on supprime la zone commentaires entre crochets
 			
-			if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$correctName.'/'.$sFile)){
-			
+			if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$correctName.'/'.$sFile)){			
 			
 				echo "<div id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$nbimg."\">"; 
 				if ($if == 0)  echo "&nbsp;<a href=\"/backoffice/cms/utils/viewer.php?file=/custom/upload/".$correctName."/".$sFile."\" target=\"_blank\" title=\"".$translator->getTransByCode('visualiserlefichier')." '".$sFile."'\"><img src='/custom/upload/".$correctName."/".$sFile."' width='70' /></a>&nbsp; ";
@@ -45,10 +43,11 @@ if ($eKeyValue != "") {
 				
 				$img++;
 				
-				echo "</div>"; 
-				
-				
+				echo "</div>";				
 			}
+      else{        
+        echo '<!-- file is missing: '.$sFile.' -->';
+      }
 		}
 	 	
 	

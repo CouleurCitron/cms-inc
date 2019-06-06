@@ -198,44 +198,42 @@ echo '
 	</script>
 	'; 
 	
-	
-if ($eKeyValue != ""){
+//if ($eKeyValue != ""){	
+if (preg_match_all("/{([^{]+)}/ms", $eKeyValue, $matches)){
 	echo '<br /> ('.$translator->getTransByCode('actuellement').') <br /> ';	
 	
-	preg_match_all("/{([^{}].*?)}/ms", $eKeyValue, $matches);
+	//preg_match_all("/{([^{}].*?)}/ms", $eKeyValue, $matches);
+  
 	  
 	$allFiles = array();
 	
-	if (sizeof($matches[1]) == 0) {
+	if (count($matches[1]) == 0) {
 		$allFiles[] = $eKeyValue;
 	}
 	else {
 		$allFiles = $matches[1];
 	}
-	 
-	
 	
 	
 	echo "<ol id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_conteneur\" ";
         if ($tempMultiple == "true") echo "class=\"new_diapo\" ";
         else echo "class=\"one_img\"";
         echo ">"; 
-	foreach ($allFiles as $nbimg => $eKeyValue) {	
-	 
+  
+	foreach ($allFiles as $nbimg => $eKeyValue) {		 
 							
 		$aFiles = explode(';', $eKeyValue); 
-		$img = 0;	
+		$img = 0;   
 		
-		for($if=0;$if<sizeof($aFiles) ;$if++){
-		
-			$sFile = $aFiles[$if];
-			$sFile = preg_replace ("/\[.*\]/", "", $sFile) ;  // on supprime la zone commentaires entre crochets
+		for($if=0;$if<count($aFiles) ;$if++){      
+
+			$sFile = preg_replace ("/\[.*\]/", "", $aFiles[$if]) ;  // on supprime la zone commentaires entre crochets
 			
 			if (is_file($_SERVER['DOCUMENT_ROOT'].'/custom/upload/'.$classeName.'/'.$sFile) && $if < 1){
 			 
 				echo "<li id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$nbimg."\">"; 
                                 
-                echo "<div>";
+        echo "<div>";
 
 				if (($if == 0)&&(preg_match('/^.*\.(jpg|jpeg|png|gif)$/i', $sFile)	)){
 					echo '<a rel="'.$classeName.'_'.$aNodeToSort[$i]["attrs"]["NAME"].'" href="/custom/upload/'.$classeName.'"/"'.$sFile.'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').'" "'.$sFile.'" class="visuel"><img src="/custom/upload/'.$classeName.'/'.$sFile.'" width="70" /></a>';
@@ -262,6 +260,9 @@ if ($eKeyValue != ""){
 				
 				
 			}
+      else{        
+        echo '<!-- file is missing: '.$sFile.' -->';
+      }
 		}
 	 	
 	
