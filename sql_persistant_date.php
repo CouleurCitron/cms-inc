@@ -45,7 +45,11 @@ function to_dbdate($sDate) {
 		return "to_date('$sDate', 'dd/mm/yyyy')"; // version oracle et postgres
 	}
 	if (DEF_BDD == "MYSQL"){
-		$sDate=dateToYmd($sDate);		
+    if($sDate==''){
+      $sDate=date('Y-m-d');
+    }
+		$sDate=dateToYmd($sDate);	
+    
 		if (preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}.*/msi", $sDate)==1){ // remove time
 			$sDate = preg_replace("/([0-9]{4})-([0-9]{2})-([0-9]{2}).*/msi", "$1-$2-$3", $sDate);
 		}
@@ -101,8 +105,12 @@ function to_dbdate_TIMESTAMP($Date) {
 		$Date = preg_replace("/([0-9]{2})[-\/]{1}([0-9]{2})[-\/]{1}([0-9]{4})(.*)/msi", "$3-$2-$1$4", $Date);
 	}
 	if($Date!="") {
-		$timestp =  strtotime($Date);
-		return "'".date("Y-m-d H:i:s", $timestp)."'";
+    if ($Date=='0000-00-00 00:00:00'){
+      return "'0000-00-00 00:00:00'";
+    }
+    else{
+		return "'".date("Y-m-d H:i:s", strtotime($Date))."'";
+    }
 	}
 	else {
 		return "'NULL'";
