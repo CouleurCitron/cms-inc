@@ -113,7 +113,7 @@ function to_dbdate_TIMESTAMP($Date) {
     }
 	}
 	else {
-		return "'NULL'";
+		return "NULL";
 	}
 }
 
