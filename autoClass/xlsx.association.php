@@ -14,11 +14,11 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 			
 			$aTempClasse = array();
 			if ($aNodeToSort[$j]["attrs"]["ASSO"])
-				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$j]["attrs"]["ASSO"]);		
 			elseif ($aNodeToSort[$j]["attrs"]["ASSO_VIEW"])
-				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO_VIEW"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$j]["attrs"]["ASSO_VIEW"]);		
 			elseif ($aNodeToSort[$j]["attrs"]["ASSO_EDIT"])
-				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]);		
+				$aTempClasse = explode(',', $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]);		
 			
 			for ($m=0; $m<sizeof($aTempClasse);$m++) {
 				
