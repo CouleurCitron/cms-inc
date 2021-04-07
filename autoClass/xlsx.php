@@ -229,11 +229,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				if ($aNodeToSort[$i]["attrs"]["ASSO"] || $aNodeToSort[$i]["attrs"]["ASSO_VIEW"] || $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]) { // cas d'asso  
 					$aTempClasse = array();
 					if ($aNodeToSort[$i]["attrs"]["ASSO"])
-						$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
+						$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
 					elseif ($aNodeToSort[$i]["attrs"]["ASSO_VIEW"])
-						$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]);		
+						$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]);		
 					elseif ($aNodeToSort[$i]["attrs"]["ASSO_EDIT"])
-						$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]);		
+						$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]);		
 				}	
 				
 				
