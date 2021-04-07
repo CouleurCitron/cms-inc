@@ -1,6 +1,12 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 
+if (!function_exists('split')) {
+    function split($separator, $string, $limit){
+	return explode($separator, $string, $limit);
+    }
+}
+
 if (!function_exists('http_build_query')) {
     function http_build_query($data, $prefix='', $sep='', $key='') {
         $ret = array();
