@@ -3,7 +3,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // ================================================
 // Fonctions de manipulation des images
 // ================================================
-if(PHP_VERSION >= 5)
+if(PHP_VERSION >= 5	&&	!function_exists('imagebmp'))
     include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/bmp-php/BMP.php');
 
 /*
