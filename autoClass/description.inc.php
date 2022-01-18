@@ -16,7 +16,7 @@ if (!isset($idSite)){
   
 
 $aChemin = explode('/',$referUrl);
-$nomPage = $aChemin[sizeof($aChemin)-1];
+$nomPage = $aChemin[newSizeOf($aChemin)-1];
 $nomPage = str_replace (".php", "", $nomPage);
 if($nomPage==''){
 	$nomPage='index';
@@ -40,13 +40,13 @@ if (isset ($_GET["id"]) && $_GET["id"]!="") {
 			$aAssodescription = dbGetObjectsFromRequete ("cms_assodescriptionclasse", $sql);
 			
 			$description=" ";
-			if (sizeof($aAssodescription) > 0) {
-				for ($i=0; $i<sizeof($aAssodescription);$i++) {
+			if (newSizeOf($aAssodescription) > 0) {
+				for ($i=0; $i<newSizeOf($aAssodescription);$i++) {
 					$oAssodescription = $aAssodescription[$i]; 
 					//if ($oAssodescription->get_classeid() == -1 || $oAssodescription->get_classeid() == $_GET["id"]) { 
 						$oDescription = new Cms_description ($oAssodescription->get_cms_description());
 						$description.=$oDescription->get_description();
-						if ($i!=(sizeof($oAssodescription)-1)) $description.=", ";
+						if ($i!=(newSizeOf($oAssodescription)-1)) $description.=", ";
 						 
 						 
 					//}

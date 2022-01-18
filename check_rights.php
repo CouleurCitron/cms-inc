@@ -97,7 +97,7 @@ function allowClasse($sClasse){
 		$sRequete = "SELECT cms_sectionbo.* FROM cms_sectionbo, cms_assosectiongroupe WHERE cms_sectionbo.sbo_libelle = '".$sClasse."' AND cms_assosectiongroupe.xsg_cms_sectionbo = cms_sectionbo.sbo_id AND cms_assosectiongroupe.xsg_bo_groupes = ".$gpId.";";	
 		//echo $sRequete."<br>";
 		$aSecBo = dbGetObjectsFromRequete("cms_sectionbo", $sRequete);
-		if (sizeof($aSecBo) > 0) {
+		if (newSizeOf($aSecBo) > 0) {
 			return true;
 		}
 		else {

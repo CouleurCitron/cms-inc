@@ -420,7 +420,7 @@ class ADODB_mssqlnative extends ADOConnection {
         $arr = func_get_args();
 
         // Split single record on commas, if possible
-        if (sizeof($arr) == 1) {
+        if (newSizeOf($arr) == 1) {
             foreach ($arr as $arg) {
                 $args = explode(',', $arg);
             }
@@ -429,7 +429,7 @@ class ADODB_mssqlnative extends ADOConnection {
 
         array_walk($arr, create_function('&$v', '$v = "CAST(" . $v . " AS VARCHAR(255))";'));
         $s = implode('+',$arr);
-        if (sizeof($arr) > 0) return "$s";
+        if (newSizeOf($arr) > 0) return "$s";
         
 		return '';
     }
@@ -611,7 +611,7 @@ class ADODB_mssqlnative extends ADOConnection {
 		$a = $this->GetCol($sql);
 		$ADODB_FETCH_MODE = $savem;
 		
-		if ($a && sizeof($a)>0) return $a;
+		if ($a && newSizeOf($a)>0) return $a;
 		$false = false;
 		return $false;	  
 	}

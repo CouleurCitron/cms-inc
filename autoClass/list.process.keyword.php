@@ -117,7 +117,7 @@ if ($sTexte != "") {
 
 	}
 	
-	if (($cptcms_chaine_reference > 0 || $cptcms_chaine_traduite > 0) && sizeof($aCondTLS) > 0 ) {
+	if (($cptcms_chaine_reference > 0 || $cptcms_chaine_traduite > 0) && newSizeOf($aCondTLS) > 0 ) {
 		$sqlTLS.= "(".join(" OR ", $aCondTLS).")";
 		
 		//echo $sqlTLS."<br /><br />";
@@ -126,7 +126,7 @@ if ($sTexte != "") {
 		
 		$aObjects = dbGetObjectsFromRequete('cms_chaine_reference', $sqlTLS);	
 		
-		if (sizeof( $aObjects ) > 0) {
+		if (newSizeOf( $aObjects ) > 0) {
 			foreach ($aObjects as $oObject) {
 				//echo $oObject->get_id()."<br />";	
 				array_push ($aCacheIdTLS_ref, $oObject->get_id());
@@ -137,7 +137,7 @@ if ($sTexte != "") {
 		
 		$aObjects = dbGetObjectsFromRequete('cms_chaine_traduite', $sqlTLS);	
 		
-		if (sizeof( $aObjects ) > 0) {
+		if (newSizeOf( $aObjects ) > 0) {
 			foreach ($aObjects as $oObject) {
 				//echo $oObject->get_id()."<br />";	
 				array_push ($aCacheIdTLS_trad, $oObject->get_id());
@@ -265,7 +265,7 @@ if ($sTexte != "") {
 	//viewArray($aCond, 'table search conditions');
 	foreach ($aTable as $t => $conds) {
 		if ($t != $classeName && !empty($aCond[$t])) {
-			if (sizeof($aTable) > 1)
+			if (newSizeOf($aTable) > 1)
 				$sRechercheTable .= " LEFT OUTER JOIN ".$t." ON " ;
 			if (!empty($conds))
 				$sRechercheTable .= implode(" AND ", $conds); 
@@ -277,7 +277,7 @@ if ($sTexte != "") {
 	foreach ($aCond as $t => $conds)
 		$tmpconds = array_merge($tmpconds, $conds);
 	
-	if (sizeof($aCond) > 0) $oRech->setJointureBD("(".implode(" OR ", $tmpconds).")");
+	if (newSizeOf($aCond) > 0) $oRech->setJointureBD("(".implode(" OR ", $tmpconds).")");
 	else $oRech->setJointureBD(  $fkeyPrefixe."_id = -1");
 	$oRech->setTableBD($sRechercheTable);
 	$oRech->setPureJointure(1);

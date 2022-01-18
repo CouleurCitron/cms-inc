@@ -38,9 +38,9 @@ if ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match
 						}
 					}
 				}
-				if ($custom["Filter"]['mode'] == 'AND' && sizeof($test_res) == sizeof($aCustom['Filter']['pile']))
+				if ($custom["Filter"]['mode'] == 'AND' && newSizeOf($test_res) == newSizeOf($aCustom['Filter']['pile']))
 					$activate_custom = true;
-				elseif ($custom["Filter"]['mode'] == 'OR' && sizeof($test_res) > 0)
+				elseif ($custom["Filter"]['mode'] == 'OR' && newSizeOf($test_res) > 0)
 					$activate_custom = true;
 			} else	$activate_custom = true;
 			if ($activate_custom) {
@@ -107,7 +107,7 @@ if(isset($aAssoObjets[0]) && is_a($aAssoObjets[0],'cms_assoclassepage')){
 // n'affiche pas user CCitron si username courant <> ccitron
 if ($classeName == "bo_users") {
 	$aListe_res_temp = array();
-	for($k=0; $k<sizeof($aListe_res); $k++) {
+	for($k=0; $k<newSizeOf($aListe_res); $k++) {
 		$oResTemp = $aListe_res[$k];
 		if ($_SESSION['user']!="ccitron" && $oResTemp->nom == "ccitron") {
 		
@@ -117,7 +117,7 @@ if ($classeName == "bo_users") {
 		}
 	}
 	$aListe_res = array();
-	for($k=0; $k<sizeof($aListe_res_temp); $k++) {
+	for($k=0; $k<newSizeOf($aListe_res_temp); $k++) {
 		
 		$aListe_res[] = $aListe_res_temp[$k];
 	}
@@ -126,7 +126,7 @@ if(isset($aAssoObjets[0]) && is_a($aAssoObjets[0],'cms_assoclassepage'))
 	echo '</thead><tbody class="sortablecontent" style="cursor:pointer;" rel="sorter'.$rand.'">';
 else
 	echo '</thead><tbody>';
-for($k=0; $k<sizeof($aListe_res); $k++) {
+for($k=0; $k<newSizeOf($aListe_res); $k++) {
 	$oRes = $aListe_res[$k];
 ?>
 <tr  id="myItem_sorter<?php echo $rand;?>_<?php echo $k;?>">
@@ -248,9 +248,9 @@ for($k=0; $k<sizeof($aListe_res); $k++) {
 							}
 						}
 					}
-					if ($custom["Filter"]['mode'] == 'AND' && sizeof($test_res) == sizeof($custom['Filter']['pile']))
+					if ($custom["Filter"]['mode'] == 'AND' && newSizeOf($test_res) == newSizeOf($custom['Filter']['pile']))
 						$activate_custom = true;
-					elseif ($custom["Filter"]['mode'] == 'OR' && sizeof($test_res) > 0)
+					elseif ($custom["Filter"]['mode'] == 'OR' && newSizeOf($test_res) > 0)
 						$activate_custom = true;
 				} else	$activate_custom = true;
 				if ($activate_custom) {

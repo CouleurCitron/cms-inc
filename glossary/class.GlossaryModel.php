@@ -142,7 +142,7 @@ class GlossaryModel extends BaseModuleModel {
 			if ($lettre == "all"){
 				array_push ($aABC,  '<li class="all_letter"><a href="?">Tous</a></li>');
 			}
-			elseif ( sizeof($mot) > 0 ) {
+			elseif ( newSizeOf($mot) > 0 ) {
 				array_push ($aABC,  '<li><a href="?lettre='.$lettre.'">'.$lettre.'</a></li>');
 			}
 			else {

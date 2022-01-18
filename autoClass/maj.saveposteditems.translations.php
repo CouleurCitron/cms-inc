@@ -4,7 +4,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php')
 // translation data
 // Added by Luc - 6 oct. 2009			
 
-if (DEF_APP_USE_TRANSLATIONS && $aNodeToSort[$i]["attrs"]["TRANSLATE"]) {
+if (DEF_APP_USE_TRANSLATIONS && isset($aNodeToSort[$i]["attrs"]["TRANSLATE"])	&&	$aNodeToSort[$i]["attrs"]["TRANSLATE"]) {
 	if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 		if ($aNodeToSort[$i]["attrs"]["TRANSLATE"] == 'reference') {
 			// chercher la premiere langue saisie
@@ -57,4 +57,3 @@ if (DEF_APP_USE_TRANSLATIONS && $aNodeToSort[$i]["attrs"]["TRANSLATE"]) {
 	
 	}		
 } // end translation data
-?>

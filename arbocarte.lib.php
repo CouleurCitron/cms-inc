@@ -430,7 +430,7 @@ function drawCompTreeCarte($idSite, $db,$virtualPath,$full_path_to_curr_id=null,
 		}	
 	}
 	else{
-		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
+		$tree_depth = newSizeOf(explode(',',$full_path_to_curr_id));
 	}
 	$children = getNodeChildrenCarte($idSite,$db,$full_path_to_curr_id);
 	
@@ -977,7 +977,7 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 		// cas particulier de la racine où il faut dessiner le père en plus des fils
 		$full_path_to_curr_id=0;
 	} else {
-		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
+		$tree_depth = newSizeOf(explode(',',$full_path_to_curr_id));
 	}
 	$children = getNodeChildrenCarte($idSite, $db,$full_path_to_curr_id);
 
@@ -1011,7 +1011,7 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 			$sql = "select * from cms_classarbo where ca_arbo=".$id."";
 			$aClassearbo =  dbGetObjectsFromRequeteID("cms_classarbo", $sql);
 			$idEnregistrement = "";
-			if (sizeof($aClassearbo) > 0) {
+			if (newSizeOf($aClassearbo) > 0) {
 				$oClassearbo = $aClassearbo[0];
 				$classeId = $oClassearbo->get_classe();
 				$idEnregistrement = $oClassearbo->get_classeid();
@@ -1023,17 +1023,17 @@ function drawCompTreeCarteHTML($idSite, $db,$virtualPath,$full_path_to_curr_id=n
 				
 				$sql2 = "select * from ".$classeName." where ".$classePrefixe."_statut=4";
 				$aClasse =  dbGetObjectsFromRequete($classeName, $sql2);
-				$nombreEnregistrement = sizeof($aClasse);
+				$nombreEnregistrement = newSizeOf($aClasse);
 				
 				if ($nombreEnregistrement > 0) {
 					$boolEnregistrementTrouve=false;
-					for ($i = 0; $i<sizeof($aClasse) ;$i++) {
+					for ($i = 0; $i<newSizeOf($aClasse) ;$i++) {
 						$oClasse = $aClasse[$i];
 						if ($oClasse->get_id() == $idEnregistrement) {
 							$imgEnregistrement = $oClasse->get_img();
 							$arrayImage = explode(' ', $imgEnregistrement);
 							
-							for ($m=0; $m<sizeof($arrayImage); $m++) {
+							for ($m=0; $m<newSizeOf($arrayImage); $m++) {
 								if (preg_match("/src/msi", $arrayImage[$m])) {
 									$srcStr = $arrayImage[$m];
 									$srcStr = str_replace('"', '', $srcStr);
@@ -1102,7 +1102,7 @@ function drawCarteListHTML($db,$virtualPath){
 	$strHTML='<table class="resultsearch" border="0" cellpadding="0" cellspacing="0">';
 //<td align="center" bgcolor="EEEEEE"><strong>&nbsp;&nbsp;Mots&nbsp;clés&nbsp;</strong></td>
 	$contenus = getFolderComposantsCarte($virtualPath);
-	if((is_array($contenus)) && (sizeof($contenus)!=0)) {
+	if((is_array($contenus)) && (newSizeOf($contenus)!=0)) {
 		$strHTML.='<tr>
 					<td class="titresearch">Etudes trouvées</td>
 					<td class="titresearch">Description</td>
@@ -1190,7 +1190,7 @@ function drawCompTreeCarteHTMLComponent($idSite, $db,$virtualPath,$full_path_to_
 	if($destination==null) $destination=$_SERVER['PHP_SELF'];
 	$OP = (preg_match('/\?/',$destination)) ? '&' : '?' ;
 
-	$tree_depth = sizeof(explode(',',$virtualPath));
+	$tree_depth = newSizeOf(explode(',',$virtualPath));
 	$nodeId=array_pop(explode(',',$virtualPath)); 
 	//echo "<br />tree_depth".$tree_depth;
 	if ($tree_depth > 3) {
@@ -1241,7 +1241,7 @@ function drawCompTreeCarteHTMLComponent($idSite, $db,$virtualPath,$full_path_to_
 					$srcStr = str_replace('"', '', $srcStr);*/
 					$arrayImage = explode(' ', $imgEnregistrement);
 					
-					for ($m=0; $m<sizeof($arrayImage); $m++) {
+					for ($m=0; $m<newSizeOf($arrayImage); $m++) {
 						if (preg_match("/src/msi", $arrayImage[$m])) {
 							$srcStr = $arrayImage[$m];
 							$srcStr = str_replace('"', '', $srcStr);
@@ -1329,7 +1329,7 @@ function getEnregistrement($virtualPath) {
 								$sql2="select * from ".$oObjet->get_nom()." ";
 								$aObjet = dbGetObjectsFromRequete($oObjet->get_nom(), $sql2);
 								
-								for($i=0;$i<sizeof($aObjet);$i++){
+								for($i=0;$i<newSizeOf($aObjet);$i++){
 									
 									$oObjet=$aObjet[$i];
 									if ($oObjet->get_id() == $rs->fields['ca_classeid']) {	
@@ -1370,7 +1370,7 @@ function afficheEnregistrement($idSite, $db,$virtualPath,$full_path_to_curr_id,$
 	$sql= "select * from cms_classarbo where ca_arbo = ".$node_id. "";
 	$aClassearbo =  dbGetObjectsFromRequete("cms_classarbo", $sql);
 	$str="";
-	for ($i=0; $i<sizeof($aClassearbo); $i++) {
+	for ($i=0; $i<newSizeOf($aClassearbo); $i++) {
 		$oClassearbo = $aClassearbo[$i];
 		$classeId = $oClassearbo->get_classe();
 		$oClasse = new Classe ($classeId);
@@ -1385,7 +1385,7 @@ function getChemindeFer($idSite, $db, $path, $debutArbo,$url) {
 	$arrayChemin = explode('/',$path);
 	$cheminToFind = "/";
 	$cheminDeFer = "";
-	for ($i=0;$i<sizeof($arrayChemin);$i++) {
+	for ($i=0;$i<newSizeOf($arrayChemin);$i++) {
 		if ($arrayChemin[$i]!="") {
 			$cheminToFind.= $arrayChemin[$i]."/";
 			
@@ -1405,7 +1405,7 @@ function getChemindeFer2($idSite, $db, $path, $debutArbo) {
 	$cheminDeFer = "";
 
 	
-	for ($i=$debutArbo;$i<sizeof($arrayChemin);$i++) {
+	for ($i=$debutArbo;$i<newSizeOf($arrayChemin);$i++) {
 		if ($arrayChemin[$i]!="") {
 			$cheminDeFer.= $arrayChemin[$i]." / ";
 		}
@@ -1424,7 +1424,7 @@ function getChemindeFer3($idSite, $db, $path, $virtualPath, $debutArbo, $finArbo
 	$cheminDeFer = ""; 
 	$arrayChemin_ = array();
 	$virtualPath="";
-	for ($i=0;$i<sizeof($arrayIdChemin);$i++) {
+	for ($i=0;$i<newSizeOf($arrayIdChemin);$i++) {
 		if ($arrayIdChemin[$i]==0) {  
 			$virtualPath.="0,";
 			$arrayIdChemin[$i] = $arrayIdChemin[$i+1];
@@ -1434,7 +1434,7 @@ function getChemindeFer3($idSite, $db, $path, $virtualPath, $debutArbo, $finArbo
 		}
 	}
 	
-	for ($i=0;$i<sizeof($arrayChemin);$i++) {
+	for ($i=0;$i<newSizeOf($arrayChemin);$i++) {
 		if ($arrayChemin[$i]!="") {  
 			array_push ($arrayChemin_, $arrayChemin[$i]);
 		}
@@ -1588,11 +1588,11 @@ function getBoolEnregistrementAssocie ($node_id, $idSite, $db) {
 		$rs->MoveNext(); 
 	} 
 	$nombreEnregistrement=0;
-	for ($i=0;$i<sizeof($result);$i++) {
+	for ($i=0;$i<newSizeOf($result);$i++) {
 		$sql = "select * from cms_classarbo where ca_arbo=".$result[$i]['id']."";
 			$aClassearbo =  dbGetObjectsFromRequeteID("cms_classarbo", $sql);
 			
-			if (sizeof($aClassearbo) > 0) {
+			if (newSizeOf($aClassearbo) > 0) {
 				$oClassearbo = $aClassearbo[0];
 				$classeId = $oClassearbo->get_classe();
 				$idEnregistrement = $oClassearbo->get_classeid();
@@ -1602,7 +1602,7 @@ function getBoolEnregistrementAssocie ($node_id, $idSite, $db) {
 				$classePrefixe = "com";
 				$sql2 = "select * from ".$classeName." where ".$classePrefixe."_statut=4 and ".$classePrefixe."_id=".$idEnregistrement;
 				$aClasse =  dbGetObjectsFromRequete($classeName, $sql2);
-				$nombreEnregistrement = $nombreEnregistrement+sizeof($aClasse);
+				$nombreEnregistrement = $nombreEnregistrement+newSizeOf($aClasse);
 			}
 	}
 	if ($nombreEnregistrement == 0) return false;
@@ -1614,7 +1614,7 @@ function getLienRecherche($idSite, $db, $path, $debutArbo,$url, $classe, $idComp
 	$arrayChemin = explode('/',$path);
 	$cheminToFind = "/";
 	$cheminDeFer = "";
-	for ($i=0;$i<sizeof($arrayChemin);$i++) {
+	for ($i=0;$i<newSizeOf($arrayChemin);$i++) {
 		if ($arrayChemin[$i]!="") {
 			$cheminToFind.= $arrayChemin[$i]."/";
 			$pathReverse = path2nodesCarte($idSite, $db, $cheminToFind);

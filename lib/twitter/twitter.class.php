@@ -669,7 +669,7 @@ class Twitter{
 			// Check if getUserTimeline threw an error
 			if(is_array($timeline)){
 				// Calculate the amount of available datasets
-				$amount = sizeof($timeline);
+				$amount = newSizeOf($timeline);
 				// Reinitialize the returning variable as an array
 				$returnValue = array();
 				// Walk through all datasets and fetch only the contents
@@ -712,7 +712,7 @@ class Twitter{
 			// Check if getUserTimeline threw an error
 			if(is_array($timeline)){
 				// Calculate the amount of available datasets
-				$amount = sizeof($timeline);
+				$amount = newSizeOf($timeline);
 				// Reinitialize the returning variable as an array
 				$returnValue = array();
 				// Walk through all datasets and fetch only the contents

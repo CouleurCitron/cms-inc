@@ -651,7 +651,7 @@ if (!class_exists('PEAR')){
 			$setmode     = &$GLOBALS['_PEAR_default_error_mode'];
 			$setoptions  = &$GLOBALS['_PEAR_default_error_options'];
 			array_pop($stack);
-			list($mode, $options) = $stack[sizeof($stack) - 1];
+			list($mode, $options) = $stack[newSizeOf($stack) - 1];
 			array_pop($stack);
 			switch ($mode) {
 				case PEAR_ERROR_EXCEPTION:
@@ -725,7 +725,7 @@ if (!class_exists('PEAR')){
 		{
 			$stack = &$GLOBALS['_PEAR_error_handler_stack'];
 			array_pop($stack);
-			list($mode, $options) = $stack[sizeof($stack) - 1];
+			list($mode, $options) = $stack[newSizeOf($stack) - 1];
 			array_pop($stack);
 			if ($object !== null) {
 				$object->setErrorHandling($mode, $options);
@@ -776,7 +776,7 @@ if (!class_exists('PEAR')){
 	{
 		global $_PEAR_destructor_object_list;
 		if (is_array($_PEAR_destructor_object_list) &&
-			sizeof($_PEAR_destructor_object_list))
+			newSizeOf($_PEAR_destructor_object_list))
 		{
 			reset($_PEAR_destructor_object_list);
 

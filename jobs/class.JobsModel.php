@@ -41,7 +41,7 @@ class JobsModel {
 		$aDomains = dbGetObjectsFromRequete("job_domaine", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aDomains); $i++){
+		for ($i=0; $i<newSizeOf($aDomains); $i++){
 			$oDomain = $aDomains[$i];
 			$list[] = Array(	'id'		=> $oDomain->get_id(),
 					'selected'	=> ($_type == $oDomain->get_id() ? true : false),
@@ -70,7 +70,7 @@ class JobsModel {
 		$aQualifications = dbGetObjectsFromRequete("job_qualification", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aQualifications); $i++){
+		for ($i=0; $i<newSizeOf($aQualifications); $i++){
 			$oQualification = $aQualifications[$i];
 			$list[] = Array(	'id'		=> $oQualification->get_id(),
 					'selected'	=> ($_type == $oQualification->get_id() ? true : false),
@@ -109,7 +109,7 @@ class JobsModel {
 		$aTypes = dbGetObjectsFromRequete("job_contrat", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aTypes); $i++){
+		for ($i=0; $i<newSizeOf($aTypes); $i++){
 			$oType = $aTypes[$i];
 			$list[] = Array(	'id'		=> $oType->get_id(),
 					'selected'	=> ($_type == $oType->get_id() ? true : false),
@@ -138,7 +138,7 @@ class JobsModel {
 		$aExperiences = dbGetObjectsFromRequete("job_rubrique", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aExperiences); $i++){
+		for ($i=0; $i<newSizeOf($aExperiences); $i++){
 			$oExperience = $aExperiences[$i];
 			$list[] = Array(	'id'		=> $oExperience->get_id(),
 					'selected'	=> ($_experience == $oExperience->get_id() ? true : false),
@@ -177,7 +177,7 @@ class JobsModel {
 		$aFunctions = dbGetObjectsFromRequete("job_metier", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aFunctions); $i++){
+		for ($i=0; $i<newSizeOf($aFunctions); $i++){
 			$oFunction = $aFunctions[$i];
 			$list[] = Array(	'id'		=> $oFunction->get_id(),
 					'selected'	=> ((is_array($_function) && in_array($oFunction->get_id(), array_keys($_function)) || $_function == $oFunction->get_id()) ? true : false),
@@ -220,7 +220,7 @@ class JobsModel {
 		$aPlaces = dbGetObjectsFromRequete("job_lieu", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aPlaces); $i++){
+		for ($i=0; $i<newSizeOf($aPlaces); $i++){
 			$oPlace = $aPlaces[$i];
 			$list[] = Array(	'id'		=> $oPlace->get_id(),
 					'selected'	=> ((is_array($_place) && in_array($oPlace->get_id(), array_keys($_place)) || $_place == $oPlace->get_id()) ? true : false),
@@ -258,7 +258,7 @@ class JobsModel {
 		$aLanguages = dbGetObjectsFromRequete("job_langue", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aLanguages); $i++){
+		for ($i=0; $i<newSizeOf($aLanguages); $i++){
 			$oLanguage = $aLanguages[$i];
 			$list[] = Array(	'id'		=> $oLanguage->get_id(),
 					'name'		=> $oLanguage->get_libelle() );
@@ -285,7 +285,7 @@ class JobsModel {
 		$aLangLevels = dbGetObjectsFromRequete("job_niveaulangue", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aLangLevels); $i++){
+		for ($i=0; $i<newSizeOf($aLangLevels); $i++){
 			$oLevel = $aLangLevels[$i];
 			$list[] = Array(	'id'		=> $oLevel->get_id(),
 					'name'		=> $oLevel->get_libelle() );
@@ -383,7 +383,7 @@ class JobsModel {
 		$aOffres = dbGetObjectsFromRequete("job_offre", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aOffres); $i++){
+		for ($i=0; $i<newSizeOf($aOffres); $i++){
 			$oOffre = $aOffres[$i];
 			$tmp = Array(	'id'	=> $oOffre->get_id(),
 					'detail'	=> $oOffre->get_detail() );
@@ -975,7 +975,7 @@ class JobsModel {
 		$aRecipients = dbGetObjectsFromRequete("job_destinataire", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aRecipients); $i++)
+		for ($i=0; $i<newSizeOf($aRecipients); $i++)
 			$list[] = $aRecipients[$i]->get_mail();
 		return (Array) $list;
 	}
@@ -999,7 +999,7 @@ class JobsModel {
 		$aReplies = dbGetObjectsFromRequete("job_lettre", $sql);
 		
 		$list = Array();
-		for ($i=0; $i<sizeof($aReplies); $i++){
+		for ($i=0; $i<newSizeOf($aReplies); $i++){
 			$oReply = $aReplies[$i];
 			$list[] = Array(	'id'		=> $oReply->get_id(),
 					'type'		=> $oReply->get_type(),

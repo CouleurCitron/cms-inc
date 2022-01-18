@@ -4,7 +4,7 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/backoffice/cms/newsletter/functions.lib.php');
 
 if(!@include_once('PEAR.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/PEAR.php');}
-if(!@include_once('Mail.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail.php');}
+if(!@include_once('mail.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mail.php');}
 if(!@include_once('mime.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/mime.php');}
 if(!@include_once('Mail/mimePart.php')){include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/pear/Mail/mimePart.php');}
 
@@ -483,7 +483,7 @@ if(!defined('MAIL_LIB_PHP') || MAIL_LIB_PHP == 'default'){
             $parametres['encoding']   = '7bit';
             $text = $email->addSubPart($html, $parametres);
 
-            for ($i=0; $i<sizeof($aName_file); $i++)
+            for ($i=0; $i<newSizeOf($aName_file); $i++)
             {
                     if ($aName_file[$i] != "") {		
 
@@ -774,7 +774,7 @@ $text = $email->addSubPart($html, $parametres);
 // C'est au programmeur de s'assurer que $contenuDePieceJointe 
 // contient bel et bien le coprs de la pi&egrave;ce &agrave; joindre
 
-for ($i=0; $i<sizeof($aName_file); $i++)
+for ($i=0; $i<newSizeOf($aName_file); $i++)
 {
 	if ($aName_file[$i] != "") {
 		$extension=get_extension($aName_file[$i]);
@@ -932,7 +932,7 @@ function multiPartMail_image($to , $sujet , $html , $text, $from, $attachPath, $
 	
 	
 	
-	for ($i=0; $i<sizeof($aName_file); $i++)
+	for ($i=0; $i<newSizeOf($aName_file); $i++)
 	{
 		if ($aName_file[$i] != "") {
 			$parametres['content_type'] = get_mimeType(get_extension($aName_file[$i]));

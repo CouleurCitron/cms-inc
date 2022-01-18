@@ -174,17 +174,17 @@ function arr2html(&$arr,$ztabhtml='',$zheaderarray='')
 
 	if ($zheaderarray) {
 		$s .= '<TR>';
-		for ($i=0; $i<sizeof($zheaderarray); $i++) {
+		for ($i=0; $i<newSizeOf($zheaderarray); $i++) {
 			$s .= "	<TH>{$zheaderarray[$i]}</TH>\n";
 		}
 		$s .= "\n</TR>";
 	}
 	
-	for ($i=0; $i<sizeof($arr); $i++) {
+	for ($i=0; $i<newSizeOf($arr); $i++) {
 		$s .= '<TR>';
 		$a = $arr[$i];
 		if (is_array($a)) 
-			for ($j=0; $j<sizeof($a); $j++) {
+			for ($j=0; $j<newSizeOf($a); $j++) {
 				$val = $a[$j];
 				if (empty($val)) $val = '&nbsp;';
 				$s .= "	<TD>$val</TD>\n";

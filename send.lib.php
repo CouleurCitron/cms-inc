@@ -27,10 +27,10 @@ if ($bDebug) print("<br>OK");
 
 		$aInteret = getInteretForInscrit($id_inscrit);
 		$sInteret = "";
-		for ($i=0; $i<sizeof($aInteret); $i++) {
+		for ($i=0; $i<newSizeOf($aInteret); $i++) {
 			$oInteret = $aInteret[$i];
 			$sInteret.= $oInteret->getInt_libelle();
-			if ($i != sizeof($aInteret) -1) $sInteret.=" - ";
+			if ($i != newSizeOf($aInteret) -1) $sInteret.=" - ";
 		}
 
 		$html = str_replace("[MAIL]", $to, $html);

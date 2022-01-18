@@ -39,7 +39,7 @@ class TslManager {
 		$this->translated = new cms_chaine_traduite();
 
 		//Verify language in session
-		if (isset($_SESSION['BO'])  &&  ($_SESSION['BO']['id_langue'] > 0)&&(preg_match('/[0-9]+/si', $_SESSION['BO']['id_langue'])==1)	&& 	preg_match('/backoffice/', $_SERVER['PHP_SELF'])) {
+		if (isset($_SESSION['BO'])  &&  isset($_SESSION['BO']['id_langue'])  &&  ($_SESSION['BO']['id_langue'] > 0)&&(preg_match('/[0-9]+/si', $_SESSION['BO']['id_langue'])==1)	&& 	preg_match('/backoffice/', $_SERVER['PHP_SELF'])) {
 			// session OK
 			$_SESSION['tsl_langue']=$_SESSION['BO']['id_langue'];
 			if (!defined('DEF_APP_LANGUE')){
@@ -200,7 +200,7 @@ class TslManager {
 			if ($lang != DEF_APP_LANGUE) { 
 				$this->translated = new cms_chaine_traduite();
 				$res = dbGetObjectsFromFieldValue('cms_chaine_traduite', Array('get_id_reference', 'get_id_langue'), Array($ref_id, $lang), null);
-				if (count($res) == 0)  $text = ''; 
+				if (newSizeOf($res) == 0)  $text = ''; 
 			}
 			// fin cas champ vide 
 			
@@ -235,15 +235,15 @@ class TslManager {
 				//if (preg_match ("/backoffice/", $_SERVER['PHP_SELF']) ) $tsl_lang = $lang; 
 				//$this->translated = new cms_chaine_traduite();
 				$res = dbGetObjectsFromFieldValue('cms_chaine_traduite', Array('get_id_reference', 'get_id_langue'), Array($ref_id, $tsl_lang), null);
-				if (count($res) > 1) {
+				if (newSizeOf($res) > 1) {
 						echo 'TslManager::getText() - Error - multiple Db records for text ('.$text.')';
 						return null;
 				}
-				elseif (count($res) == 1) {
+				elseif (newSizeOf($res) == 1) {
 					$this->translated = $res[0];
 					$test = $this->translated->get_chaine();
 				}
-				elseif(count($res) == 0) {
+				elseif(newSizeOf($res) == 0) {
 					//echo 'no trad avail';
 				}
 			//}
@@ -343,10 +343,10 @@ class TslManager {
 				$tsl_lang = $lang;
 		    	else	$tsl_lang = $_SESSION['tsl_langue'];
 			$res = dbGetObjectsFromFieldValue('cms_chaine_traduite', Array('get_id_reference', 'get_id_langue'), Array($ref_id, $tsl_lang), null);
-		    	if (count($res) > 1) {
+		    	if (newSizeOf($res) > 1) {
 		    		echo 'TslManager::updateText() - Error - multiple Db records for translation text (<i>'.$this->reference->get_chaine().'</i>)';
 		    		return null;
-			} elseif (count($res) == 1) {
+			} elseif (newSizeOf($res) == 1) {
 				// translation exists so update it
 				$this->translated = $res[0];
 				$this->translated->set_chaine($text);
@@ -399,10 +399,10 @@ class TslManager {
 	function getReferenceID ($MD5=null) {
 		if (!is_null($MD5)) {
 			$res = dbGetObjectsFromFieldValue('cms_chaine_reference', Array('get_md5'), Array($MD5), null);
-			if (count($res) == 1){
+			if (newSizeOf($res) == 1){
 				return (Int) $res[0]->get_id();
 			}
-		    	elseif (count($res) > 1) {
+		    	elseif (newSizeOf($res) > 1) {
 		    		//echo 'Error - MD5 hash for translation is not unique in DB records ('.$MD5.')';
 		    		return -1;
 			}
@@ -486,10 +486,10 @@ class TslManager {
 				
 				$res = dbGetObjectsFromFieldValue('cms_chaine_traduite', Array('get_id_reference', 'get_id_langue'), Array($ref_id, $tsl_lang), null);
 
-				if (count($res) > 1) {
+				if (newSizeOf($res) > 1) {
 				    	echo 'TslManager::addTranslation() - Error - multiple DB records for text (<i>'.$ref_text.'</i>)';
 				    	return null;
-				} elseif ($res !== false && count($res) == 1) {
+				} elseif ($res !== false && newSizeOf($res) == 1) {
 					// translation exists so update it
 					$this->translated = $res[0];
 					$this->translated->set_chaine($trad_text);
@@ -581,7 +581,7 @@ class TslManager {
 		else{
 			$aChain = dbGetObjectsFromFieldValue("cms_texte", array("get_code"),  array($code), NULL);
 					
-			if ((count($aChain) > 0)&&($aChain!=false)){
+			if ((newSizeOf($aChain) > 0)&&($aChain!=false)){
 				$oChain = $aChain[0];
 				$_SESSION['BO']['cms_texte'][$code] = $this->getByID($oChain->get_chaine(), $_SESSION['tsl_langue']);
 				return $_SESSION['BO']['cms_texte'][$code];
@@ -624,13 +624,13 @@ class TslManager {
 	
 		$aChain = dbGetObjectsFromFieldValue("cms_texte", array("get_statut"),  array(DEF_ID_STATUT_LIGNE), NULL);
 				
-		if ((count($aChain) > 0)&&($aChain!=false)){
+		if ((newSizeOf($aChain) > 0)&&($aChain!=false)){
 			foreach($aChain as $cKey => $oChain){
 				$oFr = new cms_chaine_reference($oChain->get_chaine());
 				$fr = $oFr->get_chaine();
 				
 				$aTrad = dbGetObjectsFromFieldValue("cms_chaine_traduite", array("get_id_reference"),  array($oChain->get_chaine()), NULL);
-				if ((count($aTrad) > 0)&&($aTrad!=false)){
+				if ((newSizeOf($aTrad) > 0)&&($aTrad!=false)){
 					$en = $aTrad[0]->get_chaine();
 				}
 				else{
@@ -659,7 +659,7 @@ class TslManager {
 		unset($_SESSION['BO']['cms_texte']);
 		//error_log( 'loadAllTransToSession('.$idLang.')');
 		$aChain = dbGetObjectsFromFieldValue("cms_texte", array("get_statut"),  array(DEF_ID_STATUT_LIGNE), NULL);
-		if ((count($aChain) > 0)&&($aChain!=false)){
+		if ((newSizeOf($aChain) > 0)&&($aChain!=false)){
 			foreach($aChain as $chK => $oChain){
 				$_SESSION['BO']['cms_texte'][$oChain->get_code()]=$this->getByID($oChain->get_chaine(), $idLang);
 			}
@@ -693,55 +693,58 @@ class TslManager {
 		
 		xmlUrlParse('http://aws.couleur-citron.com/backoffice/cms/cms_texte/xml_cms_texte.php');
 		
-		$aTexts = $stack[0]["children"];
+		if (isset($stack[0]["children"])){
+			$aTexts = $stack[0]["children"];
 		
-		for ($i = 0; $i <= count($aTexts); $i++) {	
-		
-			$code = trim(removeForbiddenChars($aTexts[$i]["attrs"]["CODE"], false));		
-			//echo $code.' loop num '.$i.' / '.count($aTexts).'<br />';
-				
-			if (($code!='')&&(!isset($aCache[$code]))){
+			for ($i = 0; $i <= newSizeOf($aTexts); $i++) {	
 			
-				if ($verbose)
-				echo $code.'<br />';
-			
-				if ($verbose)
-				echo '<br />';
+				$code = trim(removeForbiddenChars($aTexts[$i]["attrs"]["CODE"], false));		
+				//echo $code.' loop num '.$i.' / '.newSizeOf($aTexts).'<br />';
+					
+				if (($code!='')&&(!isset($aCache[$code]))){
 				
-				foreach($aTexts[$i]["children"] as $k => $childNode){
-					if(strtolower($childNode['name'])==($this->getLangCodeById(DEF_APP_LANGUE))){						
-						$text = utf8_decode($childNode["cdata"]);						
+					if ($verbose)
+					echo $code.'<br />';
+				
+					if ($verbose)
+					echo '<br />';
+					
+					foreach($aTexts[$i]["children"] as $k => $childNode){
+						if(strtolower($childNode['name'])==($this->getLangCodeById(DEF_APP_LANGUE))){						
+							$text = utf8_decode($childNode["cdata"]);						
+						}
+						else{				
+							$trad = utf8_decode($childNode["cdata"]);		
+						}
 					}
-					else{				
-						$trad = utf8_decode($childNode["cdata"]);		
-					}
-				}
+					
+					if ($verbose)
+						echo '<br />text='.$text;
+					
+					if ($verbose)
+						echo '<br />trad='.$trad;					
+					
+					$id = $this->addReference ($text);
+					$this->addTranslation ($text, array(2 => $trad));
 				
-				if ($verbose)
-					echo '<br />text='.$text;
-				
-				if ($verbose)
-					echo '<br />trad='.$trad;					
-				
-				$id = $this->addReference ($text);
-				$this->addTranslation ($text, array(2 => $trad));
+					$oText = new cms_texte();
 			
-				$oText = new cms_texte();
-		
-				$oText->set_code($code);
-				$oText->set_chaine($id);
+					$oText->set_code($code);
+					$oText->set_chaine($id);
 
-				$oText->set_statut(DEF_ID_STATUT_LIGNE);
-				dbSauve($oText);				
-				
-				if ($verbose)
-				echo '<hr />';	
+					$oText->set_statut(DEF_ID_STATUT_LIGNE);
+					dbSauve($oText);				
+					
+					if ($verbose)
+					echo '<hr />';	
+				}
+				else{
+					//echo 'dejà<hr />';
+					//pre_dump($aCache[$code]);
+				}	
 			}
-			else{
-				//echo 'dejà<hr />';
-				//pre_dump($aCache[$code]);
-			}	
-		}	
+
+		}
+			
 	}
 }
-?>

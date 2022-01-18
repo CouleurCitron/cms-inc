@@ -631,7 +631,7 @@ function desinscription_pa_auto()
 		$result = false;
 	}
 //------------------------------------------------------------------
-//print("<br>".sizeof($result)." inscrits supprimés");
+//print("<br>".newSizeOf($result)." inscrits supprimés");
 
 //------------------------------------------------------------------
 // 2. ENVOIE DE RAPPEL AUX DES INSCRITS DONT LA DATE DE CONNEXION EST PASSEE
@@ -668,7 +668,7 @@ function desinscription_pa_auto()
 		$result = false;
 	}
 //------------------------------------------------------------------
-//print("<br>".sizeof($result)." inscrits rappelés");
+//print("<br>".newSizeOf($result)." inscrits rappelés");
 
 
 	return $result;

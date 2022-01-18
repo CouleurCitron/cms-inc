@@ -22,14 +22,14 @@ $aFkeyCache = array();
 	
 	 
 if ($bImportIds == false){ 
-	$nb_champs =  sizeof($oRes->getListeChamps()) - 1 ;	
+	$nb_champs =  newSizeOf($oRes->getListeChamps()) - 1 ;	
 	if ($liste_asso != '')  $aTempClasse = explode(',', $liste_asso);	  
-	$nb_champs  = $nb_champs + sizeof($aTempClasse);  					 
+	$nb_champs  = $nb_champs + newSizeOf($aTempClasse);  					 
 }
 else{ // la premiere colonne CSV contient les IDs
-	$nb_champs =  sizeof($oRes->getListeChamps());
+	$nb_champs =  newSizeOf($oRes->getListeChamps());
 	if ($liste_asso != '')  $aTempClasse = explode(',', $liste_asso);	
-	$nb_champs  = $nb_champs + sizeof($aTempClasse);  
+	$nb_champs  = $nb_champs + newSizeOf($aTempClasse);  
 }
  
 // 
@@ -52,7 +52,7 @@ if ($sheetTout){
 			//pre_dump($aLigne);
 		}
 		// on teste le nombre de colonne 
-		elseif ($nb_champs >  sizeof($aLigne) && $testColonne == false ){  
+		elseif ($nb_champs >  newSizeOf($aLigne) && $testColonne == false ){  
 			$error = "Aucun import n'a été effectué, merci de vérifier la structure de votre fichier <br />ou de télécharger le modèle de fichier d'import ci-dessous.";
 			break;	
 		}

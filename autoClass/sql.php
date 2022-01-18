@@ -86,7 +86,7 @@ else{
 }
 
 // autres tris
-for ($i=0; $i < sizeof($aListeTri); $i++){
+for ($i=0; $i < newSizeOf($aListeTri); $i++){
 
 	$oTri = $aListeTri[$i];
 
@@ -267,7 +267,7 @@ $aListe_res = dbGetObjectsFromRequete($classeName, $sql);
 <pre style="border:dashed;left:200px">
 <?php
 // s'il y a des enregistrements à afficher
-if(sizeof($aListe_res)>0) {
+if(newSizeOf($aListe_res)>0) {
 
 	eval("$"."oRes = new ".$classeName."();");
 	$sXML = $oRes->XML;
@@ -278,7 +278,7 @@ if(sizeof($aListe_res)>0) {
 	$aNodeToSort = $stack[0]["children"];
 
 	// liste
-	for($k=0; $k<sizeof($aListe_res); $k++) {
+	for($k=0; $k<newSizeOf($aListe_res); $k++) {
 		$oRes = $aListe_res[$k];	
 	
 	    echo dbMakeInsertReq($oRes).";\n";

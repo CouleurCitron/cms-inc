@@ -101,7 +101,7 @@ if ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match
 
 
 // s'il y a des enregistrements à afficher et qu'on a les droits pour exporter
-if(sizeof($aListe_res) > 0 && ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/x/', $customActionControl[$_SESSION['rank']]))) {
+if(newSizeOf($aListe_res) > 0 && ($_SESSION['login'] == 'ccitron' || empty($customActionControl) || preg_match('/x/', $customActionControl[$_SESSION['rank']]))) {
 	// du rss ?
 	$rssFields = 0;
 	for ($iFile=0;$iFile<count($aNodeToSort);$iFile++){
@@ -225,7 +225,7 @@ include('list.filters.php');
 	function changeStatut(idStatut)	{
 		cbToChange = "";
 <?php
-for ($m=0; $m<sizeof($aListe_res); $m++) {
+for ($m=0; $m<newSizeOf($aListe_res); $m++) {
 	$oRes = $aListe_res[$m];	
 	$cb = "cb_".ucfirst($classePrefixe)."_".$oRes->get_id();	
 ?>
@@ -330,7 +330,7 @@ if (!empty($custom_local_actions)) {
 </div><!-- Fin Pagination -->
 
 <?php
-if(sizeof($aListe_res)>0) {// s'il y a des enregistrements à afficher
+if(newSizeOf($aListe_res)>0) {// s'il y a des enregistrements à afficher
 	eval("$"."oRes = new ".$classeName."();");
 	if(!is_null($oRes->XML_inherited))
 		$sXML = $oRes->XML_inherited;

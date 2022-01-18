@@ -49,7 +49,7 @@ function adodb_probetypes(&$array,&$types,$probe=8)
 {
 // probe and guess the type
 	$types = array();
-	if ($probe > sizeof($array)) $max = sizeof($array);
+	if ($probe > newSizeOf($array)) $max = newSizeOf($array);
 	else $max = $probe;
 	
 	
@@ -90,8 +90,8 @@ function adodb_probetypes(&$array,&$types,$probe=8)
 
 function  adodb_transpose(&$arr, &$newarr, &$hdr, &$fobjs)
 {
-	$oldX = sizeof(reset($arr));
-	$oldY = sizeof($arr);	
+	$oldX = newSizeOf(reset($arr));
+	$oldY = newSizeOf($arr);	
 	
 	if ($hdr) {
 		$startx = 1;
@@ -226,7 +226,7 @@ function _adodb_getmenu(&$zthis, $name,$defstr='',$blank1stItem=true,$multiple=f
 	if ($blank1stItem) 
 		if (is_string($blank1stItem))  {
 			$barr = explode(':',$blank1stItem);
-			if (sizeof($barr) == 1) $barr[] = '';
+			if (newSizeOf($barr) == 1) $barr[] = '';
 			$s .= "\n<option value=\"".$barr[0]."\">".$barr[1]."</option>";
 		} else $s .= "\n<option></option>";
 
@@ -312,7 +312,7 @@ function _adodb_getmenu_gp(&$zthis, $name,$defstr='',$blank1stItem=true,$multipl
 	if ($blank1stItem) 
 		if (is_string($blank1stItem))  {
 			$barr = explode(':',$blank1stItem);
-			if (sizeof($barr) == 1) $barr[] = '';
+			if (newSizeOf($barr) == 1) $barr[] = '';
 			$s .= "\n<option value=\"".$barr[0]."\">".$barr[1]."</option>";
 		} else $s .= "\n<option></option>";
 
@@ -322,7 +322,7 @@ function _adodb_getmenu_gp(&$zthis, $name,$defstr='',$blank1stItem=true,$multipl
 	$value = '';
     $optgroup = null;
     $firstgroup = true;
-    $fieldsize = sizeof($zthis->fields);
+    $fieldsize = newSizeOf($zthis->fields);
 	while(!$zthis->EOF) {
 		$zval = rtrim(reset($zthis->fields));
 
@@ -1126,7 +1126,7 @@ function _adodb_backtrace($printOrArr=true,$levels=9999,$skippy=0,$ishtml=null)
 	else $traceArr = debug_backtrace();
 	array_shift($traceArr);
 	array_shift($traceArr);
-	$tabs = sizeof($traceArr)-2;
+	$tabs = newSizeOf($traceArr)-2;
 	
 	foreach ($traceArr as $arr) {
 		if ($skippy) {$skippy -= 1; continue;}
@@ -1141,7 +1141,7 @@ function _adodb_backtrace($printOrArr=true,$levels=9999,$skippy=0,$ishtml=null)
 		if (isset($arr['args']))
 		 foreach($arr['args'] as $v) {
 			if (is_null($v)) $args[] = 'null';
-			else if (is_array($v)) $args[] = 'Array['.sizeof($v).']';
+			else if (is_array($v)) $args[] = 'Array['.newSizeOf($v).']';
 			else if (is_object($v)) $args[] = 'Object:'.get_class($v);
 			else if (is_bool($v)) $args[] = $v ? 'true' : 'false';
 			else {

@@ -14,13 +14,13 @@ require_once "../Matrix.php";
 * @param $Y array y values
 * @param $n int order of polynomial to be used for fitting
 * @returns array $coeffs of polynomial coefficients
-* Pre-Conditions: the system is not underdetermined: sizeof($X) > $n+1
+* Pre-Conditions: the system is not underdetermined: newSizeOf($X) > $n+1
 */
 function polyfit($X, $Y, $n) {
-	for ($i = 0; $i < sizeof($X); ++$i)
+	for ($i = 0; $i < newSizeOf($X); ++$i)
 		for ($j = 0; $j <= $n; ++$j)
 			$A[$i][$j] = pow($X[$i], $j);
-	for ($i=0; $i < sizeof($Y); ++$i)
+	for ($i=0; $i < newSizeOf($Y); ++$i)
 		$B[$i] = array($Y[$i]);
 	$matrixA = new Matrix($A);
 	$matrixB = new Matrix($B);

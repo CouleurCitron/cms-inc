@@ -411,12 +411,12 @@ function getOneObjetWithPageZonedit($idPage, $idZonedit)
 	// cms_struct à partir de l'id de la zone editable
 	$aStruct = getObjetWithZonedit($idZonedit);
 
-	if(sizeof($aStruct)>0) {
+	if(newSizeOf($aStruct)>0) {
 		$oStruct = new Cms_struct_page();
 		
 		// Recherche de la liaison dans la page en cours
 		// et Récupération de la brique existante
-		for($i=0;$i<sizeof($aStruct);$i++) {
+		for($i=0;$i<newSizeOf($aStruct);$i++) {
 			$oStruct = $aStruct[$i];
 			if($oStruct->id_page == $idPage)
 				break;

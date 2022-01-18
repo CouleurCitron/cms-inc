@@ -319,7 +319,7 @@ function renumerote()
 
 	$sTrace = "<table class=arbo cellpadding='5' cellspacing='0'>";
 
-	for ($i=0; $i<sizeof($aPA); $i++)
+	for ($i=0; $i<newSizeOf($aPA); $i++)
 	{
 		$oPA = $aPA[$i];
 

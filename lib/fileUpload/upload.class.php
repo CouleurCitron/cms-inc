@@ -197,7 +197,7 @@ class Upload {
 	 * @access public
 	 * @return object   initialise les valeurs par défaut
 	 */
-	function Upload() {
+	function __construct() {
 		$this-> Extension    = '';
         $this-> DirUpload    = '';
         $this-> MimeType     = '';
@@ -292,30 +292,31 @@ class Upload {
 	 */
 	function CheckUpload() {
 		global $UploadError;
-        
-        // Parcours des fichiers à uploader
-		for ($i=0; $i < count($_FILES['userfile']['tmp_name']); $i++)  {
-            
-			// Récup des propriétés
-            $this-> _field = $i+1;                              // position du champ dans le formulaire à partir de 1 (0 étant réservé au champ max_file_size)
-			$this-> _size  = $_FILES['userfile']['size'][$i];     // poids du fichier
-			$this-> _type  = $_FILES['userfile']['type'][$i];     // type mime
-            $this-> _name  = $_FILES['userfile']['name'][$i];     // nom du fichier
-			$this-> _temp  = $_FILES['userfile']['tmp_name'][$i]; // emplacement temporaire
-			$this-> _ext   = strtolower(substr($this-> _name, strrpos($this-> _name, '.'))); // extension du fichier
-            
-            // On exécute les vérifications demandées
-			if (is_uploaded_file($_FILES['userfile']['tmp_name'][$i])) {
-				$this-> CheckSecurity();
-				$this-> CheckMimeType();
-				$this-> CheckExtension();
-                $this-> CheckImg();
-			} else $this-> AddError($_FILES['userfile']['error'][$i]); // Le fichier n'a pas été uploadé, on récupère l'erreur
-            
-            // Si le fichier a passé toutes les vérifications, on procède à l'upload, sinon on positionne la variable globale UploadError à 'true'
-            if (!isset($this-> ArrOfError[$this-> _field])) $this-> WriteFile($this-> _name, $this-> _type, $this-> _temp, $this-> _size, $this-> _ext, $this-> _field);
-            else $UploadError = true;
-		}
+        if(isset($_FILES['userfile'])){
+        	// Parcours des fichiers à uploader
+			for ($i=0; $i < newSizeOf($_FILES['userfile']['tmp_name']); $i++)  {
+	            
+				// Récup des propriétés
+	            $this-> _field = $i+1;                              // position du champ dans le formulaire à partir de 1 (0 étant réservé au champ max_file_size)
+				$this-> _size  = $_FILES['userfile']['size'][$i];     // poids du fichier
+				$this-> _type  = $_FILES['userfile']['type'][$i];     // type mime
+	            $this-> _name  = $_FILES['userfile']['name'][$i];     // nom du fichier
+				$this-> _temp  = $_FILES['userfile']['tmp_name'][$i]; // emplacement temporaire
+				$this-> _ext   = strtolower(substr($this-> _name, strrpos($this-> _name, '.'))); // extension du fichier
+	            
+	            // On exécute les vérifications demandées
+				if (is_uploaded_file($_FILES['userfile']['tmp_name'][$i])) {
+					$this-> CheckSecurity();
+					$this-> CheckMimeType();
+					$this-> CheckExtension();
+	                $this-> CheckImg();
+				} else $this-> AddError($_FILES['userfile']['error'][$i]); // Le fichier n'a pas été uploadé, on récupère l'erreur
+	            
+	            // Si le fichier a passé toutes les vérifications, on procède à l'upload, sinon on positionne la variable globale UploadError à 'true'
+	            if (!isset($this-> ArrOfError[$this-> _field])) $this-> WriteFile($this-> _name, $this-> _type, $this-> _temp, $this-> _size, $this-> _ext, $this-> _field);
+	            else $UploadError = true;
+			}
+        }
 	}
 	
 	

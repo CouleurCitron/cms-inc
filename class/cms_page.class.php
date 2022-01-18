@@ -722,7 +722,7 @@ function cms_page_regenerate() {
 	}
 
 
-	$this->dateupd_page=datemep;
+	$this->dateupd_page=$datemep;
 	$this->datemep_page="'".$this->datemep_page."'"; // A MODIFIER dans le update (et voir les conséquences) => Ouu ce que c crade
 	$this->isgenerated_page=1;
 	$this->html_page=$content;
@@ -862,7 +862,7 @@ function ifTousEnLigne($idPage)
 
 	// taille du div_array pour cette page :: ensemble des briques de cette page
 
-	if ($divArray[0]['id'] != "") $eIdDivarray = 1;
+	if ( isset($divArray[0]['id'])  && ($divArray[0]['id'] != "")) $eIdDivarray = 1;
 	else $eIdDivarray = 0;
 
 	// composants
@@ -870,36 +870,37 @@ function ifTousEnLigne($idPage)
 
 	// tous les div_array
 	$bTousEnLigne = 1;
-	foreach($divArray_tosee as $k => $v) {
-		if(is_array($v)){
-	
-			$oContent = new Cms_content();
-			$oArchi = new Cms_archi_content();
-			
-			$oContent->initValues($v['id']);
-			$oArchi = getArchiWithIdContent($oContent->getId_content());
+  if (newSizeOf($divArray_tosee)>0){
+    foreach($divArray_tosee as $k => $v) {
+      if(is_array($v)){
 
-			// si c'est une brique editable
-			if ($oContent->getIsbriquedit_content()) {
-	
-				// s'il existe une version en ligne de CMS_CONTENT
-				// ET que cms_content est en ligne
-				// -> alors tout est en ligne, pas de version de travail en cours
-				
-				// teste ici si cms_content != ligne ou archi != cms_archi_ligne
-				
-				$sStatut_archi = $oArchi->getStatut_archi();
-				$sStatut_content = $oContent->getStatut_content();
+        $oContent = new Cms_content();
+        $oArchi = new Cms_archi_content();
 
-				if ($sStatut_content != DEF_ID_STATUT_LIGNE || $sStatut_archi != DEF_ID_STATUT_LIGNE) {
+        $oContent->initValues($v['id']);
+        $oArchi = getArchiWithIdContent($oContent->getId_content());
 
-					$bTousEnLigne = 0;
-				}
-			}
-			
-		}
-	}
+        // si c'est une brique editable
+        if ($oContent->getIsbriquedit_content()) {
 
+          // s'il existe une version en ligne de CMS_CONTENT
+          // ET que cms_content est en ligne
+          // -> alors tout est en ligne, pas de version de travail en cours
+
+          // teste ici si cms_content != ligne ou archi != cms_archi_ligne
+
+          $sStatut_archi = $oArchi->getStatut_archi();
+          $sStatut_content = $oContent->getStatut_content();
+
+          if ($sStatut_content != DEF_ID_STATUT_LIGNE || $sStatut_archi != DEF_ID_STATUT_LIGNE) {
+
+            $bTousEnLigne = 0;
+          }
+        }
+
+      }
+    }//foreach
+  }
 	return $bTousEnLigne;
 }
 
@@ -933,26 +934,27 @@ function ifExisteligne($idPage)
 
 	// tous les div_array
 	$bExisteLigne = 1;
-	foreach($divArray_tosee as $k => $v) {
-		if(is_array($v)){
-	
-			$oContent = new Cms_content();
-			$oArchi = new Cms_archi_content();
-			
-			$oContent->initValues($v['id']);
-			$oArchi = getArchiWithIdContent($oContent->getId_content());
+  if (newSizeOf($divArray_tosee)>0){
+    foreach($divArray_tosee as $k => $v) {
+      if(is_array($v)){
 
-			// si c'est une brique editable
-			if ($oContent->getIsbriquedit_content()) {
-	
-				// s'il existe une version en ligne de CMS_CONTENT
-				$sStatut = $oArchi->getStatut_archi();
-				if ($sStatut != DEF_ID_STATUT_LIGNE) $bExisteLigne = 0;
-			}
-			
-		}
-	}
+        $oContent = new Cms_content();
+        $oArchi = new Cms_archi_content();
 
+        $oContent->initValues($v['id']);
+        $oArchi = getArchiWithIdContent($oContent->getId_content());
+
+        // si c'est une brique editable
+        if ($oContent->getIsbriquedit_content()) {
+
+          // s'il existe une version en ligne de CMS_CONTENT
+          $sStatut = $oArchi->getStatut_archi();
+          if ($sStatut != DEF_ID_STATUT_LIGNE) $bExisteLigne = 0;
+        }
+
+      }
+    }//for
+  }
 	return $bExisteLigne;
 }
 
@@ -1233,32 +1235,32 @@ function getPagesFromXGabarits($aIdGab, $idSite) {
 	$sql.= " WHERE valid_page=1 AND ";
 
 	// grande parenthèse englobant les pages des gabarits ET les gabarits
-	if (sizeof($aIdGab)) $sql.=" ( ";
+	if (newSizeOf($aIdGab)) $sql.=" ( ";
 
 	// première parenthèse englobant les pages des gabarits
-	if (sizeof($aIdGab)) $sql.=" ( ";
+	if (newSizeOf($aIdGab)) $sql.=" ( ";
 	
 	// pages pour les gabarits
-	for ($p=0; $p<sizeof($aIdGab); $p++) {
+	for ($p=0; $p<newSizeOf($aIdGab); $p++) {
 		$sql.= " gabarit_page = '".$aIdGab[$p]."' ";
-		if ($p != sizeof($aIdGab)-1) $sql.= " OR ";
+		if ($p != newSizeOf($aIdGab)-1) $sql.= " OR ";
 		else $sql.=" ) "; // fin première parenthèse
 	}
 	
 	// deuxième parenthèse englobant les gabarits
-	if (sizeof($aIdGab)) $sql.=" OR ( ";
+	if (newSizeOf($aIdGab)) $sql.=" OR ( ";
 	 
 	// gabarits eux mêmes
-	for ($p=0; $p<sizeof($aIdGab); $p++) {
+	for ($p=0; $p<newSizeOf($aIdGab); $p++) {
 		$sql.= " id_page = ".$aIdGab[$p]." ";
-		if ($p != sizeof($aIdGab)-1) $sql.= " OR ";
+		if ($p != newSizeOf($aIdGab)-1) $sql.= " OR ";
 		else $sql.=" ) "; // fin deuxième parenthèse
 	}
 	
 	
 	
 	// fin grande parenthèse
-	if (sizeof($aIdGab)) $sql.=" ) ";	
+	if (newSizeOf($aIdGab)) $sql.=" ) ";	
 	
 	$sql.= " AND id_site=$idSite ";
 	
@@ -1353,7 +1355,7 @@ function analyseUrlToGetIdPage($sUrlComplete)
 	// recherche des noeuds et de l'id page
 	$idSite = "";
 	$sRep = "";
-	for ($p=0; $p<sizeof($aPath); $p++) {
+	for ($p=0; $p<newSizeOf($aPath); $p++) {
 
 		// on est sur un répertoire
 		$bFile = strstr ($aPath[$p], ".php");
@@ -1370,7 +1372,7 @@ function analyseUrlToGetIdPage($sUrlComplete)
 					$aValeurChamp[] = $aPath[$p];
 					$sGetterOrderBy = "getName_site";
 					$aSite = dbGetObjectsFromFieldValue("Cms_site", $aGetterWhere, $aValeurChamp, $sGetterOrderBy);
-					if (sizeof($aSite) == 0) {
+					if (newSizeOf($aSite) == 0) {
 						print("<br>Erreur interne de programme");
 						error_log("ERROR :: ANALYSE URL :: plusieurs site avec le même nom rep ".$aPath[$p]." ???");
 						exit();
@@ -1387,7 +1389,7 @@ function analyseUrlToGetIdPage($sUrlComplete)
 					$aValeurChamp[] = $idSite;
 					$sGetterOrderBy = "getId_site";
 					$aNode = dbGetObjectsFromFieldValue("Cms_arbo_pages", $aGetterWhere, $aValeurChamp, $sGetterOrderBy);
-					if (sizeof($aNode) == 0) {
+					if (newSizeOf($aNode) == 0) {
 						print("<br>Erreur interne de programme");
 						error_log("ERROR :: ANALYSE URL :: aucun noeud pour le site ".$idSite." ???");
 						exit();
@@ -1412,11 +1414,11 @@ function analyseUrlToGetIdPage($sUrlComplete)
 				$sPage = strtolower(strrchr($aPath[$p], ".php"));
 
 			// recherche de l'id noeud avec le nom du répertoire complet
-			for ($t=0; $t<sizeof($aNode); $t++) {
+			for ($t=0; $t<newSizeOf($aNode); $t++) {
 				$oNode = $aNode[$t];
 				if (strtolower($sRep) == strtolower($oNode->getAbsolute_path_name())) {
 					$eNode = $oNode->getNode_id();
-					$t = sizeof($aNode);// fin de la boucle
+					$t = newSizeOf($aNode);// fin de la boucle
 				}
 			}
 

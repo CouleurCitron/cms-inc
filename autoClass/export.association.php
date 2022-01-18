@@ -17,7 +17,7 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 			elseif ($aNodeToSort[$j]["attrs"]["ASSO_EDIT"])
 				$aTempClasse = split(',', $aNodeToSort[$j]["attrs"]["ASSO_EDIT"]);		
 			
-			for ($m=0; $m<sizeof($aTempClasse);$m++) {
+			for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 				
 				//$sTempClasse = $aNodeToSort[$j]["attrs"]["ASSO"];
 				$sTempClasse = $aTempClasse[$m]; 
@@ -182,8 +182,8 @@ for ($j=0; $j<count($aNodeToSort); $j++) {
 								$sql = "select * from ".$tempAsso." where ".$tempAssoPrefixe."_".$tempAssoIn." = ".$id." and ".$tempAssoPrefixe."_".$tempAssoOut." = ".$tempId.""; 
 	 
 								$aClasseId = dbGetObjectsFromRequete ($tempAsso, $sql);
-								if (sizeof($aClasseId) > 0) {
-									for ($l=0; $l<sizeof($aClasseId); $l++) {
+								if (newSizeOf($aClasseId) > 0) {
+									for ($l=0; $l<newSizeOf($aClasseId); $l++) {
 										$oClasseId = $aClasseId[$l]; 
 										$oClasse = new Classe ($oClasseId->get_classe());
 										$sClasse = $oClasse->get_nom();

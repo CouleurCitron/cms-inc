@@ -17,7 +17,7 @@ if (isset($idNode["children"]) && (count($idNode["children"]) > 0)){
 }
 
 // vérifie nb asso
-if (sizeof($assoArray) > 0) {
+if (newSizeOf($assoArray) > 0) {
 	echo "<!-- debut des champs d'association -->\n";
 	echo "<tr>\n";
 	echo "<td width=\"141\" align=\"right\" bgcolor=\"#E6E6E6\" class=\"arbo\">";

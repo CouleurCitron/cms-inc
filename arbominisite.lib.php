@@ -441,7 +441,7 @@ function dbArchiveArboObjects($idNode, $bDelete=false) {
 		$aContent = getContentFromPage($page->get_id_page(), 0);
 		
 		if($aContent){
-			for ($a=0; $a<sizeof($aContent); $a++){
+			for ($a=0; $a<newSizeOf($aContent); $a++){
 				$oContent = $aContent[$a];				
 				if (intval($oContent->get_isbriquedit_content())==1){
 					$oContent->updateNoeud(-1);
@@ -1110,7 +1110,7 @@ function drawCompTree($idSite, $db, $virtualPath, $full_path_to_curr_id=null, $d
 			$strHTML .= "<a class=\"arbo\" href=\"".$destination.$OP."idSite=".$idSite."".$paramSup."&v_comp_path=0\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 
 	} else {
-		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
+		$tree_depth = newSizeOf(explode(',',$full_path_to_curr_id));
 	}
 
 	$children = getNodeChildren($idSite, $db, $full_path_to_curr_id);

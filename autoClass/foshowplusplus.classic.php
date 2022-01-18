@@ -171,7 +171,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						}
 					
 						$eCountResizeImg = 0;
-						for ($a = 0; $a < sizeof($oTempClasse); $a++) {
+						for ($a = 0; $a < newSizeOf($oTempClasse); $a++) {
 							$aTempClasse = $oTempClasse[$a];
 							$idTemp = $aTempClasse->get_id();
 							eval("$"."oTemp = new ".$assoName."(".$idTemp.");");
@@ -234,10 +234,10 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 											
 											$aAssoPlusClasse = dbGetObjectsFromRequete($sAssoPlusClasse, $sql);
 											
-											if (sizeof($aAssoPlusClasse)>0) {
+											if (newSizeOf($aAssoPlusClasse)>0) {
 												debutDivs ($assoName.replaceBadCarsInStr($sAssoPlusClasse));
 											
-												for ($c = 0; $c < sizeof($aAssoPlusClasse); $c++) {	
+												for ($c = 0; $c < newSizeOf($aAssoPlusClasse); $c++) {	
 													$oAssoPlusClasse = $aAssoPlusClasse[$c];
 													$idAssoTemp = $oAssoPlusClasse->get_id();
 													eval("$"."oTempasso = new ".$sAssoPlusClasse."(".$idAssoTemp.");");
@@ -333,9 +333,9 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 													 
 													
 													
-												} //for ($c = 0; $c < sizeof($aAssoClasse); $c++) {
+												} //for ($c = 0; $c < newSizeOf($aAssoClasse); $c++) {
 												finDiv (replaceBadCarsInStr($assoPlusNodeValue["attrs"]["NAME"]));
-											} //if (sizeof($aAssoPlusClasse)>0) {	
+											} //if (newSizeOf($aAssoPlusClasse)>0) {	
 										}
 									}
 								}
@@ -344,7 +344,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						/////////////////////////////  ASSO des ASSO BIS /////////////////////////
 							
 						
-							} // fin for ($i = 0; $i < sizeof($oTempClasse); $i++) {
+							} // fin for ($i = 0; $i < newSizeOf($oTempClasse); $i++) {
 					
 				
 							

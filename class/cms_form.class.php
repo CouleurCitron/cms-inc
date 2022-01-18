@@ -165,7 +165,7 @@ function checkUniqueName($oForm)
 	$aForm = dbGetObjectsFromFieldValue("Cms_form", $aGetterWhere, $aValeurChamp, "getId_form");
 
 	// si un formulaire du même nom a été trouvé
-	if (sizeof($aForm) == 1) {
+	if (newSizeOf($aForm) == 1) {
 		if ($oForm->getId_form() != "") {
 			// si l'on est en modif
 			// le formulaire trouvé avec le même nom est celui sur lequel on est

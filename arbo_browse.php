@@ -206,7 +206,7 @@ if (DEF_MENUS_MINISITES == "ON") print(putAfficheSite());
              <?php
                      } else {
                              foreach ($contenus as $k => $composant) {
-                                     $nb_pages = sizeof(getPageUsingComposant($idSite, $composant['id']));
+                                     $nb_pages = newSizeOf(getPageUsingComposant($idSite, $composant['id']));
 
                                      // page de modif de la brique
                                      if ($composant['type'] == "Graphique") $sPageEdit = "graphic";

@@ -108,7 +108,7 @@ class CustomerModel extends AccountModel {
 			ORDER BY	shp_adr_nom, shp_adr_prenom;";  
 		// echo $sql."<br/>";
 		$res = dbGetObjectsFromRequete('shp_adresse', $sql);
-		if (sizeof($res) > 0)
+		if (newSizeOf($res) > 0)
 			return $res;
 		else	return false;
 	}

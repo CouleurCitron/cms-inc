@@ -8,12 +8,12 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
 // post des checkboxes d'asso
 for ($i=0;$i<count($aNodeToSort);$i++){
 	if ($aNodeToSort[$i]["name"] == "ITEM"){
-		if ($aNodeToSort[$i]["attrs"]["ASSO"]){ // cas d'asso
+		if (isset($aNodeToSort[$i]["attrs"]["ASSO"])	&&	$aNodeToSort[$i]["attrs"]["ASSO"]){ // cas d'asso
 
 			$aTempClasse = array();
 			$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
 
-			for ($m=0; $m<sizeof($aTempClasse);$m++) {
+			for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 
 				//$sAssoClasse = $aNodeToSort[$i]["attrs"]["ASSO"];
 				$sAssoClasse = $aTempClasse[$m];
@@ -24,7 +24,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				$aForeign = dbGetObjects($sAssoClasse);
 
 				// cas des deroulant d'id, pointage vers foreign
-				if(!is_null($oAsso->XML_inherited))
+				if(isset($oAsso->XML_inherited)	&&	!is_null($oAsso->XML_inherited))
 					$sXML = $oAsso->XML_inherited;
 				else
 					$sXML = $oAsso->XML;
@@ -38,7 +38,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 				$tempAsso = $stack[0]["attrs"]["NAME"];
 				$tempAssoPrefixe = $stack[0]["attrs"]["PREFIX"];
 				$tempAssoFull = $stack[0]["attrs"]["IS_ASSO"] == 'true' ? true : false;
-				$tempAsymetric = ($tempAssoFull && $stack[0]["attrs"]["IS_ASYMETRIC"] == 'true') ? true : false;
+				$tempAsymetric = (isset($stack[0]["attrs"]["IS_ASYMETRIC"])	&&	$tempAssoFull && $stack[0]["attrs"]["IS_ASYMETRIC"] == 'true') ? true : false;
 				$tempAssoIn = "";
 				$tempAssoOut = "";
 				if (is_array($foreignNodeToSort)) {
@@ -67,7 +67,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					} else {
 						$bStatutOut = false; 
 						foreach ($foreignNodeToSort as $nodeId => $nodeValue) {		
-							if (($nodeValue["attrs"]["FKEY"] != "") && isset($nodeValue["attrs"]["FKEY"])){
+							if (isset($nodeValue["attrs"]["FKEY"])	&&	($nodeValue["attrs"]["FKEY"] != "")){
 								if ($nodeValue["attrs"]["FKEY"] == $classeName){	
 								// if ($nodeValue["attrs"]["FKEY"] == $classeName && ($tempForeignDisplay!=$tempForeignAbstract)){	
 									$tempAssoIn = $nodeValue["attrs"]["FKEY"]; // obvious
@@ -100,7 +100,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					 
 					eval("$"."oAssoOut = new ".$tempAssoOut."();");
 
-					if(!is_null($oAssoOut->XML_inherited))
+					if(isset($oAssoOut->XML_inherited)	&&	!is_null($oAssoOut->XML_inherited))
 						$sXML = $oAssoOut->XML_inherited;
 					else
 						$sXML = $oAssoOut->XML;
@@ -129,7 +129,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					if (is_array($foreignXMLChildren)) {
 						foreach ($foreignXMLChildren as $nodeId => $nodeValue) {	
 							//echo $nodeValue["attrs"]["NAME"]."<br />";  
-							if (preg_match ('/id_/', strtolower(stripslashes($nodeValue["attrs"]["NAME"]))) && $nodeId == 0 && preg_match ('/cms/', strtolower($foreignName))) {
+							if (isset($nodeValue["attrs"]["NAME"])	&&	preg_match ('/id_/', strtolower(stripslashes($nodeValue["attrs"]["NAME"]))) && $nodeId == 0 && preg_match ('/cms/', strtolower($foreignName))) {
 							 
 								$champ_id = strtolower(stripslashes($nodeValue["attrs"]["NAME"]));
 							}

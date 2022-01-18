@@ -147,7 +147,7 @@ class CustomerAddressController extends CustomerAccountController {
 									$params['error'] = 'db_creation_error';
 								} else {
 									$params['list'] = $this->models['account']->getAllAccountAddresses($customer);
-									if (sizeof($params['list']) == 1 && empty($_SESSION['order']['cust_address']))
+									if (newSizeOf($params['list']) == 1 && empty($_SESSION['order']['cust_address']))
 										$_SESSION['order']['cust_address'] = $params['list'][0]->get_id();
 								}
 								break;

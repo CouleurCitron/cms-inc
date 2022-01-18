@@ -164,7 +164,7 @@ if ($_SESSION['sTexte']) echo '<br /><br />'.$translator->getTransByCode('Visual
 // Added by Luc - 6 oct. 2009
 //if (DEF_APP_USE_TRANSLATIONS) {
 	$translator =& TslManager::getInstance();
-	if (DEF_EDIT_INACTIVE_LANG)
+	if (defined('DEF_EDIT_INACTIVE_LANG')	&&	DEF_EDIT_INACTIVE_LANG)
 		$langpile = $translator->getLanguages();
 	else	$langpile = $translator->getLanguages(true);
 //}
@@ -192,7 +192,7 @@ if ($operation == "DELETE" && strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SEL
 			$urlClass= "../../include/bo/class";
 			//table contenant les classes liés
 			$aTempClas=ScanDirs($urlClass, $classeName);
-			for ($j=0; $j<sizeof($aTempClas);$j++) {
+			for ($j=0; $j<newSizeOf($aTempClas);$j++) {
 				$sAssoClasse = $aTempClas[$j];
 				eval("$"."oAsso = new ".$sAssoClasse."();");
 				$aForeign = dbGetObjects($sAssoClasse);
@@ -212,7 +212,7 @@ if ($operation == "DELETE" && strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SEL
 								
 								$sqlDisplay =  "select ".ucfirst($foreignPrefixe)."_id from ".$foreignName." where ".ucfirst($foreignPrefixe)."_".ucfirst($classeName)."=".$id; 
 								$aResponseDisplay = dbGetObjectsFromRequeteID($foreignName, $sqlDisplay);
-								for ($a=0; $a<sizeof($aResponseDisplay); $a++) {
+								for ($a=0; $a<newSizeOf($aResponseDisplay); $a++) {
 									$oResponseDisplay = $aResponseDisplay[$a];
 									$idResponseDisplay = $oResponseDisplay->get_id();
 									eval("$"."oRes3 = new ".$foreignName."($".idResponseDisplay.");");
@@ -244,7 +244,7 @@ if ($operation == "DELETE" && strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SEL
 										$bAssoRetour = dbDelete($oRes3);
 									} //if ($oRes3->getGetterStatut()!="none") {
 									
-								} //for ($a=0; $a<sizeof($aResponseDisplay); $a++) {
+								} //for ($a=0; $a<newSizeOf($aResponseDisplay); $a++) {
 							}// if ($eEmp > 0) {
 							
 						}// if ($foreignNodeToSort[$i]["attrs"]["NAME"] == $classeName){
@@ -355,7 +355,7 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 						}
 						
 						if ($tsl_chain != '')
-							echo (sizeof($langpile) > 1 ? "[".$lang_props['libellecourt']."] > " : "").$tsl_chain."<br/>";
+							echo (newSizeOf($langpile) > 1 ? "[".$lang_props['libellecourt']."] > " : "").$tsl_chain."<br/>";
 					}
 					
 					
@@ -403,27 +403,27 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 				  }
 			} else {
 				if ($eKeyValue > -1){ // cas typique typique 
-					if ($aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
+					if (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "file"){ // cas file
 						
 						include ("show.file.php");
 						
 					}
-					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "bool"){ // boolean
+					elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "bool"){ // boolean
 						if (intval($eKeyValue) == 1)
 							echo "oui";
 						else	echo "non";						
 					}
-					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "link"){ // cas link			
+					elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "link"){ // cas link			
 						echo "<a href=\"".$eKeyValue."\" target=\"_blank\" title=\"Lien édité\">".$eKeyValue."</a><br />\n";					
 					}
-					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "filedir"){ // cas link                  
+					elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "filedir"){ // cas link                  
 						echo $eKeyValue."<br><img src=\"".$eKeyValue."\" title=\"Image éditée\"><br>\n";                                 
 					}
-					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "password"){ // cas password	
+					elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "password"){ // cas password	
 						echo "*******";
 						
 					}
-					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "node"){ // cas password	
+					elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "node"){ // cas password	
 						if (getCount_where("cms_arbo_pages", array("node_id"), array($eKeyValue), array("NUMBER")) ==  1){
 							if (getNodeInfos($db, $eKeyValue)){
 								$infosNode = getNodeInfos($db, $eKeyValue); 
@@ -438,10 +438,10 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 					} elseif ($aNodeToSort[$i]["attrs"]["TYPE"] == "datetime" || $aNodeToSort[$i]["attrs"]["TYPE"] == "timestamp") { // cas timestamp
 						//echo timestampFormat($eKeyValue);
 						echo ($eKeyValue);
-					} elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "xml"){
+					} elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "xml"){
 						echo htmlentities($eKeyValue);
 					}
-					elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "color"){ // RVB							
+					elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "color"){ // RVB							
 						if (preg_match('/^#[0-9A-F]{6}$/msi', $eKeyValue)==1){
 							echo $eKeyValue.'<div style="width:55px; height:12px; background-color:'.$eKeyValue.'"></div>';
 						}
@@ -455,7 +455,7 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 						 					
 					}
 					else {// cas typique typique typique
-						if ($aNodeToSort[$i]["attrs"]["SERIALIZED"] == "true") {
+						if (isset($aNodeToSort[$i]["attrs"]["SERIALIZED"])	&&	$aNodeToSort[$i]["attrs"]["SERIALIZED"] == "true") {
 							echo "<script type=\"text/javascript\">
 							document.toggle_".$aNodeToSort[$i]["attrs"]["NAME"]."_Serial = function (_visible) {
 								document.getElementById('toggleSerial_{$aNodeToSort[$i]["attrs"]["NAME"]}_OFF').style.display = (_visible ? 'none' : 'block');
@@ -490,7 +490,7 @@ for ($i=0;$i<count($aNodeToSort);$i++) {
 // recherche d'eventuelles asso
 for ($i=0; $i<count($aNodeToSort); $i++) {
 	if ($aNodeToSort[$i]["name"] == "ITEM") {
-		if ($aNodeToSort[$i]["attrs"]["ASSO"] || $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]) { // cas d'asso
+		if ((isset($aNodeToSort[$i]["attrs"]["ASSO"]) || isset($aNodeToSort[$i]["attrs"]["ASSO_VIEW"]))	&&	($aNodeToSort[$i]["attrs"]["ASSO"] || $aNodeToSort[$i]["attrs"]["ASSO_VIEW"])) { // cas d'asso
 			echo "<tr>\n";
 			echo "<td bgcolor=\"#E6E6E6\" class=\"arbo\">&nbsp;</td>\n";
 			echo "<td bgcolor=\"#EEEEEE\" class=\"arbo\">&nbsp;</td>\n";

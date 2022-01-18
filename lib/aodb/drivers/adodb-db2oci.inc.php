@@ -36,7 +36,7 @@ function _colonscope($sql,$arr)
 global $_COLONARR,$_COLONSZ;
 
 	$_COLONARR = array();
-	$_COLONSZ = sizeof($arr);
+	$_COLONSZ = newSizeOf($arr);
 	
 	$sql2 = preg_replace("/(:[0-9]+)/e","_colontrack('\\1')",$sql);
 	
@@ -59,7 +59,7 @@ global $_COLONARR,$_COLONSZ;
 function _colonparser($sql,$arr)
 {
 	$lensql = strlen($sql);
-	$arrsize = sizeof($arr);
+	$arrsize = newSizeOf($arr);
 	$state = 'NORM';
 	$at = 1;
 	$ch = $sql[0]; 
@@ -192,7 +192,7 @@ class ADODB_db2oci extends ADODB_db2 {
 		if ($ttype) {
 			$isview = strncmp($ttype,'V',1) === 0;
 		}
-		for ($i=0; $i < sizeof($arr); $i++) {
+		for ($i=0; $i < newSizeOf($arr); $i++) {
 			if (!$arr[$i][2]) continue;
 			$type = $arr[$i][3];
 			$schemaval = ($schema) ? $arr[$i][1].'.' : '';

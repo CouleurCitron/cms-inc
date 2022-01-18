@@ -51,7 +51,7 @@ $body = '';
  
 if (!is_file($sNomFile)) { 
 	// ensemble des entêtes
-	for ($p=0; $p<sizeof($aEntete); $p++) { 
+	for ($p=0; $p<newSizeOf($aEntete); $p++) { 
 		$body .= $aEntete[$p].";"; // écriture ligne d'entête
 	} 
 	$body .="\n"; 
@@ -113,12 +113,12 @@ foreach ($_POST as $k => $v) {
 				// le post est un tableau de valeurs cochées
 				// recherche de sValCC_hcb dans ce tableau de valeurs CC postées
 				$trouve=0;
-				for ($t=0; $t<sizeof($v); $t++) {
+				for ($t=0; $t<newSizeOf($v); $t++) {
 					// chaque valeur cochée
 					$valueCC = $v[$t];
 					if ($valueCC == $sValCC_hcb) {
 						$trouve = 1;
-						$t=sizeof($v); // sortie de la boucle
+						$t=newSizeOf($v); // sortie de la boucle
 					}
 				}
 
@@ -180,7 +180,7 @@ if ($oForm->getComm_form() != ""){
 	$subject = "[".$_SERVER['HTTP_HOST']."] formulaire ".$sNomFormulaire;
 	
 	if ($fromperso!="")   $from_mail = $fromperso;
-	else if (sizeof($aFromperso) >0 )  $from_mail = $aFromperso[0]; 
+	else if (newSizeOf($aFromperso) >0 )  $from_mail = $aFromperso[0]; 
 	else $from_mail = "technique@couleur-citron.com";
 
 	$addies = str_replace("\"", " ", $oForm->getComm_form());
@@ -259,7 +259,7 @@ if ($oForm->getComm_form() != ""){
  
 	
 	// on envoi un AR au visiteur si on a son email
-	if ($oForm->getAr_form()!="" && sizeof($aFromperso) >0 ) { 
+	if ($oForm->getAr_form()!="" && newSizeOf($aFromperso) >0 ) { 
 		$body = $oForm->getAr_form();  
 		foreach ($aFromperso as $fromperso) {
 			$bResult = multiPartMail($fromperso, $subject, $body, $body, DEF_CONTACT_FROM, '','','localhost'); 

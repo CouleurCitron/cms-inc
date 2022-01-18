@@ -264,7 +264,7 @@ class PEAR_PackageFile_Generator_v1
         if (!empty($pkginfo['release_warnings'])) {
             $ret .= "$indent  <warnings>".$this->_fixXmlEncoding($pkginfo['release_warnings'])."</warnings>\n";
         }
-        if (isset($pkginfo['release_deps']) && sizeof($pkginfo['release_deps']) > 0) {
+        if (isset($pkginfo['release_deps']) && newSizeOf($pkginfo['release_deps']) > 0) {
             $ret .= "$indent  <deps>\n";
             foreach ($pkginfo['release_deps'] as $dep) {
                 $ret .= "$indent   <dep type=\"$dep[type]\" rel=\"$dep[rel]\"";

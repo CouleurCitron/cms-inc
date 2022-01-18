@@ -18,7 +18,7 @@ function getNoeud($idNoeud, $aMenu)
 function trimMenu($aMenu){
 	//echo '<hr />';
 	//pre_dump($aMenu);	
-	if ($aMenu["content"]!=NULL){		
+	if (isset($aMenu["content"])	&&	$aMenu["content"]!=NULL){		
 		if (is_array($aMenu["content"])){
 			//pre_dump($aMenu["content"]);
 			$allNulls=true;
@@ -84,26 +84,26 @@ function makeMenu($idNoeud, $aMenu){
 		// recherche des enfants de ce noeud
 		$aChildren = getChildren($idNoeud, $aMenu);		
 
-		for ($i=0; $i<sizeof($aChildren); $i++){
+		for ($i=0; $i<newSizeOf($aChildren); $i++){
 			$oChild = $aChildren[$i];
 			$aResult['content'][$oChild->getId()] = makeMenu($oChild->getId(), $aMenu);			
 		}		
 		
 		$nullCount = 0;
-		for ($i=0; $i<sizeof($aChildren); $i++){
+		for ($i=0; $i<newSizeOf($aChildren); $i++){
 			$oChild = $aChildren[$i];
 			if ($aResult['content'][$oChild->getId()] == NULL){
 				$nullCount++;
 			}
-			elseif ($aResult['content'][$oChild->getId()]["content"] == NULL){
+			elseif (isset($aResult['content'])	&&	isset($aResult['content'][$oChild->getId()])	&&	isset($aResult['content'][$oChild->getId()]["content"])	&&	($aResult['content'][$oChild->getId()]["content"] == NULL)){
 				$nullCount++;
 			}
 			else{
 				//pre_dump($aResult['content'][$oChild->getId()]);
 			}			
 		}
-		//echo $oNoeud->getTitre()." => nullCount ".$nullCount." / ".sizeof($aChildren)."<br />";
-		if ($nullCount > sizeof($aChildren)){
+		//echo $oNoeud->getTitre()." => nullCount ".$nullCount." / ".newSizeOf($aChildren)."<br />";
+		if ($nullCount > newSizeOf($aChildren)){
 			//echo "tous nuls<br />";
 			$aResult['content'] = NULL;
 		}
@@ -120,7 +120,7 @@ function makeMenu($idNoeud, $aMenu){
 //----------------------------------------
 function getChildren($idNoeud, $aMenu){
 	$aChildren = array();
-	for ($p=0; $p<sizeof($aMenu); $p++)
+	for ($p=0; $p<newSizeOf($aMenu); $p++)
 	{
 		$oChild = $aMenu[$p];
 		if ($oChild->getNoeud() == $idNoeud) {
@@ -135,13 +135,13 @@ function getChildren($idNoeud, $aMenu){
 // recherche du noeud
 //----------------------------------------
 function getNoeud($idNoeud, $aMenu){
-	for ($p=0; $p<sizeof($aMenu); $p++)
+	for ($p=0; $p<newSizeOf($aMenu); $p++)
 	{
 		$oMenu = $aMenu[$p];
 
 		if ($oMenu->getId() == $idNoeud) {
 			$oNoeud = $oMenu;
-			$p = sizeof($aMenu); // sortie de la boucle
+			$p = newSizeOf($aMenu); // sortie de la boucle
 		}
 	}
 
@@ -829,4 +829,3 @@ if (isAllowed ("SS5", $sFonct)) {
 	$aMenu[] = new Menu("ss5", "gestionss5_texte", "Traductions", "");
 	$aMenu[] = new Menu("gestionss5_texte", "ss5_texte", "Liste des textes", $URL_ROOT."/backoffice/adss/ss5_texte/list_ss5_texte.php");
 }
-?>

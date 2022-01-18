@@ -296,7 +296,7 @@ if ($eKeyValue != ""){
 	  
 	$allFiles = array();
 	
-	if (sizeof($matches[1]) == 0) {
+	if (newSizeOf($matches[1]) == 0) {
 		$allFiles[] = $eKeyValue;
 	}
 	else {
@@ -321,7 +321,7 @@ if ($eKeyValue != ""){
 		
 		//pre_dump($aFiles); 
 		
-		for($if=0;$if<sizeof($aFiles) ;$if++){
+		for($if=0;$if<newSizeOf($aFiles) ;$if++){
 		
 			$sFile = $aFiles[$if];
 			//echo "sFile ".$sFile."<br />";

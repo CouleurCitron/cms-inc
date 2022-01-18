@@ -41,7 +41,7 @@ function arboNodeToSiteMapVideo ($oSite, $idNode) {
 
 	$aVideo = dbGetObjectsFromRequete('cms_video', $sql);
 	
-	if (sizeof($aVideo) > 0) {
+	if (newSizeOf($aVideo) > 0) {
 		foreach ($aVideo as $video) { 
 		
 			if ($video->get_tag() != '') {
@@ -73,7 +73,7 @@ function arboNodeToSiteMapVideo ($oSite, $idNode) {
 			if ($content_loc!='') 		echo "<video:content_loc>".XMLconformeURL($content_loc)."</video:content_loc>\n";
 			if ($player_loc!='') 		echo "<video:player_loc allow_embed=\"yes\" autoplay=\"ap=1\">".XMLconformeURL($player_loc)."</video:player_loc>\n";
 			if ($video->get_duration()!= '') 		echo "<video:duration>".$video->get_duration()."</video:duration>\n";
-			if (sizeof($tags) > 0) {
+			if (newSizeOf($tags) > 0) {
 				foreach ($tags as $tag) { 			echo "<video:tag>".XMLconformeURL(utf8_encode($tag))."</video:tag>\n"; }
 			}
 			if ($video->get_category()!= '')		echo "<video:category>".XMLconformeURL(utf8_encode($video->get_category()))."</video:category>\n"; 

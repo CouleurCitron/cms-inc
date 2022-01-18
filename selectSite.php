@@ -73,7 +73,7 @@ function putChangeSiteConnected()
 	$aListeSite = listSite("ALL");
 	
 	// s'il y a +sieurs sites -> affichage d'un select permettant de faire une sélection
-	if (sizeof($aListeSite) > 1) {
+	if (newSizeOf($aListeSite) > 1) {
 		
 		$sContent='<div align="left" class="arbo">';
 	
@@ -82,7 +82,7 @@ function putChangeSiteConnected()
 	
 		$sContent.= '<select id="connectSite" name="connectSite" class="arbo">';
 	
-		for ($a=0; $a < sizeof($aListeSite); $a++) {
+		for ($a=0; $a < newSizeOf($aListeSite); $a++) {
 			$oSite = $aListeSite[$a];
 		
 			if ($_SESSION['idSite'] == $oSite->get_id()) $selected="selected"; else $selected="";

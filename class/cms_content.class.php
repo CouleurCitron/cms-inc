@@ -1209,4 +1209,3 @@ print("<br>$sql");
 	return $result;
 }
 
-?>

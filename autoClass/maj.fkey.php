@@ -146,7 +146,7 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 								//echo $whereValue."-".DEF_ID_ADMIN_DEFAUT."".$whereField." ".$whereClasse;
 								$aWhere = dbGetObjects($whereClasse);
 								//var_dump($aWhere);
-								for ($a=0; $a<sizeof($aWhere); $a++){
+								for ($a=0; $a<newSizeOf($aWhere); $a++){
 									$oWhere = $aWhere[$a];
 									// test sur valeur par defaut
 									if (isset($childNode["attrs"]["DEFAULT"]) && $childNode["attrs"]["DEFAULT"]!= "" && DEF_ID_ADMIN_DEFAUT == $whereValue) {
@@ -195,7 +195,7 @@ if ($aNodeToSort[$i]["attrs"]["NOEDIT"] == 'true') {
 				if ($default !="") {
 					$aForeignNew[] = $aForeign[$ii];	
 				} else { 
-					for ($b=0; $b<sizeof($aValue); $b++) {
+					for ($b=0; $b<newSizeOf($aValue); $b++) {
 						eval("$"."currentWhereFieldValue = $"."oForeign->get_".$whereField."();");
 						if ($currentWhereFieldValue == $aValue[$b])
 							$aForeignNew[] = $aForeign[$ii];					
@@ -413,7 +413,7 @@ if ($bCms_site == true){
 	}	
 }
 
-if (sizeof($aSelect) > 0)
+if (newSizeOf($aSelect) > 0)
 	$sql.=" ".join(" , ", $aSelect);
 
 $sql.= " FROM ".getCorrectTable ($oTemp)." fn ";
@@ -444,13 +444,13 @@ if ($isFkeyFilter) {
 	$sql_custom .= dbMakeRequeteWithCriteres("cms_custom", $aRecherche_custom, "");   
 	$aRes_custom = dbGetObjectsFromRequete("cms_custom", $sql_custom); 
 
-	if (sizeof(aRes_custom)>0) {
+	if (newSizeOf(aRes_custom)>0) {
 		$aOr = array();
 		foreach ($aRes_custom as $key => $ofkeyValue) { 
 			array_push($aOr, "fn.".getCorrectField ($aListeChamps, $foreignPrefixe, 'id')." = ".$ofkeyValue->get_classe()." ");
 			//array_push($aOr, "fn.".$foreignPrefixe."_id = ".$ofkeyValue->get_classe());   
 		} 
-		if (sizeof($aOr) > 0)
+		if (newSizeOf($aOr) > 0)
 			array_push($aWhere, " ( ".join(" OR ", $aOr)." ) ");
 	}
 } 
@@ -565,9 +565,9 @@ if ($valueAbstract!="" || $valueDisplay!="") {
 	}  
 	 
 	
-	if (sizeof($aWhere) > 0)
+	if (newSizeOf($aWhere) > 0)
 		$sql.=" WHERE ".join(" AND ", $aWhere);
-	if (sizeof($aOrder) > 0)
+	if (newSizeOf($aOrder) > 0)
 		$sql.=" ORDER BY ".join(" , ", $aOrder);
 	
 

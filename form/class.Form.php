@@ -1299,7 +1299,7 @@ class Form  {
 				
 				
 				// valeur par défaut
-				if ( $field["values"] &&  sizeof($field["values"]) > 0) {
+				if ( $field["values"] &&  newSizeOf($field["values"]) > 0) {
 					foreach ($field["values"] as $aValue => $aName) {
 						if ($aName["POSITION"] == "pre") $html.= '<option  value="'.$aName["ID"].'" ';
 						if ( isset($field["default"]) && $field["default"] == $aName["ID"] ) $html.= ' selected ';
@@ -1337,7 +1337,7 @@ class Form  {
 				}
 				
 				
-				if ( $field["values"] &&  sizeof($field["values"]) > 0) {
+				if ( $field["values"] &&  newSizeOf($field["values"]) > 0) {
 					foreach ($field["values"] as $aValue => $aName) {
 						if ($aName["POSITION"] == "post") $html.= '<option  value="'.$aName["ID"].'" ';
 						if ( isset($field["default"]) && $field["default"] == $aName["ID"] ) $html.= ' selected ';
@@ -1389,7 +1389,7 @@ class Form  {
 			$html.= '<div class="checkbox">';
 						
 			foreach ($field["values"] as $aValue => $aName) {
-				if (sizeof($field["values"]) > 1) {
+				if (newSizeOf($field["values"]) > 1) {
 					$html.= '<span><input type="checkbox" name="'.$field["id"]."_".$aName["ID"].'" id="'.$field["id"]."_".$aName["ID"].'" value="'.$aName["ID"].'" ';
 				}
 				else {

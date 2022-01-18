@@ -357,7 +357,7 @@ class ADODB_db2 extends ADOConnection {
 		$arr = $rs->GetArray();
 		$rs->Close();
 		$arr2 = array();
-		for ($i=0; $i < sizeof($arr); $i++) {
+		for ($i=0; $i < newSizeOf($arr); $i++) {
 			if ($arr[$i][3]) $arr2[] = $arr[$i][3];
 		}
 		return $arr2;
@@ -432,7 +432,7 @@ class ADODB_db2 extends ADOConnection {
 		if ($ttype) {
 			$isview = strncmp($ttype,'V',1) === 0;
 		}
-		for ($i=0; $i < sizeof($arr); $i++) {
+		for ($i=0; $i < newSizeOf($arr); $i++) {
 			if (!$arr[$i][2]) continue;
 			$type = $arr[$i][3];
 			$owner = $arr[$i][1];
@@ -572,7 +572,7 @@ See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/db2/htm/db2
 				$fld->scale = $rs->fields[8];
 				$fld->primary_key = false;
 				$retarr[strtoupper($fld->name)] = $fld;	
-			} else if (sizeof($retarr)>0)
+			} else if (newSizeOf($retarr)>0)
 				break;
 			$rs->MoveNext();
 		}
@@ -600,7 +600,7 @@ See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/db2/htm/db2
 		while (!$rs->EOF) {
 			if (strtoupper(trim($rs->fields[2])) == $table && (!$schema || strtoupper($rs->fields[1]) == $schema)) {
 				$retarr[strtoupper($rs->fields[3])]->primary_key = true;
-			} else if (sizeof($retarr)>0)
+			} else if (newSizeOf($retarr)>0)
 				break;
 			$rs->MoveNext();
 		}

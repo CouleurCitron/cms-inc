@@ -109,7 +109,7 @@ else{
 }
 
 // autres tris
-for ($i=0; $i < sizeof($aListeTri); $i++){
+for ($i=0; $i < newSizeOf($aListeTri); $i++){
 
 	$oTri = $aListeTri[$i];
 
@@ -250,7 +250,7 @@ $aId = $pager->aResult;
 
 // liste des objets
 $aListe_res = array();
-for ($m=0; $m<sizeof($aId); $m++){
+for ($m=0; $m<newSizeOf($aId); $m++){
 	//eval("$"."aListe_res[] = new ".$classeName."($"."aId[$"."m]);");
 	$aListe_res[] = new $classeName($aId[$m]);
 }
@@ -304,9 +304,9 @@ $URL_MEDIA = "http://".$_SERVER['HTTP_HOST']."/custom/upload/".$classeName."/";
 
 
 // s'il y a des enregistrements Ã  afficher
-if(sizeof($aListe_res)>0) {
+if(newSizeOf($aListe_res)>0) {
 	// liste
-	for($k=0; $k<sizeof($aListe_res); $k++) {
+	for($k=0; $k<newSizeOf($aListe_res); $k++) {
 		$oRes = $aListe_res[$k];
 	
 		$RSS = array();

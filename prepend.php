@@ -190,7 +190,7 @@ if (!is_get('menuOpen')) { // Si on a de valeur par défaut on essaye de charger 
 		$_GET['menuOpen'] = $_SESSION['menuOpen'];
 	}
 }
-if (strlen($_GET['menuOpen']) > 0)
+if (is_get('menuOpen')	&&	strlen($_GET['menuOpen']) > 0)
 	$menustate = $_GET['menuOpen'];
 else // si rien du tout n'est spécifier on ouvre le menu par défaut
 	$menustate='true';
@@ -268,8 +268,8 @@ Yoffset= 20;
 		<p class="user_infos"><a class="deconnexion" href="javascript:logoff();" title="Déconnexion"><?php $translator->echoTransByCode('Header_Deconnexion'); ?></a></p>	
 		<p class="user_infos"><?php $translator->echoTransByCode('Header_bienvenue'); ?> <span class="nom"><?php echo $_SESSION['user']; ?></span></p>
 		<form action="/backoffice/"  name="accueilForm" id="accueilForm" method="post" >
-			<input type="hidden" name="operation" id="operation" value="<?php echo $_POST['operation']; ?>" />
-            <input type="hidden" name="returnurl" id="returnurl" value="<?php echo $_POST['returnurl']; ?>" />
+			<input type="hidden" name="operation" id="operation" value="<?php if(is_post('operation')){echo $_POST['operation'];} ?>" />
+      <input type="hidden" name="returnurl" id="returnurl" value="<?php if(is_post('returnurl')){echo $_POST['returnurl'];} ?>" />
 			Site : 
 			<select name="connectSite" onchange ='javascript:this.form.submit();' >
 				<?php $listSite = listSite('ALL');  ?>

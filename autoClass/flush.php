@@ -55,9 +55,9 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 }
 echo "\n"; 
 
-if(sizeof($aListe_res)>0) {
+if(newSizeOf($aListe_res)>0) {
 // liste
-for($k=0; $k<sizeof($aListe_res); $k++) {
+for($k=0; $k<newSizeOf($aListe_res); $k++) {
 	$oRes = $aListe_res[$k];
 
    for ($i=0;$i<count($aNodeToSort);$i++){

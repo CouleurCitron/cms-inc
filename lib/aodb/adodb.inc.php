@@ -992,7 +992,7 @@
 			
 			if (!is_array($sql) && !$this->_bindInputArray) {
 				$sqlarr = explode('?',$sql);
-				$nparams = sizeof($sqlarr)-1;
+				$nparams = newSizeOf($sqlarr)-1;
 				if (!$array_2d) $inputarr = array($inputarr);
 	
 				foreach($inputarr as $arr) {
@@ -1023,8 +1023,8 @@
 					} // while
 					if (isset($sqlarr[$i])) {
 						$sql .= $sqlarr[$i];
-						if ($i+1 != sizeof($sqlarr)) $this->outp_throw( "Input Array does not match ?: ".htmlspecialchars($sql),'Execute');
-					} else if ($i != sizeof($sqlarr))	
+						if ($i+1 != newSizeOf($sqlarr)) $this->outp_throw( "Input Array does not match ?: ".htmlspecialchars($sql),'Execute');
+					} else if ($i != newSizeOf($sqlarr))	
 						$this->outp_throw( "Input array does not match ?: ".htmlspecialchars($sql),'Execute');
 		
 					$ret = $this->_Execute($sql);
@@ -1247,7 +1247,7 @@
 					$p[] = $v->name;
 			}
 		}
-		if (sizeof($p)) return $p;
+		if (newSizeOf($p)) return $p;
 		if (function_exists('ADODB_VIEW_PRIMARYKEYS'))
 			return ADODB_VIEW_PRIMARYKEYS($this->databaseType, $this->database, $table, $owner);
 		return false;
@@ -1623,7 +1623,7 @@
 	function GetRandRow($sql, $arr= false)
 	{
 		$rezarr = $this->GetAll($sql, $arr);
-		$sz = sizeof($rezarr);
+		$sz = newSizeOf($rezarr);
 		return $rezarr[abs(rand()) % $sz];
 	}
 	
@@ -2343,7 +2343,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 				$showt = strncmp($ttype,'T',1);
 			}
 			
-			for ($i=0; $i < sizeof($arr); $i++) {
+			for ($i=0; $i < newSizeOf($arr); $i++) {
 				if ($hast) {
 					if ($showt == 0) {
 						if (strncmp($arr[$i][1],'T',1) == 0) $arr2[] = trim($arr[$i][0]);
@@ -4048,11 +4048,11 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		
 		function _initrs()
 		{
-			$this->_numOfRows =  sizeof($this->_array);
+			$this->_numOfRows =  newSizeOf($this->_array);
 			if ($this->_skiprow1) $this->_numOfRows -= 1;
 		
 			$this->_numOfFields =(isset($this->_fieldobjects)) ?
-				 sizeof($this->_fieldobjects):sizeof($this->_types);
+				 newSizeOf($this->_fieldobjects):newSizeOf($this->_types);
 		}
 		
 		/* Use associative array to get fields array */
@@ -4089,7 +4089,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			
 		function _seek($row)
 		{
-			if (sizeof($this->_array) && 0 <= $row && $row < $this->_numOfRows) {
+			if (newSizeOf($this->_array) && 0 <= $row && $row < $this->_numOfRows) {
 				$this->_currentRow = $row;
 				if ($this->_skiprow1) $row += 1;
 				$this->fields = $this->_array[$row];
@@ -4242,7 +4242,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			
 			if (strncmp($origdsn,'pdo',3) == 0) {
 				$sch = explode('_',$dsna['scheme']);
-				if (sizeof($sch)>1) {
+				if (newSizeOf($sch)>1) {
 				
 					$dsna['host'] = isset($dsna['host']) ? rawurldecode($dsna['host']) : '';
 					if ($sch[1] == 'sqlite')
@@ -4343,7 +4343,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 					case 'cachesecs': $obj->cacheSecs = $v; break;
 					case 'memcache': 
 						$varr = explode(':',$v);
-						$vlen = sizeof($varr);
+						$vlen = newSizeOf($varr);
 						if ($vlen == 0) break;	
 						$obj->memCache = true;
 						$obj->memCacheHost = explode(',',$varr[0]);

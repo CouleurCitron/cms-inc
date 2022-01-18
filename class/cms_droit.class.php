@@ -70,7 +70,7 @@ function getDroit($idContent)
 
 	$aDroits = dbGetObjectsFromFieldValue("Droit", $aNameGetter, $aValueGetter, "getId_content");
 
-	if (sizeof($aDroits) == 1) $result = $aDroits[0];
+	if (newSizeOf($aDroits) == 1) $result = $aDroits[0];
 	else $result = new Droit();
 
 	return $result;

@@ -28,7 +28,7 @@ else {
 //fonction de recherche d'email dans un message
 function mail_from_str($sChaine) {
   if(false !== preg_match_all('`\w(?:[-_.]?\w)*@\w(?:[-_.]?\w)*\.(?:[a-z]{2,4})`', $sChaine, $aEmails)) {
-    if(is_array($aEmails[0]) && sizeof($aEmails[0])>0) {
+    if(is_array($aEmails[0]) && newSizeOf($aEmails[0])>0) {
       return array_unique($aEmails[0]);
     }
   }

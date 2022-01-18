@@ -30,7 +30,7 @@ class ShareitModel extends BaseModuleModel {
 		$existing = dbGetObjectsFromFieldValue('shr_track', Array('get_email'), Array($email));
 		if (!empty($existing)) {
 			// User is already tracked
-			if (sizeof($existing) > 1){
+			if (newSizeOf($existing) > 1){
 				// Error : multiple records
 				return false;
 			} else {

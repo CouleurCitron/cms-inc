@@ -30,13 +30,13 @@ function n($sField) {return doRightFieldName($sField); }
 function getLibelleDefineWithCode($eCode)
 {
 	// fonctionnalités
-	if ($eCode == DEF_FONCT0) return DEF_LIBFONCT0;
-	if ($eCode == DEF_FONCT1) return DEF_LIBFONCT1;
-	if ($eCode == DEF_FONCT2) return DEF_LIBFONCT2;
-	if ($eCode == DEF_FONCT3) return DEF_LIBFONCT3;	
-	if ($eCode == DEF_FONCT4) return DEF_LIBFONCT4;	
-	if ($eCode == DEF_FONCT5) return DEF_LIBFONCT5;	
-	if ($eCode == DEF_FONCT6) return DEF_LIBFONCT6;	
+	if (defined('DEF_FONCT0')	&&	$eCode == DEF_FONCT0) return DEF_LIBFONCT0;
+	if (defined('DEF_FONCT1')	&&	$eCode == DEF_FONCT1) return DEF_LIBFONCT1;
+	if (defined('DEF_FONCT2')	&&	$eCode == DEF_FONCT2) return DEF_LIBFONCT2;
+	if (defined('DEF_FONCT3')	&&	$eCode == DEF_FONCT3) return DEF_LIBFONCT3;	
+	if (defined('DEF_FONCT4')	&&	$eCode == DEF_FONCT4) return DEF_LIBFONCT4;	
+	if (defined('DEF_FONCT5')	&&	$eCode == DEF_FONCT5) return DEF_LIBFONCT5;	
+	if (defined('DEF_FONCT6')	&&	$eCode == DEF_FONCT6) return DEF_LIBFONCT6;	
 
 	// rangs
 	if ($eCode == DEF_ADMIN) return DEF_LIBADMIN;	

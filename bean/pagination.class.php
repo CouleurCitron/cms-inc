@@ -233,12 +233,12 @@ class Pagination {
 
       $bDebug = false;
       if ($bDebug) {
-      print("<br>sizeof(aEnr)=><strong>".sizeof($aEnr)."</strong><br>");
+      print("<br>newSizeOf(aEnr)=><strong>".newSizeOf($aEnr)."</strong><br>");
       print("<br>".var_dump($aEnr[0][0]));
       print("<br>".var_dump($aEnr));
       }
 
-      for ($m=0; $m<sizeof($aEnr); $m++)	$aIdEnr[] = $this->rs->_array[$m][0];      
+      for ($m=0; $m<newSizeOf($aEnr); $m++)	$aIdEnr[] = $this->rs->_array[$m][0];      
     }
 
     return $aIdEnr;

@@ -331,7 +331,7 @@ class OrderModel {
 		
 		//echo $sql;
 		$aTransporteur = dbGetObjectsFromRequete('shp_transporteur', $sql);
-		if (sizeof($aTransporteur) > 0) { 
+		if (newSizeOf($aTransporteur) > 0) { 
 			return ($aTransporteur); 
 		}
 		 

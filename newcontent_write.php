@@ -70,8 +70,13 @@ function getTamponContent_gabarit($divArray, $oInfos_page, $oPage){
 		//print_r($divArray);
 		
 		foreach($divArray as $res){
-			 $sortAux[] = $res['top'];
-		}		
+      if (isset($res['top'])){
+        $sortAux[] = $res['top'];
+      }
+      else{
+        $sortAux[] = null;
+      }
+		}
 		array_multisort($sortAux, SORT_ASC, SORT_NUMERIC, $divArray);
 		
 		foreach($divArray as $k => $v) {
@@ -156,7 +161,7 @@ function getTamponContent_page($divArray, $oInfos_page, $oPage){
 	// on extrait son ID
 	$aIDZonedit = array();
 	$aZoneCMS = explode(";", $tampon_gabarit); 
-	for ($a=0; $a<sizeof($aZoneCMS); $a++) {
+	for ($a=0; $a<newSizeOf($aZoneCMS); $a++) {
 		$ligneTampon = $aZoneCMS[$a];
 		if (substr($ligneTampon, 0, 2) == "ID") 
 		{
@@ -216,15 +221,21 @@ function getTamponContent_page($divArray, $oInfos_page, $oPage){
 	//========================================
 	
 	// pour chaque zone editable
-	for ($m=0; $m<sizeof($aIDZonedit); $m++){
+	for ($m=0; $m<newSizeOf($aIDZonedit); $m++){
 		$oZonedit = new Cms_content($aIDZonedit[$m]);
 		
 		// recherche de la brique à insérer dans cette zone éditabl
 		// recherche cette zone editable dans div_array
 		$eBrique = -1;
 		$sContent = "";
-		for ($k=0; $k<sizeof($divArray); $k++) {
-			$eZonedit = $divArray[$k]['zonedit'];
+		for ($k=0; $k<newSizeOf($divArray); $k++) {
+      if (isset($divArray[$k]['zonedit'])){
+        $eZonedit = $divArray[$k]['zonedit'];
+      }
+      else{
+        $eZonedit = null;
+      }
+			
 			if ($oZonedit->getId_content() == $eZonedit) {
 				$eBrique = $divArray[$k]['id'];
 				$sContent = $divArray[$k]['content'];
@@ -235,7 +246,7 @@ function getTamponContent_page($divArray, $oInfos_page, $oPage){
 					$oContentHTMLDefault = new Cms_content($divArray[$k]["HTMLdefaut"]);
 					$sContent = utf8IfNeeded($oContentHTMLDefault->getHtml_content());
 				}
-				$k = sizeof($divArray); // sortie de la boucle
+				$k = newSizeOf($divArray); // sortie de la boucle
 				//========================================
 				// création des div
 				//========================================

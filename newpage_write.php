@@ -333,7 +333,7 @@ function getPageHeader($oInfos_page=NULL, $oPage=NULL) {
 	if(($oPage)	&&	(intval($oPage->get_theme())>0)	){ 
 		$aThemes = dbGetObjectsFromFieldValue("cms_theme", array("get_id"),  array($oPage->get_theme()), NULL);
 		
-		if (($aThemes!=false) && (sizeof($aThemes) == 1)){
+		if (($aThemes!=false) && (newSizeOf($aThemes) == 1)){
 			$oThemes = $aThemes[0];
 			
 			$cssTheme = '/custom/css/fo_'.strtolower($_SESSION['site_travail']).'_'.strtolower(removeForbiddenChars($oThemes->get_nom(),false)).'.css';

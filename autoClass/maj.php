@@ -45,10 +45,13 @@ $Upload-> MaxFilesize = strval($MaxFilesize*1024);
 
 $actiontodo = ( $_POST['actiontodo']!="SAUVE" ) ? "MODIF" : "SAUVE" ;
 
-
-$display=intval($_GET['display']);
+if (is_get('display')) {
+	$display=$_GET['display'];
+}
 if(!isset($display)){
-	$display=intval($_POST['display']);
+	if (is_post('display')) {
+		$display=intval($_POST['display']);	
+	}
 }
 
 if (is_get('newid')) {
@@ -65,7 +68,6 @@ if (is_get("id")) {
 		$qryref = dbGetArrayOneFieldFromRequete($_SESSION['sqlpag']);
 		for ($i=0;$i<count($qryref);$i++) {
 			if ($qryref[$i]==$id) {
-			//echo $qryref[$i].$i."<br>";
 			$_SESSION['pag']=$i+1;
 			}
 		}
@@ -107,7 +109,7 @@ if (function_exists('activateMenu')){
 }  
 
 // objet 
-if ( $display > 0 ){
+if (isset($display) &&	$display > 0 ){
 	 $operation = "UPDATEORINSERT";
 }
 elseif ( $id > 0 ){
@@ -184,11 +186,9 @@ else{
 }
 
 
-
-
 $classePrefixe = $stack[0]["attrs"]["PREFIX"];
 $aNodeToSort = $stack[0]["children"];
-$classeLogStatus = ($stack[0]["attrs"]["LOG_STATUS_CHANGE"] == 'true' ? true : false);
+$classeLogStatus = (isset($stack[0]["attrs"]["LOG_STATUS_CHANGE"])&&($stack[0]["attrs"]["LOG_STATUS_CHANGE"] == 'true') ? true : false);
 $classeChangeStatus = false;
 
 
@@ -259,20 +259,8 @@ if (defined("DEF_FCK_VERSION") && DEF_FCK_VERSION == "ckeditor" ) {
 			
 			echo " if (isMultiple == 'true') { var count = 0; $('#' + field_conteneur + ' li').each(function(){ count++; });  id = count; console.log( id ) } ";
 			
-			/*echo "monHtml+= \"<div id='\"+field+\"_\"+id+\"'><a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='\"+fileUrl+\"' width='75'   border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'>\"+fileName+\"</a>&nbsp;-&nbsp;<a href='/backoffice/cms/utils/viewer.php?file=\"+fileUrl+\"'  target='_blank' title='".$translator->getTransByCode('visualiserlefichier')." \"+fileUrl+\"'><img src='/backoffice/cms/img/telecharger.gif' width='14' height='16' border='0' alt='".$translator->getTransByCode('telechargerlefichier')." \"+fileUrl+\"' /></a>&nbsp;-&nbsp;";*/
-			
                         
-                        echo 'monHtml+= \'<li id="\'+field+\'_\'+id+\'"><div><a rel="scle_produit_diaporama" href="\'+fileUrl+\'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').' \'+fileUrl+\'" class="visuel"><img src="\'+fileUrl+\'" width="70"></a><a href="/backoffice/cms/utils/viewer.php?file=\'+fileUrl+\'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').' \'+fileUrl+\'" class="name_img_diapo">\'+fileName+\'</a><a href="/backoffice/cms/utils/telecharger.php?file=\'+fileUrl+\'" title="'.$translator->getTransByCode('telechargerlefichier').' \'+fileUrl+\'" class="picto_download" "=""><img src="/backoffice/cms/img/2013/icone/right.png" alt="'.$translator->getTransByCode('telechargerlefichier').' \'+fileUrl+\'" border="0"></a><input type="hidden" id="\'+field+\'_delrecipient_\'+id+\'_name" name="\'+field+\'_delrecipient_\'+id+\'_name" value="\'+id+\'_\'+fileUrl+\'"><a id="\'+field+\'_delrecipient_\'+id+\'" href="#_" class="picto_del" title="delete recipient"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0" alt="Suppression de l\\\'enregistrement"></a><a id="\'+field+\'_edit_\'+id+\'" href="#_" title="edit" class="picto_edit"><img src="/backoffice/cms/img/2013/icone/modifier.png" border="0" alt="Modifier"></a><input type="hidden" id="\'+field+\'_listfile_\'+id+\'" name="\'+field+\'_listfile_\'+id+\'" value="\'+fileUrl+\'"></div></li>\'; ';
-                        
-			
-			//echo "<input type='hidden' id='\"+field+\"_listfile_\"+id+\"' name='\"+field+\"_listfile_\"+id+\"'  value='\"+fileName+\"' />";
-			//echo "<input type='hidden' id='\"+field+\"_delrecipient_\"+id+\"_name' name='\"+field+\"_delrecipient_\"+id+\"_name'  value='\"+id+\"_\"+fileName+\"' />";
-			 
-			//echo "<a id='\"+field+\"_delrecipient_\"+id+\"' href='#' onClick='javascript:\"+field+\"_delrecipient(\"+id+\");' title='delete recipient'>[del]</a>&nbsp;</div>\";  
-			//echo "<a id='\"+field+\"_delrecipient_\"+id+\"' href='#' title='delete recipient'>[del]</a>&nbsp;";
-			//echo "&nbsp;-&nbsp;<a id='\"+field+\"_edit_\"+id+\"' href='#' title='edit'>[edit]</a>&nbsp;";
-			
-			//echo "</div>\";  ";
+            echo 'monHtml+= \'<li id="\'+field+\'_\'+id+\'"><div><a rel="scle_produit_diaporama" href="\'+fileUrl+\'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').' \'+fileUrl+\'" class="visuel"><img src="\'+fileUrl+\'" width="70"></a><a href="/backoffice/cms/utils/viewer.php?file=\'+fileUrl+\'" target="_blank" title="'.$translator->getTransByCode('visualiserlefichier').' \'+fileUrl+\'" class="name_img_diapo">\'+fileName+\'</a><a href="/backoffice/cms/utils/telecharger.php?file=\'+fileUrl+\'" title="'.$translator->getTransByCode('telechargerlefichier').' \'+fileUrl+\'" class="picto_download" "=""><img src="/backoffice/cms/img/2013/icone/right.png" alt="'.$translator->getTransByCode('telechargerlefichier').' \'+fileUrl+\'" border="0"></a><input type="hidden" id="\'+field+\'_delrecipient_\'+id+\'_name" name="\'+field+\'_delrecipient_\'+id+\'_name" value="\'+id+\'_\'+fileUrl+\'"><a id="\'+field+\'_delrecipient_\'+id+\'" href="#_" class="picto_del" title="delete recipient"><img src="/backoffice/cms/img/2013/icone/supprimer.png" border="0" alt="Suppression de l\\\'enregistrement"></a><a id="\'+field+\'_edit_\'+id+\'" href="#_" title="edit" class="picto_edit"><img src="/backoffice/cms/img/2013/icone/modifier.png" border="0" alt="Modifier"></a><input type="hidden" id="\'+field+\'_listfile_\'+id+\'" name="\'+field+\'_listfile_\'+id+\'" value="\'+fileUrl+\'"></div></li>\'; ';
 			
 			echo "document.getElementById(field_conteneur).innerHTML = monHtml ;";
 			 
@@ -345,7 +333,7 @@ if(isset($display) && ($display!="")){
 $numUploadFields = 0;
 for ($iFile=0;$iFile<count($aNodeToSort);$iFile++){
 	if ($aNodeToSort[$iFile]["name"] == "ITEM"){
-		if ($aNodeToSort[$iFile]["attrs"]["OPTION"] == "file" || $aNodeToSort[$iFile]["attrs"]["OPTION"] == "geomapfile"){ 
+		if (isset($aNodeToSort[$iFile]["attrs"]["OPTION"])	&&	($aNodeToSort[$iFile]["attrs"]["OPTION"] == "file" || $aNodeToSort[$iFile]["attrs"]["OPTION"] == "geomapfile")){ 
 			$numUploadFields++;
 		}
 	}
@@ -458,7 +446,7 @@ else{
 // Added by Luc - 6 oct. 2009
 //if (DEF_APP_USE_TRANSLATIONS) {
 	$translator =& TslManager::getInstance();
-	if (DEF_EDIT_INACTIVE_LANG)
+	if (defined('DEF_EDIT_INACTIVE_LANG')	&&	DEF_EDIT_INACTIVE_LANG)
 		$langpile = $translator->getLanguages();
 	else	$langpile = $translator->getLanguages(true);
 //}
@@ -502,7 +490,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 		}
 		$URL_MEDIA = '/custom/upload/'.$classeName.'/';
 			
-		if (count($Upload->Infos) >= 1)  {
+		if (isset($Upload->Infos)	&&	(newSizeOf($Upload->Infos) >= 1))  {
 		 
 			$aUploadIndexes[] = 0;
 			while ($currInfos = current($Upload->Infos)) {
@@ -542,7 +530,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 
 	// ------------ delete ou copy (GoggleMaps) fichiers cochés --------------------------------------	
 	for ($iDel=1; $iDel <= $numUploadFields; $iDel++) {	 
-		if (strval($_POST['fDeleteFile'.$iDel]) == "true") {		 
+		if (isset($_POST['fDeleteFile'.$iDel])	&&	strval($_POST['fDeleteFile'.$iDel]) == "true") {		 
 			$_POST[strval($_POST['fUpload'.$iDel])] = ""; 
 			$tempGetter = "$"."tempFile = $"."oRes->get_".preg_replace("/.+".$classePrefixe."_(.*)/msi", "$1", strval($_POST['fUpload'.$iDel]))."();";
 
@@ -565,7 +553,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 			// generate GoggleMap
 			$mapscale = 12;
 			for ($i=0;$i<count($aNodeToSort);$i++) {
-				if ($aNodeToSort[$i]["name"] == "ITEM" && $aNodeToSort[$i]["attrs"]["OPTION"] == "geomapfile") {
+				if ($aNodeToSort[$i]["name"] == "ITEM" && isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "geomapfile") {
 					if (strval($_POST['fGenerateFile'.$iDel]) == "true") {
 						$map_pivot = '';
 						foreach ($aNodeToSort[$i]["children"] as $childKey => $childNode) {
@@ -736,7 +724,7 @@ if($actiontodo == "SAUVE") { // MODE ENREGISTREMENT
 		if ($sRank == "GEST" || $sRank == "REDACT") {   
 			$aStatut = getStatutByRankOperation($sRankId,-1);
 
-			if (sizeof($aStatut) > 0) {
+			if (newSizeOf($aStatut) > 0) {
 				// je récupère la première valeur
 				$idStatutContent = $aStatut[0]->get_id();
 
@@ -1428,7 +1416,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						$aFileManager = ScanForFilemanager($path);
 						echo "<select name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."\" class=\"arbo\">\n";
 							echo "<option value=\"0\" selected>".$translator->getTransByCode('Choisirunitem')."</option>\n";
-							for ($l=0; $l<sizeof($aFileManager); $l++) {
+							for ($l=0; $l<newSizeOf($aFileManager); $l++) {
 							
 							echo "<option value=\"".$aFileManager[$l]."\">".$aFileManager[$l]."</option>\n";
 							
@@ -1787,11 +1775,11 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 			echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 			echo "// retour test de conditionnement - esclave\n";
 			$k=0;
-			if (sizeof($test2)>1) { 
+			if (newSizeOf($test2)>1) { 
 				echo "// plusieurs \n";
 				echo "if (";
 				echo " document.getElementById(\"f".ucfirst($classePrefixe)."_".$whereField."\").value != \"".$test2[$k]."\" ";
-					while ($k<sizeof($test2)) {
+					while ($k<newSizeOf($test2)) {
 						$k++;
 						echo "	&& document.getElementById(\"f".ucfirst($classePrefixe)."_".$whereField."\").value != \"".$test2[$k]."\"";
 					}

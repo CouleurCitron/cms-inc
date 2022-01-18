@@ -55,9 +55,9 @@ class AccountModel extends BaseModuleModel {
 	
 	function isUniqueAccount ($mail) {
 		$aCustomer = dbGetObjectsFromFieldValue('shp_client', Array('get_email'), Array($mail), '');
-		if (sizeof($aCustomer) == 1)
+		if (newSizeOf($aCustomer) == 1)
 			return true;
-		elseif (sizeof($aCustomer) == 0)
+		elseif (newSizeOf($aCustomer) == 0)
 			return null;
 		else	return false;  
 	}
@@ -65,7 +65,7 @@ class AccountModel extends BaseModuleModel {
 	
 	function getAccount ($mail) {
 		$aCustomer = dbGetObjectsFromFieldValue('shp_client', Array('get_email'), Array($mail), '');
-		if (sizeof($aCustomer) > 0)
+		if (newSizeOf($aCustomer) > 0)
 			return $aCustomer[0];
 		else	return null;
 	}
@@ -73,7 +73,7 @@ class AccountModel extends BaseModuleModel {
 	
 	function getAccountByKey ($key) {
 		$aCustomer = dbGetObjectsFromFieldValue('shp_client', Array('get_act_key'), Array($key), '');
-		if (sizeof($aCustomer) > 0)
+		if (newSizeOf($aCustomer) > 0)
 			return $aCustomer[0];
 		else	return null;
 	}
@@ -85,7 +85,7 @@ class AccountModel extends BaseModuleModel {
 			$pass = $this->applyEncryption($pass);
 		}
 		$aCustomer = dbGetObjectsFromFieldValue('shp_client', Array('get_email', 'get_pwd', 'get_statut'), Array($mail, $pass, DEF_ID_STATUT_LIGNE), '');
-		if (sizeof($aCustomer) > 0)
+		if (newSizeOf($aCustomer) > 0)
 			return $aCustomer[0];
 		else	return null;
 	}
@@ -118,7 +118,7 @@ class AccountModel extends BaseModuleModel {
 
 	function getAddress ($account, $type='commune') {
 		$aAddress = dbGetObjectsFromFieldValue('shp_adresse', Array('get_id_client', 'get_type'), Array($account->get_id(), $type), '');
-		if (sizeof($aAddress) > 0)
+		if (newSizeOf($aAddress) > 0)
 			return $aAddress[0];
 		else	return null;
 	}
@@ -242,7 +242,7 @@ class AccountModel extends BaseModuleModel {
 			FROM	`cms_pays`";
 			
 		if ($all) {	
-			if (sizeof($country_pile) > 0)
+			if (newSizeOf($country_pile) > 0)
 				$sql .= "
 				WHERE	cms_pay_id IN (".implode(',', $country_pile).")
 				";
@@ -276,11 +276,11 @@ class AccountModel extends BaseModuleModel {
 		$aWhere[]= " shp_frais_port_grille.shp_fpg_id_pays = cms_pay_id";
 		
 		if ($all) {	
-			if (sizeof($country_pile) > 0)
+			if (newSizeOf($country_pile) > 0)
 				$aWhere[]= " 	cms_pay_id IN (".implode(',', $country_pile).") ";
 		}
 		
-		if (sizeof($aWhere) > 0) $sql .= " WHERE (".implode(' AND ', $aWhere).") ";
+		if (newSizeOf($aWhere) > 0) $sql .= " WHERE (".implode(' AND ', $aWhere).") ";
 		
 		$sql .= "ORDER BY cms_pay_nom_{$lang} ASC;";
 		
@@ -307,7 +307,7 @@ class AccountModel extends BaseModuleModel {
 			WHERE	cms_pay_id = ".$id_pays.";";
 
 		$aPays = dbGetObjectsFromRequete('cms_pays', $sql); 
-		if (sizeof($aPays) > 0) {
+		if (newSizeOf($aPays) > 0) {
 			eval ("$"."libelle =". "$"."aPays[0]->"."get_nom_".$lang."();");
 			return $libelle;
 		} else	return false;	 

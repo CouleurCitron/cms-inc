@@ -106,7 +106,7 @@ else{
 }
 
 // autres tris
-for ($i=0; $i < sizeof($aListeTri); $i++){
+for ($i=0; $i < newSizeOf($aListeTri); $i++){
 
 	$oTri = $aListeTri[$i];
 
@@ -277,9 +277,9 @@ while($slicesCount <= $numSlices){
 	error_log($sql.' LIMIT '.$start.','.$end);
 	$aListe_res = dbGetObjectsFromRequete($classeName, $sql.' LIMIT '.$start.','.$end);
 	// s'il y a des enregistrements à afficher
-	if(sizeof($aListe_res)>0) {
+	if(newSizeOf($aListe_res)>0) {
 		// liste
-		for($k=0; $k<sizeof($aListe_res); $k++) {
+		for($k=0; $k<newSizeOf($aListe_res); $k++) {
 			$oRes = $aListe_res[$k];
 			$id = $oRes->get_id();
 		

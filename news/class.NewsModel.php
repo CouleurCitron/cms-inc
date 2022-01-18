@@ -38,15 +38,15 @@ class NewsModel extends BaseModuleModel {
 		$pile = Array();
 
 		if (!is_null($dt_start)) {
-			if (is_null($operands) && sizeof($operands) < sizeof($getters))
-				$operands = array_pad($operands, sizeof($getters), 'equals');
+			if (is_null($operands) && newSizeOf($operands) < newSizeOf($getters))
+				$operands = array_pad($operands, newSizeOf($getters), 'equals');
 			$operands[] = 'lower_equals';
 			$getters[] = 'get_date_pub_debut';
 			$values[] = $dt_start;
 		}
 		if (!is_null($dt_end)) {
-			if (is_null($operands) && sizeof($operands) < sizeof($getters))
-				$operands = array_pad($operands, sizeof($getters), 'equals');
+			if (is_null($operands) && newSizeOf($operands) < newSizeOf($getters))
+				$operands = array_pad($operands, newSizeOf($getters), 'equals');
 			$operands[] = 'higher_equals';
 			$getters[] = 'get_date_pub_fin';
 			$values[] = $dt_end;
@@ -86,15 +86,15 @@ class NewsModel extends BaseModuleModel {
 		$pile = Array();
 
 		if (!is_null($dt_start)) {
-			if (is_null($operands) && sizeof($operands) < sizeof($getters))
-				$operands = array_pad($operands, sizeof($getters), 'equals');
+			if (is_null($operands) && newSizeOf($operands) < newSizeOf($getters))
+				$operands = array_pad($operands, newSizeOf($getters), 'equals');
 			$operands[] = 'lower_equals';
 			$getters[] = 'get_date_pub_debut';
 			$values[] = $dt_start;
 		}
 		if (!is_null($dt_end)) {
-			if (is_null($operands) && sizeof($operands) < sizeof($getters))
-				$operands = array_pad($operands, sizeof($getters), 'equals');
+			if (is_null($operands) && newSizeOf($operands) < newSizeOf($getters))
+				$operands = array_pad($operands, newSizeOf($getters), 'equals');
 			$operands[] = 'higher_equals';
 			$getters[] = 'get_date_pub_fin';
 			$values[] = $dt_end;
@@ -136,7 +136,7 @@ class NewsModel extends BaseModuleModel {
 		
 		$aId = $pager->aResult; 
 		$aListe_res = array();
-		for ($m=0; $m<sizeof($aId); $m++)
+		for ($m=0; $m<newSizeOf($aId); $m++)
 		{
 			eval("$"."aListe_res[] = new "."nws_content"."($"."aId[$"."m]);");
 		}

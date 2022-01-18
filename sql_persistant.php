@@ -1,5 +1,6 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/autoprepend.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/htmlUtility.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/autoClass/lib.inc.php');
 
 // sponthus 31/05/2005
@@ -100,7 +101,7 @@ function dbMakeObjet($sObjet, $row) {
 	}
 	
 	// la liste des champs
-	for ($i=0; $i<sizeof($aListeChamps); $i++) {	
+	for ($i=0; $i<newSizeOf($aListeChamps); $i++) {	
 		$sSetter = $aListeChamps[$i]->Setter;
 		if (method_exists($oObjet, $sSetter)){
 			$sType = $aListeChamps[$i]->TypeBD;
@@ -276,7 +277,7 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 	
 	$error = false;
 	// check for any inheritance
-	if (isset($oObjet->inherited_list)&& (sizeof($oObjet->inherited_list) > 0)){
+	if (isset($oObjet->inherited_list)&& (newSizeOf($oObjet->inherited_list) > 0)){
 		$inheriting = $oObjet->inherited_list[0];
 		$oInheriting = new $inheriting();
 		$aInheritingFields = $oInheriting->getListeChamps();
@@ -285,9 +286,9 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 		$pile[$inheriting]['props'] = Array();
 		
 		// populate master and inheriting conditions according to each field owner
-		for ($i=0; $i<sizeof($aGetterWhere); $i++) {
+		for ($i=0; $i<newSizeOf($aGetterWhere); $i++) {
 			$found_master = false;
-			for ($j=0; $j<sizeof($aMasterFields); $j++) {
+			for ($j=0; $j<newSizeOf($aMasterFields); $j++) {
 				if ($aMasterFields[$j]->getGetter() == $aGetterWhere[$i]) {
 					// populate with this master field
 					$found_master = true;
@@ -305,7 +306,7 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 			}
 			if (!$found_master) {
 				$found_inheriting = false;
-				for ($j=0; $j<sizeof($aInheritingFields); $j++) {
+				for ($j=0; $j<newSizeOf($aInheritingFields); $j++) {
 					if ($aInheritingFields[$j]->getGetter() == $aGetterWhere[$i]) {
 						// populate with this inheriting field
 						$found_inheriting = true;
@@ -327,10 +328,10 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 				$error = true;
 			}
 		}
-		for ($i=0; $i<sizeof($aGetterOrderBy); $i++) {
+		for ($i=0; $i<newSizeOf($aGetterOrderBy); $i++) {
 			// populate master and inheriting ordering according to each field owner
 			$found_master = false;
-			for ($j=0; $j<sizeof($aMasterFields); $j++) {
+			for ($j=0; $j<newSizeOf($aMasterFields); $j++) {
 				if ($aMasterFields[$j]->getGetter() == $aGetterOrderBy[$i]) {
 					// populate with this master field
 					$found_master = true;
@@ -341,7 +342,7 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 			}
 			if (!$found_master) {
 				$found_inheriting = false;
-				for ($j=0; $j<sizeof($aInheritingFields); $j++) {
+				for ($j=0; $j<newSizeOf($aInheritingFields); $j++) {
 					if ($aInheritingFields[$j]->getGetter() == $aGetterOrderBy[$i]) {
 						// populate with this inheriting field
 						$found_inheriting = true;
@@ -358,14 +359,14 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 		}
 	} else {
 		// no inheritance
-		for ($i=0; $i<sizeof($aGetterWhere); $i++) {
+		for ($i=0; $i<newSizeOf($aGetterWhere); $i++) {
 			$found_master = false;
-			for ($j=0; $j<sizeof($aMasterFields); $j++) {
+			for ($j=0; $j<newSizeOf($aMasterFields); $j++) {
 				if ($aMasterFields[$j]->getGetter() == $aGetterWhere[$i]) {
 					// populate with this master field
 					$found_master = true;
 					$pile[$sTable]['props']['fields'][] = strtolower(substr($aMasterFields[$j]->getNomBD(),0,1)).substr($aMasterFields[$j]->getNomBD(),1);
-					if (!is_null($aOperands[$i]) && !empty($aOperands[$i]))
+					if (isset($aOperands)	&&	isset($aOperands[$i])	&&	!is_null($aOperands[$i]) && !empty($aOperands[$i]))
 						$pile[$sTable]['props']['operands'][] = $aOperands[$i];
 					else	$pile[$sTable]['props']['operands'][] = 'equals';
 					if ($aMasterFields[$j]->getTypeBD() == "text")
@@ -381,9 +382,9 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 				$error = true;
 			}
 		}
-		for ($i=0; $i<sizeof($aGetterOrderBy); $i++) {
+		for ($i=0; $i<newSizeOf($aGetterOrderBy); $i++) {
 			$found_master = false;
-			for ($j=0; $j<sizeof($aMasterFields); $j++) {
+			for ($j=0; $j<newSizeOf($aMasterFields); $j++) {
 				if ($aMasterFields[$j]->getGetter() == $aGetterOrderBy[$i]) {
 					// populate with this master field
 					$found_master = true;
@@ -415,7 +416,7 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 		
 		
 		foreach ($pile as $table => $usage) {
-			if (sizeof($usage['props']['fields']) > 0) {
+			if (newSizeOf($usage['props']['fields']) > 0) {
 				if ($cnt > 0)
 					$sRequete .= "\nAND	";
 				else
@@ -423,7 +424,7 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 				$cnt++;
 			}
 			// tous les champs clause WHERE
-			for ($a=0; $a<sizeof($usage['props']['fields']); $a++) {
+			for ($a=0; $a<newSizeOf($usage['props']['fields']); $a++) {
 			
 			
 				// print("<br/>field=>{$sTable}.".$usage['props']['fields'][$a]);
@@ -486,9 +487,9 @@ function dbGetSQLFromFieldValue3($sObjet, $aGetterWhere, $aOperands, $aValeurCha
 		}
 		foreach ($pile as $table => $usage) {
 			// order by
-			if (isset($usage['props']['orders'])&& (sizeof($usage['props']['orders']) > 0)){
+			if (isset($usage['props']['orders'])&& (newSizeOf($usage['props']['orders']) > 0)){
 				$sRequete .= "\nORDER BY	";
-				for ($m=0; $m<sizeof($usage['props']['orders']); $m++) {
+				for ($m=0; $m<newSizeOf($usage['props']['orders']); $m++) {
 					if ($m> 0)
 						$sRequete .= ", ";
 					if (!is_null($usage['props']['directions']) && !empty($usage['props']['directions'][$m]))
@@ -518,7 +519,7 @@ function dbGetObjects($sObjet) {
 
 	$tables = "";
 	$where = "";
-	if (is_array($oObjet->inherited)) {
+	if (isset($oObjet->inherited)	&&	is_array($oObjet->inherited)) {
 		if (count($oObjet->inherited) > 0) {
 			foreach ($oObjet->inherited as $key=>$class) {
 				if (is_object($class)) {
@@ -572,7 +573,7 @@ function dbMakeInsertReq($oObjet) {
         
         $sRequete .= ") VALUES (";
 
-	for ($i=0; $i<sizeof($aListeChamps); $i++) {
+	for ($i=0; $i<newSizeOf($aListeChamps); $i++) {
 		$sType=$aListeChamps[$i]->getTypeBD();
 		$sChamp=$aListeChamps[$i]->getGetter();
                 //die($sChamp);
@@ -599,7 +600,7 @@ function dbMakeInsertReq($oObjet) {
 			else	$sRequete .= "NULL, ";
 		}
 		// todo gérer un type ENUM autonome injectant la valeur par défaut si celle fournie n'est pas valide
-		if ($i == (sizeof($aListeChamps)-1))
+		if ($i == (newSizeOf($aListeChamps)-1))
 			$sRequete=substr($sRequete, 0, -2);
 	}
 	
@@ -713,7 +714,7 @@ function dbUpdate($oObjet) {
 	
 	$sRequete = "UPDATE ".$sTable." SET ";
 
-	for($i=0; $i<sizeof($aListeChamps); $i++) {
+	for($i=0; $i<newSizeOf($aListeChamps); $i++) {
 		$sType=$aListeChamps[$i]->getTypeBD();
 		$leNomBD=$aListeChamps[$i]->getNomBD();
 		$sChamp=$aListeChamps[$i]->getGetter();
@@ -743,14 +744,14 @@ function dbUpdate($oObjet) {
 				// a_voir attention ici date oracle
 				$sRequete.="$leNomBD=".to_dbdatetime($oObjet->$sChamp()).", ";	
 		}
-		if ($i == (sizeof($aListeChamps)-1))
+		if ($i == (newSizeOf($aListeChamps)-1))
 			$sRequete=substr($sRequete, 0, -2);
 	}
 
 	$sRequete .= " WHERE ".$oObjet->getFieldPK()."=".$oObjet->$sGetterPK();
 
-	//print("<br>".$sRequete);
-	//exit();
+	//error_log($sRequete);
+  
 	$sql = $sRequete;
 	$rs = $db->Execute($sql);
 
@@ -1262,9 +1263,9 @@ function getCount_where($sObjet, $aFieldWhere, $aValueWhere, $aTypeWhere) {
 
 	$sql = " SELECT COUNT(".$sFieldPK.") FROM $sTable";
 
-	if (sizeof($aFieldWhere) > 0)
+	if (newSizeOf($aFieldWhere) > 0)
 		$sql.=" WHERE ";
-	for ($p=0; $p<sizeof($aFieldWhere); $p++)	{
+	for ($p=0; $p<newSizeOf($aFieldWhere); $p++)	{
 		if ($p > 0)
 			$sql.= " AND ";
 		if ($aTypeWhere[$p] == "TEXT")
@@ -1347,9 +1348,9 @@ function getSearchFields($sTable, $aFields, $aFieldWhere, $aValueWhere, $aTypeWh
 
 	$sql = " SELECT ".implode(",", $aFields)." FROM $sTable";
 	
-	if ($aFieldWhere && sizeof($aFieldWhere)>0)	{
+	if ($aFieldWhere && newSizeOf($aFieldWhere)>0)	{
 		$aCond = array();
-		for($i=0;$i<sizeof($aFieldWhere);$i++) {
+		for($i=0;$i<newSizeOf($aFieldWhere);$i++) {
 			if ($aTypeWhere && $aTypeWhere[$i] == "TEXT")
 				array_push($aCond, $aFieldWhere[$i]." = ".to_dbstring($aValueWhere[$i]));
 			else if ($aTypeWhere && $aTypeWhere[$i] == "GENERICTEXT")
@@ -1415,15 +1416,15 @@ function to_dbquote($schaine) {
 //------------------------------------------------
 function dedoublonne($aTab) {
 	$aResult = array();
-	for ($i=0; $i<sizeof($aTab); $i++) {
+	for ($i=0; $i<newSizeOf($aTab); $i++) {
 		// lecture d'un élément de tableau
 		$sChaine = $aTab[$i];
 		// recherche de cette chaine dans le tableau final
 		$bTrouve=0;
-		for ($j=0; $j<sizeof($aResult); $j++) {
+		for ($j=0; $j<newSizeOf($aResult); $j++) {
 			if ($sChaine == $aResult[$j]) {
 				$bTrouve=1;
-				$j = sizeof($aResult);// sortie de la boucle
+				$j = newSizeOf($aResult);// sortie de la boucle
 			}
 		}
 		if ($bTrouve == 0)
@@ -1505,6 +1506,3 @@ function dbExecuteQueryQuiet($sql) {
 
 	return true;
 }
-
-
-?>

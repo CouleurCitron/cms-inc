@@ -8,8 +8,8 @@ function getNombreColonnes ($arrayTR) {
 	$arrayTD = array ();
 	preg_match_all  ("|<td[^>]*>(.*)<\/td>|U", $premierTR, $arrayTD);
 	//preg_match_all  ("|<td[^>]+>(.*)<\/td>|U", $premierTR, $arrayTD); avant
-	$nombre = sizeof($arrayTD[0]);
-	for ($i=1; $i<sizeof($arrayTD[0]);$i++){
+	$nombre = newSizeOf($arrayTD[0]);
+	for ($i=1; $i<newSizeOf($arrayTD[0]);$i++){
 		
 		$ligneCOLSPAN = strchr($arrayTD[0][$i], "colspan=");
 		$ligneCOLSPAN = str_replace("colspan=", "", $ligneCOLSPAN);
@@ -37,7 +37,7 @@ function getNombreColonnes ($arrayTR) {
 }
 
 function getNombreLignes ($arrayTR) {
-	return sizeof($arrayTR);
+	return newSizeOf($arrayTR);
 }
 
 function getArrayByTR ($sHTML) {

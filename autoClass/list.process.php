@@ -159,7 +159,7 @@ if ($operation == "DELETE") {
 			$urlClass= "../../include/bo/class";
 			//table contenant les classes liés
 			$aTempClas=ScanDirs($urlClass, $classeName);
-			for ($j=0; $j<sizeof($aTempClas);$j++) {
+			for ($j=0; $j<newSizeOf($aTempClas);$j++) {
 				$sAssoClasse = $aTempClas[$j];
 				eval("$"."oAsso = new ".$sAssoClasse."();");
 				$aForeign = dbGetObjects($sAssoClasse);
@@ -179,7 +179,7 @@ if ($operation == "DELETE") {
 								
 								$sqlDisplay =  "select ".ucfirst($foreignPrefixe)."_id from ".$foreignName." where ".ucfirst($foreignPrefixe)."_".ucfirst($classeName)."=".$id; 
 								$aResponseDisplay = dbGetObjectsFromRequeteID($foreignName, $sqlDisplay);
-								for ($a=0; $a<sizeof($aResponseDisplay); $a++) {
+								for ($a=0; $a<newSizeOf($aResponseDisplay); $a++) {
 									$oResponseDisplay = $aResponseDisplay[$a];
 									$idResponseDisplay = $oResponseDisplay->get_id();
 									eval("$"."oRes3 = new ".$foreignName."($".idResponseDisplay.");");
@@ -209,7 +209,7 @@ if ($operation == "DELETE") {
 									else {
 										$bAssoRetour = dbDelete($oRes3);
 									} //if ($oRes3->getGetterStatut()!="none") {
-								} //for ($a=0; $a<sizeof($aResponseDisplay); $a++) {
+								} //for ($a=0; $a<newSizeOf($aResponseDisplay); $a++) {
 							}// if ($eEmp > 0) {
 							
 						}// if ($foreignNodeToSort[$i]["attrs"]["NAME"] == $classeName){
@@ -243,7 +243,7 @@ if ($operation == "DELETE") {
 	// toutes les cc sélectionnées
 	$aEmp = explode(";", $_POST['cbToChange']);
 	
-	for ($p=0; $p<sizeof($aEmp); $p++) {
+	for ($p=0; $p<newSizeOf($aEmp); $p++) {
 
 		if ($aEmp[$p] != "") {
 			// objet 
@@ -532,12 +532,12 @@ if ($default_filter || (strpos($_SERVER['HTTP_REFERER'], $_SERVER['PHP_SELF']) !
 }
 
 // autres tris 
-for ($i=0; $i < sizeof($aListeTri); $i++){
+for ($i=0; $i < newSizeOf($aListeTri); $i++){
 	$oTri = $aListeTri[$i]; 
 	$aGetterOrderBy[] = $oTri->getNom();
 	$aGetterSensOrderBy[] = $oTri->getSens();
 } 
-if (sizeof($aGetterOrderBy)>0)
+if (newSizeOf($aGetterOrderBy)>0)
 	unset($aGetterDateOrderBy);
  
 	
@@ -628,7 +628,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		$aTempClasse = array();
 		$aTempClasse = explode(',', $aNodeToSort[$i]["attrs"]["ASSO"]);		
 		
-		for ($m=0; $m<sizeof($aTempClasse);$m++) { 
+		for ($m=0; $m<newSizeOf($aTempClasse);$m++) { 
 			$classeNameAsso = $aTempClasse[$m];
 			// recherche des infos
 			
@@ -885,7 +885,7 @@ if ($_SERVER["QUERY_STRING"]!="" && (preg_match("/param/msi", $_SERVER["QUERY_ST
 	if (isset($_GET['champTri']) && !in_array ( "champTri=".$_GET['champTri'], $aParam)) $aParam[] = "champTri=".$_GET['champTri'];
 	if (isset($_SESSION['sensTri_res']) && !in_array ( "sensTri=".$_SESSION['sensTri_res'], $aParam) ) $aParam[] = "sensTri=".$_SESSION['sensTri_res'];	 
 	
-	for ($i = 0; $i<sizeof($aParam) ; $i++) {
+	for ($i = 0; $i<newSizeOf($aParam) ; $i++) {
 		if (!preg_match("/adodb/msi", $aParam[$i]))
 			$sParam.="&".$aParam[$i];  
 	}	 
@@ -922,7 +922,7 @@ $aId = $pager->aResult;
 
 // liste des objets
 $aListe_res = array(); 
-(isset ($_POST['maxResults']) && $_POST['maxResults'] < sizeof($aId) )  ? $maxResults = $_POST['maxResults'] : $maxResults = sizeof($aId) ;
+(isset ($_POST['maxResults']) && $_POST['maxResults'] < newSizeOf($aId) )  ? $maxResults = $_POST['maxResults'] : $maxResults = newSizeOf($aId) ;
  
 for ($m=0; $m< $maxResults ; $m++)
 {

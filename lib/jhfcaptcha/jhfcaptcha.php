@@ -36,7 +36,7 @@ function captchaimage () {
     "cvcc","ccvc","ccvcc","cvccc", // monosyllabic nominal stems
     "cvcvc","cvcv","cvccv","ccvcv" // disyllabic nominal stems
  );
- $thisword=$wordbuild[mt_rand(0,sizeof($wordbuild)-1)];
+ $thisword=$wordbuild[mt_rand(0,newSizeOf($wordbuild)-1)];
  $stringlength=strlen($thisword);
  for($i=0;$i<$stringlength;$i++) {
   if ($thisword[$i]=="c") {$password.=$acceptedCharsC{mt_rand(0,strlen($acceptedCharsC)-1)};}

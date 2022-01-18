@@ -603,7 +603,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 												//echo $whereValue."-".DEF_ID_ADMIN_DEFAUT."".$whereField." ".$whereClasse;
 												$aWhere = dbGetObjects($whereClasse);
 												//var_dump($aWhere);
-												for($a=0;$a<sizeof($aWhere);$a++){
+												for($a=0;$a<newSizeOf($aWhere);$a++){
 													$oWhere = $aWhere[$a];
 													// test sur valeur par defaut
 													if (isset($childNode["attrs"]["DEFAULT"]) && $childNode["attrs"]["DEFAULT"]!= "" && DEF_ID_ADMIN_DEFAUT == $whereValue) {
@@ -652,7 +652,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 								$aForeignNew[] = $aForeign[$ii];	
 							} 
 							else { 
-								for($b=0;$b<sizeof($aValue);$b++) {
+								for($b=0;$b<newSizeOf($aValue);$b++) {
 									eval("$"."currentWhereFieldValue = $"."oForeign->get_".$whereField."();");
 									if ($currentWhereFieldValue == $aValue[$b]){
 										$aForeignNew[] = $aForeign[$ii];					

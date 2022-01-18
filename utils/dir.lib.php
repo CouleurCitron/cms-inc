@@ -69,7 +69,7 @@ function isDownloadable($file, $aWhiteListCustom = array()){
 
 	$aWhiteList = array('content', 'custom', 'documents');
 	
-	if (sizeof($aWhiteListCustom) > 0) {
+	if (newSizeOf($aWhiteListCustom) > 0) {
 		$aWhiteList = array_merge ($aWhiteList, $aWhiteListCustom);
 	}  
 	 
@@ -82,7 +82,7 @@ function isDownloadable($file, $aWhiteListCustom = array()){
 		}	 
 	}
 	
-	if (strpos($file, $_SERVER['DOCUMENT_ROOT'])===false && sizeof($aWhiteListCustom) == 0){
+	if (strpos($file, $_SERVER['DOCUMENT_ROOT'])===false && newSizeOf($aWhiteListCustom) == 0){
 		return false;
 	}
 	else{
@@ -209,7 +209,7 @@ function dirExists($dirChemin, $mod=0775) {
 	$champs = explode ("/", $dirCheminTested); 
 	$boucle=1;
 	$testPath="/".$champs[$boucle];
-	while ($boucle < (sizeof($champs))) {
+	while ($boucle < (newSizeOf($champs))) {
 		//echo "test sur ".$_SERVER['DOCUMENT_ROOT'].$testPath."<br />\n";
 		//error_log($_SERVER['DOCUMENT_ROOT'].$testPath . ' \\ ' .$dirCheminTested . ' - ' .$_SERVER['PHP_SELF']);
 		if(!is_dir($_SERVER['DOCUMENT_ROOT'].$testPath))

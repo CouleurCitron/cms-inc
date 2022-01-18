@@ -366,7 +366,7 @@ class Securimage
     {
         $this->securimage_path = dirname(__FILE__);
         
-        if (is_array($options) && sizeof($options) > 0) {
+        if (is_array($options) && newSizeOf($options) > 0) {
             foreach($options as $prop => $val) {
                 $this->$prop = $val;
             }
@@ -650,8 +650,8 @@ class Securimage
 
             closedir($dh);
 
-            if (sizeof($images) > 0) {
-                return rtrim($this->background_directory, '/') . '/' . $images[rand(0, sizeof($images)-1)];
+            if (newSizeOf($images) > 0) {
+                return rtrim($this->background_directory, '/') . '/' . $images[rand(0, newSizeOf($images)-1)];
             }
         }
 
@@ -1185,7 +1185,7 @@ class Securimage
         $numSamples     = 0;
         $removeChunks   = array('LIST', 'DISP', 'NOTE');
 
-        for ($i = 0; $i < sizeof($letters); ++$i) {
+        for ($i = 0; $i < newSizeOf($letters); ++$i) {
             $letter   = $letters[$i];
             $filename = $this->audio_path . strtoupper($letter) . '.wav';
             $file     = array();
@@ -1330,7 +1330,7 @@ class Securimage
             } catch(Exception $e) {
                 return new Securimage_Color($default);
             }
-        } else if (is_array($color) && sizeof($color) == 3) {
+        } else if (is_array($color) && newSizeOf($color) == 3) {
             return new Securimage_Color($color[0], $color[1], $color[2]);
         } else {
             return new Securimage_Color($default);
@@ -1369,11 +1369,11 @@ class Securimage_Color
     {
         $args = func_get_args();
         
-        if (sizeof($args) == 0) {
+        if (newSizeOf($args) == 0) {
             $this->r = 255;
             $this->g = 255;
             $this->b = 255;
-        } else if (sizeof($args) == 1) {
+        } else if (newSizeOf($args) == 1) {
             // set based on html code
             if (substr($color, 0, 1) == '#') {
                 $color = substr($color, 1);
@@ -1386,11 +1386,11 @@ class Securimage_Color
             }
             
             $this->constructHTML($color);
-        } else if (sizeof($args) == 3) {
+        } else if (newSizeOf($args) == 3) {
             $this->constructRGB($args[0], $args[1], $args[2]);
         } else {
             throw new InvalidArgumentException(
-              'Securimage_Color constructor expects 0, 1 or 3 arguments; ' . sizeof($args) . ' given'
+              'Securimage_Color constructor expects 0, 1 or 3 arguments; ' . newSizeOf($args) . ' given'
             );
         }
     }

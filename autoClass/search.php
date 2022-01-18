@@ -124,12 +124,12 @@ if ($_POST["actiontodo"]!="") {
 		 
 		$sql = "SELECT ".$classeName.".* ";
 		$sRechercheTexte = ""; 
-		for ($k=0; $k<sizeof($wordList); $k++) { 
+		for ($k=0; $k<newSizeOf($wordList); $k++) { 
 			if ($wordList[$k]!="") {
 				$urlFile= "../../custom/upload/".$classeName; 
 				$aTempResults_=getFileByName($urlFile, $wordList[$k]); 
-				if (sizeof($aTempResults_)>0) {
-					for ($j=0; $j<sizeof(aTempResults_);$j++) {
+				if (newSizeOf($aTempResults_)>0) {
+					for ($j=0; $j<newSizeOf(aTempResults_);$j++) {
 						array_push ($aTempResults,$aTempResults_[$j]); 
 					}
 				} 
@@ -153,7 +153,7 @@ if ($_POST["actiontodo"]!="") {
 				for ($i=0;$i<count($aNodeToSort);$i++){ 
 					if (($aNodeToSort[$i]["attrs"]["TYPE"] == "varchar") || ($aNodeToSort[$i]["attrs"]["TYPE"] == "text")){
 						$cpt++; 
-						if ($cptvarchar==$cpt && $k == (sizeof($wordList)-1)){	
+						if ($cptvarchar==$cpt && $k == (newSizeOf($wordList)-1)){	
 							if($cpt==1 && $k == 0){$sRechercheTexte .="(";}
 							$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$wordList[$k]."%' )";
 							//$sRechercheTexte .= ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]." like'%".$sTexte."%'";
@@ -180,7 +180,7 @@ if ($_POST["actiontodo"]!="") {
 	<table class="pagination" cellspacing="0" cellpadding="0" border="0" align="center" >
 	<tbody>
 	<tr>
-	<td>Terme(s) recherch&eacute;(s) : &quot;&nbsp;<strong><?php echo $sResultatdelarecherchesur; ?><?php echo $words; ?></strong>&nbsp;&quot; : <?php echo sizeof($results)+sizeof($results_pdf); ?> résultats  (fiches non comptabilisées)</td>
+	<td>Terme(s) recherch&eacute;(s) : &quot;&nbsp;<strong><?php echo $sResultatdelarecherchesur; ?><?php echo $words; ?></strong>&nbsp;&quot; : <?php echo newSizeOf($results)+newSizeOf($results_pdf); ?> résultats  (fiches non comptabilisées)</td>
 	</tr>
 	</tbody>
 	</table> 
@@ -191,7 +191,7 @@ if ($_POST["actiontodo"]!="") {
  
  
 		<?php
-		if(is_array($results) || sizeof($aTempResults) >0 || sizeof($aObjets) > 0 || sizeof($results_pdf) > 0 ) {
+		if(is_array($results) || newSizeOf($aTempResults) >0 || newSizeOf($aObjets) > 0 || newSizeOf($results_pdf) > 0 ) {
  		
 		?>
 		<tr class="col_titre"> 
@@ -256,7 +256,7 @@ if ($_POST["actiontodo"]!="") {
 			// recherche par nom de fichier  
 			 
 			
-			for ($l=0; $l<sizeof($aTempResults); $l++) {
+			for ($l=0; $l<newSizeOf($aTempResults); $l++) {
 				if (!in_array($urlFile.$aTempResults[$l], $resultTemps)) {
 					if ($sClass =="impair") $sClass= "pair";
 					else   $sClass= "impair"; 
@@ -275,8 +275,8 @@ if ($_POST["actiontodo"]!="") {
 				}
 				 
 			} 
-			if (sizeof($aObjets) > 0) {
-				for ($m=0; $m<sizeof($aObjets); $m++) { 
+			if (newSizeOf($aObjets) > 0) {
+				for ($m=0; $m<newSizeOf($aObjets); $m++) { 
 					$oObjet = $aObjets[$m]; 
 					if ($sClass =="impair") $sClass= "pair";
 					else   $sClass= "impair";   

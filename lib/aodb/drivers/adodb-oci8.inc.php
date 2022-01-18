@@ -657,7 +657,7 @@ NATSOFT.DOMAIN =
 			if (is_array($inputarr)) {
 			 	foreach($inputarr as $k => $v) {
 					if (is_array($v)) {
-						if (sizeof($v) == 2) // suggested by g.giunta@libero.
+						if (newSizeOf($v) == 2) // suggested by g.giunta@libero.
 							oci_bind_by_name($stmt,":$k",$inputarr[$k][0],$v[1]);
 						else
 							oci_bind_by_name($stmt,":$k",$inputarr[$k][0],$v[1],$v[2]);
@@ -842,7 +842,7 @@ NATSOFT.DOMAIN =
 						else {
 							$at = $arr[1];
 							if (isset($inputarr[$at]) || is_null($inputarr[$at])) {
-								if ((strlen($at) == strlen($str) && $k < sizeof($arr)-1)) {
+								if ((strlen($at) == strlen($str) && $k < newSizeOf($arr)-1)) {
 									$sql .= ':'.$str;
 									$lastnomatch = $k;
 								} else if ($lastnomatch == $k-1) {
@@ -921,7 +921,7 @@ NATSOFT.DOMAIN =
 		if (is_array($sql)) $stmt = $sql;
 		else $stmt = ADODB_oci8::Prepare($sql,true); # true to allocate oci_new_cursor
 	
-		if (is_array($stmt) && sizeof($stmt) >= 5) {
+		if (is_array($stmt) && newSizeOf($stmt) >= 5) {
 			$hasref = true;
 			$ignoreCur = false;
 			$this->Parameter($stmt, $ignoreCur, $cursorName, false, -1, OCI_B_CURSOR);
@@ -976,7 +976,7 @@ NATSOFT.DOMAIN =
 		
 		if (!is_array($stmt)) return false;
         
-        if (($type == OCI_B_CURSOR) && sizeof($stmt) >= 5) { 
+        if (($type == OCI_B_CURSOR) && newSizeOf($stmt) >= 5) { 
             return oci_bind_by_name($stmt[1],":".$name,$stmt[4],$size,$type);
         }
         
@@ -1102,7 +1102,7 @@ NATSOFT.DOMAIN =
 		if (is_array($inputarr)) {
 			foreach($inputarr as $k => $v) {
 				if (is_array($v)) {
-					if (sizeof($v) == 2) // suggested by g.giunta@libero.
+					if (newSizeOf($v) == 2) // suggested by g.giunta@libero.
 						oci_bind_by_name($stmt,":$k",$inputarr[$k][0],$v[1]);
 					else
 						oci_bind_by_name($stmt,":$k",$inputarr[$k][0],$v[1],$v[2]);
@@ -1289,7 +1289,7 @@ SELECT /*+ RULE */ distinct b.column_name
 			$tabcol = $this->GetArray("select table_name,column_name from {$tabp}cons_columns where owner=$rowner and constraint_name=$rcons order by position");
 			
 			if ($cols && $tabcol) 
-				for ($i=0, $max=sizeof($cols); $i < $max; $i++) {
+				for ($i=0, $max=newSizeOf($cols); $i < $max; $i++) {
 					$arr[$tabcol[$i][0]] = $cols[$i][0].'='.$tabcol[$i][1];
 				}
 		}

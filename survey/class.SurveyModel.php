@@ -39,7 +39,7 @@ class SurveyModel extends BaseModuleModel {
 								'multiple'	=> ($oAsk->get_multiple() == 'Y' ? true : false)),
 				'answers'	=> Array() );
 
-		for ($i = 0; $i<sizeof($aAnswer);$i++)
+		for ($i = 0; $i<newSizeOf($aAnswer);$i++)
 			$survey['answers'][] = Array(	'id'	=> $aAnswer[$i]->get_id(),
 							'title'	=> $aAnswer[$i]->get_libelle() );
 

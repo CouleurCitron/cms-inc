@@ -60,9 +60,9 @@ else{
 							}
 						}
 					}
-					if ($custom["Filter"]['mode'] == 'AND' && sizeof($test_res) == sizeof($custom['Filter']['pile']))
+					if ($custom["Filter"]['mode'] == 'AND' && newSizeOf($test_res) == newSizeOf($custom['Filter']['pile']))
 						$activate_custom = true;
-					elseif ($custom["Filter"]['mode'] == 'OR' && sizeof($test_res) > 0)
+					elseif ($custom["Filter"]['mode'] == 'OR' && newSizeOf($test_res) > 0)
 						$activate_custom = true;
 				} else	$activate_custom = true;
 				if ($activate_custom) {

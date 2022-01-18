@@ -28,7 +28,7 @@ $aUserMail = explode(";", DEF_USERMAIL);
 $aUserTel = explode(";", DEF_USERTEL);
 $aUserPasswd = explode(";", DEF_USERPASSWD);
 
-for ($i=0; $i<sizeof($aUserLogin); $i++)
+for ($i=0; $i<newSizeOf($aUserLogin); $i++)
 {
 	$user->nom = $aUserNom[$i];
 	$user->prenom = $aUserPrenom[$i];

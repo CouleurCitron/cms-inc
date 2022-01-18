@@ -356,7 +356,7 @@ class getid3_flac
 
 
 	static function FLACparsePICTURE($meta_data_block_data, &$ThisFileInfo) {
-		$picture = &$ThisFileInfo['flac']['PICTURE'][sizeof($ThisFileInfo['flac']['PICTURE']) - 1];
+		$picture = &$ThisFileInfo['flac']['PICTURE'][newSizeOf($ThisFileInfo['flac']['PICTURE']) - 1];
 
 		$offset = 0;
 

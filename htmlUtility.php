@@ -5,6 +5,8 @@ include_once($_SERVER['DOCUMENT_ROOT'].'/include/cms-inc/lib/getid3/getid3.php')
 sponthus 15/07/2005
 fonctions de retraitement sur des chaines html
 
+function is_countable($var) {
+function newSizeOf($var){}
 function inputFilter($data){
 function xssFilter($data)	{
 function sqlInjectionFilter($data) {
@@ -56,6 +58,38 @@ function text2url($chaine) { // supprime tous les caractères spéciaux
 function truncate($sLib) {
 formatFileSize ($_size)	// Format l'affichage d'une taille de fichier
 */
+
+/*
+polyfill is_countable for php below 7.3
+params
+$var:any	: any type var
+returns
+bool		: true if countable
+*/
+if (!function_exists('is_countable')) {
+    function is_countable($var) {
+        return (is_array($var) || $var instanceof Countable);
+    }
+}
+
+/*
+7.3 compliant sizeof/count function, with string support fallback
+params
+$var:any	: any type var
+returns
+int		: count if countable, or if has length - 0 if not
+*/
+function newSizeOf($var){
+	if (is_string($var)){
+		return strlen($var);
+	}
+	if (is_countable($var)){
+		return count($var);
+	}
+	else{
+		return 0;
+	}
+}
 
 /*
 filtre du code html pour bloquer les attaques
@@ -1112,7 +1146,7 @@ function makeTableauModulo($aData, $eCol) {
 
 	$sTab.= "<table border=\"0\" width=\"100%\">";
 
-	for ($p=0; $p<sizeof($aData); $p++)
+	for ($p=0; $p<newSizeOf($aData); $p++)
 	{
 		// découpage des dates en x colonnes
 		$eMod = $eCol;
@@ -1144,7 +1178,7 @@ function makeTableauModulo($aData, $eCol) {
 
 			$sTab.= "</td>";
 
-		} else if ($modulo != 0 && ($p != sizeof($aData) -1)) {
+		} else if ($modulo != 0 && ($p != newSizeOf($aData) -1)) {
 			// pas d'occurence modulo et pas la fin des afffichages -> début colonne + fin colonne
 
 			$sTab.= "<td>".$sData;
@@ -1154,7 +1188,7 @@ function makeTableauModulo($aData, $eCol) {
 
 			$sTab.= "</td>";
 
-		} else if ($modulo != 0 && ($p == sizeof($aData) -1)) {
+		} else if ($modulo != 0 && ($p == newSizeOf($aData) -1)) {
 			// pas d'occurence modulo et fin des affichages -> fin colonne + fin ligne
 			$colspan = $eMod - $eCol;
 
@@ -1597,4 +1631,3 @@ function truncateHTML($text, $length = 100, $ending = '...', $exact = true, $con
 	return $truncate;
 }
 
-?>

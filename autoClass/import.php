@@ -212,7 +212,7 @@ if(isset($_FILES['importfile'])){
 			// vide les table d'asso
 			if ($liste_asso != '') {
 				$aTempClasse = split(',', $liste_asso);		
-				for ($m=0; $m<sizeof($aTempClasse);$m++) {
+				for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 					$sTempClasse = $aTempClasse[$m];  
 					$purgeSQL = "truncate ".$sTempClasse;
 					//echo $purgeSQL."<br />";

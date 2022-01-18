@@ -15,7 +15,7 @@ if (!isset($idSite)){
   
 
 $aChemin = split('/',$referUrl);
-$nomPage = $aChemin[sizeof($aChemin)-1];
+$nomPage = $aChemin[newSizeOf($aChemin)-1];
 $nomPage = str_replace (".php", "", $nomPage);
 if($nomPage==''){
 	$nomPage='index';
@@ -39,17 +39,17 @@ if (isset ($_GET["id"]) && $_GET["id"]!="") {
 			$sql = "select * from cms_assotitleclasse, cms_title where xtc_classe = ".$idClasse." and xtc_cms_title = tit_id and xtc_classeid = ".$_GET["id"]. " and tit_cms_site =".$idSite;  
 			
 			$aAssotitle = dbGetObjectsFromRequete ("cms_assotitleclasse", $sql);
-			 //echo "ici".sizeof($aAssotitle);
+			 //echo "ici".newSizeOf($aAssotitle);
 			$title=" ";
-			if (sizeof($aAssotitle) > 0) {
-				for ($i=0; $i<sizeof($aAssotitle);$i++) {
+			if (newSizeOf($aAssotitle) > 0) {
+				for ($i=0; $i<newSizeOf($aAssotitle);$i++) {
 					 
 					$oAssotitle = $aAssotitle[$i];  
 					$oTitle = new Cms_title ($oAssotitle->get_cms_title());
 					
 					 
 					$title.=$oTitle->get_nom();
-					if ($i!=(sizeof($oAssotitle)-1)) $title.=", "; 
+					if ($i!=(newSizeOf($oAssotitle)-1)) $title.=", "; 
 					 
 				}
 			}	

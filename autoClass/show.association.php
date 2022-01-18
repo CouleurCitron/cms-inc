@@ -43,7 +43,7 @@ if (empty($aNodeToSort)) {
 
 for ($i=0; $i<count($aNodeToSort); $i++) {
 	if ($aNodeToSort[$i]["name"] == "ITEM") {
-		if ($aNodeToSort[$i]["attrs"]["ASSO"] || $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]) { // cas d'asso
+		if ((isset($aNodeToSort[$i]["attrs"]["ASSO"]) || isset($aNodeToSort[$i]["attrs"]["ASSO_VIEW"]))	&&	($aNodeToSort[$i]["attrs"]["ASSO"] || $aNodeToSort[$i]["attrs"]["ASSO_VIEW"])) { // cas d'asso
 			$eKeyValue = getItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"]);			
 
 			$aTempClasse = array();

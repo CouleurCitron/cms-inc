@@ -240,7 +240,7 @@ class ADODB_pdo extends ADOConnection {
 		
 		
 		if ($arr) {
-		 	if (sizeof($arr)<2) return '';
+		 	if (newSizeOf($arr)<2) return '';
 			if ((integer)$arr[0]) return $arr[2];
 			else return '';
 		} else return '-1';

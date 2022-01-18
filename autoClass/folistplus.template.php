@@ -193,7 +193,7 @@ else {
 
 
 // s'il y a des enregistrements à afficher
-  if(sizeof($aListe_res)>0) {
+  if(newSizeOf($aListe_res)>0) {
 	eval("$"."oRes = new ".$classeName."();");
 	$sXML = $oRes->XML;
 	unset($stack);
@@ -208,7 +208,7 @@ else {
 
 // liste
 $sBodyHTML = $sFilledBodyHTML; 
-for($k=0; $k<sizeof($aListe_res); $k++) {
+for($k=0; $k<newSizeOf($aListe_res); $k++) {
 	$oRes = $aListe_res[$k]; 
 	$sFilledBodyHTML = $sBodyHTML;
 	$aItemsToList = array();

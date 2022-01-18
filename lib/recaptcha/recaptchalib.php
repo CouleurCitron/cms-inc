@@ -81,10 +81,10 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, TRUE); 
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE); 
 	$curlData = curl_exec($curl);
-
+	//error_log($curlData);
 	curl_close($curl);
 
 	return $curlData;
@@ -129,7 +129,7 @@ function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)
 	
 		return '<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				<div class="g-recaptcha" data-sitekey="'.DEV_RECAPTCHA_SITEKEY.'"></div>                 
-				</div>';
+				';
 }
 
 
@@ -151,10 +151,10 @@ class ReCaptchaResponse {
   * @param string $challenge
   * @param string $response
   * @param array $extra_params an array of extra variables to post to the server
-  * @param int $version default set to 1 (now obsolete)
+  * @param int $version default set to 2 (now obsolete)
   * @return ReCaptchaResponse
   */
-function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array(), $version=1)
+function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array(), $version=2)
 {
 	if ($privkey == null || $privkey == '') {
 		die ("To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>");

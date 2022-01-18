@@ -200,7 +200,7 @@ if (!is_dir($_SERVER['DOCUMENT_ROOT']."/backoffice/cms/shr_track")){
 	$listContent = "<"."?php
 
 \$"."script = explode('/',\$"."_SERVER['PHP_SELF']);
-\$"."script = \$"."script[sizeof(\$"."script)-1];
+\$"."script = \$"."script[newSizeOf(\$"."script)-1];
 
 if (is_file(\$"."_SERVER['DOCUMENT_ROOT'].'/include/bo/cms/prepend.'.\$"."script))
 	require_once('include/bo/cms/prepend.'.\$"."script);

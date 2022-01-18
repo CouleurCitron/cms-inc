@@ -13,7 +13,7 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 				elseif ($operation == 'INSERT')
 					$eTslValue = '';					
 					
-				echo $eTslValue.(sizeof($langpile) > 1 ? "&nbsp;".$lang_props['libellecourt'] : "").'<br />';
+				echo $eTslValue.(newSizeOf($langpile) > 1 ? "&nbsp;".$lang_props['libellecourt'] : "").'<br />';
 			}
 		}
 		else{ 
@@ -54,7 +54,7 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 					$aSite = siteByidLangue ($lang_id); 
 					
 					if ($aSite) {
-						if (sizeof($aSite) > 1) {
+						if (newSizeOf($aSite) > 1) {
 							$idSiteToBrowse = $_SESSION["idSite"];	
 						}
 						else {
@@ -99,7 +99,7 @@ if ($aNodeToSort[$i]["attrs"]["TYPE"] == "int") {
 					echo "<textarea id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"textareaEdit ".$lang_props['libellecourt']."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" >".$eTslValue."</textarea>";
 				else	echo "<input type=\"text\" id=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" class=\"inputEdit ".$lang_props['libellecourt']."\" name=\"f".ucfirst($classePrefixe)."_".$aNodeToSort[$i]["attrs"]["NAME"]."_".$lang_props['libellecourt']."\" value=\"".$eTslValue."\" />";
 				
-				if (sizeof($langpile) > 1)
+				if (newSizeOf($langpile) > 1)
 					echo "<span class='".$lang_props['libellecourt']."'>&nbsp;".$lang_props['libellecourt']."</span>";
 				// gestion popup wysiwyg
 				if ((($aNodeToSort[$i]["attrs"]["OPTION"] == "link")	||	($aNodeToSort[$i]["attrs"]["OPTION"] == "url"))  && ($bPopupLinks == true) ){ // cas link						

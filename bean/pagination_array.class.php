@@ -94,7 +94,7 @@ class Pagination_array {
 		// tableau à paginer
 		$this->aResult_work = $aResult_work;
 
-//print("<br>PAGINATE[".sizeof($this->aResult_work)."]");
+//print("<br>PAGINATE[".newSizeOf($this->aResult_work)."]");
 
 		$this->firstPage = 0;
 		$this->lastPage = 1;
@@ -260,8 +260,8 @@ class Pagination_array {
 	function Render($rows=10)
 	{
 		// calcul du nombre de pages
-		if (sizeof($this->aResult_work) == 0) $this->lastPage = -1;
-		else $this->lastPage = intval(sizeof($this->aResult_work) / $rows)+1;
+		if (newSizeOf($this->aResult_work) == 0) $this->lastPage = -1;
+		else $this->lastPage = intval(newSizeOf($this->aResult_work) / $rows)+1;
 
 
 		$rs = $this->aResult_work;
@@ -278,13 +278,13 @@ class Pagination_array {
 		// indice de comptage des enr lus
 		$j=0;
 
-		//print("<br><font color=white>sizeof(rs)=[".sizeof($rs)."]</font>");
+		//print("<br><font color=white>newSizeOf(rs)=[".newSizeOf($rs)."]</font>");
 
-		for ($m=$eDebut; $m<sizeof($rs); $m++) {
+		for ($m=$eDebut; $m<newSizeOf($rs); $m++) {
 
 			if ($j == $eLimit) {
 				// sortie de la boucle
-				$m = sizeof($rs)+1;
+				$m = newSizeOf($rs)+1;
 
 			} else {
 				$this->aResult[] = $rs[$m];
@@ -303,7 +303,7 @@ class Pagination_array {
 		// tableau de résultats
 		$this->aId = $this->aResult;
 		// nombre d'enregistrements
-		$this->nbEnr = sizeof($rs);
+		$this->nbEnr = newSizeOf($rs);
 
 		$footer = $this->RenderPageCount();
 

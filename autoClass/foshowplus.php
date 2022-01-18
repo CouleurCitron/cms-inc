@@ -483,7 +483,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 					$oTempClasse = dbGetObjectsFromRequete($sTempClasse, $sql);
 					$eCountResizeImg = 0;
 					
-					for ($a = 0; $a < sizeof($oTempClasse); $a++) {
+					for ($a = 0; $a < newSizeOf($oTempClasse); $a++) {
 						$aTempClasse = $oTempClasse[$a];
 						$idTemp = $aTempClasse->get_id();
 						eval("$"."oTemp = new ".$sTempClasse."(".$idTemp.");");
@@ -818,7 +818,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 											if ($eOrdre == 0) $sql.= " order by ".$sAssoClasse."_ordre";
 											$aAssoClasse = dbGetObjectsFromRequete($sAssoClasse, $sql);
 											
-											for ($c = 0; $c < sizeof($aAssoClasse); $c++) {
+											for ($c = 0; $c < newSizeOf($aAssoClasse); $c++) {
 												$oAssoClasse = $aAssoClasse[$c];
 												$idAssoTemp = $oAssoClasse->get_id();
 												eval("$"."oTempasso = new ".$sAssoClasse."(".$idAssoTemp.");");
@@ -1091,7 +1091,7 @@ $oForeignDisplay = cacheObject($tempForeignDisplay, $eForeignId);
 						/////////////////////////////  ASSO des ASSO BIS /////////////////////////
 							
 						
-					} // fin for ($i = 0; $i < sizeof($oTempClasse); $i++) {
+					} // fin for ($i = 0; $i < newSizeOf($oTempClasse); $i++) {
 					
 				
 					

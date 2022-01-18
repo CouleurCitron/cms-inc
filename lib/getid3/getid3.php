@@ -91,7 +91,7 @@ class getID3
 
 
 	// public: constructor
-	function getID3()
+	function __construct()
 	{
 
 		$this->startup_error   = '';

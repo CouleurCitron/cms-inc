@@ -333,7 +333,7 @@ $Upload-> InitForm();
 
 		bType_<?php echo $classeName; ?> = false;
 		<?php
-		for ($i=0; $i<sizeof($aTyres); $i++)
+		for ($i=0; $i<newSizeOf($aTyres); $i++)
 		{
 			$oTyres = $aTyres[$i];
 		?>

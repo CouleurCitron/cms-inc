@@ -119,7 +119,7 @@ else{
 }
 
 // autres tris
-for ($i=0; $i < sizeof($aListeTri); $i++){
+for ($i=0; $i < newSizeOf($aListeTri); $i++){
 
 	$oTri = $aListeTri[$i];
 
@@ -194,7 +194,7 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 						$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]);		
 					elseif ($aNodeToSort[$i]["attrs"]["ASSO_EDIT"])
 						$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]);		
-					for ($m=0; $m<sizeof($aTempClasse);$m++) {
+					for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 						$sTempClasse = $aTempClasse[$m]; 
 						eval("$"."oTemp = new ".$sTempClasse."();");
 						 
@@ -255,16 +255,16 @@ if (isset($_GET["Type"]) && $_GET["Type"] == 'template') {
 				$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_VIEW"]);		
 			elseif ($aNodeToSort[$i]["attrs"]["ASSO_EDIT"])
 				$aTempClasse = split(',', $aNodeToSort[$i]["attrs"]["ASSO_EDIT"]);		
-			for ($m=0; $m<sizeof($aTempClasse);$m++) {
+			for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 				$sTempClasse = $aTempClasse[$m]; 
 				$sHeaderAsso.= "Associations ".$sTempClasse.";"; 		
 			}
 		}
 	}
 	
-	if (sizeof($aTempClasse) > 0) { // cas d'asso 
+	if (newSizeOf($aTempClasse) > 0) { // cas d'asso 
 		
-		for ($m=0; $m<sizeof($aTempClasse);$m++) {
+		for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 			$sTempClasse = $aTempClasse[$m]; 
 			
 			//echo "<br />".$sTempClasse."<br />";
@@ -537,7 +537,7 @@ if ($aPostFilters != false){
 				$oRech3->setValeurRecherche("declencher_recherche");
 				$oRech3->setTableBD(join (", ", $aClasse));
 				
-				if (sizeof($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
+				if (newSizeOf($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
 				if (preg_match('/,/', $filterValue))
 					$oRech3->setJointureBD(" ".$filterName." IN (".$filterValue.") ".$sCondition."  ");
 				else 
@@ -560,19 +560,19 @@ while (isset($_GET['champ'.$k])&& $_GET['champ'.$k]!=""){
 	$oRech4 = new dbRecherche();
 	$oRech4->setValeurRecherche("declencher_recherche");
 	$oRech4->setTableBD(join (", ", $aClasse));
-	if (sizeof($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
+	if (newSizeOf($aCondition) > 0) $sCondition = " AND " .join (" AND ", $aCondition);
 	$oRech4->setJointureBD(" ".$_GET['champ'.$k]." ".urldecode($_GET['operateur'.$k])." '".$_GET['valeur'.$k]."' ".$sCondition);
 	$oRech4->setPureJointure(1);
 	$aRecherche[] = $oRech4;
 	$k++;
 }
 
-if (sizeof($aRecherche) == 0) {
+if (newSizeOf($aRecherche) == 0) {
 	 
 	$oRech = new dbRecherche();
 	$oRech->setValeurRecherche("declencher_recherche");
 	$oRech->setTableBD(join (", ", $aClasse));
-	if (sizeof($aCondition) > 0) $sCondition = " " .join (" AND ", $aCondition);
+	if (newSizeOf($aCondition) > 0) $sCondition = " " .join (" AND ", $aCondition);
 	$oRech->setJointureBD($sCondition);
 	$oRech->setPureJointure(1);
 	$aRecherche[] = $oRech;

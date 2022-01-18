@@ -63,12 +63,12 @@ function ADODB_SetDatabaseAdapter(&$db, $index=false)
 		$obj->db = $db;
 		$obj->tables = array();
 		
-		if ($index == false) $index = sizeof($_ADODB_ACTIVE_DBS);
+		if ($index == false) $index = newSizeOf($_ADODB_ACTIVE_DBS);
 
 		
 		$_ADODB_ACTIVE_DBS[$index] = $obj;
 		
-		return sizeof($_ADODB_ACTIVE_DBS)-1;
+		return newSizeOf($_ADODB_ACTIVE_DBS)-1;
 }
 
 
@@ -127,7 +127,7 @@ class ADODB_Active_Record {
 		if ($db) {
 			$this->_dbat = ADODB_Active_Record::SetDatabaseAdapter($db);
 		} else if (!isset($this->_dbat)) {
-			if (sizeof($_ADODB_ACTIVE_DBS) == 0) $this->Error("No database connection set; use ADOdb_Active_Record::SetDatabaseAdapter(\$db)",'ADODB_Active_Record::__constructor');
+			if (newSizeOf($_ADODB_ACTIVE_DBS) == 0) $this->Error("No database connection set; use ADOdb_Active_Record::SetDatabaseAdapter(\$db)",'ADODB_Active_Record::__constructor');
 			end($_ADODB_ACTIVE_DBS);
 			$this->_dbat = key($_ADODB_ACTIVE_DBS);
 		}
@@ -580,13 +580,13 @@ class ADODB_Active_Record {
 		$this->_saved = true;
 		
 		$table = $this->TableInfo();
-		if ($ACTIVE_RECORD_SAFETY && sizeof($table->flds) != sizeof($row)) {
+		if ($ACTIVE_RECORD_SAFETY && newSizeOf($table->flds) != newSizeOf($row)) {
             # <AP>
             $bad_size = TRUE;
-            if (sizeof($row) == 2 * sizeof($table->flds)) {
+            if (newSizeOf($row) == 2 * newSizeOf($table->flds)) {
                 // Only keep string keys
                 $keys = array_filter(array_keys($row), 'is_string');
-                if (sizeof($keys) == sizeof($table->flds))
+                if (newSizeOf($keys) == newSizeOf($table->flds))
                     $bad_size = FALSE;
             }
             if ($bad_size) {
@@ -779,7 +779,7 @@ class ADODB_Active_Record {
 					break;
 				}
 			}
-			if ($autoinc && sizeof($table->keys) == 1) {
+			if ($autoinc && newSizeOf($table->keys) == 1) {
 				$k = reset($table->keys);
 				$this->$k = $this->LastInsertID($db,$k);
 			}
@@ -863,7 +863,7 @@ class ADODB_Active_Record {
 						break;
 					}
 				}
-				if ($autoinc && sizeof($table->keys) == 1) {
+				if ($autoinc && newSizeOf($table->keys) == 1) {
 					$k = reset($table->keys);
 					$this->$k = $this->LastInsertID($db,$k);
 				}

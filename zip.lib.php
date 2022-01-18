@@ -179,8 +179,8 @@ class zipfile
             $data .
 			$ctrldir .
             $this -> eof_ctrl_dir .
-            pack('v', sizeof($this -> ctrl_dir)) .  // total # of entries "on this disk"
-            pack('v', sizeof($this -> ctrl_dir)) .  // total # of entries overall
+            pack('v', newSizeOf($this -> ctrl_dir)) .  // total # of entries "on this disk"
+            pack('v', newSizeOf($this -> ctrl_dir)) .  // total # of entries overall
             pack('V', strlen($ctrldir)) .           // size of central dir
             pack('V', strlen($data)) .              // offset to start of central dir
             "\x00\x00";                             // .zip file comment length
@@ -195,8 +195,8 @@ class zipfile
         fwrite($fp,$data);
         fwrite($fp,$ctrldir);
         fwrite($fp,$this -> eof_ctrl_dir);
-        fwrite($fp,pack('v', sizeof($this -> ctrl_dir)));  // total # of entries "on this disk"
-        fwrite($fp,pack('v', sizeof($this -> ctrl_dir)));  // total # of entries overall
+        fwrite($fp,pack('v', newSizeOf($this -> ctrl_dir)));  // total # of entries "on this disk"
+        fwrite($fp,pack('v', newSizeOf($this -> ctrl_dir)));  // total # of entries overall
         fwrite($fp,pack('V', strlen($ctrldir)));           // size of central dir
         fwrite($fp,pack('V', strlen($data)));              // offset to start of central dir
         fwrite($fp,"\x00\x00");
@@ -211,8 +211,8 @@ class zipfile
 		$eSize += strlen($data);
 		$eSize += strlen($ctrldir);
 		$eSize += strlen($this -> eof_ctrl_dir);
-		$eSize += strlen(pack('v', sizeof($this -> ctrl_dir)));
-		$eSize += strlen(pack('v', sizeof($this -> ctrl_dir)));
+		$eSize += strlen(pack('v', newSizeOf($this -> ctrl_dir)));
+		$eSize += strlen(pack('v', newSizeOf($this -> ctrl_dir)));
 		$eSize += strlen(pack('V', strlen($ctrldir)));
 		$eSize += strlen(pack('V', strlen($data)));
 		$eSize += strlen("\x00\x00");
@@ -229,8 +229,8 @@ class zipfile
 		$eSize += strlen($data);
 		$eSize += strlen($ctrldir);
 		$eSize += strlen($this -> eof_ctrl_dir);
-		$eSize += strlen(pack('v', sizeof($this -> ctrl_dir)));
-		$eSize += strlen(pack('v', sizeof($this -> ctrl_dir)));
+		$eSize += strlen(pack('v', newSizeOf($this -> ctrl_dir)));
+		$eSize += strlen(pack('v', newSizeOf($this -> ctrl_dir)));
 		$eSize += strlen(pack('V', strlen($ctrldir)));
 		$eSize += strlen(pack('V', strlen($data)));
 		$eSize += strlen("\x00\x00");
@@ -244,8 +244,8 @@ class zipfile
 		echo $data;
 		echo $ctrldir;
 		echo $this -> eof_ctrl_dir;
-		echo pack('v', sizeof($this -> ctrl_dir));
-		echo pack('v', sizeof($this -> ctrl_dir));
+		echo pack('v', newSizeOf($this -> ctrl_dir));
+		echo pack('v', newSizeOf($this -> ctrl_dir));
 		echo pack('V', strlen($ctrldir));
 		echo pack('V', strlen($data));
 		echo "\x00\x00";

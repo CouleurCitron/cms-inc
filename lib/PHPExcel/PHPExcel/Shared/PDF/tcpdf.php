@@ -10656,7 +10656,7 @@ class TCPDF {
 		$this->y = $this->tMargin;
 		if (isset($this->newpagegroup[$this->page])) {
 			// start a new group
-			$n = sizeof($this->pagegroups) + 1;
+			$n = newSizeOf($this->pagegroups) + 1;
 			$alias = '{nb'.$n.'}';
 			$this->pagegroups[$alias] = 1;
 			$this->currpagegroup = $alias;

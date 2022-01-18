@@ -326,7 +326,6 @@ function dbGetIdListRech($sObjet, $aRecherche, $sOrderBy="", $eLimit)
 	{
 
 	$oObjet = new $sObjet;
-
 	$sTable = $oObjet->getTable();
 	$sFieldPK = $oObjet->getFieldPK();	
 	$sFieldAffichage = $oObjet->getFieldAffichage();
@@ -352,8 +351,7 @@ function dbGetIdListRech($sObjet, $aRecherche, $sOrderBy="", $eLimit)
 	}
 	//--------------------	
 
-	//print("<br /><br /><font color=green>$sRequete</font>");
-
+	//error_log($sRequete);
 	$aResultat = dbGetIDFromRequeteID($sObjet, $sRequete);
 
 	return($aResultat);
@@ -414,12 +412,6 @@ function dbGetCountIdListRech($sObjet, $aRecherche, $sOrderBy)
 
 	$sTable = $oObjet->getTable();
 	$sFieldPK = $oObjet->getFieldPK();	
-	//$sFieldAffichage = $oObjet->getFieldAffichage();
-	
-	/*
-	getFieldPK()
-	getDisplay()
-	*/
 	
 	$sRequete = "SELECT count(distinct $sTable.$sFieldPK) ";
 	
@@ -503,31 +495,34 @@ function dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy="")
 	$aWhere = array();
 	$aFromTemp = array();
 	$aWhereTemp = array();
+	$sRequete = '';
 
 	//--------------------
 	// analyse des critères de recherche
 	 
 	$sClauseWhere = "";
-	for ($a=0; $a<sizeof($aRecherche); $a++) {
+	for ($a=0; $a<newSizeOf($aRecherche); $a++) {
 
 		// élément de recherche
 		$oRech = $aRecherche[$a];
 
+		//var_dump($oRech);
 		// si une valeur est recherchée
 		if (($oRech->getValeurRecherche() != "") && ($oRech->getValeurRecherche() != "-1")) {
 
 			// composition de la clause FROM (tables de jointure)
 			$aFromThis = explode(";", $oRech->getTableBD());
 			
-			for($m=0; $m<sizeof($aFromThis); $m++) {
+			for($m=0; $m<newSizeOf($aFromThis); $m++) {
 				if ($aFromThis[$m] != "") array_push($aFromTemp, $aFromThis[$m]);
 			}
-			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
-			for($m=0; $m<sizeof($aJointure); $m++) {
-				if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
-			}
+			if (strlen($oRech->getJointureBD()) != 0){
+				$aJointure = explode(";", $oRech->getJointureBD());
+				for($m=0; $m<newSizeOf($aJointure); $m++) {
+					if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
+				}
+			}			
 			
 			// valeur du critère de recherche
 			// dans le cas des pures jointures pas de valeur recherchée
@@ -556,10 +551,10 @@ function dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy="")
 	//--------------------
 	// clause FROM
 	$sRequete.= " FROM ";
-	for ($p=0; $p<sizeof($aFrom); $p++) {
+	for ($p=0; $p<newSizeOf($aFrom); $p++) {
 
 		$sRequete.= " ".$aFrom[$p];
-		if ($p != sizeof($aFrom)-1) $sRequete.= ", ";
+		if ($p != newSizeOf($aFrom)-1) $sRequete.= ", ";
 	}
 	//--------------------
 
@@ -567,10 +562,10 @@ function dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy="")
 	// clause WHERE
 	$sRequete.= " WHERE ";
 	// valeurs de critères
-	for ($p=0; $p<sizeof($aWhere); $p++) {
+	for ($p=0; $p<newSizeOf($aWhere); $p++) {
 
 		$sRequete.= " ".$aWhere[$p];
-		if ($p != sizeof($aWhere)-1) $sRequete.= " AND ";
+		if ($p != newSizeOf($aWhere)-1) $sRequete.= " AND ";
 	}
 	//--------------------
 	
@@ -580,7 +575,6 @@ function dbMakeRequeteWithCriteres($sObjet, $aRecherche, $sOrderBy="")
 		$sRequete.=" ORDER BY ".$sOrderBy;
 	}
 	//--------------------
-	
 	return($sRequete);
 }
 
@@ -605,7 +599,7 @@ function dbMakeRequeteWithCriteres2($sObjet, $aRecherche, $aOrderBy,  $aSensOrde
 	// analyse des critères de recherche
 	
 	$sClauseWhere = "";
-	for ($a=0; $a<sizeof($aRecherche); $a++) {
+	for ($a=0; $a<newSizeOf($aRecherche); $a++) {
 
 		// élément de recherche
 		$oRech = $aRecherche[$a];
@@ -613,16 +607,16 @@ function dbMakeRequeteWithCriteres2($sObjet, $aRecherche, $aOrderBy,  $aSensOrde
 		if ($oRech->getValeurRecherche() != "" && $oRech->getValeurRecherche() != "-1") {
 			// composition de la clause FROM (tables de jointure)
 			$aFromThis = explode(";", $oRech->getTableBD());
-			for($m=0; $m<sizeof($aFromThis); $m++) {
+			for($m=0; $m<newSizeOf($aFromThis); $m++) {
 				if ($aFromThis[$m] != "")
 					array_push($aFromTemp, $aFromThis[$m]);
 			}
 			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0))
+			if (newSizeOf($oRech->getJointureBD() != 0))
 				$aJointure = explode(";", $oRech->getJointureBD());
                                 //pre_dump($aJointure);
-			for ($m=0; $m<sizeof($aJointure); $m++) {
+			for ($m=0; $m<newSizeOf($aJointure); $m++) {
 				if ($aJointure[$m] != "")
 					array_push($aWhereTemp, $aJointure[$m]);
 			}
@@ -676,7 +670,7 @@ function dbMakeRequeteWithCriteres2($sObjet, $aRecherche, $aOrderBy,  $aSensOrde
 		}
 	}	
 
-	if (sizeof($aFromTemp) == 0 )
+	if (newSizeOf($aFromTemp) == 0 )
 		$aFromTemp[] = $sTable;
 	if (count($oObjet->inherited_list) > 0){
 		foreach($oObjet->inherited_list as $cls)
@@ -706,16 +700,16 @@ function dbMakeRequeteWithCriteres2($sObjet, $aRecherche, $aOrderBy,  $aSensOrde
 
 	//--------------------
 	// clause WHERE
-	if (sizeof($aWhere)>0)
+	if (newSizeOf($aWhere)>0)
 		$sRequete.= " WHERE ".implode(' AND ', $aWhere);
 	
 	//--------------------
 	// clause ORDER BY
-	if (sizeof($aOrderBy) > 0)  $sRequete.= " ORDER BY ";
-	for ($p=0; $p<sizeof($aOrderBy); $p++) {
+	if (newSizeOf($aOrderBy) > 0)  $sRequete.= " ORDER BY ";
+	for ($p=0; $p<newSizeOf($aOrderBy); $p++) {
 
 		$sRequete.=$aOrderBy[$p]." ".$aSensOrderBy[$p];
-		if ($p != sizeof($aOrderBy)-1) $sRequete.=", ";
+		if ($p != newSizeOf($aOrderBy)-1) $sRequete.=", ";
 	}
 	//--------------------
 	
@@ -746,7 +740,7 @@ function dbMakeRequeteWithCriteres2_OR($sObjet, $aRecherche, $aOrderBy,  $aSensO
 	// analyse des critères de recherche
 	
 	$sClauseWhere = "";
-	for ($a=0; $a<sizeof($aRecherche); $a++) {
+	for ($a=0; $a<newSizeOf($aRecherche); $a++) {
 
 		// élément de recherche
 		$oRech = $aRecherche[$a];
@@ -757,13 +751,13 @@ function dbMakeRequeteWithCriteres2_OR($sObjet, $aRecherche, $aOrderBy,  $aSensO
 			// composition de la clause FROM (tables de jointure)
 			$aFromThis = explode(";", $oRech->getTableBD());
 			
-			for($m=0; $m<sizeof($aFromThis); $m++) {
+			for($m=0; $m<newSizeOf($aFromThis); $m++) {
 				if ($aFromThis[$m] != "") array_push($aFromTemp, $aFromThis[$m]);
 			}
 			
 			// composition de la clause WHERE (jointures)
-			if (sizeof($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
-			for($m=0; $m<sizeof($aJointure); $m++) {
+			if (newSizeOf($oRech->getJointureBD() != 0)) $aJointure = explode(";", $oRech->getJointureBD());
+			for($m=0; $m<newSizeOf($aJointure); $m++) {
 				if ($aJointure[$m] != "") array_push($aWhereTemp, $aJointure[$m]);
 			}
 			
@@ -806,7 +800,7 @@ function dbMakeRequeteWithCriteres2_OR($sObjet, $aRecherche, $aOrderBy,  $aSensO
 		$aFromTemp[] = $sTable;
 	} 
 	 
-	if (sizeof($aFromTemp) == 0 ) $aFromTemp[] = $sTable;
+	if (newSizeOf($aFromTemp) == 0 ) $aFromTemp[] = $sTable;
 	if(count($oObjet->inherited_list) > 0){
 		foreach($oObjet->inherited_list as $cls){
 			$aFromTemp[] = $cls;
@@ -829,35 +823,34 @@ function dbMakeRequeteWithCriteres2_OR($sObjet, $aRecherche, $aOrderBy,  $aSensO
 	//--------------------
 	// clause FROM
 	$sRequete.= " FROM ";
-	for ($p=0; $p<sizeof($aFrom); $p++) {
+	for ($p=0; $p<newSizeOf($aFrom); $p++) {
 
 		$sRequete.= " ".$aFrom[$p];
-		if ($p != sizeof($aFrom)-1) $sRequete.= ", ";
+		if ($p != newSizeOf($aFrom)-1) $sRequete.= ", ";
 	}
 	//--------------------
 
 	//--------------------
 	// clause WHERE
-	if (sizeof($aWhere)>0) $sRequete.= " WHERE ";
+	if (newSizeOf($aWhere)>0) $sRequete.= " WHERE ";
 	// valeurs de critères
-	for ($p=0; $p<sizeof($aWhere); $p++) {
+	for ($p=0; $p<newSizeOf($aWhere); $p++) {
 
 		$sRequete.= " ".$aWhere[$p];
-		if ($p != sizeof($aWhere)-1) $sRequete.= " OR ";
+		if ($p != newSizeOf($aWhere)-1) $sRequete.= " OR ";
 	}
 	//--------------------
 	
 	//--------------------
 	// clause ORDER BY
-	if (sizeof($aOrderBy) > 0)  $sRequete.= " ORDER BY ";
-	for ($p=0; $p<sizeof($aOrderBy); $p++) {
+	if (newSizeOf($aOrderBy) > 0)  $sRequete.= " ORDER BY ";
+	for ($p=0; $p<newSizeOf($aOrderBy); $p++) {
 
 		$sRequete.=$aOrderBy[$p]." ".$aSensOrderBy[$p];
-		if ($p != sizeof($aOrderBy)-1) $sRequete.=", ";
+		if ($p != newSizeOf($aOrderBy)-1) $sRequete.=", ";
 	}
 	//--------------------
 	
 	return($sRequete);
 }
 
-?>

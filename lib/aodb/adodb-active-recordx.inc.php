@@ -51,11 +51,11 @@ class ADODB_Active_Table {
 
 	function updateColsCount()
 	{
-		$this->_colsCount = sizeof($this->flds);
+		$this->_colsCount = newSizeOf($this->flds);
 		foreach($this->_belongsTo as $foreignTable)
-			$this->_colsCount += sizeof($foreignTable->TableInfo()->flds);
+			$this->_colsCount += newSizeOf($foreignTable->TableInfo()->flds);
 		foreach($this->_hasMany as $foreignTable)
-			$this->_colsCount += sizeof($foreignTable->TableInfo()->flds);
+			$this->_colsCount += newSizeOf($foreignTable->TableInfo()->flds);
 	}
 }
 
@@ -79,7 +79,7 @@ function ADODB_SetDatabaseAdapter(&$db)
 		
 		$_ADODB_ACTIVE_DBS[] = $obj;
 		
-		return sizeof($_ADODB_ACTIVE_DBS)-1;
+		return newSizeOf($_ADODB_ACTIVE_DBS)-1;
 }
 
 
@@ -158,7 +158,7 @@ class ADODB_Active_Record {
 		if ($db) {
 			$this->_dbat = ADODB_Active_Record::SetDatabaseAdapter($db);
 		} else
-			$this->_dbat = sizeof($_ADODB_ACTIVE_DBS)-1;
+			$this->_dbat = newSizeOf($_ADODB_ACTIVE_DBS)-1;
 		
 		
 		if ($this->_dbat < 0) $this->Error("No database connection set; use ADOdb_Active_Record::SetDatabaseAdapter(\$db)",'ADODB_Active_Record::__constructor');
@@ -631,15 +631,15 @@ class ADODB_Active_Record {
 		$this->_saved = true;
 		
 		$table = $this->TableInfo();
-		$sizeofFlds = sizeof($table->flds);
-		$sizeofRow  = sizeof($row);
+		$sizeofFlds = newSizeOf($table->flds);
+		$sizeofRow  = newSizeOf($row);
 		if ($ACTIVE_RECORD_SAFETY && $table->_colsCount != $sizeofRow && $sizeofFlds != $sizeofRow) {
             # <AP>
             $bad_size = TRUE;
 	if($sizeofRow == 2 * $table->_colsCount || $sizeofRow == 2 * $sizeofFlds) {
                 // Only keep string keys
                 $keys = array_filter(array_keys($row), 'is_string');
-                if (sizeof($keys) == sizeof($table->flds))
+                if (newSizeOf($keys) == newSizeOf($table->flds))
                     $bad_size = FALSE;
             }
             if ($bad_size) {
@@ -936,7 +936,7 @@ class ADODB_Active_Record {
 					break;
 				}
 			}
-			if ($autoinc && sizeof($table->keys) == 1) {
+			if ($autoinc && newSizeOf($table->keys) == 1) {
 				$k = reset($table->keys);
 				$this->$k = $this->LastInsertID($db,$k);
 			}
@@ -1032,7 +1032,7 @@ class ADODB_Active_Record {
 						break;
 					}
 				}
-				if ($autoinc && sizeof($table->keys) == 1) {
+				if ($autoinc && newSizeOf($table->keys) == 1) {
 					$k = reset($table->keys);
 					$this->$k = $this->LastInsertID($db,$k);
 				}

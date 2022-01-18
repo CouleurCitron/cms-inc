@@ -416,7 +416,7 @@ function generatePage($divArray, $oPage, $oIinfos_page, $sMode="LIGNE", $eIdTrav
 	//error_log('generatePage(divArray, '.$oPage->get_id().', oIinfos_page, '.$sMode.', '.$eIdTravail.')');
 	// taille du div_array pour cette page
 	// ensemble des briques de cette page
-	if ($divArray[0]['id'] != "") $eIdDivarray = 1;
+	if (isset($divArray[0]['id'])  &&  ($divArray[0]['id'] != "")) $eIdDivarray = 1;
 	else $eIdDivarray = 0;
 
 	// composants
@@ -1144,7 +1144,7 @@ function movePage($id, $node_id)
 		$aContent = getContentFromPage($oPage->get_id_page(), 0);
 		
 		if($aContent){
-			for ($a=0; $a<sizeof($aContent); $a++){
+			for ($a=0; $a<newSizeOf($aContent); $a++){
 				$oContent = $aContent[$a];				
 				if (intval($oContent->get_isbriquedit_content())==1){			
 					$oContent->updateNoeud($node_id);

@@ -73,7 +73,7 @@ $db->CacheExecute($sql);
 					$failcnt += 1;
 				}
 			}
-			if ($failcnt == sizeof($this->hosts)) {
+			if ($failcnt == newSizeOf($this->hosts)) {
 				$err = 'Can\'t connect to any memcache server';
 				return false;
 			}

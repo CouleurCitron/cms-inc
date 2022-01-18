@@ -152,7 +152,7 @@ class PEAR_PackageFile_Parser_v1
     {
         array_push($this->element_stack, $name);
         $this->current_element = $name;
-        $spos = sizeof($this->element_stack) - 2;
+        $spos = newSizeOf($this->element_stack) - 2;
         $this->prev_element = ($spos >= 0) ? $this->element_stack[$spos] : '';
         $this->current_attributes = $attribs;
         $this->cdata = '';
@@ -427,7 +427,7 @@ class PEAR_PackageFile_Parser_v1
                 break;
         }
         array_pop($this->element_stack);
-        $spos = sizeof($this->element_stack) - 1;
+        $spos = newSizeOf($this->element_stack) - 1;
         $this->current_element = ($spos > 0) ? $this->element_stack[$spos] : '';
         $this->cdata = '';
     }

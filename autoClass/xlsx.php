@@ -245,8 +245,8 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 
 // libelle asso
  
-if (sizeof($aTempClasse) > 0) {
-	for ($m=0; $m<sizeof($aTempClasse);$m++) {  
+if (newSizeOf($aTempClasse) > 0) {
+	for ($m=0; $m<newSizeOf($aTempClasse);$m++) {  
 		$sTempClasse = $aTempClasse[$m]; 
 		$letter = NumToLetter($j+1+$m);
 		$case = $letter.'1'; 
@@ -272,9 +272,9 @@ if (sizeof($aTempClasse) > 0) {
 }
 
 if ($_GET["Type"]  == '') { 
-	if(sizeof($aListe_res)>0) {
+	if(newSizeOf($aListe_res)>0) {
 		// liste
-		for($k=0; $k<sizeof($aListe_res); $k++) {
+		for($k=0; $k<newSizeOf($aListe_res); $k++) {
 		//for($k=0; $k<5; $k++) {
 			$oRes = $aListe_res[$k];
 			$l = 0;
@@ -474,7 +474,7 @@ else {
 				else {
 					$aFK = dbGetObjects($aNodeToSort[$i]["attrs"]["FKEY"]);
 					$aValue = array() ; 
-					if (sizeof($aFK) <=5) {
+					if (newSizeOf($aFK) <=5) {
 						foreach ($aFK as $oFK) {
 							 
 							array_push ($aValue, getItemValue($oFK, $oFK->getDisplay()));		

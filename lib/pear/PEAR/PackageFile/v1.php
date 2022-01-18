@@ -1373,7 +1373,7 @@ class PEAR_PackageFile_v1
         $contents = file_get_contents($file);
         $tokens = token_get_all($contents);
 /*
-        for ($i = 0; $i < sizeof($tokens); $i++) {
+        for ($i = 0; $i < newSizeOf($tokens); $i++) {
             @list($token, $data) = $tokens[$i];
             if (is_string($token)) {
                 var_dump($token);
@@ -1404,7 +1404,7 @@ class PEAR_PackageFile_v1
         $nodeps = array();
         $inquote = false;
         $interface = false;
-        for ($i = 0; $i < sizeof($tokens); $i++) {
+        for ($i = 0; $i < newSizeOf($tokens); $i++) {
             if (is_array($tokens[$i])) {
                 list($token, $data) = $tokens[$i];
             } else {

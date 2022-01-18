@@ -475,7 +475,7 @@ See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/odbc/htm/od
         $fld->not_null = !empty($rs->fields[10]);
         $fld->scale = $rs->fields[8];
         $retarr[strtoupper($fld->name)] = $fld;
-      } else if (sizeof($retarr)>0)
+      } else if (newSizeOf($retarr)>0)
         break;
       $rs->MoveNext();
     }

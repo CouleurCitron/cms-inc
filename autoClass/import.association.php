@@ -5,13 +5,13 @@ $eKeyValue = getItemValue($oRes, "id");
 $aTempClasse = array();
 $aTempClasse = explode(',', $liste_asso);		
 if ($bImportIds == false){
-	$nb_champs =  sizeof($oRes->getListeChamps()) - 1 ;	
+	$nb_champs =  newSizeOf($oRes->getListeChamps()) - 1 ;	
 }
 else {
-	$nb_champs =  sizeof($oRes->getListeChamps())  ;	
+	$nb_champs =  newSizeOf($oRes->getListeChamps())  ;	
 }
 
-for ($m=0; $m<sizeof($aTempClasse);$m++) {
+for ($m=0; $m<newSizeOf($aTempClasse);$m++) {
 	$sTempClasse = trim($aTempClasse[$m]);  
 	
 	
@@ -151,8 +151,8 @@ for ($m=0; $m<sizeof($aTempClasse);$m++) {
 	$_NodeToSort = $stack[0]["children"];
 	$_Display = $oClasse_->getDisplay();
 	$_Abstract = $oClasse_->getAbstract();
-	if (sizeof($aKeyValue) > 0) {
-		for ($l = 0; $l <sizeof($aKeyValue); $l++) {
+	if (newSizeOf($aKeyValue) > 0) {
+		for ($l = 0; $l <newSizeOf($aKeyValue); $l++) {
 			if ($aKeyValue[$l]!="") {
 				// on traite l'autre classe
 				$sKeyValue = trim($aKeyValue[$l]);
@@ -163,7 +163,7 @@ for ($m=0; $m<sizeof($aTempClasse);$m++) {
 					//echo $sql;
 					$aClasseId = dbGetObjectsFromRequete ($autreClasseName, $sql);
 					// on vérifie que la valeur existe 
-					if (sizeof($aClasseId) >  0){
+					if (newSizeOf($aClasseId) >  0){
 						 
 						$_oClasseId = $aClasseId[0];
 						$_Id = $_oClasseId->get_id();

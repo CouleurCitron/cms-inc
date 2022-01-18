@@ -229,7 +229,7 @@ function drawCompTree($db,$virtualPath,$full_path_to_curr_id=null,$destination=n
 		$strHTML .= "<a href=\"".$destination."\" class=\"arbo\"><img border=\"0\" src=\"$URL_ROOT/backoffice/cms/img/2013/ico_dossier_opened.png\"><b>Racine</b></a><br/></td></tr><tr><td>\n";
 		
 	} else {
-		$tree_depth = sizeof(explode(',',$full_path_to_curr_id));
+		$tree_depth = newSizeOf(explode(',',$full_path_to_curr_id));
 	}
 	$children = getNodeChildren($db,$full_path_to_curr_id);
 	//indentation :

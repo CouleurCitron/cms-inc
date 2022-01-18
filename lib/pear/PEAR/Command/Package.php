@@ -296,7 +296,7 @@ used for automated conversion or learning the format.
             $this->output .= "Warning: $w\n";
         }
         $this->output .= sprintf('Validation: %d error(s), %d warning(s)'."\n",
-                                       sizeof($err), sizeof($warn));
+                                       newSizeOf($err), newSizeOf($warn));
         if ($strict && count($err) > 0) {
             $this->output .= "Fix these errors and try again.";
             return false;
@@ -714,7 +714,7 @@ used for automated conversion or learning the format.
     function doCvsDiff($command, $options, $params)
     {
         $this->output = '';
-        if (sizeof($params) < 1) {
+        if (newSizeOf($params) < 1) {
             $help = $this->getHelp($command);
             return $this->raiseError("$command: missing parameter: $help[0]");
         }

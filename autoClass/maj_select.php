@@ -180,7 +180,7 @@ else if ($action== "del") {
 			$urlClass= "../../include/bo/class";
 			//table contenant les classes liés
 			$aTempClas=ScanDirs($urlClass, $classeName);
-			for ($j=0; $j<sizeof($aTempClas);$j++) {
+			for ($j=0; $j<newSizeOf($aTempClas);$j++) {
 				$sAssoClasse = $aTempClas[$j];
 				eval("$"."oAsso = new ".$sAssoClasse."();");
 				$aForeign = dbGetObjects($sAssoClasse);
@@ -200,7 +200,7 @@ else if ($action== "del") {
 								
 								$sqlDisplay =  "select ".ucfirst($foreignPrefixe)."_id from ".$foreignName." where ".ucfirst($foreignPrefixe)."_".ucfirst($classeName)."=".$id; 
 								$aResponseDisplay = dbGetObjectsFromRequeteID($foreignName, $sqlDisplay);
-								for ($a=0; $a<sizeof($aResponseDisplay); $a++) {
+								for ($a=0; $a<newSizeOf($aResponseDisplay); $a++) {
 									$oResponseDisplay = $aResponseDisplay[$a];
 									$idResponseDisplay = $oResponseDisplay->get_id();
 									eval("$"."oRes3 = new ".$foreignName."($".idResponseDisplay.");");
@@ -233,7 +233,7 @@ else if ($action== "del") {
 									else {
 										$bAssoRetour = dbDelete($oRes3);
 									} //if ($oRes3->getGetterStatut()!="none") {
-								} //for ($a=0; $a<sizeof($aResponseDisplay); $a++) {
+								} //for ($a=0; $a<newSizeOf($aResponseDisplay); $a++) {
 							}// if ($eEmp > 0) {
 							
 						}// if ($foreignNodeToSort[$i]["attrs"]["NAME"] == $classeName){

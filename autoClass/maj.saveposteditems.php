@@ -69,13 +69,13 @@ for ($i=0;$i<count($aNodeToSort);$i++){
                                                 
 						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], rewriteIfNeeded($_POST[$form_field]));
 					}
-				} elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "password") {// cas password, on cryte 
+				} elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "password") {// cas password, on cryte 
 					if (is_post($form_field)){
 						//setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], md5($_POST[$form_field]));
 						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], password_hash($_POST[$form_field], PASSWORD_DEFAULT));
 					}
 				}
-				elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "url") {// cas url, on ajoute le protocole http:// si manque
+				elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "url") {// cas url, on ajoute le protocole http:// si manque
 					if (isset($_POST[$form_field])) {
 						$tempUrl = trim($_POST[$form_field]);
 						if (!preg_match("/^http|ftp|https]:\/\/.*/msi", $tempUrl) && ($tempUrl != ""))
@@ -86,7 +86,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], $tempUrl);
 					}
 				}
-				elseif ($aNodeToSort[$i]["attrs"]["OPTION"] == "file") {// file 
+				elseif (isset($aNodeToSort[$i]["attrs"]["OPTION"])	&&	$aNodeToSort[$i]["attrs"]["OPTION"] == "file") {// file 
 					//echo $form_field." ".$_POST[$form_field];
 					// file récupéré avec le bouton parcourir le serveur
 					 
@@ -98,7 +98,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					$url_image = $_POST[$form_field];
 					 
 					
-					if (sizeof($matches[1]) > 0) {
+					if (newSizeOf($matches[1]) > 0) {
 						$aAll_images = $matches[1]; 
 					}
 					else {
@@ -215,7 +215,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 					
 					
 					
-					if (sizeof($aImageOutputsAll) > 1) {
+					if (newSizeOf($aImageOutputsAll) > 1) {
 						setItemValue($oRes, $aNodeToSort[$i]["attrs"]["NAME"], "{".implode ("}{", $aImageOutputsAll)."}" );
 					}
 					else if (preg_match ("/\[/", $aImageOutputsAll[0])) {
@@ -240,10 +240,5 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 		}
 	}
 }
-//die();
-$oRes->set_id($id);
-//pre_dump($oRes);
-//die();
-//pre_dump($oRes);
 
-?>
+$oRes->set_id($id);

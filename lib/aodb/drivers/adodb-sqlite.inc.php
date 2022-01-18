@@ -95,7 +95,7 @@ class ADODB_sqlite extends ADOConnection {
 	  while ($r = $rs->FetchRow()) {
 	    $type = explode('(',$r['type']);
 	    $size = '';
-	    if (sizeof($type)==2)
+	    if (newSizeOf($type)==2)
 	    $size = trim($type[1],')');
 	    $fn = strtoupper($r['name']);
 	    $fld = new ADOFieldObject;

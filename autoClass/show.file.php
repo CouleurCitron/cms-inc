@@ -24,7 +24,7 @@ if ($eKeyValue != "") {
 	  
 	$allFiles = array();
 	
-	if (sizeof($matches[1]) == 0) {
+	if (newSizeOf($matches[1]) == 0) {
 		$allFiles[] = $eKeyValue;
 	}
 	else {

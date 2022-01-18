@@ -45,10 +45,16 @@ function to_dbdate($sDate) {
 		return "to_date('$sDate', 'dd/mm/yyyy')"; // version oracle et postgres
 	}
 	if (DEF_BDD == "MYSQL"){
-		if (preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}.*/msi", $sDate)==1){
-			$sDate = preg_replace("/([0-9]{4})-([0-9]{2})-([0-9]{2}).*/msi", "$3/$2/$1", $sDate);
+    if($sDate==''){
+      $sDate=date('Y-m-d');
 		}
-		return "str_to_date('$sDate', '%d/%m/%Y')"; // version oracle et postgres
+		$sDate=dateToYmd($sDate);	
+    
+		if (preg_match("/[0-9]{4}-[0-9]{2}-[0-9]{2}.*/msi", $sDate)==1){ // remove time
+			$sDate = preg_replace("/([0-9]{4})-([0-9]{2})-([0-9]{2}).*/msi", "$1-$2-$3", $sDate);
+		}
+		//return "str_to_date('$sDate', '%Y-%m-%d')"; // version mysql mariadb
+		return "'".$sDate."'"; // version mysql mariadb
 	}
 }
 
@@ -99,11 +105,15 @@ function to_dbdate_TIMESTAMP($Date) {
 		$Date = preg_replace("/([0-9]{2})[-\/]{1}([0-9]{2})[-\/]{1}([0-9]{4})(.*)/msi", "$3-$2-$1$4", $Date);
 	}
 	if($Date!="") {
-		$timestp =  strtotime($Date);
-		return "'".date("Y-m-d H:i:s", $timestp)."'";
+    if ($Date=='0000-00-00 00:00:00'){
+      return "'0000-00-00 00:00:00'";
+    }
+    else{
+		return "'".date("Y-m-d H:i:s", strtotime($Date))."'";
+    }
 	}
 	else {
-		return "'NULL'";
+		return "NULL";
 	}
 }
 
@@ -298,20 +308,20 @@ function getDateFR ($sDate) {
 	$moisFR = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
 	$moisEN = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 	
-	for ($i = 0; $i<sizeof($jourFR); $i++) {
+	for ($i = 0; $i<newSizeOf($jourFR); $i++) {
 		$sDate = str_replace($jourEN[$i], $jourFR[$i], $sDate);
 	}
-	for ($j = 0; $j<sizeof($moisFR); $j++) {
+	for ($j = 0; $j<newSizeOf($moisFR); $j++) {
 		$sDate = str_replace($moisEN[$j], $moisFR[$j], $sDate);
 	}
 	return $sDate;
 }
 
 function getDateEN ($sDate) {
-	for ($i = 0; $i<sizeof($jourFR); $i++) {
+	for ($i = 0; $i<newSizeOf($jourFR); $i++) {
 		$sDate = str_replace($jourEN[$i], $jourFR[$i], $sDate);
 	}
-	for ($j = 0; $j<sizeof($moisFR); $j++) {
+	for ($j = 0; $j<newSizeOf($moisFR); $j++) {
 		$sDate = str_replace($moisEN[$j], $moisFR[$j], $sDate);
 	}
 	/*list($jour, $mois, $an) = explode(" ", $sDate);
@@ -319,4 +329,3 @@ function getDateEN ($sDate) {
 	
 	return $sDate;
 }
-?>

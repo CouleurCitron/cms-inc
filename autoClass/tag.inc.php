@@ -20,7 +20,7 @@ if (!isset($translator)){
 	
 	
 $aChemin = split('/',$referUrl);
-$nomPage = $aChemin[sizeof($aChemin)-1];
+$nomPage = $aChemin[newSizeOf($aChemin)-1];
 $nomPage = str_replace (".php", "", $nomPage);
 if($nomPage==''){
 	$nomPage='index';
@@ -45,8 +45,8 @@ if (isset ($_GET["id"]) && $_GET["id"]!="") {
 			$aAssotag = dbGetObjectsFromRequete ("cms_assotagclasse", $sql);
 			 
 			$keywords=", "; 
-			if (sizeof($aAssotag) > 0) {
-				for ($i=0; $i<sizeof($aAssotag);$i++) {
+			if (newSizeOf($aAssotag) > 0) {
+				for ($i=0; $i<newSizeOf($aAssotag);$i++) {
 					$oAssotag = $aAssotag[$i];  
 					$oTag = new Cms_tag ($oAssotag->get_cms_tag());
  

@@ -504,7 +504,7 @@ if (!in_array($url_section,$exclude_list) && (!preg_match($excludePattern, $url_
 			
 			if ($key == '/backoffice/') {
 				$script = explode('/',$_SERVER['PHP_SELF']);
-				$script = $script[sizeof($script)-1];
+				$script = $script[newSizeOf($script)-1];
 				$classeName = preg_replace('/[^_]*_(.*)\.php/', '$1', basename($_SERVER['PHP_SELF']));
 
 				// Inclusion prepend global sur la classe
@@ -521,5 +521,3 @@ if (!in_array($url_section,$exclude_list) && (!preg_match($excludePattern, $url_
 	}
 
 }
-
-?>

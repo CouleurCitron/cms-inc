@@ -306,7 +306,7 @@ class PEAR_Remote extends PEAR
                                              null, null, $ret['userinfo']);
                 }
             }
-        } elseif (is_array($ret) && sizeof($ret) == 1 && is_array($ret[0]) &&
+        } elseif (is_array($ret) && newSizeOf($ret) == 1 && is_array($ret[0]) &&
                   !empty($ret[0]['faultString']) &&
                   !empty($ret[0]['faultCode'])) {
             extract($ret[0]);

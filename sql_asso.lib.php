@@ -635,12 +635,12 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 			$where[] = "ref.".$aForeignXMLAttrs['PREFIX']."_statut =".DEF_ID_STATUT_LIGNE;
 		}
 		//////// END STATUT MAJ 
-		/*if (sizeof($whereTSL) > 0)
+		/*if (newSizeOf($whereTSL) > 0)
 			//array_push ($where, " (	".implode("\nOR\t", $whereTSL)." ) ");
 			array_push ($where, implode("\nAND\t", $whereTSL));
 		*/	
 			
-		if (sizeof($whereTSL) > 0) {
+		if (newSizeOf($whereTSL) > 0) {
 			//array_push ($where, " (	".implode("\nOR\t", $whereTSL)." ) "); {
 			//array_push ($where, implode("\nAND\t", $whereTSL));
 			$where_temp = array();
@@ -678,13 +678,13 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 				}
 			}
 			
-			if  (sizeof($where_temp) > 0) {
+			if  (newSizeOf($where_temp) > 0) {
 				array_push ($where, implode("\nAND\t", $where_temp));
 			}
 			
 		}	
 			
-		if (!empty($where) && sizeof($where) > 0  )
+		if (!empty($where) && newSizeOf($where) > 0  )
 			$sql .= "WHERE	".implode("\nAND\t", $where)." ";
 			
 		

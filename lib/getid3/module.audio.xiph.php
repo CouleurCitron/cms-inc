@@ -793,7 +793,7 @@ class getid3_xiph extends getid3_handler
         
         $getid3 = $this->getid3;
         
-        $picture = &$getid3->info['flac']['PICTURE'][sizeof($getid3->info['flac']['PICTURE']) - 1];
+        $picture = &$getid3->info['flac']['PICTURE'][newSizeOf($getid3->info['flac']['PICTURE']) - 1];
         
         $offset = 0;
         

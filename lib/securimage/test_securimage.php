@@ -14,7 +14,7 @@ function process_si_contact_form()
 	$errors = array();  // initialize empty error array
 
 	//pre_dump( $_SESSION['securimage_code_value']);
-	if (sizeof($errors) == 0) {
+	if (newSizeOf($errors) == 0) {
 		 
 		require_once ('include/cms-inc/lib/securimage/securimage.php');
 		$securimage = new Securimage();  
@@ -23,7 +23,7 @@ function process_si_contact_form()
 		}
 	}
 
-	if (sizeof($errors) == 0) {  
+	if (newSizeOf($errors) == 0) {  
 		//$return = array('error' => 0, 'message' => 'OK');
 		//die(json_encode($return));
 		echo 0;

@@ -135,7 +135,7 @@ else{
 
 
 // autres tris
-for ($i=0; $i < sizeof($aListeTri); $i++){
+for ($i=0; $i < newSizeOf($aListeTri); $i++){
 
 	$oTri = $aListeTri[$i];
 
@@ -378,7 +378,7 @@ $aId = $pager->aResult;
 
 // liste des objets
 $aListe_res = array();
-for ($m=0; $m<sizeof($aId); $m++)
+for ($m=0; $m<newSizeOf($aId); $m++)
 {
 	eval("$"."aListe_res[] = new ".$classeName."($"."aId[$"."m]);");
 }
@@ -388,7 +388,7 @@ for ($m=0; $m<sizeof($aId); $m++)
  */
  
 // s'il y a des enregistrements à afficher
-if(sizeof($aListe_res)>0) {
+if(newSizeOf($aListe_res)>0) {
 
 	if (is_file("export_".$classeName.".php")){
 		echo "<a href=\"export_".$classeName.".php\" class=\"arbo\">export .xls</a> | ";
@@ -536,7 +536,7 @@ $tempStyles .= ".pagination"."{\n";
 $tempStyles .= "}\n";
 
 // s'il y a des enregistrements à afficher
-  if(sizeof($aListe_res)>0) {
+  if(newSizeOf($aListe_res)>0) {
 	eval("$"."oRes = new ".$classeName."();");
 	$sXML = $oRes->XML;
 	xmlClassParse($sXML);
@@ -599,7 +599,7 @@ for ($i=0;$i<count($aNodeToSort);$i++){
 echo "</div><!-- fin  tris -->\n";
 
 // liste
-for($k=0; $k<sizeof($aListe_res); $k++) {
+for($k=0; $k<newSizeOf($aListe_res); $k++) {
 	$oRes = $aListe_res[$k];
 	
 	echo "<div id=\"".$classeName."_record\" class=\"".$classeName."_record\" ><!-- debut record -->\n";

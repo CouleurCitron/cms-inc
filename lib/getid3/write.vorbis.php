@@ -73,7 +73,7 @@ class getid3_write_vorbis extends getid3_handler_write
 
         // convert single element arrays to string
         foreach ($this->comments as $key => $value) {
-            if (sizeof($value) == 1) {
+            if (newSizeOf($value) == 1) {
                 $this->comments[$key] = $value[0];
             }
         }

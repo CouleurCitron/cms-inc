@@ -215,7 +215,7 @@ function getClasse() { return("Categorie"); }
 
 	function setListAnnonces($type='garde') {
 
-		if(sizeof($this->listAnnonces)==0) {
+		if(newSizeOf($this->listAnnonces)==0) {
 			$sql = '';
 
 			if($type == 'garde') {

@@ -207,7 +207,7 @@ class ADODB_postgres7 extends ADODB_postgres64 {
 			$sqlarr = explode('?',trim($sql));
 			$sql = '';
 			$i = 1;
-			$last = sizeof($sqlarr)-1;
+			$last = newSizeOf($sqlarr)-1;
 			foreach($sqlarr as $v) {
 				if ($last < $i) $sql .= $v;
 				else $sql .= $v.' $'.$i;

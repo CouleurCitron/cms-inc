@@ -628,4 +628,3 @@ function getArchiWithIdContent($id)
 	return $result;
 }
 
-?>

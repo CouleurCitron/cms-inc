@@ -619,7 +619,7 @@ function xmlUrlParse($string){
 }
 
 function readXMLfromURL($str){
-	if(function_exists(curl_init)){
+	if(function_exists('curl_init')){
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $str);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -652,6 +652,3 @@ function readXMLfromURL($str){
 		}
 	}
 }
-
-
-?>

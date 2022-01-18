@@ -29,15 +29,15 @@ $aObj = dbGetObjectsFromRequete("news_queue", $sql);
 $sql_redact = 'select * from news_queue where news_statut = '.DEF_ID_STATUT_REDACT.' order by news_inscrit';     
 $aObj_redact = dbGetObjectsFromRequete("news_queue", $sql_redact); 
 
-if (sizeof($aObj_redact) > 0) {
-	$bSend = (bool)  multiPartMail_file('technique@couleur-citron.com' , $_SERVER['HTTP_HOST'].' : Envoi de la newsletter, '.sizeof($aObj_redact).' messages en attente' , $html , html2text($html), $from, $attachPath, $aName_file, $typeAttach='text/plain', DEF_MAIL_HOST, $replyto);
+if (newSizeOf($aObj_redact) > 0) {
+	$bSend = (bool)  multiPartMail_file('technique@couleur-citron.com' , $_SERVER['HTTP_HOST'].' : Envoi de la newsletter, '.newSizeOf($aObj_redact).' messages en attente' , $html , html2text($html), $from, $attachPath, $aName_file, $typeAttach='text/plain', DEF_MAIL_HOST, $replyto);
 
 }
 else {
 	
-	if (sizeof($aObj) > 0 && $aObj != false) {
+	if (newSizeOf($aObj) > 0 && $aObj != false) {
 	
-		//echo "<p>En attente : ".sizeof($aObj)." newsletter(s)</p>";
+		//echo "<p>En attente : ".newSizeOf($aObj)." newsletter(s)</p>";
 		
 		
 		$aCache = array();

@@ -141,7 +141,7 @@ function process_si_contact_form()
 
     // Only try to validate the captcha if the form has no errors
     // This is especially important for ajax calls
-    if (sizeof($errors) == 0) {
+    if (newSizeOf($errors) == 0) {
       require_once dirname(__FILE__) . '/securimage.php';
       $securimage = new Securimage();
       
@@ -150,7 +150,7 @@ function process_si_contact_form()
       }
     }
 
-    if (sizeof($errors) == 0) {
+    if (newSizeOf($errors) == 0) {
       // no errors, send the form
       $time       = date('r');
       $message = "A message was submitted from the contact form.  The following information was provided.<br /><br />"

@@ -184,7 +184,7 @@ parameter.
 
     function doRemoteInfo($command, $options, $params)
     {
-        if (sizeof($params) != 1) {
+        if (newSizeOf($params) != 1) {
             return $this->raiseError("$command expects one param: the remote package name");
         }
         $savechannel = $channel = $this->config->get('default_channel');

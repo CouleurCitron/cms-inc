@@ -318,7 +318,7 @@ class NewsletterModel {
 	function checkCriteriaVariation ($_subscription, $_criteria) {
 		$reference = unserialize($_subscription->get_criteres());
 		
-		return sizeof(array_intersect_assoc($reference, $_criteria)) == sizeof($reference);
+		return newSizeOf(array_intersect_assoc($reference, $_criteria)) == newSizeOf($reference);
 	}
 
 

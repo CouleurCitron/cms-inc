@@ -146,7 +146,7 @@ class perf_mssql extends adodb_perf{
 	function sp_who()
 	{
 		$arr = $this->conn->GetArray('sp_who');
-		return sizeof($arr);
+		return newSizeOf($arr);
 	}
 	
 	function HealthCheck($cli=false)

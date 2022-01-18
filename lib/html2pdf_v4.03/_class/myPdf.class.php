@@ -1270,7 +1270,7 @@ class HTML2PDF_myPdf extends TCPDF
         $this->Ln(10);
 
         // get the number of bookmarks
-        $size=sizeof($this->outlines);
+        $size=newSizeOf($this->outlines);
 
         // get the size of the "P. xx" cell
         $pageCellSize=$this->GetStringWidth('p. '.$this->outlines[$size-1]['p'])+2;

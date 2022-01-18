@@ -100,7 +100,7 @@ class JobsController extends BaseModuleController {
 									exit();
 								} else {
 									$content_dir = DEF_JOBS_APPLY_ROOT_UPLOAD; // Upoloaded files directory
-									if (sizeof($_FILES)> 0) {
+									if (newSizeOf($_FILES)> 0) {
 										// Handle file upload
 										$key = key($_FILES);
 										$tmp_file = $_FILES[$key]['tmp_name'];
@@ -458,7 +458,7 @@ class JobsController extends BaseModuleController {
 											if ($_POST['offer'] > 0) {
 												// application administrator email
 												$recipients = $this->models['jobs']->getOfferRecipients($_POST['offer']);
-												if (sizeof($recipients) > 0) {
+												if (newSizeOf($recipients) > 0) {
 													$render_class = $this->views_pile['jobs_admin_email']['render'];
 													if (is_file($_SERVER['DOCUMENT_ROOT'].'/modules/'.$this->mod_name.'/custom/class.'.$render_class.'.php')) {
 														require_once('modules/'.$this->mod_name.'/custom/class.'.$render_class.'.php');

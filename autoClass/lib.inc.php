@@ -1980,7 +1980,7 @@ function export_list_inscrits($sRep, $sListeInscrit, $aChamps, $sTypeExport)
 	
 	$sDate = date("Y")."".date("m")."".date("d");
 	$sFilename = $sRep."export_inscrit_".$sTypeExport.".csv"; 
-	if (sizeof($aResult) == 0) $sDate=0; 
+	if (newSizeOf($aResult) == 0) $sDate=0; 
 	if (!$handle = fopen($sFilename, 'w+')) {
 	   echo "Impossible d'ouvrir le fichier ($filename)";
 	   exit;
@@ -1996,14 +1996,14 @@ function export_list_inscrits($sRep, $sListeInscrit, $aChamps, $sTypeExport)
 	//pre_dump($aChamps);
 	
 	$sContent ="";  
-	for ($i=0; $i<sizeof($aChamps); $i++) { 
+	for ($i=0; $i<newSizeOf($aChamps); $i++) { 
 		if (strtolower($aChamps[$i]) != "id") 
 			$sContent.=$aChamps[$i].";";
 	}
 	$sContent.= ""."\n";
 	// requete d'insertion pour la nouvelle BDD
-	// echo sizeof($aResult);
-	for ($k=0; $k < sizeof($aResult); $k++)
+	// echo newSizeOf($aResult);
+	for ($k=0; $k < newSizeOf($aResult); $k++)
 	{  
 		$sContent.= "".$aResult[$k]."";  
 		$sContent.= ""."\n"; 
@@ -2634,7 +2634,7 @@ function cacheClasseList($classeName) {
 		$aMainClasseObjects[$oObject->get_id()] = $oObject;
 		//eval("$"."a".ucfirst($classeName)."Objects[".$oObject->get_id()."] = ".$oObject.";");  
 	} 
-	//echo sizeof($aMainClasseObjects);
+	//echo newSizeOf($aMainClasseObjects);
 	 eval("$"."a".ucfirst($classeName)."Objects = "."$"."aMainClasseObjects;"); 
 	 //echo "<br>nouvelle table a".ucfirst($classeName)."Objects<br><br>";
 }

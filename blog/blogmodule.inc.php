@@ -52,7 +52,7 @@ if ((strpos($_SERVER['PHP_SELF'], "backoffice/") === false)&&(strpos($_SERVER['P
 	
 	$aM = dbGetObjectsFromRequete("cms_content", $sql);
 	
-	if (sizeof($aM) > 0)  { 
+	if (newSizeOf($aM) > 0)  { 
 		for ($i = 0; $i <sizeof ($aM); $i++) { 		
 		
 			$oM = $aM[$i]; 
@@ -127,7 +127,7 @@ if ((strpos($_SERVER['PHP_SELF'], "backoffice/") === false)&&(strpos($_SERVER['P
 				$sql.= " where avis_id_page = ".$oInfo->getPage_id() ;
 				$sql.= " and avis_statut = ".DEF_ID_STATUT_LIGNE." ";
 				$aAv = dbGetObjectsFromRequete("cms_avis", $sql);
-				if (sizeof($aAv) >0) $nbCom = " (".sizeof($aAv).")";
+				if (newSizeOf($aAv) >0) $nbCom = " (".newSizeOf($aAv).")";
 				echo "<p> <a href='/content/blogeauagen/index.php?id=".$oM->getId_content()."'>Commentaires".$nbCom."</a></p>"; 
 				
 				if ($id=="")  {

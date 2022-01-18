@@ -34,7 +34,7 @@ function _colonscope($sql,$arr)
 global $_COLONARR,$_COLONSZ;
 
 	$_COLONARR = array();
-	$_COLONSZ = sizeof($arr);
+	$_COLONSZ = newSizeOf($arr);
 	
 	$sql2 = preg_replace("/(:[0-9]+)/e","_colontrack('\\1')",$sql);
 	

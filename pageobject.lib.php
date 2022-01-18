@@ -17,7 +17,7 @@ class pageObject {
 			array("getName_page", "getNodeid_page" , "getId_site", "getValid_page", "getIsgabarit_page") , 
 			array(str_replace (".php", "", $page) , $courant["id"] , $courant['id_site'], 1, 0) , array(), array());
 		
-		if( sizeof($aPages) > 0 && $aPages!=false) { 
+		if( newSizeOf($aPages) > 0 && $aPages!=false) { 
 			$oPage = $aPages[0];
 			if($returnPageData){
 				return $oPage;

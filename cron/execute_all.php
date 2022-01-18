@@ -27,7 +27,7 @@ $sql = 'select * from cms_cron where cms_statut = '.DEF_ID_STATUT_LIGNE.' and cm
 
 $aObj = dbGetObjectsFromRequete("cms_cron", $sql); 
 
-if (sizeof($aObj) > 0 && $aObj != false) {
+if (newSizeOf($aObj) > 0 && $aObj != false) {
 	
 	foreach ( $aObj as $obj) {  
 	

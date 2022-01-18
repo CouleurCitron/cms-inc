@@ -392,8 +392,8 @@ class PEAR_Installer extends PEAR_Downloader
                     }
                 }
 
-                $this->log(3, "doing ".sizeof($subst_from)." substitution(s) for $final_dest_file");
-                if (sizeof($subst_from)) {
+                $this->log(3, "doing ".newSizeOf($subst_from)." substitution(s) for $final_dest_file");
+                if (newSizeOf($subst_from)) {
                     $contents = str_replace($subst_from, $subst_to, $contents);
                 }
 
@@ -1184,7 +1184,7 @@ class PEAR_Installer extends PEAR_Downloader
                 return $test;
             }
 
-            if (sizeof($test)) {
+            if (newSizeOf($test)) {
                 $pkgs = $this->getInstallPackages();
                 $found = false;
                 foreach ($pkgs as $param) {

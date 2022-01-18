@@ -72,9 +72,9 @@ if (!empty($aSearchCustom)) {
 									//echo ">>>> Cleanup FKEY filter : ".$sTableName." : ".$sTableFieldName." : ".$aCustomFilters['foreign'][$sTableName]['filters'][$sTableFieldName]."<br/>";
 									unset($aCustomFilters['foreign'][$sTableName]['filters'][$sTableFieldName]);
 								}
-								if (sizeof($aCustomFilters['foreign'][$sTableName]['filters']) == 0) {
+								if (newSizeOf($aCustomFilters['foreign'][$sTableName]['filters']) == 0) {
 									// Global cleanup custom search for this class fields
-									//echo ">>>> Cleanup local filter : ".$sTableName." : ".sizeof($aCustomFilters['foreign'][$sTableName]['filters'])."<br/>";
+									//echo ">>>> Cleanup local filter : ".$sTableName." : ".newSizeOf($aCustomFilters['foreign'][$sTableName]['filters'])."<br/>";
 									unset($aCustomFilters['foreign'][$sTableName]['filters']);
 								}
 							}
@@ -152,9 +152,9 @@ if (!empty($aSearchCustom)) {
 								unset($aCustomFilters['asso'][$sTableName]['match']);
 							}
 						}
-						if (is_array($aCustomFilters['asso'][$asso_props['class']]['filters']) && sizeof($aCustomFilters['asso'][$asso_props['class']]['filters']) == 0) {
+						if (is_array($aCustomFilters['asso'][$asso_props['class']]['filters']) && newSizeOf($aCustomFilters['asso'][$asso_props['class']]['filters']) == 0) {
 							// Global cleanup custom search for this class fields
-							//echo ">>>> Cleanup local filter : ".$asso_props['class']." : ".sizeof($aCustomFilters['asso'][$asso_props['class']]['filters'])."<br/>";
+							//echo ">>>> Cleanup local filter : ".$asso_props['class']." : ".newSizeOf($aCustomFilters['asso'][$asso_props['class']]['filters'])."<br/>";
 							unset($aCustomFilters['asso'][$asso_props['class']]['filters']);
 						}
 						if (!empty($aCustomFilters['asso'][$asso_props['class']]['filters'])) {
@@ -176,7 +176,7 @@ if (!empty($aSearchCustom)) {
 						} else {
 							//echo ">>>> Cleanup global filter : ".$asso_props['class']."<br/>";
 							unset($aCustomFilters['asso'][$asso_props['class']]);
-							if (!empty($aCustomFilters['asso'][$sTempClasse]['match']) || sizeof($aCustomFilters['asso']) == 1 && key($aCustomFilters['asso']) == $sTableName) {
+							if (!empty($aCustomFilters['asso'][$sTempClasse]['match']) || newSizeOf($aCustomFilters['asso']) == 1 && key($aCustomFilters['asso']) == $sTableName) {
 								//echo ">>>> Cleanup global filter : ".$sTempClasse."<br/>";
 								unset($aCustomFilters['asso'][$sTempClasse]);
 								//echo ">>>> Cleanup global filter : ".$sTableName."<br/>";
@@ -223,9 +223,9 @@ if (!empty($aSearchCustom)) {
 										//echo ">>>> Cleanup FKEY filter : ".$sTableName." : ".$sTableFieldName." : ".$aCustomFilters['text'][$sTableName]['filters'][$sTableFieldName]."<br/>";
 										unset($aCustomFilters['text'][$sTableName]['filters'][$sTableFieldName]);
 									}
-									if (sizeof($aCustomFilters['text'][$sTableName]['filters']) == 0) {
+									if (newSizeOf($aCustomFilters['text'][$sTableName]['filters']) == 0) {
 										// Global cleanup custom search for this class fields
-										//echo ">>>> Cleanup local filter : ".$sTableName." : ".sizeof($aCustomFilters['text'][$sTableName]['filters'])."<br/>";
+										//echo ">>>> Cleanup local filter : ".$sTableName." : ".newSizeOf($aCustomFilters['text'][$sTableName]['filters'])."<br/>";
 										unset($aCustomFilters['text'][$sTableName]['filters']);
 									}
 								}
