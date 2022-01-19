@@ -62,5 +62,3 @@ class ShareitModel extends BaseModuleModel {
 
 
 }
-
-?>

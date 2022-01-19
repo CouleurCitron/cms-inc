@@ -96,7 +96,7 @@ class ShareitController extends BaseModuleController {
 							$params['email'] = $_POST['shareit_dest_email'];
 							
 							// Tracking
-							if (SHR_DB_TRACK) {
+							if (defined('SHR_DB_TRACK')	&&	SHR_DB_TRACK) {
 								$trackit = ($_POST['shareit_trackit'] == 'true' ? true : false);
 								$this->models['shareit']->track($_POST['shareit_sender_email'], $trackit, $_POST['shareit_sender_lastname'], $_POST['shareit_sender_firstname']);
 							}
@@ -138,5 +138,3 @@ class ShareitController extends BaseModuleController {
 
 
 }
-
-?>
