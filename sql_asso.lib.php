@@ -35,7 +35,7 @@ function dbGetAssocProps($oObjet, $sClasseAssoc) {
 	//echo 'TEST : '.$sClasseAssoc.'<br/>';
 	eval("$"."oTemp = new ".$sClasseAssoc."();");
 
-	if (!is_null($oTemp->XML_inherited))
+	if (isset($oTemp->XML_inherited)	&&	!is_null($oTemp->XML_inherited))
 		$sXML = $oTemp->XML_inherited;
 	else	$sXML = $oTemp->XML;
 	$stackAssoc = xmlClassParse($sXML);
@@ -142,7 +142,7 @@ function dbGetAssocProps($oObjet, $sClasseAssoc) {
 	}
 	if ($tempAssoOut != '') {
 		eval("$"."oTemp = new ".$tempAssoOut."();"); 
-		if (!is_null($oTemp->XML_inherited))
+		if (isset($oTemp->XML_inherited)	&&	!is_null($oTemp->XML_inherited))
 			$sXML = $oTemp->XML_inherited;
 		else	$sXML = $oTemp->XML;
 		$stack = xmlClassParse($sXML); 
@@ -219,7 +219,7 @@ function dbGetAssocies($oObjet, $sClasseAssoc, $edit=false, $check_status=false)
 	 
 	// cas des deroulant d'id, pointage vers foreign
 		 
-	if (!is_null($oTemp->XML_inherited))
+	if (isset($oTemp->XML_inherited)	&&	!is_null($oTemp->XML_inherited))
 		$sXML = $oTemp->XML_inherited;
 	else	$sXML = $oTemp->XML;
 	xmlClassParse($sXML);

@@ -58,13 +58,11 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 					$asso_block = '';
 					$asso_list = dbGetAssocies($oRes, $assoc);
 
-					//viewArray($asso_list, 'ASSOS');
-					//$tempAssoFull = $asso_list['asso']["attrs"]["IS_ASSO"] == 'true' ? true : false;
-					//$tempAsymetric = ($tempAssoFull && $asso_list['asso']["attrs"]["IS_ASYMETRIC"] == 'true') ? true : false;
 					$tempClass = $asso_list['asso']['class'];
-					$tempAsymetric = $asso_list['asso']['assymetric'];
+					if (isset($asso_list['asso']['assymetric']))
+						$tempAsymetric = $asso_list['asso']['assymetric'];
 
-					if (is_array($asso_list['asso']['children'])) {
+					if (isset($asso_list['asso']['children'])	&&	is_array($asso_list['asso']['children'])) {
 						// associate another record from the SAME table
 						$track_key = 0;
 						//foreach ($asso_list['asso']['children'] as $nodeId => $nodeValue) {
@@ -79,8 +77,6 @@ for ($i=0; $i<count($aNodeToSort); $i++) {
 						}
 					}
 
-					//if (!empty($asso_list['XML']["attrs"]["LIBELLE"]))
-					//	$libelleAsso = stripslashes($asso_list['XML']["attrs"]["LIBELLE"]);
 					if (!empty($asso_list['asso']['libelle']))
 						$libelleAsso = stripslashes($asso_list['asso']['libelle']);
 					else	$libelleAsso = $asso_list['XML']["attrs"]["NAME"];
